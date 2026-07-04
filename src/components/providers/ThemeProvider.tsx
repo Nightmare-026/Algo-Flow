@@ -16,7 +16,13 @@ interface ThemeContextValue {
   resolvedTheme: "dark-neon" | "light-edu" | "nature-cinematic";
 }
 
-const ThemeContext = createContext<ThemeContextValue | null>(null);
+const defaultThemeValue: ThemeContextValue = {
+  theme: "dark-neon",
+  setTheme: () => {},
+  resolvedTheme: "dark-neon",
+};
+
+const ThemeContext = createContext<ThemeContextValue>(defaultThemeValue);
 
 const STORAGE_KEY = "algo-flow-theme";
 
@@ -93,9 +99,5 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 }
 
 export function useTheme(): ThemeContextValue {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
+  return useContext(ThemeContext);
 }

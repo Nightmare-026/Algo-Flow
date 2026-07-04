@@ -115,9 +115,9 @@ export const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   },
-};
+} as const;
 
 /** Fade in from above */
 export const fadeInDown = {
@@ -125,9 +125,9 @@ export const fadeInDown = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: "easeOut" as const },
   },
-};
+} as const;
 
 /** Scale in — for cards and elements */
 export const scaleIn = {
@@ -135,9 +135,9 @@ export const scaleIn = {
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: "easeOut" as const },
   },
-};
+} as const;
 
 /** Slide in from left */
 export const slideInLeft = {
@@ -145,9 +145,9 @@ export const slideInLeft = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
   },
-};
+} as const;
 
 /** Slide in from right */
 export const slideInRight = {
@@ -155,9 +155,9 @@ export const slideInRight = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
   },
-};
+} as const;
 
 /** Stagger children container */
 export const staggerContainer = {
@@ -177,9 +177,9 @@ export const staggerItem = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: "easeOut" as const },
   },
-};
+} as const;
 
 /** Error shake animation */
 export const shakeAnimation = {

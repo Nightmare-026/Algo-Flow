@@ -1,73 +1,48 @@
+"use client";
+
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { HeroSection } from "@/components/landing/HeroSection";
+import { DSAWorldPreview } from "@/components/landing/DSAWorldPreview";
+import { VisualizerCategories } from "@/components/landing/VisualizerCategories";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { LearningFeatures } from "@/components/landing/LearningFeatures";
+import { CodeLanguages } from "@/components/landing/CodeLanguages";
+import { TrustStats } from "@/components/landing/TrustStats";
+import { FinalCTA } from "@/components/landing/FinalCTA";
+
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-8 p-8" data-theme="nature-cinematic">
-      {/* Hero placeholder — will be replaced in Phase 1 */}
-      <div className="flex flex-col items-center gap-6 max-w-3xl text-center">
-        {/* Logo */}
-        <div className="relative w-24 h-24">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.png"
-            alt="Algo Flow Logo"
-            className="w-full h-full object-contain"
-          />
-        </div>
+    <div data-theme="nature-cinematic">
+      <Navbar />
 
-        {/* Badge */}
-        <span className="inline-flex items-center rounded-full border border-border px-4 py-1.5 text-sm text-text-muted">
-          🚀 Learn DSA Visually
-        </span>
+      <main>
+        {/* Hero with animated background elements */}
+        <HeroSection />
 
-        {/* Heading */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-          Master Data Structures Through{" "}
-          <span className="text-gradient-primary">Beautiful Visual Journeys</span>
-        </h1>
+        {/* Scroll-storytelling DSA World */}
+        <DSAWorldPreview />
 
-        {/* Subheading */}
-        <p className="text-lg sm:text-xl text-text-muted max-w-2xl">
-          Explore arrays, stacks, queues, trees, graphs, and algorithms with
-          step-by-step animated explanations. 200+ interactive visualizers in
-          4 programming languages.
-        </p>
+        {/* 10 Data Structure Categories */}
+        <VisualizerCategories />
 
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
-          <a
-            href="/visualizers"
-            className="inline-flex items-center justify-center rounded-lg bg-primary px-8 py-3 text-base font-semibold text-text-inverse transition-all hover:bg-primary-hover hover:shadow-[var(--shadow-glow-primary)] hover:-translate-y-0.5 active:scale-[0.96]"
-          >
-            Start Visualizing
-          </a>
-          <a
-            href="/visualizers"
-            className="inline-flex items-center justify-center rounded-lg border border-border px-8 py-3 text-base font-semibold text-text-primary transition-all hover:border-border-active hover:bg-surface-hover hover:-translate-y-0.5"
-          >
-            Explore Algorithms
-          </a>
-        </div>
+        {/* 5-Step Learning Flow */}
+        <HowItWorks />
 
-        {/* Stats */}
-        <div className="flex flex-wrap items-center justify-center gap-8 mt-8 text-text-muted text-sm">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-primary">200+</span>
-            <span>Visualizers</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-primary">4</span>
-            <span>Code Languages</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-primary">10</span>
-            <span>Data Structures</span>
-          </div>
-        </div>
-      </div>
+        {/* 9 Platform Features */}
+        <LearningFeatures />
 
-      {/* Phase 0 status indicator */}
-      <div className="fixed bottom-4 right-4 glass-card-nature rounded-lg px-4 py-2 text-xs text-text-muted">
-        Phase 0 — Setup Complete ✓
-      </div>
-    </main>
+        {/* 4-Language Code Preview */}
+        <CodeLanguages />
+
+        {/* Animated Stats */}
+        <TrustStats />
+
+        {/* Final Call to Action */}
+        <FinalCTA />
+      </main>
+
+      <Footer />
+    </div>
   );
 }
