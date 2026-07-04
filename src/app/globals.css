@@ -1,0 +1,356 @@
+@import "tailwindcss";
+
+/* ================================================================
+   ALGO FLOW — GLOBAL DESIGN TOKENS
+   ================================================================
+   Theme 1: Premium Dark Neon Tech (default for app)
+   Theme 2: Clean Educational Light (light toggle)
+   Theme 3: Nature Algorithm Cinematic (landing page)
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   Theme 1: Premium Dark Neon Tech (default)
+   ---------------------------------------------------------------- */
+:root,
+[data-theme="dark-neon"] {
+  --bg-deep: #050816;
+  --bg-surface: #0B1020;
+  --bg-surface-light: #111827;
+  --bg-surface-hover: #1a2332;
+
+  --primary: #22D3EE;
+  --primary-hover: #06B6D4;
+  --primary-muted: rgba(34, 211, 238, 0.15);
+  --primary-glow: rgba(34, 211, 238, 0.4);
+
+  --secondary: #A78BFA;
+  --secondary-hover: #8B5CF6;
+  --secondary-muted: rgba(167, 139, 250, 0.15);
+
+  --success: #10B981;
+  --success-muted: rgba(16, 185, 129, 0.15);
+  --warning: #F59E0B;
+  --warning-muted: rgba(245, 158, 11, 0.15);
+  --error: #FB7185;
+  --error-muted: rgba(251, 113, 133, 0.15);
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-inverse: #0F172A;
+
+  --border: #1E293B;
+  --border-hover: #334155;
+  --border-active: #22D3EE;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow-primary: 0 0 20px rgba(34, 211, 238, 0.3);
+  --shadow-glow-secondary: 0 0 20px rgba(167, 139, 250, 0.3);
+
+  /* Visualizer-specific tokens */
+  --vis-element-bg: #0B1020;
+  --vis-element-border: #1E293B;
+  --vis-current: #22D3EE;
+  --vis-compared: #A78BFA;
+  --vis-swapped: #FBBF24;
+  --vis-sorted: #10B981;
+  --vis-visited: #22D3EE;
+  --vis-target: #F59E0B;
+  --vis-found: #10B981;
+  --vis-error: #FB7185;
+  --vis-pointer: #22D3EE;
+  --vis-arrow: #94A3B8;
+
+  color-scheme: dark;
+}
+
+/* ----------------------------------------------------------------
+   Theme 2: Clean Educational Light
+   ---------------------------------------------------------------- */
+[data-theme="light-edu"] {
+  --bg-deep: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-light: #F1F5F9;
+  --bg-surface-hover: #E2E8F0;
+
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-muted: rgba(37, 99, 235, 0.1);
+  --primary-glow: rgba(37, 99, 235, 0.2);
+
+  --secondary: #4F46E5;
+  --secondary-hover: #4338CA;
+  --secondary-muted: rgba(79, 70, 229, 0.1);
+
+  --success: #16A34A;
+  --success-muted: rgba(22, 163, 74, 0.1);
+  --warning: #EA580C;
+  --warning-muted: rgba(234, 88, 12, 0.1);
+  --error: #DC2626;
+  --error-muted: rgba(220, 38, 38, 0.1);
+
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-inverse: #F8FAFC;
+
+  --border: #CBD5E1;
+  --border-hover: #94A3B8;
+  --border-active: #2563EB;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-glow-primary: 0 0 20px rgba(37, 99, 235, 0.15);
+  --shadow-glow-secondary: 0 0 20px rgba(79, 70, 229, 0.15);
+
+  --vis-element-bg: #FFFFFF;
+  --vis-element-border: #CBD5E1;
+  --vis-current: #2563EB;
+  --vis-compared: #EA580C;
+  --vis-swapped: #2563EB;
+  --vis-sorted: #16A34A;
+  --vis-visited: #2563EB;
+  --vis-target: #EA580C;
+  --vis-found: #16A34A;
+  --vis-error: #DC2626;
+  --vis-pointer: #2563EB;
+  --vis-arrow: #64748B;
+
+  color-scheme: light;
+}
+
+/* ----------------------------------------------------------------
+   Theme 3: Nature Algorithm Cinematic (landing page)
+   ---------------------------------------------------------------- */
+[data-theme="nature-cinematic"] {
+  --bg-deep: #04130D;
+  --bg-surface: #0B1F17;
+  --bg-surface-light: #102A1F;
+  --bg-surface-hover: #163D2D;
+
+  --primary: #34D399;
+  --primary-hover: #10B981;
+  --primary-muted: rgba(52, 211, 153, 0.15);
+  --primary-glow: rgba(52, 211, 153, 0.4);
+
+  --secondary: #A3E635;
+  --secondary-hover: #84CC16;
+  --secondary-muted: rgba(163, 230, 53, 0.15);
+
+  --accent: #67E8F9;
+  --golden: #FBBF24;
+
+  --success: #34D399;
+  --success-muted: rgba(52, 211, 153, 0.15);
+  --warning: #FBBF24;
+  --warning-muted: rgba(251, 191, 36, 0.15);
+  --error: #F43F5E;
+  --error-muted: rgba(244, 63, 94, 0.15);
+
+  --text-primary: #ECFDF5;
+  --text-secondary: #D1FAE5;
+  --text-muted: #A7F3D0;
+  --text-inverse: #04130D;
+
+  --border: #1F3B2D;
+  --border-hover: #2D5A42;
+  --border-active: #34D399;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.7);
+  --shadow-glow-primary: 0 0 24px rgba(52, 211, 153, 0.35);
+  --shadow-glow-secondary: 0 0 24px rgba(163, 230, 53, 0.3);
+
+  --vis-element-bg: #0B1F17;
+  --vis-element-border: #1F3B2D;
+  --vis-current: #34D399;
+  --vis-compared: #FBBF24;
+  --vis-swapped: #67E8F9;
+  --vis-sorted: #A3E635;
+  --vis-visited: #67E8F9;
+  --vis-target: #FBBF24;
+  --vis-found: #34D399;
+  --vis-error: #F43F5E;
+  --vis-pointer: #34D399;
+  --vis-arrow: #A7F3D0;
+
+  color-scheme: dark;
+}
+
+/* ----------------------------------------------------------------
+   Tailwind Theme Integration
+   ---------------------------------------------------------------- */
+@theme inline {
+  --color-background: var(--bg-deep);
+  --color-foreground: var(--text-primary);
+  --color-surface: var(--bg-surface);
+  --color-surface-light: var(--bg-surface-light);
+  --color-surface-hover: var(--bg-surface-hover);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-muted: var(--primary-muted);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-muted: var(--secondary-muted);
+  --color-success: var(--success);
+  --color-success-muted: var(--success-muted);
+  --color-warning: var(--warning);
+  --color-warning-muted: var(--warning-muted);
+  --color-error: var(--error);
+  --color-error-muted: var(--error-muted);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-border-active: var(--border-active);
+
+  --color-vis-current: var(--vis-current);
+  --color-vis-compared: var(--vis-compared);
+  --color-vis-swapped: var(--vis-swapped);
+  --color-vis-sorted: var(--vis-sorted);
+  --color-vis-visited: var(--vis-visited);
+  --color-vis-target: var(--vis-target);
+  --color-vis-found: var(--vis-found);
+  --color-vis-error: var(--vis-error);
+
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+/* ----------------------------------------------------------------
+   Base Styles
+   ---------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-sans, 'Inter', system-ui, -apple-system, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ----------------------------------------------------------------
+   Scrollbar Styling (Dark themes)
+   ---------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ----------------------------------------------------------------
+   Selection
+   ---------------------------------------------------------------- */
+::selection {
+  background-color: var(--primary-muted);
+  color: var(--text-primary);
+}
+
+/* ----------------------------------------------------------------
+   Focus Visible
+   ---------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ----------------------------------------------------------------
+   Reduced Motion
+   ---------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ----------------------------------------------------------------
+   Utility Classes
+   ---------------------------------------------------------------- */
+.glass-card {
+  background: rgba(11, 16, 32, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+}
+
+.glass-card-nature {
+  background: rgba(11, 31, 23, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+}
+
+.glow-primary {
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.glow-secondary {
+  box-shadow: var(--shadow-glow-secondary);
+}
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-nature {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated underline for links */
+.animated-underline {
+  position: relative;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.animated-underline:hover::after {
+  width: 100%;
+}
