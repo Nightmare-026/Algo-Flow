@@ -1,164 +1,119 @@
-/* ================================================================
-   ALGO FLOW — Playback Store (Zustand)
-   ================================================================
-   Controls algorithm visualization playback state:
-   play/pause, step navigation, speed, and step data.
-   ================================================================ */
+import { create } from 'zustand';
+import { VisualStep, PlaybackState, PlaybackSpeed } from '@/types';
 
-import { create } from "zustand";
-import type { PlaybackSpeed, VisualStep } from "@/types";
-import { SPEED_DURATIONS } from "@/lib/animation/spring-config";
-
-interface PlaybackStore {
-  // State
-  steps: VisualStep[];
-  currentStepIndex: number;
-  isPlaying: boolean;
-  speed: PlaybackSpeed;
-  customSpeedMs: number;
-  isComplete: boolean;
-
-  // Computed
-  totalSteps: number;
-  currentStep: VisualStep | null;
-  progress: number; // 0-100
-
-  // Actions
-  setSteps: (steps: VisualStep[]) => void;
+interface PlaybackActions {
+  loadSteps: (steps: VisualStep[]) => void;
   play: () => void;
   pause: () => void;
-  togglePlay: () => void;
   nextStep: () => void;
   previousStep: () => void;
   goToStep: (index: number) => void;
+  setSpeed: (speed: PlaybackSpeed, customMs?: number) => void;
   restart: () => void;
-  reset: () => void;
   skipToEnd: () => void;
-  setSpeed: (speed: PlaybackSpeed) => void;
-  setCustomSpeed: (ms: number) => void;
-  getSpeedMs: () => number;
+  reset: () => void;
 }
 
-export const usePlaybackStore = create<PlaybackStore>((set, get) => ({
-  // Initial state
+type PlaybackStore = PlaybackState & PlaybackActions;
+
+const getSpeedMs = (speed: PlaybackSpeed, customMs: number) => {
+  switch (speed) {
+    case 'fast': return 300;
+    case 'slow': return 1000;
+    case 'custom': return customMs;
+    case 'normal':
+    default: return 600;
+  }
+};
+
+const initialState: PlaybackState = {
   steps: [],
-  currentStepIndex: -1,
+  currentStepIndex: 0,
   isPlaying: false,
-  speed: "normal",
+  speed: 'normal',
   customSpeedMs: 600,
   isComplete: false,
+  totalSteps: 0,
+};
 
-  // Computed getters
-  get totalSteps() {
-    return get().steps.length;
-  },
-  get currentStep() {
-    const { steps, currentStepIndex } = get();
-    return currentStepIndex >= 0 && currentStepIndex < steps.length
-      ? steps[currentStepIndex]
-      : null;
-  },
-  get progress() {
-    const { steps, currentStepIndex } = get();
-    if (steps.length === 0) return 0;
-    return Math.round(((currentStepIndex + 1) / steps.length) * 100);
-  },
+export const usePlaybackStore = create<PlaybackStore>((set, get) => ({
+  ...initialState,
 
-  // Actions
-  setSteps: (steps) =>
-    set({
-      steps,
-      currentStepIndex: steps.length > 0 ? 0 : -1,
-      isPlaying: false,
-      isComplete: false,
-    }),
+  loadSteps: (steps) => set({ 
+    steps, 
+    totalSteps: steps.length,
+    currentStepIndex: 0,
+    isComplete: steps.length === 0,
+    isPlaying: false 
+  }),
 
   play: () => {
-    const { steps, currentStepIndex, isComplete } = get();
-    if (steps.length === 0) return;
-    if (isComplete) {
-      // Restart from beginning if complete
+    const { currentStepIndex, totalSteps } = get();
+    if (totalSteps === 0) return;
+    
+    // If we are at the end and press play, restart
+    if (currentStepIndex >= totalSteps - 1) {
       set({ currentStepIndex: 0, isPlaying: true, isComplete: false });
     } else {
-      set({
-        isPlaying: true,
-        currentStepIndex: currentStepIndex < 0 ? 0 : currentStepIndex,
-      });
+      set({ isPlaying: true, isComplete: false });
     }
   },
 
   pause: () => set({ isPlaying: false }),
 
-  togglePlay: () => {
-    const { isPlaying } = get();
-    if (isPlaying) {
-      get().pause();
-    } else {
-      get().play();
-    }
-  },
-
   nextStep: () => {
-    const { steps, currentStepIndex } = get();
-    if (currentStepIndex < steps.length - 1) {
-      set({ currentStepIndex: currentStepIndex + 1 });
+    const { currentStepIndex, totalSteps } = get();
+    if (currentStepIndex < totalSteps - 1) {
+      set({ 
+        currentStepIndex: currentStepIndex + 1,
+        isComplete: currentStepIndex + 1 === totalSteps - 1
+      });
     } else {
-      set({ isPlaying: false, isComplete: true });
+      set({ isComplete: true, isPlaying: false });
     }
   },
 
   previousStep: () => {
     const { currentStepIndex } = get();
     if (currentStepIndex > 0) {
-      set({
+      set({ 
         currentStepIndex: currentStepIndex - 1,
-        isComplete: false,
+        isComplete: false
       });
     }
   },
 
   goToStep: (index) => {
-    const { steps } = get();
-    if (index >= 0 && index < steps.length) {
-      set({
+    const { totalSteps } = get();
+    if (index >= 0 && index < totalSteps) {
+      set({ 
         currentStepIndex: index,
-        isComplete: index === steps.length - 1,
+        isComplete: index === totalSteps - 1
       });
     }
   },
 
-  restart: () =>
-    set({
-      currentStepIndex: 0,
-      isPlaying: false,
-      isComplete: false,
-    }),
+  setSpeed: (speed, customMs = 600) => set({ 
+    speed, 
+    customSpeedMs: speed === 'custom' ? customMs : getSpeedMs(speed, customMs) 
+  }),
 
-  reset: () =>
-    set({
-      steps: [],
-      currentStepIndex: -1,
-      isPlaying: false,
-      isComplete: false,
-    }),
+  restart: () => set({ 
+    currentStepIndex: 0, 
+    isComplete: false,
+    isPlaying: true 
+  }),
 
   skipToEnd: () => {
-    const { steps } = get();
-    if (steps.length > 0) {
-      set({
-        currentStepIndex: steps.length - 1,
-        isPlaying: false,
+    const { totalSteps } = get();
+    if (totalSteps > 0) {
+      set({ 
+        currentStepIndex: totalSteps - 1,
         isComplete: true,
+        isPlaying: false
       });
     }
   },
 
-  setSpeed: (speed) => set({ speed }),
-
-  setCustomSpeed: (ms) => set({ customSpeedMs: ms, speed: "custom" }),
-
-  getSpeedMs: () => {
-    const { speed, customSpeedMs } = get();
-    return speed === "custom" ? customSpeedMs : SPEED_DURATIONS[speed];
-  },
+  reset: () => set({ ...initialState })
 }));
