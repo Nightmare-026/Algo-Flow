@@ -1,217 +1,101 @@
 "use client";
 
 import { useRef } from "react";
+import { Code2, PanelsTopLeft, PlayCircle, SlidersHorizontal } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { cardReveal, glowStyle, sectionReveal } from "./landing-effects";
 
-/* ── Individual Scene Component ── */
-function DSAScene({
-  title,
-  description,
-  metaphor,
-  color,
-  icon,
-  index,
-}: {
-  title: string;
-  description: string;
-  metaphor: string;
-  color: string;
-  icon: string;
-  index: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [60, -60]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.85, 1, 1, 0.85]);
-
-  const isEven = index % 2 === 0;
-
-  return (
-    <div ref={ref} className="relative min-h-[50vh] flex items-center py-16">
-      <motion.div
-        style={{ y, opacity, scale }}
-        className={`flex flex-col ${isEven ? "md:flex-row" : "md:flex-row-reverse"} items-center gap-8 md:gap-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full`}
-      >
-        {/* Visual Metaphor */}
-        <div className="flex-1 flex items-center justify-center">
-          <motion.div
-            className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-3xl border border-[var(--border)] bg-[var(--bg-surface)]/40 backdrop-blur-sm flex items-center justify-center overflow-hidden"
-            whileInView={{ rotateY: [5, 0], rotateX: [-3, 0] }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {/* Glow background */}
-            <div
-              className="absolute inset-0 opacity-20 blur-3xl"
-              style={{ background: `radial-gradient(circle at center, ${color}, transparent 70%)` }}
-            />
-
-            {/* Scene icon/art */}
-            <div className="relative z-10 text-center">
-              <span className="text-7xl sm:text-8xl block mb-3">{icon}</span>
-              <p className="text-xs text-[var(--text-muted)] font-medium uppercase tracking-wider">
-                {metaphor}
-              </p>
-            </div>
-
-            {/* Animated border glow */}
-            <motion.div
-              className="absolute inset-0 rounded-3xl"
-              style={{
-                boxShadow: `inset 0 0 30px ${color}15, 0 0 20px ${color}10`,
-              }}
-              animate={{
-                boxShadow: [
-                  `inset 0 0 30px ${color}15, 0 0 20px ${color}10`,
-                  `inset 0 0 50px ${color}25, 0 0 40px ${color}20`,
-                  `inset 0 0 30px ${color}15, 0 0 20px ${color}10`,
-                ],
-              }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </motion.div>
-        </div>
-
-        {/* Text Content */}
-        <div className="flex-1 text-center md:text-left">
-          <motion.span
-            className="inline-block text-xs font-bold uppercase tracking-widest mb-3"
-            style={{ color }}
-          >
-            Data Structure #{index + 1}
-          </motion.span>
-          <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-4 leading-tight">
-            {title}
-          </h3>
-          <p className="text-base sm:text-lg text-[var(--text-muted)] leading-relaxed max-w-md">
-            {description}
-          </p>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
-/* ── Data for each DS scene ── */
-const scenes = [
+const previewLayers = [
   {
-    title: "Arrays — The Flowing River",
-    description:
-      "Watch elements flow through indexed positions like a river of data. See sorting algorithms dance, searching algorithms hunt, and insertion operations ripple through the stream.",
-    metaphor: "Flowing Data Stream",
-    color: "#22D3EE",
-    icon: "🌊",
+    title: "Build the input",
+    description: "Use random, sorted, reverse, or custom values before the animation starts.",
+    detail: "Array: 15, 23, 4, 8, 42",
+    Icon: SlidersHorizontal,
   },
   {
-    title: "Stacks — Stacked Stones",
-    description:
-      "Push elements onto towering stone pillars and pop them off the top. Experience LIFO operations with satisfying vertical animations — each stone finds its place.",
-    metaphor: "Stone Pillars Rising",
-    color: "#A78BFA",
-    icon: "🪨",
+    title: "Control every step",
+    description: "Play, pause, move one step at a time, change speed, or jump to the end.",
+    detail: "Step 07 / 18",
+    Icon: PlayCircle,
   },
   {
-    title: "Queues — The Winding Path",
-    description:
-      "Follow elements as they enter from one end and leave from the other. Circular queues wrap around, priority queues reorder — every path tells a story.",
-    metaphor: "Ordered Procession",
-    color: "#F59E0B",
-    icon: "🛤️",
+    title: "Watch the state change",
+    description: "The active index, comparisons, swaps, found values, and errors are highlighted on the canvas.",
+    detail: "compare i=2, j=3",
+    Icon: PanelsTopLeft,
   },
   {
-    title: "Linked Lists — Chain of Connections",
-    description:
-      "Watch nodes link together with animated pointers. Insert at head, tail, or middle — see the chain reconnect in real time as pointers swing from one node to the next.",
-    metaphor: "Connected Chain Links",
-    color: "#34D399",
-    icon: "🔗",
-  },
-  {
-    title: "Trees — The Growing Forest",
-    description:
-      "Watch binary trees grow from seeds, AVL trees self-balance with rotations, and traversals illuminate branches one by one. Each node blooms with purpose.",
-    metaphor: "Living Forest Growth",
-    color: "#10B981",
-    icon: "🌳",
-  },
-  {
-    title: "Graphs — Constellations of Nodes",
-    description:
-      "Navigate interconnected nodes like stars in a constellation. BFS ripples outward, DFS dives deep, and shortest paths light up like cosmic highways.",
-    metaphor: "Star Network Mapping",
-    color: "#67E8F9",
-    icon: "✨",
-  },
-  {
-    title: "Hash Tables — The Collision Engine",
-    description:
-      "Watch keys hash to buckets, collisions ripple and resolve through chaining or probing. Rehashing transforms the entire table before your eyes.",
-    metaphor: "Collision & Resolution",
-    color: "#FB7185",
-    icon: "💥",
+    title: "Read the logic beside it",
+    description: "Pseudocode, code, explanations, variables, and step logs stay close to the animation.",
+    detail: "line 4 highlighted",
+    Icon: Code2,
   },
 ];
 
 export function DSAWorldPreview() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: sectionRef,
     offset: ["start end", "end start"],
   });
 
-  // Parallax for the background decorative line
-  const lineY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const ribbonY = useTransform(scrollYProgress, [0, 1], ["-12%", "14%"]);
+  const ribbonOpacity = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.15, 0.55, 0.55, 0.15]);
 
   return (
-    <section ref={containerRef} className="relative py-20 md:py-32" id="dsa-world">
-      {/* Section Header */}
-      <div className="text-center mb-16 px-4">
-        <motion.span
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="inline-block text-sm font-semibold text-[var(--primary)] uppercase tracking-widest mb-4"
-        >
-          Interactive DSA World
-        </motion.span>
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-4"
-        >
-          Every Data Structure Tells a Story
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-base sm:text-lg text-[var(--text-muted)] max-w-2xl mx-auto"
-        >
-          Scroll through visual metaphors that bring algorithms to life.
-          Each structure has its own world — discover them all.
-        </motion.p>
-      </div>
+    <section ref={sectionRef} className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="dsa-world">
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-20 mx-auto h-72 max-w-5xl rounded-full bg-[var(--primary)]/10 blur-3xl"
+        style={{ y: ribbonY, opacity: ribbonOpacity }}
+      />
 
-      {/* Vertical progress line */}
-      <div className="absolute left-1/2 top-[200px] bottom-20 w-px bg-gradient-to-b from-transparent via-[var(--border)] to-transparent hidden md:block">
+      <div className="relative mx-auto max-w-7xl">
         <motion.div
-          className="absolute top-0 left-0 w-full bg-gradient-to-b from-[var(--primary)] to-transparent"
-          style={{ height: lineY }}
-        />
-      </div>
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-90px" }}
+          variants={sectionReveal}
+          className="mb-12 max-w-3xl text-left"
+        >
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--primary)]">
+            Visual Learning
+          </p>
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+            The page is built around the execution, not decoration.
+          </h2>
+          <p className="max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
+            Every useful panel stays near the animation so learners can connect data, code, and explanation in the same moment.
+          </p>
+        </motion.div>
 
-      {/* Scenes */}
-      <div className="space-y-4">
-        {scenes.map((scene, i) => (
-          <DSAScene key={scene.title} {...scene} index={i} />
-        ))}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+        >
+          {previewLayers.map(({ title, description, detail, Icon }, index) => (
+            <motion.div
+              key={title}
+              custom={index}
+              variants={cardReveal}
+              style={glowStyle(index)}
+              className="landing-glow-card rounded-lg border bg-[var(--bg-surface)]/60 p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1"
+            >
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-[var(--landing-card-tone)]">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <span className="rounded-md border border-white/10 bg-black/15 px-2.5 py-1 font-mono text-[11px] text-[var(--text-muted)]">
+                  {detail}
+                </span>
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
+              <p className="text-sm leading-6 text-[var(--text-muted)]">{description}</p>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

@@ -1,142 +1,128 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Check, Copy } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { glowStyle, sectionReveal } from "./landing-effects";
 
 const languages = [
   {
     id: "cpp",
     name: "C++",
-    icon: "⚡",
-    color: "#00599C",
-    description: "Fast algorithms, competitive programming, memory-level understanding",
-    code: `void bubbleSort(int arr[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                swap(arr[j], arr[j + 1]);
-            }
-        }
+    color: "#BAE6FD",
+    description: "Pointer-free view of the loop structure for competitive-programming style study.",
+    code: `void bubbleSort(vector<int>& a) {
+  for (int pass = 0; pass < a.size() - 1; pass++) {
+    for (int i = 0; i < a.size() - pass - 1; i++) {
+      if (a[i] > a[i + 1]) swap(a[i], a[i + 1]);
     }
+  }
 }`,
   },
   {
     id: "java",
     name: "Java",
-    icon: "☕",
-    color: "#ED8B00",
-    description: "Strong OOP, clean DSA structure, college-level learning",
-    code: `public void bubbleSort(int[] arr) {
-    int n = arr.length;
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
+    color: "#FDE68A",
+    description: "Classroom-friendly implementation with explicit temporary values.",
+    code: `void bubbleSort(int[] a) {
+  for (int pass = 0; pass < a.length - 1; pass++) {
+    for (int i = 0; i < a.length - pass - 1; i++) {
+      if (a[i] > a[i + 1]) {
+        int temp = a[i];
+        a[i] = a[i + 1];
+        a[i + 1] = temp;
+      }
     }
+  }
 }`,
   },
   {
     id: "python",
     name: "Python",
-    icon: "🐍",
-    color: "#3776AB",
-    description: "Easy syntax, beginners' best friend, quick explanation",
-    code: `def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n - 1):
-        for j in range(n - i - 1):
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-    return arr`,
+    color: "#DDD6FE",
+    description: "Compact syntax for tracing the same comparisons and swaps.",
+    code: `def bubble_sort(a):
+    for pass_no in range(len(a) - 1):
+        for i in range(len(a) - pass_no - 1):
+            if a[i] > a[i + 1]:
+                a[i], a[i + 1] = a[i + 1], a[i]
+    return a`,
   },
   {
     id: "javascript",
     name: "JavaScript",
-    icon: "🌐",
-    color: "#F7DF1E",
-    description: "Web-native, live DSA logic, visualizer engine language",
-    code: `function bubbleSort(arr) {
-  const n = arr.length;
-  for (let i = 0; i < n - 1; i++) {
-    for (let j = 0; j < n - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+    color: "#BBF7D0",
+    description: "The visualizer engine's primary authored example format.",
+    code: `function bubbleSort(a) {
+  for (let pass = 0; pass < a.length - 1; pass++) {
+    for (let i = 0; i < a.length - pass - 1; i++) {
+      if (a[i] > a[i + 1]) {
+        [a[i], a[i + 1]] = [a[i + 1], a[i]];
       }
     }
   }
-  return arr;
+  return a;
 }`,
   },
-];
+] as const;
 
 export function CodeLanguages() {
-  const [activeTab, setActiveTab] = useState("cpp");
-  const activeLanguage = languages.find((l) => l.id === activeTab)!;
+  const [activeTab, setActiveTab] = useState<(typeof languages)[number]["id"]>("javascript");
+  const [copied, setCopied] = useState(false);
+  const activeLanguage = languages.find((language) => language.id === activeTab) ?? languages[0];
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(activeLanguage.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  };
 
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8" id="code-languages">
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-block text-sm font-semibold text-[var(--primary)] uppercase tracking-widest mb-4"
-          >
-            Code Examples
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-4"
-          >
-            Code in Your Language
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-base sm:text-lg text-[var(--text-muted)] max-w-2xl mx-auto"
-          >
-            Every algorithm includes implementation in C++, Java, Python, and JavaScript
-            — with VS Code-quality syntax highlighting.
-          </motion.p>
-        </div>
-
-        {/* Code Preview */}
+    <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="code-languages">
+      <div className="mx-auto max-w-7xl">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)] overflow-hidden shadow-xl"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-90px" }}
+          variants={sectionReveal}
+          className="mb-12 max-w-3xl text-left"
         >
-          {/* Tab bar */}
-          <div className="flex items-center border-b border-[var(--border)] bg-[var(--bg-surface-light)] px-2 overflow-x-auto">
-            {languages.map((lang) => (
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--primary)]">
+            Code Translations
+          </p>
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+            Keep the implementation beside the animation.
+          </h2>
+          <p className="max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
+            The visualizer page supports language tabs and highlighted code lines. This preview shows the format learners should expect as coverage expands.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-90px" }}
+          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+          style={glowStyle(5)}
+          className="landing-glow-card rounded-lg border bg-[var(--bg-surface)]/70 shadow-xl"
+        >
+          <div className="flex items-center overflow-x-auto border-b border-white/10 bg-white/[0.04] px-2">
+            {languages.map((language) => (
               <button
-                key={lang.id}
-                onClick={() => setActiveTab(lang.id)}
-                className={`relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-                  activeTab === lang.id
+                key={language.id}
+                onClick={() => setActiveTab(language.id)}
+                className={`relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors ${
+                  activeTab === language.id
                     ? "text-[var(--text-primary)]"
                     : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                 }`}
               >
-                <span>{lang.icon}</span>
-                <span>{lang.name}</span>
-                {activeTab === lang.id && (
+                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: language.color }} />
+                <span>{language.name}</span>
+                {activeTab === language.id && (
                   <motion.div
                     layoutId="code-tab-indicator"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--primary)]"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--landing-card-tone)]"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
@@ -144,50 +130,32 @@ export function CodeLanguages() {
             ))}
           </div>
 
-          {/* Code display */}
-          <div className="relative">
-            {/* Algorithm label */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border)]/50">
-              <span className="text-xs text-[var(--text-muted)]">
-                Bubble Sort — {activeLanguage.description}
-              </span>
-              <button
-                className="text-xs text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors"
-                onClick={() => navigator.clipboard.writeText(activeLanguage.code)}
-              >
-                Copy
-              </button>
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.pre
-                key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="p-5 overflow-x-auto text-sm leading-relaxed"
-              >
-                <code className="font-mono text-[var(--text-secondary)]">
-                  {activeLanguage.code}
-                </code>
-              </motion.pre>
-            </AnimatePresence>
-          </div>
-        </motion.div>
-
-        {/* Language badges */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
-          {languages.map((lang) => (
-            <div
-              key={lang.id}
-              className="flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-surface)]/60 px-4 py-2 text-sm text-[var(--text-muted)]"
+          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-3">
+            <span className="text-xs leading-5 text-[var(--text-muted)]">
+              Bubble Sort: {activeLanguage.description}
+            </span>
+            <button
+              className="inline-flex h-8 items-center gap-2 rounded-md border border-white/10 px-3 text-xs font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--landing-card-tone)]"
+              onClick={handleCopy}
             >
-              <span>{lang.icon}</span>
-              <span>{lang.name}</span>
-            </div>
-          ))}
-        </div>
+              {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? "Copied" : "Copy"}
+            </button>
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.pre
+              key={activeTab}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.22 }}
+              className="overflow-x-auto p-5 text-sm leading-relaxed"
+            >
+              <code className="font-mono text-[var(--text-secondary)]">{activeLanguage.code}</code>
+            </motion.pre>
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );

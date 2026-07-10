@@ -33,7 +33,7 @@ export function StepTimeline() {
             />
 
             {/* Tooltip on hover */}
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-bg-surface-elevated text-text-primary text-xs font-medium rounded shadow-lg opacity-0 group-hover/segment:opacity-100 pointer-events-none whitespace-nowrap transition-opacity z-10 border border-border">
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-bg-surface-elevated text-text-primary text-xs font-mono font-bold rounded shadow-lg opacity-0 group-hover/segment:opacity-100 pointer-events-none whitespace-nowrap transition-opacity z-10 border border-border">
               Step {index + 1}: {step.operation}
               <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-bg-surface-elevated" />
             </div>

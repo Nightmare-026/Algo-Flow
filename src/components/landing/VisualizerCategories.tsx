@@ -1,175 +1,119 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { staggerContainer, staggerItem } from "@/lib/animation/spring-config";
+import type { ElementType } from "react";
+import {
+  AlignRight,
+  ChevronRight,
+  CircleDashed,
+  Grid3X3,
+  Hash,
+  Layers,
+  Link as LinkIcon,
+  Network,
+  Share2,
+  SquareSquare,
+  Type,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { algorithms } from "@/data/seed/algorithms";
+import { dataStructures } from "@/data/seed/data-structures";
+import { operations } from "@/data/seed/operations";
+import { cardReveal, glowStyle, sectionReveal } from "./landing-effects";
 
-const categories = [
-  {
-    name: "Array",
-    slug: "array",
-    count: 28,
-    icon: "📊",
-    color: "#22D3EE",
-    description: "Sorting, searching, insertion, deletion, merging, and rearrangement",
-  },
-  {
-    name: "Linked List",
-    slug: "linked-list",
-    count: 20,
-    icon: "🔗",
-    color: "#34D399",
-    description: "Singly, doubly, circular — traversal, reversal, cycle detection",
-  },
-  {
-    name: "Stack",
-    slug: "stack",
-    count: 12,
-    icon: "📚",
-    color: "#A78BFA",
-    description: "Push, pop, peek, parentheses matching, infix/postfix conversion",
-  },
-  {
-    name: "Queue",
-    slug: "queue",
-    count: 15,
-    icon: "🚶",
-    color: "#F59E0B",
-    description: "Simple, circular, priority, deque — enqueue, dequeue operations",
-  },
-  {
-    name: "Tree",
-    slug: "tree",
-    count: 35,
-    icon: "🌳",
-    color: "#10B981",
-    description: "BST, AVL, Heap, Trie, Segment Tree — traversals and balancing",
-  },
-  {
-    name: "Graph",
-    slug: "graph",
-    count: 25,
-    icon: "🕸️",
-    color: "#67E8F9",
-    description: "BFS, DFS, Dijkstra, Bellman-Ford, MST, topological sort",
-  },
-  {
-    name: "Hash Table",
-    slug: "hash-table",
-    count: 15,
-    icon: "🗄️",
-    color: "#FB7185",
-    description: "Hashing, collision resolution, chaining, probing, rehashing",
-  },
-  {
-    name: "Hash Set",
-    slug: "hash-set",
-    count: 7,
-    icon: "🎯",
-    color: "#FBBF24",
-    description: "Add, remove, contains, union, intersection, difference",
-  },
-  {
-    name: "Matrix",
-    slug: "matrix",
-    count: 15,
-    icon: "🔢",
-    color: "#818CF8",
-    description: "Spiral traversal, rotation, transpose, arithmetic operations",
-  },
-  {
-    name: "String",
-    slug: "string",
-    count: 18,
-    icon: "📝",
-    color: "#F472B6",
-    description: "Pattern matching (KMP, Rabin-Karp), palindrome, anagram checks",
-  },
-];
+const iconMap: Record<string, ElementType> = {
+  SquareSquare,
+  Link: LinkIcon,
+  Layers,
+  AlignRight,
+  Network,
+  Share2,
+  Hash,
+  CircleDashed,
+  Grid3X3,
+  Type,
+};
 
 export function VisualizerCategories() {
-  return (
-    <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8" id="categories">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-block text-sm font-semibold text-[var(--primary)] uppercase tracking-widest mb-4"
-          >
-            10 Data Structures
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-4"
-          >
-            Explore Every Data Structure
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-base sm:text-lg text-[var(--text-muted)] max-w-2xl mx-auto"
-          >
-            From arrays to graphs, master every structure with interactive visualizations
-            and step-by-step animations.
-          </motion.p>
-        </div>
+  const publishedStructures = dataStructures
+    .filter((structure) => structure.isPublished)
+    .sort((a, b) => a.displayOrder - b.displayOrder);
 
-        {/* Cards Grid */}
+  return (
+    <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="categories">
+      <div className="mx-auto max-w-7xl">
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={staggerContainer}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
+          viewport={{ once: true, margin: "-90px" }}
+          variants={sectionReveal}
+          className="mb-12 max-w-3xl text-left"
         >
-          {categories.map((cat) => (
-            <motion.div key={cat.slug} variants={staggerItem}>
-              <Link
-                href={`/visualizers/${cat.slug}`}
-                className="group block rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)]/60 backdrop-blur-sm p-5 transition-all duration-300 hover:border-[var(--border-active)] hover:-translate-y-1 hover:shadow-lg"
-                style={{
-                  ["--card-glow" as string]: `${cat.color}20`,
-                }}
-              >
-                <div className="flex items-start gap-3 mb-3">
-                  <span className="text-3xl">{cat.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-[var(--text-primary)] group-hover:text-[var(--primary)] transition-colors truncate">
-                      {cat.name}
-                    </h3>
-                    <span className="text-xs font-medium" style={{ color: cat.color }}>
-                      {cat.count} algorithms
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--primary)]">
+            Visualizer catalog
+          </p>
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+            Choose the structure you want to understand.
+          </h2>
+          <p className="max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
+            The library is organized by data structure first, then by operation, so you can move from basics to harder cases without hunting.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+        >
+          {publishedStructures.map((structure, index) => {
+            const Icon = structure.icon && iconMap[structure.icon] ? iconMap[structure.icon] : SquareSquare;
+            const algorithmCount = algorithms.filter((algorithm) => algorithm.dataStructureId === structure.id && algorithm.isPublished).length;
+            const operationNames = operations
+              .filter((operation) => operation.dataStructureId === structure.id && operation.isPublished)
+              .sort((a, b) => a.displayOrder - b.displayOrder)
+              .slice(0, 3)
+              .map((operation) => operation.name)
+              .join(" / ");
+
+            return (
+              <motion.div key={structure.id} custom={index} variants={cardReveal}>
+                <Link
+                  href={`/visualizers/${structure.slug}`}
+                  style={glowStyle(index)}
+                  className="landing-glow-card group block h-full rounded-lg border bg-[var(--bg-surface)]/60 p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1"
+                >
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-[var(--landing-card-tone)]">
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <span className="rounded-md border border-white/10 bg-black/15 px-2.5 py-1 text-xs font-medium capitalize text-[var(--text-muted)]">
+                      {structure.difficulty}
                     </span>
                   </div>
-                </div>
-                <p className="text-xs text-[var(--text-muted)] leading-relaxed line-clamp-2">
-                  {cat.description}
-                </p>
 
-                {/* Hover arrow */}
-                <div className="mt-3 flex items-center gap-1 text-xs font-medium text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors">
-                  <span>Explore</span>
-                  <svg
-                    className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                  <h3 className="mb-2 text-lg font-semibold text-[var(--text-primary)] transition-colors group-hover:text-[var(--landing-card-tone)]">
+                    {structure.name}
+                  </h3>
+                  <p className="mb-4 line-clamp-3 text-sm leading-6 text-[var(--text-muted)]">
+                    {structure.description}
+                  </p>
+                  <div className="mb-5 min-h-10 text-xs leading-5 text-[var(--text-secondary)]">
+                    {operationNames && <p className="mt-1 text-sm text-text-muted/70">{operationNames}</p>}
+                  </div>
+
+                  <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-4">
+                    <span className="font-mono text-xs text-[var(--text-muted)]">
+                      {algorithmCount} topics
+                    </span>
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.06] text-[var(--text-secondary)] transition-all group-hover:bg-[var(--landing-card-tone)] group-hover:text-[var(--text-inverse)]">
+                      <ChevronRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

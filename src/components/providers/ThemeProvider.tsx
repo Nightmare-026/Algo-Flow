@@ -32,9 +32,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // Load saved theme on mount
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const saved = localStorage.getItem(STORAGE_KEY) as ThemePreference | null;
     if (saved && ["dark-neon", "light-edu", "nature-cinematic", "system"].includes(saved)) {
+       
       setThemeState(saved);
     }
   }, []);

@@ -15,22 +15,22 @@ export function CodePanel({ examples }: CodePanelProps) {
   const { steps, currentStepIndex } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
   
-  const [activeLang, setActiveLang] = useState<CodeLanguage>("javascript");
+  const [activeLang, setActiveLang] = useState<CodeLanguage>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("algo-flow-lang") as CodeLanguage | null;
+      if (saved && examples.some(e => e.language === saved)) {
+        return saved;
+      }
+    }
+    return examples.length > 0 ? examples[0].language : "javascript";
+  });
+  
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [copied, setCopied] = useState(false);
 
-  // Load preferred language from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("algo-flow-lang") as CodeLanguage | null;
-    if (saved && examples.some(e => e.language === saved)) {
-      setActiveLang(saved);
-    } else if (examples.length > 0) {
-      setActiveLang(examples[0].language);
-    }
-  }, [examples]);
-
   const activeExample = examples.find((e) => e.language === activeLang);
   const codeString = activeExample?.code || "";
+  const renderedHtml = codeString ? htmlContent : "";
 
   // Highlight code using Shiki
   useEffect(() => {
@@ -58,7 +58,7 @@ export function CodePanel({ examples }: CodePanelProps) {
 
   // Sync active line by manipulating DOM
   useEffect(() => {
-    if (!htmlContent) return;
+    if (!htmlContent || !codeString) return;
     
     // We wait a tick for React to dangerouslySetInnerHTML
     const timer = setTimeout(() => {
@@ -76,7 +76,7 @@ export function CodePanel({ examples }: CodePanelProps) {
     }, 50);
 
     return () => clearTimeout(timer);
-  }, [htmlContent, currentStep?.codeLine]);
+  }, [htmlContent, codeString, currentStep?.codeLine]);
 
   const handleLangChange = (lang: CodeLanguage) => {
     setActiveLang(lang);
@@ -93,7 +93,7 @@ export function CodePanel({ examples }: CodePanelProps) {
   return (
     <div className="flex flex-col h-full bg-bg-surface-light rounded-xl border border-border overflow-hidden">
       {/* Tabs Header */}
-      <div className="flex items-center justify-between border-b border-border bg-bg-surface px-2">
+      <div className="flex h-[46px] items-center justify-between border-b border-border bg-bg-surface px-2 shrink-0">
         <div className="flex overflow-x-auto hide-scrollbar">
           {examples.map((ex) => (
             <button
@@ -116,7 +116,8 @@ export function CodePanel({ examples }: CodePanelProps) {
         </div>
         <button
           onClick={handleCopy}
-          className="p-2 text-text-muted hover:text-text-primary transition-colors"
+          disabled={!codeString}
+          className="p-2 text-text-muted hover:text-text-primary transition-colors disabled:cursor-not-allowed disabled:opacity-40"
           title="Copy Code"
         >
           {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
@@ -125,14 +126,14 @@ export function CodePanel({ examples }: CodePanelProps) {
 
       {/* Code Area */}
       <div className="flex-1 overflow-auto bg-[#121212] relative group">
-        {htmlContent ? (
+        {renderedHtml ? (
           <div 
             className="p-4 text-sm font-mono [&_pre]:!bg-transparent [&_pre]:!m-0 [&_.line]:px-2 [&_.line]:-mx-2 [&_.line]:transition-colors"
-            dangerouslySetInnerHTML={{ __html: htmlContent }} 
+            dangerouslySetInnerHTML={{ __html: renderedHtml }} 
           />
         ) : (
           <div className="flex items-center justify-center h-full text-text-muted text-sm">
-            Loading code...
+            {codeString ? "Loading code..." : "Code example unavailable for this visualizer."}
           </div>
         )}
       </div>

@@ -59,7 +59,7 @@ export default function VisualizersPage() {
               Visualizer <span className="text-primary">Library</span>
             </h1>
             <p className="text-xl text-text-secondary max-w-2xl mb-8">
-              Explore 200+ algorithm visualizers across 10 core data structures. 
+              Explore 98 algorithm visualizers across 10 core data structures. 
               Step-by-step animations to master computer science fundamentals.
             </p>
 

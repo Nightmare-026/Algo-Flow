@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 
-/* ── Floating array block element ── */
+/* Floating array block element */
 function FloatingBlock({
   value,
   x,
@@ -41,7 +41,7 @@ function FloatingBlock({
   );
 }
 
-/* ── Floating graph node ── */
+/* Floating graph node */
 function FloatingNode({
   x,
   y,
@@ -75,7 +75,7 @@ function FloatingNode({
   );
 }
 
-/* ── Connection line between nodes ── */
+/* Connection line between nodes */
 function ConnectionLine({
   x1,
   y1,
@@ -143,7 +143,7 @@ export function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Logo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.5, y: 20 }}
@@ -175,7 +175,7 @@ export function HeroSection() {
               animate={{ rotate: [0, 14, -8, 14, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 }}
             >
-              🚀
+              Start
             </motion.span>
             Learn DSA Visually
           </span>
@@ -205,7 +205,7 @@ export function HeroSection() {
           className="text-base sm:text-lg md:text-xl text-[var(--text-muted)] max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           Explore arrays, stacks, queues, trees, graphs, and more with
-          step-by-step animated explanations. 200+ interactive visualizers
+          step-by-step animated explanations. 98 interactive visualizers
           in 4 programming languages.
         </motion.p>
 
@@ -247,7 +247,7 @@ export function HeroSection() {
           className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4"
         >
           {[
-            { value: "200+", label: "Visualizers" },
+            { value: "98", label: "Visualizers" },
             { value: "10", label: "Data Structures" },
             { value: "4", label: "Code Languages" },
             { value: "Free", label: "For Everyone" },

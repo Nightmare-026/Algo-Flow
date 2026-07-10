@@ -4,26 +4,35 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { useTheme } from "@/components/providers/ThemeProvider";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
+import { signout } from "@/app/(auth)/login/actions";
 
 const navLinks = [
   { label: "Visualizers", href: "/visualizers" },
-  { label: "Practice", href: "/practice" },
   { label: "Dashboard", href: "/dashboard" },
-];
-
-const themeOptions = [
-  { value: "dark-neon" as const, label: "Dark Neon", icon: "🌙" },
-  { value: "light-edu" as const, label: "Light", icon: "☀️" },
-  { value: "nature-cinematic" as const, label: "Nature", icon: "🌿" },
 ];
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [user, setUser] = useState<User | null>(null);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -33,9 +42,9 @@ export function Navbar() {
 
   // Close menus on route change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileMenuOpen(false);
-    setThemeMenuOpen(false);
-  }, []);
+  }, [pathname]);
 
   return (
     <motion.header
@@ -82,82 +91,40 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Right side: Theme + Auth */}
+          {/* Right side: Auth */}
           <div className="flex items-center gap-2">
-            {/* Theme Switcher */}
-            <div className="relative">
-              <button
-                onClick={() => setThemeMenuOpen(!themeMenuOpen)}
-                className="flex items-center justify-center w-9 h-9 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] transition-all duration-200"
-                aria-label="Change theme"
-              >
-                <span className="text-lg">
-                  {resolvedTheme === "light-edu"
-                    ? "☀️"
-                    : resolvedTheme === "nature-cinematic"
-                      ? "🌿"
-                      : "🌙"}
-                </span>
-              </button>
 
-              <AnimatePresence>
-                {themeMenuOpen && (
-                  <>
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setThemeMenuOpen(false)}
-                    />
-                    <motion.div
-                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-44 rounded-xl border border-[var(--border)] bg-[var(--bg-surface)] shadow-xl z-50 overflow-hidden"
-                    >
-                      {themeOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          onClick={() => {
-                            setTheme(opt.value);
-                            setThemeMenuOpen(false);
-                          }}
-                          className={cn(
-                            "flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors duration-150",
-                            theme === opt.value
-                              ? "bg-[var(--primary-muted)] text-[var(--primary)]"
-                              : "text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]"
-                          )}
-                        >
-                          <span>{opt.icon}</span>
-                          <span>{opt.label}</span>
-                          {theme === opt.value && (
-                            <svg className="w-4 h-4 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          )}
-                        </button>
-                      ))}
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Login */}
-            <Link
-              href="/login"
-              className="hidden sm:inline-flex items-center px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors duration-200 rounded-lg hover:bg-[var(--bg-surface-hover)]"
-            >
-              Log in
-            </Link>
-
-            {/* Get Started CTA */}
-            <Link
-              href="/signup"
-              className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg bg-[var(--primary)] text-[var(--text-inverse)] hover:bg-[var(--primary-hover)] transition-all duration-200 hover:shadow-[var(--shadow-glow-primary)] hover:-translate-y-0.5 active:scale-[0.96]"
-            >
-              Get Started
-            </Link>
+            {/* Auth Buttons */}
+            {user ? (
+              <div className="hidden sm:flex items-center gap-2">
+                <div className="text-sm text-[var(--text-secondary)] mr-2">
+                  Hi, {user.user_metadata?.username || user.email?.split("@")[0]}
+                </div>
+                <button
+                  onClick={async () => {
+                    await signout();
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors duration-200 rounded-lg hover:bg-[var(--bg-surface-hover)]"
+                >
+                  Log Out
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="hidden sm:inline-flex items-center px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors duration-200 rounded-lg hover:bg-[var(--bg-surface-hover)]"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center justify-center h-9 px-4 text-sm font-medium text-[var(--text-inverse)] transition-all duration-200 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] shadow-sm hover:shadow-md active:scale-[0.98]"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -203,13 +170,25 @@ export function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <Link
-                  href="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] rounded-lg transition-colors sm:hidden"
-                >
-                  Log in
-                </Link>
+                {user ? (
+                  <button
+                    onClick={async () => {
+                      await signout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] rounded-lg transition-colors sm:hidden"
+                  >
+                    Log out
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] rounded-lg transition-colors sm:hidden"
+                  >
+                    Log in
+                  </Link>
+                )}
               </div>
             </motion.div>
           )}
@@ -218,3 +197,6 @@ export function Navbar() {
     </motion.header>
   );
 }
+
+
+

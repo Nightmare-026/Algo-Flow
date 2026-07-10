@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ================================================================
-   ALGO FLOW — GLOBAL DESIGN TOKENS
+   ALGO FLOW - GLOBAL DESIGN TOKENS
    ================================================================
    Theme 1: Premium Dark Neon Tech (default for app)
    Theme 2: Clean Educational Light (light toggle)
@@ -9,122 +9,9 @@
    ================================================================ */
 
 /* ----------------------------------------------------------------
-   Theme 1: Premium Dark Neon Tech (default)
+   Global Theme: Premium Nature Algorithm Cinematic
    ---------------------------------------------------------------- */
 :root,
-[data-theme="dark-neon"] {
-  --bg-deep: #050816;
-  --bg-surface: #0B1020;
-  --bg-surface-light: #111827;
-  --bg-surface-hover: #1a2332;
-
-  --primary: #22D3EE;
-  --primary-hover: #06B6D4;
-  --primary-muted: rgba(34, 211, 238, 0.15);
-  --primary-glow: rgba(34, 211, 238, 0.4);
-
-  --secondary: #A78BFA;
-  --secondary-hover: #8B5CF6;
-  --secondary-muted: rgba(167, 139, 250, 0.15);
-
-  --success: #10B981;
-  --success-muted: rgba(16, 185, 129, 0.15);
-  --warning: #F59E0B;
-  --warning-muted: rgba(245, 158, 11, 0.15);
-  --error: #FB7185;
-  --error-muted: rgba(251, 113, 133, 0.15);
-
-  --text-primary: #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --text-inverse: #0F172A;
-
-  --border: #1E293B;
-  --border-hover: #334155;
-  --border-active: #22D3EE;
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
-  --shadow-glow-primary: 0 0 20px rgba(34, 211, 238, 0.3);
-  --shadow-glow-secondary: 0 0 20px rgba(167, 139, 250, 0.3);
-
-  /* Visualizer-specific tokens */
-  --vis-element-bg: #0B1020;
-  --vis-element-border: #1E293B;
-  --vis-current: #22D3EE;
-  --vis-compared: #A78BFA;
-  --vis-swapped: #FBBF24;
-  --vis-sorted: #10B981;
-  --vis-visited: #22D3EE;
-  --vis-target: #F59E0B;
-  --vis-found: #10B981;
-  --vis-error: #FB7185;
-  --vis-pointer: #22D3EE;
-  --vis-arrow: #94A3B8;
-
-  color-scheme: dark;
-}
-
-/* ----------------------------------------------------------------
-   Theme 2: Clean Educational Light
-   ---------------------------------------------------------------- */
-[data-theme="light-edu"] {
-  --bg-deep: #F8FAFC;
-  --bg-surface: #FFFFFF;
-  --bg-surface-light: #F1F5F9;
-  --bg-surface-hover: #E2E8F0;
-
-  --primary: #2563EB;
-  --primary-hover: #1D4ED8;
-  --primary-muted: rgba(37, 99, 235, 0.1);
-  --primary-glow: rgba(37, 99, 235, 0.2);
-
-  --secondary: #4F46E5;
-  --secondary-hover: #4338CA;
-  --secondary-muted: rgba(79, 70, 229, 0.1);
-
-  --success: #16A34A;
-  --success-muted: rgba(22, 163, 74, 0.1);
-  --warning: #EA580C;
-  --warning-muted: rgba(234, 88, 12, 0.1);
-  --error: #DC2626;
-  --error-muted: rgba(220, 38, 38, 0.1);
-
-  --text-primary: #0F172A;
-  --text-secondary: #334155;
-  --text-muted: #64748B;
-  --text-inverse: #F8FAFC;
-
-  --border: #CBD5E1;
-  --border-hover: #94A3B8;
-  --border-active: #2563EB;
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
-  --shadow-glow-primary: 0 0 20px rgba(37, 99, 235, 0.15);
-  --shadow-glow-secondary: 0 0 20px rgba(79, 70, 229, 0.15);
-
-  --vis-element-bg: #FFFFFF;
-  --vis-element-border: #CBD5E1;
-  --vis-current: #2563EB;
-  --vis-compared: #EA580C;
-  --vis-swapped: #2563EB;
-  --vis-sorted: #16A34A;
-  --vis-visited: #2563EB;
-  --vis-target: #EA580C;
-  --vis-found: #16A34A;
-  --vis-error: #DC2626;
-  --vis-pointer: #2563EB;
-  --vis-arrow: #64748B;
-
-  color-scheme: light;
-}
-
-/* ----------------------------------------------------------------
-   Theme 3: Nature Algorithm Cinematic (landing page)
-   ---------------------------------------------------------------- */
 [data-theme="nature-cinematic"] {
   --bg-deep: #04130D;
   --bg-surface: #0B1F17;
@@ -162,8 +49,8 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.7);
-  --shadow-glow-primary: 0 0 24px rgba(52, 211, 153, 0.35);
-  --shadow-glow-secondary: 0 0 24px rgba(163, 230, 53, 0.3);
+  --shadow-glow-primary: 0 0 24px rgba(52, 211, 153, 0.15);
+  --shadow-glow-secondary: 0 0 24px rgba(163, 230, 53, 0.15);
 
   --vis-element-bg: #0B1F17;
   --vis-element-border: #1F3B2D;
@@ -222,15 +109,26 @@
   --color-vis-found: var(--vis-found);
   --color-vis-error: var(--vis-error);
 
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 /* ----------------------------------------------------------------
-   Base Styles
+   Base Styles & Global Typography
    ---------------------------------------------------------------- */
-* {
-  box-sizing: border-box;
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  *:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--bg-deep), 0 0 0 4px var(--primary);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-[var(--text-primary)];
+  }
 }
 
 html {
@@ -335,6 +233,51 @@ body {
   background-clip: text;
 }
 
+.landing-glow-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--landing-card-tone, var(--primary)) 26%, var(--border));
+  box-shadow:
+    0 18px 60px -42px var(--landing-card-glow, var(--primary-glow)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.landing-glow-card::before {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 28% 22%, var(--landing-card-glow, var(--primary-glow)), transparent 36%),
+    radial-gradient(circle at 78% 72%, color-mix(in srgb, var(--landing-card-tone, var(--primary)) 22%, transparent), transparent 42%);
+  opacity: 0.42;
+  transform: translate3d(-8%, -4%, 0) rotate(0deg);
+  transition: opacity 520ms ease, transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.landing-glow-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.075), transparent 34%);
+  opacity: 0.55;
+}
+
+.landing-glow-card:hover::before {
+  opacity: 0.9;
+  transform: translate3d(7%, 5%, 0) rotate(8deg) scale(1.05);
+}
+
+.landing-glow-card:hover {
+  border-color: color-mix(in srgb, var(--landing-card-tone, var(--primary)) 54%, var(--border-active));
+  box-shadow:
+    0 24px 76px -36px var(--landing-card-glow, var(--primary-glow)),
+    0 0 24px -10px var(--landing-card-glow, var(--primary-glow)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
 /* Animated underline for links */
 .animated-underline {
   position: relative;
@@ -353,4 +296,13 @@ body {
 
 .animated-underline:hover::after {
   width: 100%;
+}
+
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }

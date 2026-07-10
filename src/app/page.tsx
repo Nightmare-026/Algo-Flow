@@ -4,39 +4,31 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { DSAWorldPreview } from "@/components/landing/DSAWorldPreview";
-import { VisualizerCategories } from "@/components/landing/VisualizerCategories";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { LearningFeatures } from "@/components/landing/LearningFeatures";
 import { CodeLanguages } from "@/components/landing/CodeLanguages";
-import { TrustStats } from "@/components/landing/TrustStats";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 
 export default function HomePage() {
   return (
-    <div data-theme="nature-cinematic">
+    <div>
       <Navbar />
 
       <main>
         {/* Hero with animated background elements */}
         <HeroSection />
 
-        {/* Scroll-storytelling DSA World */}
+        {/* Product preview */}
         <DSAWorldPreview />
 
-        {/* 10 Data Structure Categories */}
-        <VisualizerCategories />
-
-        {/* 5-Step Learning Flow */}
+        {/* Learning workflow */}
         <HowItWorks />
 
-        {/* 9 Platform Features */}
+        {/* Study tools */}
         <LearningFeatures />
 
-        {/* 4-Language Code Preview */}
+        {/* Code panel preview */}
         <CodeLanguages />
-
-        {/* Animated Stats */}
-        <TrustStats />
 
         {/* Final Call to Action */}
         <FinalCTA />
@@ -46,3 +38,6 @@ export default function HomePage() {
     </div>
   );
 }
+
+
+

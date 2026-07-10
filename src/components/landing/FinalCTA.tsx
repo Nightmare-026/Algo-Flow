@@ -1,69 +1,47 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
+import { ArrowRight, UserPlus } from "lucide-react";
+import { motion } from "framer-motion";
+import { glowStyle } from "./landing-effects";
 
 export function FinalCTA() {
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto text-center">
+    <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+      <div className="mx-auto max-w-7xl text-left">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="relative rounded-3xl border border-[var(--border)] overflow-hidden"
+          initial={{ opacity: 0, y: 34, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-90px" }}
+          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+          style={glowStyle(7)}
+          className="landing-glow-card max-w-4xl rounded-lg border bg-[var(--bg-surface)]/70 p-8 backdrop-blur-sm sm:p-12 md:p-16"
         >
-          {/* Background gradient */}
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/10 via-[var(--bg-surface)] to-[var(--secondary)]/10" />
-            <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)] opacity-[0.06] blur-[100px] rounded-full" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-[var(--secondary)] opacity-[0.06] blur-[100px] rounded-full" />
-          </div>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--landing-card-tone)]">
+            Start with a working page
+          </p>
+          <h2 className="mb-5 text-3xl font-bold leading-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+            Open the catalog and run your first trace.
+          </h2>
+          <p className="mb-9 max-w-xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
+            Pick a core algorithm, set the input, and move through the execution one step at a time.
+          </p>
 
-          <div className="relative z-10 p-10 sm:p-14 md:p-20">
-            <motion.span
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="text-5xl block mb-6"
+          <div className="flex flex-col items-start justify-start gap-3 sm:flex-row sm:items-center">
+            <Link
+              href="/visualizers"
+              className="group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-7 py-3.5 text-sm font-semibold text-[var(--text-inverse)] transition-all duration-300 hover:bg-[var(--primary-hover)] hover:shadow-[var(--shadow-glow-primary)] hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto"
             >
-              🎯
-            </motion.span>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-5 leading-tight">
-              Ready to See Algorithms
-              <br />
-              <span className="text-gradient-primary">Come Alive?</span>
-            </h2>
-
-            <p className="text-base sm:text-lg text-[var(--text-muted)] max-w-xl mx-auto mb-10 leading-relaxed">
-              Stop reading about algorithms. Start watching them work.
-              200+ interactive visualizations are waiting for you — completely free.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/visualizers"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-10 py-4 text-lg font-semibold text-[var(--text-inverse)] transition-all duration-300 hover:bg-[var(--primary-hover)] hover:shadow-[var(--shadow-glow-primary)] hover:-translate-y-1 active:scale-[0.96]"
-              >
-                Start Visualizing Now
-                <svg
-                  className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </Link>
-              <Link
-                href="/signup"
-                className="inline-flex items-center justify-center rounded-xl border border-[var(--border)] px-10 py-4 text-lg font-semibold text-[var(--text-primary)] transition-all duration-300 hover:border-[var(--border-active)] hover:bg-[var(--bg-surface-hover)] hover:-translate-y-1"
-              >
-                Create Free Account
-              </Link>
-            </div>
+              Browse visualizers
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 px-7 py-3.5 text-sm font-semibold text-[var(--text-primary)] transition-all duration-300 hover:border-[var(--landing-card-tone)] hover:bg-white/[0.06] hover:-translate-y-0.5 sm:w-auto"
+            >
+              <UserPlus className="h-4 w-4" />
+              Save progress
+            </Link>
           </div>
         </motion.div>
       </div>

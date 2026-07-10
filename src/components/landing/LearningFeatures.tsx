@@ -1,111 +1,85 @@
 "use client";
 
+import { Bookmark, Code2, Gauge, ListChecks, Route, Variable } from "lucide-react";
 import { motion } from "framer-motion";
-import { staggerContainer, staggerItem } from "@/lib/animation/spring-config";
+import { cardReveal, glowStyle, sectionReveal } from "./landing-effects";
 
 const features = [
   {
-    title: "Step-by-Step Playback",
-    description: "Play, pause, step forward, step back — control every moment of the algorithm execution at your own speed.",
-    icon: "⏯️",
+    title: "Playback controls",
+    description: "Run, pause, step backward or forward, restart, skip to the end, and tune the playback speed.",
+    Icon: Gauge,
   },
   {
-    title: "Real-Time Variable Tracking",
-    description: "Watch variables change in real time as the algorithm runs. See i, j, min, pivot, visited, and more update with each step.",
-    icon: "📊",
+    title: "State-aware canvas",
+    description: "Highlights show the active item, comparisons, swaps, insertions, deletions, and found targets.",
+    Icon: Route,
   },
   {
-    title: "Pseudocode Sync",
-    description: "The current pseudocode line highlights in sync with the visualization, so you always know exactly which line is executing.",
-    icon: "📝",
+    title: "Step explanations",
+    description: "Each step carries a short explanation, operation label, complexity note, and changing variables where available.",
+    Icon: Variable,
   },
   {
-    title: "Code in 4 Languages",
-    description: "View implementation in C++, Java, Python, and JavaScript/TypeScript — with syntax highlighting powered by Shiki.",
-    icon: "💻",
+    title: "Pseudocode and code",
+    description: "Use side panels to compare the animation with pseudocode and implementation snippets.",
+    Icon: Code2,
   },
   {
-    title: "Adjustable Speed",
-    description: "From slow learning mode (1000ms) to fast review (150ms), or set your own custom speed with the slider.",
-    icon: "⚡",
+    title: "Execution log",
+    description: "Jump to any recorded step from the log instead of scrubbing blindly through the timeline.",
+    Icon: ListChecks,
   },
   {
-    title: "Custom Input Data",
-    description: "Enter your own values, generate random arrays, sorted data, reverse sorted, or nearly sorted — test any scenario.",
-    icon: "🎲",
-  },
-  {
-    title: "Complexity Analysis",
-    description: "See time and space complexity (best, average, worst case) displayed alongside the visualization.",
-    icon: "📈",
-  },
-  {
-    title: "Bookmarks & Sessions",
-    description: "Save your progress, bookmark interesting algorithm states, and resume sessions right where you left off.",
-    icon: "🔖",
-  },
-  {
-    title: "Daily Streak & Progress",
-    description: "Track your learning consistency with daily streaks, completion percentages, and a visual progress dashboard.",
-    icon: "🔥",
+    title: "Bookmarks and sessions",
+    description: "Logged-in learners can save useful pages and continue from saved sessions in the dashboard.",
+    Icon: Bookmark,
   },
 ];
 
 export function LearningFeatures() {
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8" id="features">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-14">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-block text-sm font-semibold text-[var(--primary)] uppercase tracking-widest mb-4"
-          >
-            Powerful Features
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-4"
-          >
-            Everything You Need to Learn DSA
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-base sm:text-lg text-[var(--text-muted)] max-w-2xl mx-auto"
-          >
-            A complete learning environment designed to make algorithms click in your mind.
-          </motion.p>
-        </div>
-
-        {/* Feature Cards */}
+    <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="features">
+      <div className="mx-auto max-w-7xl">
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={staggerContainer}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          viewport={{ once: true, margin: "-90px" }}
+          variants={sectionReveal}
+          className="mb-12 max-w-3xl text-left"
         >
-          {features.map((feature) => (
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--primary)]">
+            Study tools
+          </p>
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+            Enough context to understand the step you are seeing.
+          </h2>
+          <p className="max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
+            The visualizer keeps controls, state, explanation, and code visible together instead of scattering them across pages.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {features.map(({ title, description, Icon }, index) => (
             <motion.div
-              key={feature.title}
-              variants={staggerItem}
-              className="group rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)]/40 backdrop-blur-sm p-6 transition-all duration-300 hover:border-[var(--border-active)] hover:-translate-y-1 hover:shadow-lg"
+              key={title}
+              custom={index}
+              variants={cardReveal}
+              style={glowStyle(index + 1)}
+              className="landing-glow-card group rounded-xl border border-[var(--border)] bg-[var(--bg-surface)]/60 p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]"
             >
-              <span className="text-3xl block mb-4">{feature.icon}</span>
-              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2 group-hover:text-[var(--primary)] transition-colors">
-                {feature.title}
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-[var(--landing-card-tone)]">
+                <Icon className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-[var(--text-primary)] transition-colors group-hover:text-[var(--landing-card-tone)]">
+                {title}
               </h3>
-              <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-                {feature.description}
-              </p>
+              <p className="text-sm leading-6 text-[var(--text-muted)]">{description}</p>
             </motion.div>
           ))}
         </motion.div>

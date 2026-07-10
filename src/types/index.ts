@@ -6,6 +6,8 @@
 // Visual Step — The fundamental unit of algorithm visualization
 // ----------------------------------------------------------------
 export type ActionType =
+  | 'initialize'
+  | 'success'
   | 'compare'
   | 'swap'
   | 'visit'
@@ -51,6 +53,7 @@ export interface VisualStepHighlights {
   pointer?: string[];
   path?: string[];
   active?: string[];
+  success?: string[];
 }
 
 export interface VisualStep {

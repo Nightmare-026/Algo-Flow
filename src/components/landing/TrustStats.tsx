@@ -1,7 +1,11 @@
 "use client";
 
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
+import { animate, motion, useMotionValue, useTransform } from "framer-motion";
+import { algorithms } from "@/data/seed/algorithms";
+import { dataStructures } from "@/data/seed/data-structures";
+import { operations } from "@/data/seed/operations";
+import { glowStyle, sectionReveal } from "./landing-effects";
 
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
   const count = useMotionValue(0);
@@ -15,7 +19,7 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          animate(count, target, { duration: 2, ease: "easeOut" });
+          animate(count, target, { duration: 1.8, ease: "easeOut" });
           observer.disconnect();
         }
       },
@@ -28,10 +32,9 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
 
   useEffect(() => {
     const unsubscribe = rounded.on("change", (latest) => {
-      if (ref.current) {
-        ref.current.textContent = `${latest}${suffix}`;
-      }
+      if (ref.current) ref.current.textContent = `${latest}${suffix}`;
     });
+
     return unsubscribe;
   }, [rounded, suffix]);
 
@@ -39,43 +42,53 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
 }
 
 const stats = [
-  { value: 200, suffix: "+", label: "Algorithm Visualizers", color: "#22D3EE" },
-  { value: 10, suffix: "", label: "Data Structures", color: "#A78BFA" },
-  { value: 4, suffix: "", label: "Programming Languages", color: "#34D399" },
-  { value: 50, suffix: "+", label: "Operations Covered", color: "#F59E0B" },
+  {
+    value: algorithms.filter((algorithm) => algorithm.isPublished).length,
+    label: "catalog topics",
+  },
+  {
+    value: dataStructures.filter((structure) => structure.isPublished).length,
+    label: "data structures",
+  },
+  {
+    value: operations.filter((operation) => operation.isPublished).length,
+    label: "operation groups",
+  },
+  {
+    value: 4,
+    label: "language tabs",
+  },
 ];
 
 export function TrustStats() {
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
+    <section className="px-4 py-20 sm:px-6 lg:px-8 md:py-28">
+      <div className="mx-auto max-w-5xl">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="rounded-3xl border border-[var(--border)] bg-[var(--bg-surface)]/40 backdrop-blur-sm p-8 sm:p-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-90px" }}
+          variants={sectionReveal}
+          style={glowStyle(6)}
+          className="landing-glow-card rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)]/60 p-8 text-center backdrop-blur-sm sm:p-12 transition-all duration-500 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]"
         >
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-3">
-              Built for Comprehensive Learning
-            </h2>
-            <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-lg mx-auto">
-              Every major data structure and algorithm, visualized and explained — completely free.
-            </p>
-          </div>
+          <h2 className="mb-3 text-2xl font-bold text-[var(--text-primary)] sm:text-3xl">
+            A catalog with real learning surfaces behind it.
+          </h2>
+          <p className="mx-auto mb-10 max-w-lg text-sm leading-6 text-[var(--text-muted)] sm:text-base">
+            The numbers below come from the local seed catalog, so the section stays aligned with the app instead of marketing guesses.
+          </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div
-                  className="text-4xl sm:text-5xl font-bold mb-2"
-                  style={{ color: stat.color }}
-                >
-                  <AnimatedCounter target={stat.value} suffix={stat.suffix} />
+          <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
+            {stats.map((stat, index) => (
+              <div key={stat.label} className="rounded-xl border border-white/10 bg-black/15 p-4 transition-all duration-500 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]">
+                <div className="mb-2 text-4xl font-bold sm:text-5xl" style={{ color: `var(--landing-card-tone)` }}>
+                  <AnimatedCounter target={stat.value} />
                 </div>
-                <div className="text-xs sm:text-sm text-[var(--text-muted)] font-medium">
+                <div className="text-xs font-medium uppercase tracking-wider text-[var(--text-muted)]">
                   {stat.label}
                 </div>
+                <span className="mt-3 block h-1 rounded-full" style={{ backgroundColor: `var(--landing-card-tone)`, opacity: 0.5 - index * 0.06 }} />
               </div>
             ))}
           </div>

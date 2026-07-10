@@ -54,6 +54,21 @@ export function StepExplanation() {
               </p>
             </div>
           )}
+
+          {currentStep.variables && Object.keys(currentStep.variables).length > 0 && (
+            <div className="mt-4 p-3 bg-bg-surface rounded-lg border border-border">
+              <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">Variables</h5>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(currentStep.variables).map(([key, value]) => (
+                  <div key={key} className="flex items-center text-sm font-mono bg-bg-deep px-2 py-1 rounded border border-border">
+                    <span className="text-primary">{key}</span>
+                    <span className="text-text-muted mx-1">=</span>
+                    <span className="text-secondary">{value !== null ? String(value) : "null"}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </motion.div>
       </AnimatePresence>
     </div>

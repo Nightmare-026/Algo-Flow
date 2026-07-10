@@ -1,128 +1,76 @@
 "use client";
 
+import { BookOpenCheck, MousePointer2, Play, SlidersHorizontal } from "lucide-react";
 import { motion } from "framer-motion";
-import { staggerContainer, staggerItem } from "@/lib/animation/spring-config";
+import { cardReveal, glowStyle, sectionReveal } from "./landing-effects";
 
 const steps = [
   {
-    number: "01",
-    title: "Pick a Data Structure",
-    description: "Browse 10 categories — from arrays and stacks to graphs and tries. Each structure has its own dedicated visualizer.",
-    icon: "🎯",
-    color: "#22D3EE",
+    title: "Pick a topic",
+    description: "Open a data structure, filter by operation, then choose a concrete algorithm page.",
+    Icon: MousePointer2,
   },
   {
-    number: "02",
-    title: "Choose an Algorithm",
-    description: "Select from 200+ operations — sorting, searching, traversal, insertion, deletion, balancing, shortest path, and more.",
-    icon: "🔍",
-    color: "#A78BFA",
+    title: "Set the input",
+    description: "Use generated data or enter your own values so the run matches the case you want to study.",
+    Icon: SlidersHorizontal,
   },
   {
-    number: "03",
-    title: "Set Your Input",
-    description: "Enter custom values, generate random data, or use preset configurations. Control array size, node count, and graph edges.",
-    icon: "⚙️",
-    color: "#F59E0B",
+    title: "Trace the run",
+    description: "Step through the animation while highlights show comparisons, updates, swaps, and targets.",
+    Icon: Play,
   },
   {
-    number: "04",
-    title: "Watch It Come Alive",
-    description: "Hit play and watch the algorithm execute step-by-step with smooth animations, highlighted elements, and real-time variable tracking.",
-    icon: "▶️",
-    color: "#34D399",
-  },
-  {
-    number: "05",
-    title: "Learn at Your Pace",
-    description: "Pause, step forward/backward, adjust speed, read line-by-line explanations, and study code in C++, Java, Python, or JavaScript.",
-    icon: "📖",
-    color: "#10B981",
+    title: "Review the logic",
+    description: "Use the explanation, variables, step log, pseudocode, and code panel to connect the visual state to the algorithm.",
+    Icon: BookOpenCheck,
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6 lg:px-8" id="how-it-works">
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-block text-sm font-semibold text-[var(--primary)] uppercase tracking-widest mb-4"
-          >
-            How It Works
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-4"
-          >
-            5 Steps to Mastery
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-base sm:text-lg text-[var(--text-muted)] max-w-xl mx-auto"
-          >
-            A structured learning path that takes you from concept to complete understanding.
-          </motion.p>
-        </div>
-
-        {/* Steps */}
+    <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="how-it-works">
+      <div className="mx-auto max-w-7xl">
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={staggerContainer}
-          className="space-y-6"
+          viewport={{ once: true, margin: "-90px" }}
+          variants={sectionReveal}
+          className="mb-12 max-w-3xl text-left"
         >
-          {steps.map((step, i) => (
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--primary)]">
+            How it works
+          </p>
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+            One loop: choose, run, inspect, repeat.
+          </h2>
+          <p className="max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
+            The landing page should point learners to the real workflow quickly, then let the visualizer do the teaching.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+        >
+          {steps.map(({ title, description, Icon }, index) => (
             <motion.div
-              key={step.number}
-              variants={staggerItem}
-              className="group flex items-start gap-5 sm:gap-8 p-5 sm:p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)]/40 backdrop-blur-sm hover:border-[var(--border-active)] hover:bg-[var(--bg-surface)]/70 transition-all duration-300"
+              key={title}
+              custom={index}
+              variants={cardReveal}
+              style={glowStyle(index + 4)}
+              className="landing-glow-card rounded-xl border border-[var(--border)] bg-[var(--bg-surface)]/60 p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]"
             >
-              {/* Number */}
-              <div
-                className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-lg sm:text-xl font-bold"
-                style={{
-                  background: `${step.color}15`,
-                  color: step.color,
-                  border: `1px solid ${step.color}30`,
-                }}
-              >
-                {step.icon}
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-1.5">
-                  <span
-                    className="text-xs font-bold uppercase tracking-wider"
-                    style={{ color: step.color }}
-                  >
-                    Step {step.number}
-                  </span>
+              <div className="mb-5 flex items-center justify-between">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-[var(--landing-card-tone)]">
+                  <Icon className="h-5 w-5" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-[var(--text-primary)] mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
-                  {step.description}
-                </p>
+                <span className="font-mono text-xs text-[var(--text-muted)]">0{index + 1}</span>
               </div>
-
-              {/* Connecting line (not on last) */}
-              {i < steps.length - 1 && (
-                <div className="hidden sm:block absolute left-[2.75rem] sm:left-[3.25rem] w-px h-6 bg-[var(--border)]" />
-              )}
+              <h3 className="mb-2 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
+              <p className="text-sm leading-6 text-[var(--text-muted)]">{description}</p>
             </motion.div>
           ))}
         </motion.div>
