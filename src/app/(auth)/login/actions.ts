@@ -52,6 +52,26 @@ export async function login(formData: FormData) {
   redirect(nextUrl);
 }
 
+export async function loginWithOAuth(provider: "google" | "github") {
+  const supabase = await createClient();
+  const origin = await getRequestOrigin();
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${origin}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    redirect(`/login?error=${encodeURIComponent(error.message)}`);
+  }
+
+  if (data.url) {
+    redirect(data.url);
+  }
+}
+
 export async function signup(formData: FormData) {
   const supabase = await createClient();
 

@@ -4,7 +4,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { login } from "./actions";
+import { Button } from "@/components/ui/button";
+import { login, loginWithOAuth } from "./actions";
 
 export const metadata: Metadata = {
   title: "Log In",
@@ -64,6 +65,25 @@ export default async function LoginPage({
               Log in
             </SubmitButton>
           </form>
+
+          <div className="mt-6 flex items-center justify-between">
+            <span className="w-1/5 border-b border-border lg:w-1/4"></span>
+            <span className="text-xs text-center text-text-secondary uppercase">Or continue with</span>
+            <span className="w-1/5 border-b border-border lg:w-1/4"></span>
+          </div>
+
+          <div className="mt-6 flex flex-col gap-3">
+            <form action={loginWithOAuth.bind(null, "google")}>
+              <Button variant="outline" className="w-full h-11 text-base font-semibold border-border bg-bg-surface-light text-text-primary hover:bg-bg-surface-hover hover:text-text-primary">
+                Google
+              </Button>
+            </form>
+            <form action={loginWithOAuth.bind(null, "github")}>
+              <Button variant="outline" className="w-full h-11 text-base font-semibold border-border bg-bg-surface-light text-text-primary hover:bg-bg-surface-hover hover:text-text-primary">
+                GitHub
+              </Button>
+            </form>
+          </div>
 
           <p className="mt-8 text-center text-sm text-text-secondary">
             Don&apos;t have an account?{" "}
