@@ -34,6 +34,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -43,10 +45,11 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      data-theme="nature-cinematic"
     >
-      <body className="min-h-screen bg-background text-foreground antialiased font-sans">
-        {children}
+      <body className="min-h-screen bg-background text-foreground antialiased font-sans overflow-x-hidden">
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

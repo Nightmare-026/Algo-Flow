@@ -38,13 +38,13 @@ export function HowItWorks() {
           variants={sectionReveal}
           className="mb-12 max-w-3xl text-left"
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--primary)]">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">
             How it works
           </p>
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
             One loop: choose, run, inspect, repeat.
           </h2>
-          <p className="max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
+          <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
             The landing page should point learners to the real workflow quickly, then let the visualizer do the teaching.
           </p>
         </motion.div>
@@ -61,16 +61,16 @@ export function HowItWorks() {
               custom={index}
               variants={cardReveal}
               style={glowStyle(index + 4)}
-              className="landing-glow-card rounded-xl border border-[var(--border)] bg-[var(--bg-surface)]/60 p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]"
+              className="landing-glow-card rounded-xl border border-border bg-surface/60 p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-primary)] hover:border-primary"
             >
               <div className="mb-5 flex items-center justify-between">
                 <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-[var(--landing-card-tone)]">
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="font-mono text-xs text-[var(--text-muted)]">0{index + 1}</span>
+                <span className="font-mono text-xs text-muted-foreground">0{index + 1}</span>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
-              <p className="text-sm leading-6 text-[var(--text-muted)]">{description}</p>
+              <h3 className="mb-2 text-lg font-semibold text-foreground">{title}</h3>
+              <p className="text-sm leading-6 text-muted-foreground">{description}</p>
             </motion.div>
           ))}
         </motion.div>

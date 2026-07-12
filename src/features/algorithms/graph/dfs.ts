@@ -2,11 +2,20 @@ import { v4 as uuidv4 } from "uuid";
 import { VisualStep } from "@/types";
 import { GraphVisualState, createDefaultGraph } from "./types";
 
-export function generateGraphDFSSteps(requestedStartNodeId = "A"): VisualStep[] {
+export function generateGraphDFSSteps(
+  requestedStartNodeId = "A", 
+  customGraph?: GraphVisualState,
+  isDirected: boolean = false
+): VisualStep[] {
   const steps: VisualStep[] = [];
-  const graph = createDefaultGraph();
+  const graph = customGraph ? structuredClone(customGraph) : createDefaultGraph();
   const currentState: GraphVisualState = structuredClone(graph);
-  const startNodeId = graph.nodes.some((node) => node.id === requestedStartNodeId) ? requestedStartNodeId : "A";
+  
+  // Find start node, default to first available node if requested one doesn't exist
+  let startNodeId = requestedStartNodeId;
+  if (!graph.nodes.some(n => n.id === startNodeId) && graph.nodes.length > 0) {
+    startNodeId = graph.nodes[0].id;
+  }
   
   let stepNumber = 1;
 
@@ -74,12 +83,11 @@ export function generateGraphDFSSteps(requestedStartNodeId = "A"): VisualStep[] 
         variables: { "Current": current, "Stack": stack.join(", ") }
       });
 
-      // Find neighbors in reverse order so they are processed in correct alphabetical order
-      // (because a stack is LIFO)
+      // Find neighbors based on directedness
       const neighbors = graph.edges
-        .filter(e => e.source === current || e.target === current)
+        .filter(e => e.source === current || (!isDirected && e.target === current))
         .map(e => e.source === current ? e.target : e.source)
-        .sort((a, b) => b.localeCompare(a)); // Reverse alphabetical for correct DFS order
+        .sort((a, b) => b.localeCompare(a)); // Sort in reverse for stack LIFO processing
 
       for (const neighbor of neighbors) {
         if (!visited.has(neighbor)) {

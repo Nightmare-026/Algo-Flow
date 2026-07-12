@@ -131,6 +131,34 @@ export function getStringCodeExamples(slug: string, algorithmId: string): CodeEx
           explanation: "Uses two pointers starting from the ends and moving inwards to check for symmetry."
         },
       ];
+    case "string-insert":
+      return [
+        { id: `${algorithmId}-js`, algorithmId, language: "javascript", isPrimary: true, code: `function insert(text, index, char) {\n  return text.slice(0, index) + char + text.slice(index);\n}`, explanation: "Splits the string and inserts the character at the specified index." },
+        { id: `${algorithmId}-py`, algorithmId, language: "python", isPrimary: false, code: `def insert(text, index, char):\n    return text[:index] + char + text[index:]`, explanation: "Splits the string and inserts the character at the specified index." },
+        { id: `${algorithmId}-cpp`, algorithmId, language: "cpp", isPrimary: false, code: `string insert(string text, int index, char c) {\n    text.insert(index, 1, c);\n    return text;\n}`, explanation: "Uses the string insert method." },
+        { id: `${algorithmId}-java`, algorithmId, language: "java", isPrimary: false, code: `String insert(String text, int index, char c) {\n    return new StringBuilder(text).insert(index, c).toString();\n}`, explanation: "Uses StringBuilder to insert the character." },
+      ];
+    case "string-delete":
+      return [
+        { id: `${algorithmId}-js`, algorithmId, language: "javascript", isPrimary: true, code: `function remove(text, index) {\n  return text.slice(0, index) + text.slice(index + 1);\n}`, explanation: "Removes the character at the specified index." },
+        { id: `${algorithmId}-py`, algorithmId, language: "python", isPrimary: false, code: `def remove(text, index):\n    return text[:index] + text[index+1:]`, explanation: "Removes the character at the specified index." },
+        { id: `${algorithmId}-cpp`, algorithmId, language: "cpp", isPrimary: false, code: `string remove(string text, int index) {\n    text.erase(index, 1);\n    return text;\n}`, explanation: "Uses the string erase method." },
+        { id: `${algorithmId}-java`, algorithmId, language: "java", isPrimary: false, code: `String remove(String text, int index) {\n    return new StringBuilder(text).deleteCharAt(index).toString();\n}`, explanation: "Uses StringBuilder to delete the character." },
+      ];
+    case "string-replace":
+      return [
+        { id: `${algorithmId}-js`, algorithmId, language: "javascript", isPrimary: true, code: `function replace(text, index, char) {\n  return text.substring(0, index) + char + text.substring(index + 1);\n}`, explanation: "Replaces the character at the given index." },
+        { id: `${algorithmId}-py`, algorithmId, language: "python", isPrimary: false, code: `def replace(text, index, char):\n    return text[:index] + char + text[index+1:]`, explanation: "Replaces the character at the given index." },
+        { id: `${algorithmId}-cpp`, algorithmId, language: "cpp", isPrimary: false, code: `string replace(string text, int index, char c) {\n    text[index] = c;\n    return text;\n}`, explanation: "Replaces the character at the given index by direct assignment." },
+        { id: `${algorithmId}-java`, algorithmId, language: "java", isPrimary: false, code: `String replace(String text, int index, char c) {\n    char[] chars = text.toCharArray();\n    chars[index] = c;\n    return new String(chars);\n}`, explanation: "Converts to char array, replaces, and converts back." },
+      ];
+    case "string-change-case":
+      return [
+        { id: `${algorithmId}-js`, algorithmId, language: "javascript", isPrimary: true, code: `function changeCase(text) {\n  return text.split('').map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join('');\n}`, explanation: "Inverts the case of each character." },
+        { id: `${algorithmId}-py`, algorithmId, language: "python", isPrimary: false, code: `def change_case(text):\n    return text.swapcase()`, explanation: "Inverts the case of each character." },
+        { id: `${algorithmId}-cpp`, algorithmId, language: "cpp", isPrimary: false, code: `string changeCase(string text) {\n    for (char& c : text) {\n        if (isupper(c)) c = tolower(c);\n        else if (islower(c)) c = toupper(c);\n    }\n    return text;\n}`, explanation: "Inverts the case of each character." },
+        { id: `${algorithmId}-java`, algorithmId, language: "java", isPrimary: false, code: `String changeCase(String text) {\n    StringBuilder sb = new StringBuilder(text.length());\n    for (char c : text.toCharArray()) {\n        if (Character.isUpperCase(c)) sb.append(Character.toLowerCase(c));\n        else if (Character.isLowerCase(c)) sb.append(Character.toUpperCase(c));\n        else sb.append(c);\n    }\n    return sb.toString();\n}`, explanation: "Inverts the case of each character." },
+      ];
     default:
       return [];
   }

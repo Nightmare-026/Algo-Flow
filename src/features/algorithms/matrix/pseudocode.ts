@@ -18,6 +18,10 @@ export function getMatrixPseudocode(slug: string): string[] {
       return ["function rotate90(matrix):", "    transpose matrix", "    for each row:", "        reverse row"];
     case "matrix-multiplication":
       return ["function multiply(A, B):", "    for each output row i:", "        for each output col j:", "            result[i][j] = sum(A[i][k] * B[k][j])"];
+    case "matrix-addition":
+      return ["function add(A, B):", "    for row from 0 to rows - 1:", "        for col from 0 to cols - 1:", "            result[row][col] = A[row][col] + B[row][col]"];
+    case "matrix-subtraction":
+      return ["function subtract(A, B):", "    for row from 0 to rows - 1:", "        for col from 0 to cols - 1:", "            result[row][col] = A[row][col] - B[row][col]"];
     default:
       return [];
   }

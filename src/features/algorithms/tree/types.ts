@@ -11,6 +11,12 @@ export interface TreeVisualState {
   root: TreeNodeData | null;
 }
 
+export function createDefaultTree(): TreeVisualState {
+  return {
+    root: createCompleteTreeFromArr([1, 2, 3, 4, 5, 6, 7])
+  };
+}
+
 /**
  * Helper function to create a random Binary Search Tree from an array of numbers.
  * The first number becomes the root, and subsequent numbers are inserted.

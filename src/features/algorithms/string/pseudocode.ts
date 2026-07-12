@@ -14,6 +14,14 @@ export function getStringPseudocode(slug: string): string[] {
       return ["function rabinKarp(text, pattern):", "    compute pattern hash and first window hash", "    slide window across text", "    if hashes match, verify characters", "    update rolling hash"];
     case "reverse-string":
       return ["function reverseString(chars):", "    left = 0, right = length(chars) - 1", "    while left < right:", "        swap chars[left] and chars[right]", "        left++, right--"];
+    case "string-insert":
+      return ["function insert(text, index, char):", "    return text.substring(0, index) + char + text.substring(index)"];
+    case "string-delete":
+      return ["function delete(text, index):", "    return text.substring(0, index) + text.substring(index + 1)"];
+    case "string-replace":
+      return ["function replace(text, index, char):", "    return text.substring(0, index) + char + text.substring(index + 1)"];
+    case "string-change-case":
+      return ["function changeCase(text):", "    result = ''", "    for each char in text:", "        if isUpper(char): result += toLower(char)", "        else: result += toUpper(char)", "    return result"];
     default:
       return [];
   }

@@ -3,10 +3,11 @@ import { VisualStep } from "@/types";
 import { TreeVisualState, TreeNodeData, createCompleteTreeFromArr } from "./types";
 
 export function generateTreeInorderSteps(
-  initialData: number[]
+  initialData: number[],
+  customTree?: TreeVisualState
 ): VisualStep[] {
   const steps: VisualStep[] = [];
-  const root = createCompleteTreeFromArr(initialData);
+  const root = customTree ? structuredClone(customTree.root) : createCompleteTreeFromArr(initialData);
   const currentState: TreeVisualState = { root: structuredClone(root) };
   
   let stepNumber = 1;
@@ -113,10 +114,11 @@ export function generateTreeInorderSteps(
 }
 
 export function generateTreePreorderSteps(
-  initialData: number[]
+  initialData: number[],
+  customTree?: TreeVisualState
 ): VisualStep[] {
   const steps: VisualStep[] = [];
-  const root = createCompleteTreeFromArr(initialData);
+  const root = customTree ? structuredClone(customTree.root) : createCompleteTreeFromArr(initialData);
   const currentState: TreeVisualState = { root: structuredClone(root) };
   
   let stepNumber = 1;
@@ -181,10 +183,11 @@ export function generateTreePreorderSteps(
 }
 
 export function generateTreePostorderSteps(
-  initialData: number[]
+  initialData: number[],
+  customTree?: TreeVisualState
 ): VisualStep[] {
   const steps: VisualStep[] = [];
-  const root = createCompleteTreeFromArr(initialData);
+  const root = customTree ? structuredClone(customTree.root) : createCompleteTreeFromArr(initialData);
   const currentState: TreeVisualState = { root: structuredClone(root) };
   
   let stepNumber = 1;
@@ -263,10 +266,11 @@ export function generateTreePostorderSteps(
 }
 
 export function generateTreeLevelOrderSteps(
-  initialData: number[]
+  initialData: number[],
+  customTree?: TreeVisualState
 ): VisualStep[] {
   const steps: VisualStep[] = [];
-  const root = createCompleteTreeFromArr(initialData);
+  const root = customTree ? structuredClone(customTree.root) : createCompleteTreeFromArr(initialData);
   const currentState: TreeVisualState = { root: structuredClone(root) };
   
   let stepNumber = 1;

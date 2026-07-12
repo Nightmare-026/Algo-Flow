@@ -15,7 +15,7 @@ export function FeaturedVisualizers() {
     .slice(0, 6);
 
   return (
-    <section id="featured-visualizers" className="bg-bg-deep px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+    <section id="featured-visualizers" className="bg-background px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto max-w-7xl">
         <motion.div
           initial="hidden"
@@ -25,10 +25,10 @@ export function FeaturedVisualizers() {
           className="mb-10 max-w-3xl"
         >
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">Ready to run</p>
-          <h2 className="text-3xl font-bold tracking-tight text-text-primary md:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             Start with visualizers that are already interactive.
           </h2>
-          <p className="mt-4 text-base leading-7 text-text-muted">
+          <p className="mt-4 text-base leading-7 text-muted-foreground">
             These pages open directly into a working step engine with controls, explanations, and code panels.
           </p>
         </motion.div>
@@ -44,22 +44,22 @@ export function FeaturedVisualizers() {
               <Link
                 href={`/visualizer/${algorithm!.slug}`}
                 style={glowStyle(index + 2)}
-                className="landing-glow-card group flex h-full flex-col rounded-lg border bg-bg-surface/70 p-5 transition-all duration-500 hover:-translate-y-1"
+                className="landing-glow-card group flex h-full flex-col rounded-lg border bg-surface/70 p-5 transition-all duration-500 hover:-translate-y-1"
               >
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <span className="inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.06] px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--landing-card-tone)]">
                     <PlayCircle className="h-3.5 w-3.5" />
                     {algorithm!.priority}
                   </span>
-                  <span className="text-xs font-medium capitalize text-text-muted">{algorithm!.difficulty}</span>
+                  <span className="text-xs font-medium capitalize text-muted-foreground">{algorithm!.difficulty}</span>
                 </div>
 
-                <h3 className="mb-2 text-lg font-semibold text-text-primary transition-colors group-hover:text-[var(--landing-card-tone)]">
+                <h3 className="mb-2 text-lg font-semibold text-foreground transition-colors group-hover:text-[var(--landing-card-tone)]">
                   {algorithm!.name}
                 </h3>
-                <p className="mb-5 flex-1 text-sm leading-6 text-text-secondary">{algorithm!.shortDescription}</p>
+                <p className="mb-5 flex-1 text-sm leading-6 text-secondary-foreground">{algorithm!.shortDescription}</p>
 
-                <div className="mb-5 grid grid-cols-2 gap-2 rounded-lg border border-white/10 bg-black/15 p-3 text-xs text-text-secondary">
+                <div className="mb-5 grid grid-cols-2 gap-2 rounded-lg border border-white/10 bg-black/15 p-3 text-xs text-secondary-foreground">
                   <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-secondary" />{algorithm!.timeComplexityAverage}</span>
                   <span className="flex items-center gap-1.5"><HardDrive className="h-3.5 w-3.5 text-primary" />{algorithm!.spaceComplexity}</span>
                 </div>

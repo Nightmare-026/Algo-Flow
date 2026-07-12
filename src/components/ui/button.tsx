@@ -7,11 +7,11 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variants: Record<NonNullable<ButtonProps["variant"]>, string> = {
-  default: "bg-primary text-text-inverse hover:bg-primary-hover",
-  secondary: "bg-bg-surface-light text-text-primary hover:bg-bg-surface-hover",
-  ghost: "text-text-muted hover:bg-bg-surface-light hover:text-text-primary",
-  outline: "border border-border bg-transparent text-text-primary hover:bg-bg-surface-light",
-  destructive: "bg-error text-text-inverse hover:opacity-90",
+  default: "bg-primary text-primary-foreground hover:bg-primary/90",
+  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+  ghost: "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+  outline: "border border-border bg-transparent hover:bg-accent hover:text-accent-foreground",
+  destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
 };
 
 const sizes: Record<NonNullable<ButtonProps["size"]>, string> = {

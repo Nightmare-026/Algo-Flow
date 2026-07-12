@@ -11,7 +11,7 @@ import { FinalCTA } from "@/components/landing/FinalCTA";
 
 export default function HomePage() {
   return (
-    <div>
+    <div data-theme="nature-cinematic">
       <Navbar />
 
       <main>

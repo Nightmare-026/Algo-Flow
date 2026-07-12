@@ -168,19 +168,19 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
   };
 
   return (
-    <div data-reduced-motion={reducedMotion} className="flex min-h-screen lg:h-screen flex-col lg:overflow-hidden bg-bg-deep text-text-primary">
-      <header className="flex min-h-16 shrink-0 flex-wrap items-center justify-between gap-3 border-b border-border bg-bg-surface px-3 py-3 sm:px-4">
+    <div data-reduced-motion={reducedMotion} className="flex min-h-screen lg:h-screen flex-col lg:overflow-hidden bg-background text-foreground">
+      <header className="flex min-h-16 shrink-0 flex-wrap items-center justify-between gap-3 border-b border-border bg-surface px-3 py-3 sm:px-4">
         <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
           <Link
             href={`/visualizers/${algorithm.dataStructureId.replace("ds_", "").replace("_", "-")}`}
-            className="-ml-2 rounded-lg p-2 text-text-muted transition-colors hover:bg-bg-surface-light hover:text-text-primary"
+            className="-ml-2 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-surface-light hover:text-foreground"
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
 
           <div>
             <h1 className="truncate text-base font-bold leading-tight sm:text-lg">{algorithm.name}</h1>
-            <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-text-muted">
+            <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <span className={cn(
                 "rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide",
                 algorithm.difficulty === "easy" ? "bg-success-muted text-success border-success/20" :
@@ -208,7 +208,7 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
             onClick={() => setIsPracticeMode(!isPracticeMode)}
             className={cn(
               "rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors border",
-              isPracticeMode ? "bg-primary text-white border-primary" : "text-text-muted hover:bg-bg-surface hover:text-text-primary border-transparent"
+              isPracticeMode ? "bg-primary text-white border-primary" : "text-muted-foreground hover:bg-surface hover:text-foreground border-transparent"
             )}
             title="Toggle Practice Mode"
           >
@@ -219,10 +219,11 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
           <button 
             onClick={handleToggleBookmark}
             className={cn(
-              "rounded-lg p-2 transition-colors hover:bg-bg-surface-light",
-              isBookmarked ? "text-orange-500" : "text-text-muted hover:text-primary"
+              "rounded-lg p-2 transition-colors hover:bg-surface-light",
+              isBookmarked ? "text-orange-500" : "text-muted-foreground hover:text-primary"
             )} 
             title={isBookmarked ? "Remove Bookmark" : "Save Bookmark"}
+            aria-label={isBookmarked ? "Remove Bookmark" : "Save Bookmark"}
           >
             {isBookmarked ? <Bookmark className="h-5 w-5 fill-current" /> : <BookmarkPlus className="h-5 w-5" />}
           </button>
@@ -230,51 +231,53 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
           <button 
             onClick={handleSaveSession}
             disabled={isSaving}
-            className="rounded-lg p-2 text-text-muted transition-colors hover:bg-bg-surface-light hover:text-primary disabled:opacity-50" 
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-surface-light hover:text-primary disabled:opacity-50" 
             title="Save Session"
+            aria-label="Save Session"
           >
             <Save className="h-5 w-5" />
           </button>
 
-          <button onClick={handleShare} className="rounded-lg p-2 text-text-muted transition-colors hover:bg-bg-surface-light hover:text-primary" title="Share">
+          <button onClick={handleShare} className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-surface-light hover:text-primary" title="Share" aria-label="Share">
             <Share2 className="h-5 w-5" />
           </button>
           <button
             onClick={() => setReducedMotion(!reducedMotion)}
             className={cn(
-              "rounded-lg p-2 transition-colors hover:bg-bg-surface-light",
-              reducedMotion ? "text-primary" : "text-text-muted hover:text-primary"
+              "rounded-lg p-2 transition-colors hover:bg-surface-light",
+              reducedMotion ? "text-primary" : "text-muted-foreground hover:text-primary"
             )}
             title="Reduced Motion"
+            aria-label="Reduced Motion"
             aria-pressed={reducedMotion}
           >
             <ZapOff className="h-5 w-5" />
           </button>
           <div className="mx-1 h-6 w-px bg-border" />
-          <button onClick={() => showStatus("Playback settings are in the control bar")} className="rounded-lg p-2 text-text-muted transition-colors hover:bg-bg-surface-light hover:text-primary" title="Settings">
+          <button onClick={() => showStatus("Playback settings are in the control bar")} className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-surface-light hover:text-primary" title="Settings" aria-label="Settings">
             <Settings className="h-5 w-5" />
           </button>
         </div>
       </header>
 
       {statusMessage && (
-        <div aria-live="polite" className="fixed right-4 top-20 z-[70] rounded-lg border border-border bg-bg-surface px-4 py-2 text-sm font-medium text-text-primary shadow-xl">
+        <div aria-live="polite" className="fixed right-4 top-20 z-[70] rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground shadow-xl">
           {statusMessage}
         </div>
       )}
 
       <div className="flex flex-col lg:flex-row flex-1 overflow-y-auto lg:overflow-hidden">
         <div className="flex min-w-0 w-full lg:flex-1 flex-col h-[60vh] min-h-[500px] lg:h-auto shrink-0">
-          <div className="relative flex flex-1 flex-col overflow-hidden bg-bg-deep">
-            {controls && <div className="w-full shrink-0 border-b border-border bg-bg-surface/50 p-3">{controls}</div>}
+          <div className="relative flex flex-1 flex-col overflow-hidden bg-background">
+            {controls && <div className="w-full shrink-0 border-b border-border bg-surface/50 p-3">{controls}</div>}
             <div ref={canvasRegionRef} className="relative flex-1 overflow-hidden">
               {children}
               
               {showPracticePrompt && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-bg-deep/80 backdrop-blur-sm">
-                  <div className="w-full max-w-md rounded-xl border border-border bg-bg-surface p-6 shadow-xl animate-in zoom-in-95">
-                    <h3 className="mb-4 text-lg font-bold text-text-primary">Predict Next Step</h3>
-                    <p className="mb-6 text-sm text-text-secondary">What type of operation will happen next?</p>
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+                  <div className="w-full max-w-md rounded-xl border border-border bg-surface p-6 shadow-xl animate-in zoom-in-95">
+                    <h3 className="mb-4 text-lg font-bold text-foreground">Predict Next Step</h3>
+                    <p className="mb-6 text-sm text-secondary-foreground">What type of operation will happen next?</p>
                     
                     <div className="space-y-3 mb-6">
                       {practiceOptions.map((opt, i) => (
@@ -306,16 +309,16 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
                 </div>
               )}
 
-              <div className="absolute right-4 top-4 rounded-lg border border-border bg-bg-surface/80 px-3 py-1.5 text-sm font-medium text-text-secondary shadow-sm backdrop-blur">
+              <div className="absolute right-4 top-4 rounded-lg border border-border bg-surface/80 px-3 py-1.5 text-sm font-medium text-secondary-foreground shadow-sm backdrop-blur">
                 Step {totalSteps > 0 ? currentStepIndex + 1 : 0} / {totalSteps}
               </div>
-              <button onClick={handleFullscreen} className="absolute bottom-4 right-4 rounded-lg border border-border bg-bg-surface/80 p-2 text-text-muted shadow-sm backdrop-blur transition-colors hover:text-text-primary" title="Fullscreen Canvas">
+              <button onClick={handleFullscreen} className="absolute bottom-4 right-4 rounded-lg border border-border bg-surface/80 p-2 text-muted-foreground shadow-sm backdrop-blur transition-colors hover:text-foreground" title="Fullscreen Canvas" aria-label="Fullscreen Canvas">
                 <Maximize2 className="h-4 w-4" />
               </button>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row md:h-20 h-auto py-4 md:py-0 shrink-0 items-center justify-between gap-4 md:gap-6 border-t border-border bg-bg-surface px-6">
+          <div className="flex flex-col md:flex-row md:h-20 h-auto py-4 md:py-0 shrink-0 items-center justify-between gap-4 md:gap-6 border-t border-border bg-surface px-6">
             <div className="w-full md:flex-1 order-1 md:order-2">
               <StepTimeline />
             </div>
@@ -331,18 +334,18 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
           </div>
         </div>
 
-        <div className="flex w-full lg:w-96 lg:shrink-0 flex-col border-t lg:border-t-0 lg:border-l border-border bg-bg-deep h-[500px] lg:h-full shrink-0">
+        <div className="flex w-full lg:w-96 lg:shrink-0 flex-col border-t lg:border-t-0 lg:border-l border-border bg-background h-[500px] lg:h-full shrink-0">
           <div className="flex h-1/2 flex-col p-4 pb-2">
             <div className="mb-2 flex items-center gap-2 px-1">
               <button
                 onClick={() => setActiveRightTab("pseudocode")}
-                className={cn("rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors", activeRightTab === "pseudocode" ? "border border-border bg-bg-surface-light text-primary" : "text-text-muted hover:bg-bg-surface hover:text-text-primary")}
+                className={cn("rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors", activeRightTab === "pseudocode" ? "border border-border bg-surface-light text-primary" : "text-muted-foreground hover:bg-surface hover:text-foreground")}
               >
                 Pseudocode
               </button>
               <button
                 onClick={() => setActiveRightTab("code")}
-                className={cn("rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors", activeRightTab === "code" ? "border border-border bg-bg-surface-light text-primary" : "text-text-muted hover:bg-bg-surface hover:text-text-primary")}
+                className={cn("rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors", activeRightTab === "code" ? "border border-border bg-surface-light text-primary" : "text-muted-foreground hover:bg-surface hover:text-foreground")}
               >
                 Code
               </button>
@@ -356,13 +359,13 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
             <div className="mb-2 flex items-center gap-2 px-1">
               <button
                 onClick={() => setActiveLowerTab("explanation")}
-                className={cn("rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors", activeLowerTab === "explanation" ? "border border-border bg-bg-surface-light text-primary" : "text-text-muted hover:bg-bg-surface hover:text-text-primary")}
+                className={cn("rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors", activeLowerTab === "explanation" ? "border border-border bg-surface-light text-primary" : "text-muted-foreground hover:bg-surface hover:text-foreground")}
               >
                 Explanation
               </button>
               <button
                 onClick={() => setActiveLowerTab("log")}
-                className={cn("rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors", activeLowerTab === "log" ? "border border-border bg-bg-surface-light text-primary" : "text-text-muted hover:bg-bg-surface hover:text-text-primary")}
+                className={cn("rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors", activeLowerTab === "log" ? "border border-border bg-surface-light text-primary" : "text-muted-foreground hover:bg-surface hover:text-foreground")}
               >
                 Step Log
               </button>

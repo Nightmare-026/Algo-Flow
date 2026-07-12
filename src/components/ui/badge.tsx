@@ -7,8 +7,8 @@ export type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
 
 const variants: Record<NonNullable<BadgeProps["variant"]>, string> = {
   default: "border-primary/25 bg-primary-muted text-primary",
-  secondary: "border-border bg-bg-surface-light text-text-secondary",
-  outline: "border-border bg-transparent text-text-secondary",
+  secondary: "border-border bg-secondary text-secondary-foreground",
+  outline: "border-border bg-transparent text-secondary-foreground",
   success: "border-success/25 bg-success-muted text-success",
   warning: "border-warning/25 bg-warning-muted text-warning",
   danger: "border-error/25 bg-error-muted text-error",

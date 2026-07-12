@@ -1,3 +1,6 @@
+import { GraphVisualState, createDefaultGraph } from "@/features/algorithms/graph/types";
+import { TreeVisualState, createDefaultTree } from "@/features/algorithms/tree/types";
+
 export interface ParseNumberListResult {
   values: number[];
   error: string | null;
@@ -12,6 +15,10 @@ export interface VisualizerInputOptions {
   cols: number;
   text: string;
   pattern: string;
+  graphState?: GraphVisualState;
+  treeState?: TreeVisualState;
+  isDirected?: boolean;
+  isWeighted?: boolean;
 }
 
 export const defaultVisualizerInputOptions: VisualizerInputOptions = {
@@ -23,6 +30,10 @@ export const defaultVisualizerInputOptions: VisualizerInputOptions = {
   cols: 4,
   text: "ALGOFLOW",
   pattern: "FLOW",
+  graphState: createDefaultGraph(),
+  treeState: createDefaultTree(),
+  isDirected: false,
+  isWeighted: false,
 };
 
 export function parseNumberList(input: string, maxLength: number = 20): ParseNumberListResult {
@@ -74,5 +85,9 @@ export function clampOperationOptions(options: VisualizerInputOptions, length: n
     cols: Math.min(Math.max(1, options.cols), 10),
     text: options.text || "ALGOFLOW",
     pattern: options.pattern || "",
+    graphState: options.graphState || createDefaultGraph(),
+    treeState: options.treeState || createDefaultTree(),
+    isDirected: options.isDirected ?? false,
+    isWeighted: options.isWeighted ?? false,
   };
 }

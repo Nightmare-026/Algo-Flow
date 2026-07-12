@@ -3,38 +3,88 @@
 import { usePlaybackStore } from "../../playback-store";
 import { GraphVisualState } from "../../../algorithms/graph/types";
 import { VisualStepHighlights } from "@/types";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { ReactFlow, Node, Edge, MarkerType } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { useMemo } from "react";
 
 export function GraphRenderer() {
-  const { steps, currentStepIndex } = usePlaybackStore();
+  const { steps, currentStepIndex, reducedMotion } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
-  
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
 
-  useEffect(() => {
-    // Simple responsive scaling for the static graph layout
-    if (containerRef.current) {
-      const resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const width = entry.contentRect.width;
-          const height = entry.contentRect.height;
-          
-          // Provide some padding so edges don't touch the container bounds
-          const padding = 20; 
-          const scaleX = width < 500 + padding ? width / (500 + padding) : 1;
-          const scaleY = height < 400 + padding ? height / (400 + padding) : 1;
-          
-          // Use the smallest scale to fit both dimensions
-          setScale(Math.min(scaleX, scaleY, 1));
-        }
-      });
-      resizeObserver.observe(containerRef.current);
-      return () => resizeObserver.disconnect();
-    }
-  }, []);
+  const dataState = currentStep?.dataState as GraphVisualState;
+  const highlights: VisualStepHighlights = currentStep?.highlights || {};
+
+  const reactFlowNodes: Node[] = useMemo(() => {
+    if (!dataState?.nodes) return [];
+    
+    const getElementColor = (id: string) => {
+      if (highlights.error?.includes(id)) return { bg: "var(--color-error)", text: "var(--color-error-foreground)", border: "var(--color-error-muted)" };
+      if (highlights.active?.includes(id)) return { bg: "var(--color-primary)", text: "var(--color-primary-foreground)", border: "var(--color-primary-muted)" };
+      if (highlights.inserted?.includes(id)) return { bg: "var(--color-info)", text: "var(--color-info-foreground)", border: "var(--color-info-muted)" };
+      if (highlights.deleted?.includes(id)) return { bg: "rgba(var(--color-error-rgb), 0.2)", text: "var(--color-error-muted)", border: "rgba(var(--color-error-rgb), 0.4)" };
+      if (highlights.sorted?.includes(id)) return { bg: "rgba(var(--color-success-rgb), 0.2)", text: "var(--color-success)", border: "rgba(var(--color-success-rgb), 0.4)" };
+      if (highlights.visited?.includes(id)) return { bg: "var(--color-success)", text: "var(--color-success-foreground)", border: "var(--color-success-muted)" };
+      
+      // Default style
+      return { bg: "var(--color-bg-surface)", text: "var(--color-text-primary)", border: "var(--color-border)" };
+    };
+
+    return dataState.nodes.map(n => {
+      const colors = getElementColor(n.id);
+      return {
+        id: n.id,
+        position: { x: n.x, y: n.y },
+        data: { label: n.value },
+        style: { 
+          background: colors.bg, 
+          color: colors.text, 
+          border: `3px solid ${colors.border}`,
+          borderRadius: '50%',
+          width: 50,
+          height: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 'bold',
+          transition: reducedMotion ? 'none' : 'all 0.3s ease'
+        },
+        draggable: false, // Prevent dragging during playback
+        selectable: false
+      };
+    });
+  }, [dataState?.nodes, highlights, reducedMotion]);
+
+  const reactFlowEdges: Edge[] = useMemo(() => {
+    if (!dataState?.edges) return [];
+    
+    const getEdgeColor = (source: string, target: string) => {
+      const isSourceActive = highlights.active?.includes(source) || highlights.visited?.includes(source);
+      const isTargetActive = highlights.active?.includes(target) || highlights.visited?.includes(target);
+      
+      if (isSourceActive && isTargetActive) return "var(--color-primary)";
+      return "var(--color-border)";
+    };
+
+    return dataState.edges.map((e, i) => {
+      const color = getEdgeColor(e.source, e.target);
+      return {
+        id: `e-${e.source}-${e.target}-${i}`,
+        source: e.source,
+        target: e.target,
+        label: e.weight !== undefined ? String(e.weight) : undefined,
+        markerEnd: e.isDirected ? { type: MarkerType.ArrowClosed, color } : undefined,
+        style: { 
+          stroke: color, 
+          strokeWidth: 3,
+          transition: reducedMotion ? 'none' : 'all 0.3s ease'
+        },
+        labelStyle: { fill: 'var(--color-text-primary)', fontWeight: 700 },
+        labelBgStyle: { fill: 'var(--color-bg-surface-light)' },
+        animated: highlights.active?.includes(e.source) || highlights.active?.includes(e.target),
+        selectable: false
+      };
+    });
+  }, [dataState?.edges, highlights, reducedMotion]);
 
   if (!currentStep || !currentStep.dataState) {
     return (
@@ -44,80 +94,19 @@ export function GraphRenderer() {
     );
   }
 
-  const dataState = currentStep.dataState as GraphVisualState;
-  const highlights: VisualStepHighlights = currentStep.highlights || {};
-
-  const getElementColor = (id: string) => {
-    if (highlights.error?.includes(id)) return "bg-error border-error-muted text-error-foreground";
-    if (highlights.active?.includes(id)) return "bg-primary border-primary-muted text-primary-foreground";
-    if (highlights.inserted?.includes(id)) return "bg-info border-info-muted text-info-foreground";
-    if (highlights.deleted?.includes(id)) return "bg-error/20 border-error/40 text-error-muted opacity-50";
-    if (highlights.sorted?.includes(id)) return "bg-success/20 border-success/40 text-success glow-success";
-    if (highlights.visited?.includes(id)) return "bg-success border-success-muted text-success-foreground";
-    
-    // Default style
-    return "bg-bg-surface border-border text-text-primary";
-  };
-  
-  const getEdgeColor = (source: string, target: string) => {
-    // Check if both nodes are visited or active (basic highlighting for edges)
-    const isSourceActive = highlights.active?.includes(source) || highlights.visited?.includes(source);
-    const isTargetActive = highlights.active?.includes(target) || highlights.visited?.includes(target);
-    
-    if (isSourceActive && isTargetActive) return "text-primary stroke-current";
-    return "text-border stroke-current";
-  };
-
   return (
-    <div ref={containerRef} className="flex items-center justify-center w-full h-full relative overflow-hidden bg-bg-surface-light/30 rounded-xl">
-      <div 
-        className="relative w-[500px] h-[400px]"
-        style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}
-      >
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
-          {dataState.edges.map((edge, i) => {
-            const sourceNode = dataState.nodes.find(n => n.id === edge.source);
-            const targetNode = dataState.nodes.find(n => n.id === edge.target);
-            
-            if (!sourceNode || !targetNode) return null;
-            
-            return (
-              <motion.line
-                key={`edge-${edge.source}-${edge.target}-${i}`}
-                x1={sourceNode.x}
-                y1={sourceNode.y}
-                x2={targetNode.x}
-                y2={targetNode.y}
-                strokeWidth="3"
-                className={cn("transition-colors duration-300", getEdgeColor(edge.source, edge.target))}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              />
-            );
-          })}
-        </svg>
-
-        {dataState.nodes.map((node) => (
-          <motion.div
-            key={node.id}
-            layoutId={node.id}
-            className={cn(
-              "absolute flex items-center justify-center w-14 h-14 rounded-full border-[3px] font-bold text-xl font-mono shadow-md z-10 transition-colors duration-200",
-              getElementColor(node.id)
-            )}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            style={{ 
-              left: node.x - 28, // Offset by half width/height to center
-              top: node.y - 28
-            }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          >
-            {node.value}
-          </motion.div>
-        ))}
-      </div>
+    <div className="flex items-center justify-center w-full h-full relative overflow-hidden bg-bg-surface-light/30 rounded-xl">
+      <ReactFlow
+        nodes={reactFlowNodes}
+        edges={reactFlowEdges}
+        fitView
+        colorMode="dark"
+        nodesDraggable={false}
+        nodesConnectable={false}
+        elementsSelectable={false}
+        panOnDrag={true}
+        zoomOnScroll={true}
+      />
     </div>
   );
 }

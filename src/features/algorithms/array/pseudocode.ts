@@ -31,6 +31,8 @@ export function getAlgorithmPseudocode(slug: string): string[] {
     case "delete-end":
     case "delete-index":
       return ["function delete(array, index):", "    validate index", "    save deleted element", "    shift elements left from index", "    size = size - 1", "    return deleted element"];
+    case "remove-duplicates":
+      return ["function removeDuplicates(array):", "    seen = new Set()", "    result = []", "    for each element in array:", "        if element not in seen:", "            seen.add(element)", "            result.push(element)", "    return result"];
     default:
       return [];
   }

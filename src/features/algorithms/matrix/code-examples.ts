@@ -381,6 +381,78 @@ export function getMatrixCodeExamples(slug: string, algorithmId: string): CodeEx
     return result;
 }`, explanation: "Computes the dot product of rows from the first matrix and columns from the second matrix." },
       ];
+    case "matrix-addition":
+      return [
+        { id: `${algorithmId}-js`, algorithmId, language: "javascript", isPrimary: true, code: `function matrixAddition(A, B) {
+  const rows = A.length;
+  const cols = A[0].length;
+  const result = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      result[r][c] = A[r][c] + B[r][c];
+    }
+  }
+  return result;
+}`, explanation: "Adds corresponding elements of two matrices." },
+        { id: `${algorithmId}-py`, algorithmId, language: "python", isPrimary: false, code: `def matrix_addition(A, B):
+    return [[A[r][c] + B[r][c] for c in range(len(A[0]))] for r in range(len(A))]`, explanation: "Adds corresponding elements of two matrices." },
+        { id: `${algorithmId}-cpp`, algorithmId, language: "cpp", isPrimary: false, code: `vector<vector<int>> matrixAddition(vector<vector<int>>& A, vector<vector<int>>& B) {
+    int rows = A.size(), cols = A[0].size();
+    vector<vector<int>> result(rows, vector<int>(cols, 0));
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            result[r][c] = A[r][c] + B[r][c];
+        }
+    }
+    return result;
+}`, explanation: "Adds corresponding elements of two matrices." },
+        { id: `${algorithmId}-java`, algorithmId, language: "java", isPrimary: false, code: `int[][] matrixAddition(int[][] A, int[][] B) {
+    int rows = A.length, cols = A[0].length;
+    int[][] result = new int[rows][cols];
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            result[r][c] = A[r][c] + B[r][c];
+        }
+    }
+    return result;
+}`, explanation: "Adds corresponding elements of two matrices." },
+      ];
+    case "matrix-subtraction":
+      return [
+        { id: `${algorithmId}-js`, algorithmId, language: "javascript", isPrimary: true, code: `function matrixSubtraction(A, B) {
+  const rows = A.length;
+  const cols = A[0].length;
+  const result = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      result[r][c] = A[r][c] - B[r][c];
+    }
+  }
+  return result;
+}`, explanation: "Subtracts corresponding elements of two matrices." },
+        { id: `${algorithmId}-py`, algorithmId, language: "python", isPrimary: false, code: `def matrix_subtraction(A, B):
+    return [[A[r][c] - B[r][c] for c in range(len(A[0]))] for r in range(len(A))]`, explanation: "Subtracts corresponding elements of two matrices." },
+        { id: `${algorithmId}-cpp`, algorithmId, language: "cpp", isPrimary: false, code: `vector<vector<int>> matrixSubtraction(vector<vector<int>>& A, vector<vector<int>>& B) {
+    int rows = A.size(), cols = A[0].size();
+    vector<vector<int>> result(rows, vector<int>(cols, 0));
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            result[r][c] = A[r][c] - B[r][c];
+        }
+    }
+    return result;
+}`, explanation: "Subtracts corresponding elements of two matrices." },
+        { id: `${algorithmId}-java`, algorithmId, language: "java", isPrimary: false, code: `int[][] matrixSubtraction(int[][] A, int[][] B) {
+    int rows = A.length, cols = A[0].length;
+    int[][] result = new int[rows][cols];
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            result[r][c] = A[r][c] - B[r][c];
+        }
+    }
+    return result;
+}`, explanation: "Subtracts corresponding elements of two matrices." },
+      ];
     default:
       return [];
   }

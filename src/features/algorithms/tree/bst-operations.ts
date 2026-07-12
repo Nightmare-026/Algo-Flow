@@ -4,10 +4,11 @@ import { TreeVisualState, TreeNodeData, createBSTFromArr } from "./types";
 
 export function generateBSTSearchSteps(
   initialData: number[],
-  target: number
+  target: number,
+  customTree?: TreeVisualState
 ): VisualStep[] {
   const steps: VisualStep[] = [];
-  const root = createBSTFromArr(initialData);
+  const root = customTree ? structuredClone(customTree.root) : createBSTFromArr(initialData);
   const currentState: TreeVisualState = { root: structuredClone(root) };
   
   let stepNumber = 1;
@@ -129,10 +130,11 @@ export function generateBSTSearchSteps(
 
 export function generateBSTInsertSteps(
   initialData: number[],
-  valueToInsert: number
+  valueToInsert: number,
+  customTree?: TreeVisualState
 ): VisualStep[] {
   const steps: VisualStep[] = [];
-  const root = createBSTFromArr(initialData);
+  const root = customTree ? structuredClone(customTree.root) : createBSTFromArr(initialData);
   const currentState: TreeVisualState = { root: structuredClone(root) };
   
   let stepNumber = 1;

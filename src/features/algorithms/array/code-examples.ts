@@ -150,6 +150,13 @@ const snippets: Record<string, Snippet> = {
     cpp: `void rightRotate(vector<int>& arr, int d) {\n    int n = arr.size();\n    d = d % n;\n    vector<int> temp(arr.end() - d, arr.end());\n    for (int i = n - 1; i >= d; i--) arr[i] = arr[i - d];\n    for (int i = 0; i < d; i++) arr[i] = temp[i];\n}`,
     java: `void rightRotate(int[] arr, int d) {\n    int n = arr.length;\n    d = d % n;\n    int[] temp = Arrays.copyOfRange(arr, n - d, n);\n    for (int i = n - 1; i >= d; i--) arr[i] = arr[i - d];\n    for (int i = 0; i < d; i++) arr[i] = temp[i];\n}`,
   },
+  "remove-duplicates": {
+    title: "Removes duplicate elements from an array by keeping track of seen elements.",
+    js: `function removeDuplicates(arr) {\n  return [...new Set(arr)];\n}`,
+    py: `def remove_duplicates(arr):\n    return list(dict.fromkeys(arr))`,
+    cpp: `void removeDuplicates(vector<int>& arr) {\n    unordered_set<int> seen;\n    vector<int> result;\n    for (int num : arr) {\n        if (seen.find(num) == seen.end()) {\n            seen.insert(num);\n            result.push_back(num);\n        }\n    }\n    arr = result;\n}`,
+    java: `int[] removeDuplicates(int[] arr) {\n    return Arrays.stream(arr).distinct().toArray();\n}`,
+  },
 };
 
 const aliases: Record<string, string> = {

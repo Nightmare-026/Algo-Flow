@@ -43,9 +43,9 @@ const footerSections = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-[var(--border)] bg-[var(--bg-surface)]">
+    <footer className="relative border-t border-border bg-surface">
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-deep)] to-transparent pointer-events-none opacity-50" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent pointer-events-none opacity-50" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer */}
@@ -62,11 +62,11 @@ export function Footer() {
               <div className="relative w-8 h-8 transition-transform duration-300 group-hover:scale-110">
                 <Image src="/logo.png" alt="Algo Flow" fill sizes="32px" className="object-contain" />
               </div>
-              <span className="text-base font-bold text-[var(--text-primary)]">
-                Algo<span className="text-[var(--primary)]">Flow</span>
+              <span className="text-base font-bold text-foreground">
+                Algo<span className="text-primary">Flow</span>
               </span>
             </Link>
-            <p className="text-sm text-[var(--text-muted)] leading-relaxed max-w-xs">
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               Master Data Structures & Algorithms through beautiful, interactive visual journeys.
             </p>
           </motion.div>
@@ -74,7 +74,7 @@ export function Footer() {
           {/* Link Sections */}
           {footerSections.map((section) => (
             <motion.div key={section.title} variants={staggerItem}>
-              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
                 {section.title}
               </h3>
               <ul className="space-y-2.5">
@@ -82,7 +82,7 @@ export function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors duration-200 animated-underline"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 animated-underline"
                     >
                       {link.label}
                     </Link>
@@ -94,11 +94,11 @@ export function Footer() {
         </motion.div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-[var(--border)] py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-[var(--text-muted)]">
+        <div className="border-t border-border py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground">
             (c) {new Date().getFullYear()} Algo Flow. All rights reserved.
           </p>
-          <p className="text-xs text-[var(--text-muted)]">
+          <p className="text-xs text-muted-foreground">
             Built for learners, by learners.
           </p>
         </div>

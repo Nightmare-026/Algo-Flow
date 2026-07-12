@@ -46,7 +46,7 @@ export function DSAWorldPreview() {
     <section ref={sectionRef} className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="dsa-world">
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-20 mx-auto h-72 max-w-5xl rounded-full bg-[var(--primary)]/10 blur-3xl"
+        className="pointer-events-none absolute inset-x-0 top-20 mx-auto h-72 max-w-5xl rounded-full bg-primary/10 blur-3xl"
         style={{ y: ribbonY, opacity: ribbonOpacity }}
       />
 
@@ -58,13 +58,13 @@ export function DSAWorldPreview() {
           variants={sectionReveal}
           className="mb-12 max-w-3xl text-left"
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--primary)]">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">
             Visual Learning
           </p>
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
             The page is built around the execution, not decoration.
           </h2>
-          <p className="max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
+          <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
             Every useful panel stays near the animation so learners can connect data, code, and explanation in the same moment.
           </p>
         </motion.div>
@@ -81,18 +81,18 @@ export function DSAWorldPreview() {
               custom={index}
               variants={cardReveal}
               style={glowStyle(index)}
-              className="landing-glow-card rounded-lg border bg-[var(--bg-surface)]/60 p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1"
+              className="landing-glow-card rounded-lg border border-white/10 bg-surface/60 p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1"
             >
               <div className="mb-5 flex items-center justify-between gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-[var(--landing-card-tone)]">
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="rounded-md border border-white/10 bg-black/15 px-2.5 py-1 font-mono text-[11px] text-[var(--text-muted)]">
+                <span className="rounded-md border border-white/10 bg-black/15 px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
                   {detail}
                 </span>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
-              <p className="text-sm leading-6 text-[var(--text-muted)]">{description}</p>
+              <h3 className="mb-2 text-lg font-semibold text-foreground">{title}</h3>
+              <p className="text-sm leading-6 text-muted-foreground">{description}</p>
             </motion.div>
           ))}
         </motion.div>

@@ -48,13 +48,13 @@ export function LearningFeatures() {
           variants={sectionReveal}
           className="mb-12 max-w-3xl text-left"
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--primary)]">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">
             Study tools
           </p>
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
             Enough context to understand the step you are seeing.
           </h2>
-          <p className="max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
+          <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
             The visualizer keeps controls, state, explanation, and code visible together instead of scattering them across pages.
           </p>
         </motion.div>
@@ -71,15 +71,15 @@ export function LearningFeatures() {
               custom={index}
               variants={cardReveal}
               style={glowStyle(index + 1)}
-              className="landing-glow-card group rounded-xl border border-[var(--border)] bg-[var(--bg-surface)]/60 p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]"
+              className="landing-glow-card group rounded-xl border border-border bg-surface/60 p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-primary)] hover:border-primary"
             >
               <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-[var(--landing-card-tone)]">
                 <Icon className="h-5 w-5" />
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-[var(--text-primary)] transition-colors group-hover:text-[var(--landing-card-tone)]">
+              <h3 className="mb-2 text-lg font-semibold text-foreground transition-colors group-hover:text-[var(--landing-card-tone)]">
                 {title}
               </h3>
-              <p className="text-sm leading-6 text-[var(--text-muted)]">{description}</p>
+              <p className="text-sm leading-6 text-muted-foreground">{description}</p>
             </motion.div>
           ))}
         </motion.div>

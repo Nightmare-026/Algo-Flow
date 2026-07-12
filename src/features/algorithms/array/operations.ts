@@ -459,3 +459,78 @@ export function generateRightRotationSteps(arr: number[]): VisualStep[] {
 
   return steps;
 }
+
+export function generateRemoveDuplicatesSteps(arr: number[]): VisualStep[] {
+  const steps: VisualStep[] = [];
+  let stepCount = 1;
+  const elements = createElements(arr);
+
+  steps.push({
+    id: `step-${stepCount}`,
+    stepNumber: stepCount++,
+    title: "Start Remove Duplicates",
+    description: `Removing duplicates from array.`,
+    operation: "remove",
+    actionType: "initialize",
+    dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+    highlights: {},
+  });
+
+  const unique: ArrayElement[] = [];
+  const seen = new Set<number>();
+
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i];
+    
+    steps.push({
+      id: `step-${stepCount}`,
+      stepNumber: stepCount++,
+      title: "Check Value",
+      description: `Checking if ${el.value} has been seen before.`,
+      operation: "remove",
+      actionType: "compare",
+      dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+      highlights: { [el.id]: "active" },
+    });
+
+    if (!seen.has(el.value)) {
+      seen.add(el.value);
+      unique.push(el);
+      
+      steps.push({
+        id: `step-${stepCount}`,
+        stepNumber: stepCount++,
+        title: "Unique Value",
+        description: `${el.value} is unique. Keeping it.`,
+        operation: "remove",
+        actionType: "update",
+        dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+        highlights: { [el.id]: "success" },
+      });
+    } else {
+      steps.push({
+        id: `step-${stepCount}`,
+        stepNumber: stepCount++,
+        title: "Duplicate Found",
+        description: `${el.value} is a duplicate, removing.`,
+        operation: "remove",
+        actionType: "success",
+        dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+        highlights: { [el.id]: "error" },
+      });
+    }
+  }
+
+  steps.push({
+    id: `step-${stepCount}`,
+    stepNumber: stepCount++,
+    title: "Complete",
+    description: `Duplicates removed. Resulting array length is ${unique.length}.`,
+    operation: "remove",
+    actionType: "complete",
+    dataState: { elements: structuredClone(unique) } as ArrayVisualState,
+    highlights: {},
+  });
+
+  return steps;
+}

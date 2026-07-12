@@ -20,7 +20,7 @@ function FloatingBlock({
 }) {
   return (
     <motion.div
-      className="absolute flex items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--bg-surface)]/60 backdrop-blur-sm text-[var(--primary)] font-mono text-sm font-bold"
+      className="absolute flex items-center justify-center rounded-lg border border-border bg-surface/60 backdrop-blur-sm text-primary font-mono text-sm font-bold"
       style={{ left: x, top: y, width: size, height: size }}
       initial={{ opacity: 0, scale: 0 }}
       animate={{
@@ -110,10 +110,10 @@ export function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background gradient */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-deep)] via-[var(--bg-deep)] to-[var(--bg-surface)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-surface" />
         {/* Radial glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-[var(--primary)] opacity-[0.04] blur-[120px] rounded-full" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[var(--secondary)] opacity-[0.03] blur-[100px] rounded-full" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary opacity-[0.04] blur-[120px] rounded-full" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-secondary opacity-[0.03] blur-[100px] rounded-full" />
       </div>
 
       {/* Floating decorative elements */}
@@ -170,7 +170,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex justify-center mb-6"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-surface)]/60 backdrop-blur-sm px-5 py-2 text-sm text-[var(--text-muted)]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 backdrop-blur-sm px-5 py-2 text-sm text-muted-foreground">
             <motion.span
               animate={{ rotate: [0, 14, -8, 14, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 }}
@@ -202,7 +202,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-base sm:text-lg md:text-xl text-[var(--text-muted)] max-w-2xl mx-auto mb-10 leading-relaxed"
+          className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           Explore arrays, stacks, queues, trees, graphs, and more with
           step-by-step animated explanations. 98 interactive visualizers
@@ -218,7 +218,7 @@ export function HeroSection() {
         >
           <Link
             href="/visualizers"
-            className="group inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-8 py-3.5 text-base font-semibold text-[var(--text-inverse)] transition-all duration-300 hover:bg-[var(--primary-hover)] hover:shadow-[var(--shadow-glow-primary)] hover:-translate-y-1 active:scale-[0.96]"
+            className="group inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-3.5 text-base font-semibold text-primary-foreground transition-all duration-300 hover:bg-primary/90 hover:shadow-[var(--shadow-glow-primary)] hover:-translate-y-1 active:scale-[0.96]"
           >
             Start Visualizing
             <svg
@@ -233,7 +233,7 @@ export function HeroSection() {
           </Link>
           <Link
             href="/visualizers"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border)] px-8 py-3.5 text-base font-semibold text-[var(--text-primary)] transition-all duration-300 hover:border-[var(--border-active)] hover:bg-[var(--bg-surface-hover)] hover:-translate-y-1"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-8 py-3.5 text-base font-semibold text-foreground transition-all duration-300 hover:border-border-active hover:bg-surface-hover hover:-translate-y-1"
           >
             Explore Algorithms
           </Link>
@@ -253,17 +253,17 @@ export function HeroSection() {
             { value: "Free", label: "For Everyone" },
           ].map((stat) => (
             <div key={stat.label} className="flex items-center gap-2.5">
-              <span className="text-2xl sm:text-3xl font-bold text-[var(--primary)]">
+              <span className="text-2xl sm:text-3xl font-bold text-primary">
                 {stat.value}
               </span>
-              <span className="text-sm text-[var(--text-muted)]">{stat.label}</span>
+              <span className="text-sm text-muted-foreground">{stat.label}</span>
             </div>
           ))}
         </motion.div>
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[var(--bg-deep)] to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
     </section>
   );
 }

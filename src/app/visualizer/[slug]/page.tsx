@@ -18,7 +18,7 @@ import { generateBinarySearchSteps, generateLinearSearchSteps, generateJumpSearc
 import { generateBubbleSortSteps, generateInsertionSortSteps, generateMergeSortSteps, generateQuickSortSteps, generateSelectionSortSteps, generateHeapSortSteps, generateCountingSortSteps, generateRadixSortSteps } from "@/features/algorithms/array/sort";
 import { generateInsertBeginningSteps, generateInsertEndSteps, generateInsertIndexSteps } from "@/features/algorithms/array/insertion";
 import { generateDeleteBeginningSteps, generateDeleteEndSteps, generateDeleteIndexSteps, generateDeleteValueSteps } from "@/features/algorithms/array/deletion";
-import { generateUpdateByIndexSteps, generateUpdateByValueSteps, generateMergeSortedArraysSteps, generateReverseArraySteps, generateLeftRotationSteps, generateRightRotationSteps } from "@/features/algorithms/array/operations";
+import { generateUpdateByIndexSteps, generateUpdateByValueSteps, generateMergeSortedArraysSteps, generateReverseArraySteps, generateLeftRotationSteps, generateRightRotationSteps, generateRemoveDuplicatesSteps } from "@/features/algorithms/array/operations";
 import { getArrayCodeExamples } from "@/features/algorithms/array/code-examples";
 import { generateStackPushSteps } from "@/features/algorithms/stack/push";
 import { generateStackPopSteps } from "@/features/algorithms/stack/pop";
@@ -54,14 +54,14 @@ import { MatrixRenderer } from "@/features/visualizer-engine/components/renderer
 import { MatrixInputControls } from "@/features/visualizer-engine/components/controls/MatrixInputControls";
 import { generateRowWiseTraversalSteps, generateColWiseTraversalSteps, generateSpiralTraversalSteps } from "@/features/algorithms/matrix/traversal";
 import { generateMatrixSearchSteps, generateSortedMatrixSearchSteps } from "@/features/algorithms/matrix/search";
-import { generateTransposeMatrixSteps, generateRotateMatrixSteps, generateMatrixMultiplicationSteps } from "@/features/algorithms/matrix/math";
+import { generateTransposeMatrixSteps, generateRotateMatrixSteps, generateMatrixMultiplicationSteps, generateMatrixAdditionSteps, generateMatrixSubtractionSteps } from "@/features/algorithms/matrix/math";
 import { getMatrixCodeExamples } from "@/features/algorithms/matrix/code-examples";
 import { StringRenderer } from "@/features/visualizer-engine/components/renderers/StringRenderer";
 import { StringInputControls } from "@/features/visualizer-engine/components/controls/StringInputControls";
 import { generateStringForwardTraversalSteps, generateStringReverseTraversalSteps } from "@/features/algorithms/string/traversal";
 import { generateNaiveSearchSteps, generateKMPSearchSteps, generateRabinKarpSteps } from "@/features/algorithms/string/search";
 import { generatePalindromeCheckSteps } from "@/features/algorithms/string/palindrome";
-import { generateReverseStringSteps } from "@/features/algorithms/string/transform";
+import { generateReverseStringSteps, generateStringInsertSteps, generateStringDeleteSteps, generateStringReplaceSteps, generateStringChangeCaseSteps } from "@/features/algorithms/string/transform";
 import { getStringCodeExamples } from "@/features/algorithms/string/code-examples";
 import { getHashSetCodeExamples } from "@/features/algorithms/hash-set/code-examples";
 import { StackInputControls } from "@/features/visualizer-engine/components/controls/StackInputControls";
@@ -121,7 +121,6 @@ function getGraphStartNode(value: string): string {
 function buildSteps(slug: string, arrayData: number[], options: VisualizerInputOptions): VisualStep[] {
   const rows = options.rows || 3;
   const cols = options.cols || 3;
-  const graphStart = getGraphStartNode(options.text);
 
   switch (slug) {
     case "access":
@@ -185,6 +184,8 @@ function buildSteps(slug: string, arrayData: number[], options: VisualizerInputO
       return generateLeftRotationSteps(arrayData);
     case "right-rotation":
       return generateRightRotationSteps(arrayData);
+    case "remove-duplicates":
+      return generateRemoveDuplicatesSteps(arrayData);
     case "array-stack":
       return generateArrayStackSteps(arrayData, options.capacity);
     case "stack-push":
@@ -231,18 +232,21 @@ function buildSteps(slug: string, arrayData: number[], options: VisualizerInputO
       return generateSLLReverseSteps(arrayData);
     case "sll-detect-cycle":
       return generateSLLDetectCycleSteps(arrayData);
+    // Tree Traversal
     case "inorder-traversal":
-      return generateTreeInorderSteps(arrayData);
+      return generateTreeInorderSteps(arrayData, options.treeState);
     case "preorder-traversal":
-      return generateTreePreorderSteps(arrayData);
+      return generateTreePreorderSteps(arrayData, options.treeState);
     case "postorder-traversal":
-      return generateTreePostorderSteps(arrayData);
+      return generateTreePostorderSteps(arrayData, options.treeState);
     case "level-order-traversal":
-      return generateTreeLevelOrderSteps(arrayData);
+      return generateTreeLevelOrderSteps(arrayData, options.treeState);
+
+    // BST Operations
     case "bst-search":
-      return generateBSTSearchSteps(arrayData, options.target);
+      return generateBSTSearchSteps(arrayData, options.target, options.treeState);
     case "bst-insertion":
-      return generateBSTInsertSteps(arrayData, options.value);
+      return generateBSTInsertSteps(arrayData, options.value, options.treeState);
     case "heap-insert":
       return generateHeapInsertSteps(arrayData, options.value);
     case "trie-insert-word":
@@ -250,9 +254,9 @@ function buildSteps(slug: string, arrayData: number[], options: VisualizerInputO
     case "build-segment-tree":
       return generateSegmentTreeBuildSteps(arrayData);
     case "bfs":
-      return generateGraphBFSSteps(graphStart);
+      return generateGraphBFSSteps(options.text, options.graphState, options.isDirected);
     case "dfs":
-      return generateGraphDFSSteps(graphStart);
+      return generateGraphDFSSteps(options.text, options.graphState, options.isDirected);
     case "division-hash-method":
       return generateDivisionHashSteps(options.value, options.capacity);
     case "hash-insert":
@@ -291,6 +295,10 @@ function buildSteps(slug: string, arrayData: number[], options: VisualizerInputO
       return generateRotateMatrixSteps(arrayData, rows, cols);
     case "matrix-multiplication":
       return generateMatrixMultiplicationSteps(arrayData, rows, cols);
+    case "matrix-addition":
+      return generateMatrixAdditionSteps(arrayData, rows, cols);
+    case "matrix-subtraction":
+      return generateMatrixSubtractionSteps(arrayData, rows, cols);
     case "string-forward-traversal":
       return generateStringForwardTraversalSteps(options.text);
     case "string-reverse-traversal":
@@ -305,6 +313,14 @@ function buildSteps(slug: string, arrayData: number[], options: VisualizerInputO
       return generateRabinKarpSteps(options.text, options.pattern);
     case "reverse-string":
       return generateReverseStringSteps(options.text);
+    case "string-insert":
+      return generateStringInsertSteps(options.text, String(options.target), "X"); // Hardcoded 'X' for now until UI provides char input
+    case "string-delete":
+      return generateStringDeleteSteps(options.text, String(options.target));
+    case "string-replace":
+      return generateStringReplaceSteps(options.text, String(options.target), "Y");
+    case "string-change-case":
+      return generateStringChangeCaseSteps(options.text);
     case "hash-set-insert":
       return generateHashSetInsertSteps(arrayData, options.value, options.capacity);
     case "hash-set-search":

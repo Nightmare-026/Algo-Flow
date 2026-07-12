@@ -2,11 +2,20 @@ import { v4 as uuidv4 } from "uuid";
 import { VisualStep } from "@/types";
 import { GraphVisualState, createDefaultGraph } from "./types";
 
-export function generateGraphBFSSteps(requestedStartNodeId = "A"): VisualStep[] {
+export function generateGraphBFSSteps(
+  requestedStartNodeId = "A", 
+  customGraph?: GraphVisualState,
+  isDirected: boolean = false
+): VisualStep[] {
   const steps: VisualStep[] = [];
-  const graph = createDefaultGraph();
+  const graph = customGraph ? structuredClone(customGraph) : createDefaultGraph();
   const currentState: GraphVisualState = structuredClone(graph);
-  const startNodeId = graph.nodes.some((node) => node.id === requestedStartNodeId) ? requestedStartNodeId : "A";
+  
+  // Find start node, default to first available node if requested one doesn't exist
+  let startNodeId = requestedStartNodeId;
+  if (!graph.nodes.some(n => n.id === startNodeId) && graph.nodes.length > 0) {
+    startNodeId = graph.nodes[0].id;
+  }
   
   let stepNumber = 1;
 
@@ -57,9 +66,9 @@ export function generateGraphBFSSteps(requestedStartNodeId = "A"): VisualStep[] 
       variables: { "Current": current, "Queue": queue.join(", ") }
     });
 
-    // Find neighbors
+    // Find neighbors based on directedness
     const neighbors = graph.edges
-      .filter(e => e.source === current || e.target === current)
+      .filter(e => e.source === current || (!isDirected && e.target === current))
       .map(e => e.source === current ? e.target : e.source);
 
     for (const neighbor of neighbors) {

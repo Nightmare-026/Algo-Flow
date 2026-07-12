@@ -54,7 +54,7 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-[var(--bg-deep)]/80 backdrop-blur-xl border-b border-[var(--border)] shadow-lg"
+          ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-lg"
           : "bg-transparent"
       )}
     >
@@ -72,9 +72,9 @@ export function Navbar() {
                 priority
               />
             </div>
-            <span className="text-lg font-bold tracking-tight text-[var(--text-primary)] hidden sm:inline">
+            <span className="text-lg font-bold tracking-tight text-foreground hidden sm:inline">
               Algo
-              <span className="text-[var(--primary)]">Flow</span>
+              <span className="text-primary">Flow</span>
             </span>
           </Link>
 
@@ -84,7 +84,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="relative px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors duration-200 rounded-lg hover:bg-[var(--bg-surface-hover)]"
+                className="relative px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg hover:bg-surface-hover"
               >
                 {link.label}
               </Link>
@@ -97,14 +97,14 @@ export function Navbar() {
             {/* Auth Buttons */}
             {user ? (
               <div className="hidden sm:flex items-center gap-2">
-                <div className="text-sm text-[var(--text-secondary)] mr-2">
+                <div className="text-sm text-secondary-foreground mr-2">
                   Hi, {user.user_metadata?.username || user.email?.split("@")[0]}
                 </div>
                 <button
                   onClick={async () => {
                     await signout();
                   }}
-                  className="px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors duration-200 rounded-lg hover:bg-[var(--bg-surface-hover)]"
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg hover:bg-surface-hover"
                 >
                   Log Out
                 </button>
@@ -113,13 +113,13 @@ export function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="hidden sm:inline-flex items-center px-4 py-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors duration-200 rounded-lg hover:bg-[var(--bg-surface-hover)]"
+                  className="hidden sm:inline-flex items-center px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg hover:bg-surface-hover"
                 >
                   Log in
                 </Link>
                 <Link
                   href="/signup"
-                  className="inline-flex items-center justify-center h-9 px-4 text-sm font-medium text-[var(--text-inverse)] transition-all duration-200 rounded-lg bg-[var(--primary)] hover:bg-[var(--primary-hover)] shadow-sm hover:shadow-md active:scale-[0.98]"
+                  className="inline-flex items-center justify-center h-9 px-4 text-sm font-medium text-primary-foreground transition-all duration-200 rounded-lg bg-primary hover:bg-primary-hover shadow-sm hover:shadow-md active:scale-[0.98]"
                 >
                   Sign up
                 </Link>
@@ -129,7 +129,7 @@ export function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] transition-all"
+              className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-all"
               aria-label="Toggle menu"
             >
               <svg
@@ -157,7 +157,7 @@ export function Navbar() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden border-t border-[var(--border)]"
+              className="md:hidden overflow-hidden border-t border-border"
             >
               <div className="py-3 space-y-1">
                 {navLinks.map((link) => (
@@ -165,7 +165,7 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] rounded-lg transition-colors"
+                    className="block px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-lg transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -176,7 +176,7 @@ export function Navbar() {
                       await signout();
                       setMobileMenuOpen(false);
                     }}
-                    className="block w-full text-left px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] rounded-lg transition-colors sm:hidden"
+                    className="block w-full text-left px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-lg transition-colors sm:hidden"
                   >
                     Log out
                   </button>
@@ -184,7 +184,7 @@ export function Navbar() {
                   <Link
                     href="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] rounded-lg transition-colors sm:hidden"
+                    className="block px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-lg transition-colors sm:hidden"
                   >
                     Log in
                   </Link>
