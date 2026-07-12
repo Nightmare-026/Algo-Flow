@@ -102,12 +102,12 @@ export default async function SignupPage({
 
               <div className="mt-6 flex flex-col gap-3">
                 <form action={loginWithOAuth.bind(null, "google")}>
-                  <Button variant="outline" className="w-full h-11 text-base font-semibold border-border bg-bg-surface-light text-text-primary hover:bg-bg-surface-hover hover:text-text-primary">
+                  <Button type="submit" variant="outline" className="w-full h-11 text-base font-semibold border-border bg-bg-surface-light text-text-primary hover:bg-bg-surface-hover hover:text-text-primary">
                     Google
                   </Button>
                 </form>
                 <form action={loginWithOAuth.bind(null, "github")}>
-                  <Button variant="outline" className="w-full h-11 text-base font-semibold border-border bg-bg-surface-light text-text-primary hover:bg-bg-surface-hover hover:text-text-primary">
+                  <Button type="submit" variant="outline" className="w-full h-11 text-base font-semibold border-border bg-bg-surface-light text-text-primary hover:bg-bg-surface-hover hover:text-text-primary">
                     GitHub
                   </Button>
                 </form>
