@@ -173,7 +173,7 @@ export function GraphEditorModal({ isOpen, onClose, initialState, isDirected: in
       // Connect to 1 or 2 random other nodes
       const numEdges = Math.floor(Math.random() * 2) + 1;
       for (let j = 0; j < numEdges; j++) {
-        let targetIdx = Math.floor(Math.random() * numNodes);
+        const targetIdx = Math.floor(Math.random() * numNodes);
         if (targetIdx !== i) {
           const source = newNodes[i].id;
           const target = newNodes[targetIdx].id;
@@ -229,7 +229,7 @@ export function GraphEditorModal({ isOpen, onClose, initialState, isDirected: in
             setNodes(toReactFlowNodes({ nodes: data.nodes, edges: data.edges }));
             setEdges(toReactFlowEdges({ nodes: data.nodes, edges: data.edges }, !!data.directed, !!data.weighted));
           }
-        } catch (err) {
+        } catch {
           alert("Invalid graph file");
         }
       };

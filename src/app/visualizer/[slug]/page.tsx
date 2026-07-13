@@ -114,9 +114,7 @@ function getCodeExamples(dataStructureId: string, slug: string, algorithmId: str
   return examples.length > 0 ? examples : createFallbackCodeExamples(slug, algorithmId, algorithmName);
 }
 
-function getGraphStartNode(value: string): string {
-  return ["A", "B", "C", "D", "E", "F"].includes(value) ? value : "A";
-}
+
 
 function buildSteps(slug: string, arrayData: number[], options: VisualizerInputOptions): VisualStep[] {
   const rows = options.rows || 3;

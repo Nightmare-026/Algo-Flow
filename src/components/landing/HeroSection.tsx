@@ -205,7 +205,7 @@ export function HeroSection() {
           className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           Explore arrays, stacks, queues, trees, graphs, and more with
-          step-by-step animated explanations. 98 interactive visualizers
+          step-by-step animated explanations. 105+ interactive visualizers
           in 4 programming languages.
         </motion.p>
 
@@ -247,7 +247,7 @@ export function HeroSection() {
           className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4"
         >
           {[
-            { value: "98", label: "Visualizers" },
+            { value: "105+", label: "Visualizers" },
             { value: "10", label: "Data Structures" },
             { value: "4", label: "Code Languages" },
             { value: "Free", label: "For Everyone" },

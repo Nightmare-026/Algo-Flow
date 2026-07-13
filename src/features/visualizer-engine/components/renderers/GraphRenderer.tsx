@@ -12,7 +12,10 @@ export function GraphRenderer() {
   const currentStep = steps[currentStepIndex];
 
   const dataState = currentStep?.dataState as GraphVisualState;
-  const highlights: VisualStepHighlights = currentStep?.highlights || {};
+  const highlights: VisualStepHighlights = useMemo(
+    () => currentStep?.highlights || {},
+    [currentStep?.highlights]
+  );
 
   const reactFlowNodes: Node[] = useMemo(() => {
     if (!dataState?.nodes) return [];
@@ -52,7 +55,7 @@ export function GraphRenderer() {
         selectable: false
       };
     });
-  }, [dataState?.nodes, highlights, reducedMotion]);
+  }, [dataState, highlights, reducedMotion]);
 
   const reactFlowEdges: Edge[] = useMemo(() => {
     if (!dataState?.edges) return [];
@@ -84,7 +87,7 @@ export function GraphRenderer() {
         selectable: false
       };
     });
-  }, [dataState?.edges, highlights, reducedMotion]);
+  }, [dataState, highlights, reducedMotion]);
 
   if (!currentStep || !currentStep.dataState) {
     return (

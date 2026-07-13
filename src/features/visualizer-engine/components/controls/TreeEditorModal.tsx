@@ -7,7 +7,6 @@ import {
   Controls,
   Node,
   Edge,
-  MarkerType,
   BackgroundVariant,
   useNodesState,
   useEdgesState
@@ -16,6 +15,29 @@ import "@xyflow/react/dist/style.css";
 import { TreeVisualState, TreeNodeData } from "@/features/algorithms/tree/types";
 import { X, Plus, Trash2, RotateCcw, Save, Settings2, Download, Upload, ShieldCheck } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+
+// Pure recursive helpers — extracted outside component so they're stable references
+function findNode(root: TreeNodeData | null, id: string): TreeNodeData | null {
+  if (!root) return null;
+  if (root.id === id) return root;
+  const left = findNode(root.left, id);
+  if (left) return left;
+  return findNode(root.right, id);
+}
+
+function findParent(root: TreeNodeData | null, id: string): TreeNodeData | null {
+  if (!root) return null;
+  if (root.left?.id === id || root.right?.id === id) return root;
+  const left = findParent(root.left, id);
+  if (left) return left;
+  return findParent(root.right, id);
+}
+
+function validateBST(node: TreeNodeData | null, min: number | null, max: number | null): boolean {
+  if (!node) return true;
+  if ((min !== null && node.value <= min) || (max !== null && node.value >= max)) return false;
+  return validateBST(node.left, min, node.value) && validateBST(node.right, node.value, max);
+}
 
 interface TreeEditorModalProps {
   isOpen: boolean;
@@ -37,30 +59,7 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
   
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Helper to find a node by ID in the tree
-  const findNode = (root: TreeNodeData | null, id: string): TreeNodeData | null => {
-    if (!root) return null;
-    if (root.id === id) return root;
-    const left = findNode(root.left, id);
-    if (left) return left;
-    return findNode(root.right, id);
-  };
 
-  // Helper to find parent of a node
-  const findParent = (root: TreeNodeData | null, id: string): TreeNodeData | null => {
-    if (!root) return null;
-    if (root.left?.id === id || root.right?.id === id) return root;
-    const left = findParent(root.left, id);
-    if (left) return left;
-    return findParent(root.right, id);
-  };
-
-  // Validate if tree is BST
-  const validateBST = (node: TreeNodeData | null, min: number | null, max: number | null): boolean => {
-    if (!node) return true;
-    if ((min !== null && node.value <= min) || (max !== null && node.value >= max)) return false;
-    return validateBST(node.left, min, node.value) && validateBST(node.right, node.value, max);
-  };
 
   // Update React Flow nodes/edges from tree root
   const updateFlowFromTree = useCallback((root: TreeNodeData | null, width: number) => {
@@ -153,20 +152,29 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
     }
   }, [treeRoot, updateFlowFromTree]);
 
-  // Load state when opening
+  // Load state when opening — using a ref to avoid cascading renders
+  const prevIsOpen = useRef(isOpen);
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !prevIsOpen.current) {
+      // Modal just opened
       if (initialState?.root) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setTreeRoot(structuredClone(initialState.root));
       } else {
         setTreeRoot(null);
       }
       setSelectedNodeId(null);
     }
+    prevIsOpen.current = isOpen;
   }, [isOpen, initialState]);
 
+  // Sync React Flow graph from tree state
+  // Using requestAnimationFrame to batch state updates and avoid cascading renders
   useEffect(() => {
-    updateFlowFromTree(treeRoot, containerWidth);
+    const raf = requestAnimationFrame(() => {
+      updateFlowFromTree(treeRoot, containerWidth);
+    });
+    return () => cancelAnimationFrame(raf);
   }, [treeRoot, selectedNodeId, isBSTMode, containerWidth, updateFlowFromTree]);
 
   const handleNodeClick = (_: React.MouseEvent, node: Node) => {
@@ -184,7 +192,7 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
     }
   };
 
-  const handleAddChild = (side: 'left' | 'right') => {
+  const handleAddChild = useCallback((side: 'left' | 'right') => {
     if (!selectedNodeId || !treeRoot) return;
     const newRoot = structuredClone(treeRoot);
     const node = findNode(newRoot, selectedNodeId);
@@ -197,7 +205,7 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
       node[side] = { id: uuidv4(), value: newVal, left: null, right: null };
       setTreeRoot(newRoot);
     }
-  };
+  }, [selectedNodeId, treeRoot]);
 
   const handleDeleteNode = () => {
     if (!selectedNodeId || !treeRoot) return;
@@ -290,7 +298,7 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
             setTreeRoot(data.root);
             setSelectedNodeId(null);
           }
-        } catch (err) {
+        } catch {
           alert("Invalid tree file");
         }
       };

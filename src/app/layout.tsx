@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: "%s | Algo Flow",
   },
   description:
-    "Explore arrays, stacks, queues, trees, graphs, and algorithms with step-by-step animated explanations. Learn DSA visually with 98 interactive visualizers.",
+    "Explore arrays, stacks, queues, trees, graphs, and algorithms with step-by-step animated explanations. Learn DSA visually with 105+ interactive visualizers.",
   keywords: [
     "DSA",
     "data structures",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Algo Flow - Master DSA Through Visual Journeys",
     description:
-      "Interactive DSA visualizer with 98 visualizers. Step-by-step animations for arrays, trees, graphs, sorting, searching, and more.",
+      "Interactive DSA visualizer with 105+ visualizers. Step-by-step animations for arrays, trees, graphs, sorting, searching, and more.",
     siteName: "Algo Flow",
   },
 };
