@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, startTransition } from "react";
 import {
   ReactFlow,
   Background,
@@ -152,18 +152,19 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
     }
   }, [treeRoot, updateFlowFromTree]);
 
-  // Load state when opening — using a ref to avoid cascading renders
+  // Load state when opening — using startTransition to avoid cascading renders
   const prevIsOpen = useRef(isOpen);
   useEffect(() => {
     if (isOpen && !prevIsOpen.current) {
-      // Modal just opened
-      if (initialState?.root) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setTreeRoot(structuredClone(initialState.root));
-      } else {
-        setTreeRoot(null);
-      }
-      setSelectedNodeId(null);
+      // Modal just opened — wrap in startTransition to de-prioritise and prevent cascading
+      startTransition(() => {
+        if (initialState?.root) {
+          setTreeRoot(structuredClone(initialState.root));
+        } else {
+          setTreeRoot(null);
+        }
+        setSelectedNodeId(null);
+      });
     }
     prevIsOpen.current = isOpen;
   }, [isOpen, initialState]);

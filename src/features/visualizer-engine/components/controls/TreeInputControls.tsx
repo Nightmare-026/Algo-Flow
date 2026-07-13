@@ -28,7 +28,7 @@ export function TreeInputControls({
   const [error, setError] = useState<string | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
 
-  const updateOption = <K extends keyof VisualizerInputOptions>(key: K, value: VisualizerInputOptions[K]) => {
+  const updateOption = (key: keyof VisualizerInputOptions, value: unknown) => {
     onOptionsChange?.({ ...options, [key]: value } as VisualizerInputOptions);
   };
 
