@@ -6,7 +6,7 @@ export interface AlgorithmVisualizerDefinition {
   slug: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   generateSteps: (data: any, options: VisualizerInputOptions) => VisualStep[];
-  getCodeExamples?: (algorithmId: string, algorithmName: string) => CodeExample[];
+  getCodeExamples?: (slug: string, algorithmId: string) => CodeExample[];
 }
 
 export interface InputControlsProps {

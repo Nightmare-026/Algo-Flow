@@ -1,40 +1,43 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { algorithms } from './src/data/seed/algorithms.js'; // Assuming TS compiles or we run with tsx
+import { algorithms } from "./src/data/seed/algorithms";
+import { getArrayCodeExamples } from "./src/features/algorithms/array/code-examples";
+import { getStackCodeExamples } from "./src/features/algorithms/stack/code-examples";
+import { getQueueCodeExamples } from "./src/features/algorithms/queue/code-examples";
+import { getLinkedListCodeExamples } from "./src/features/algorithms/linked-list/code-examples";
+import { getTreeCodeExamples } from "./src/features/algorithms/tree/code-examples";
+import { getGraphCodeExamples } from "./src/features/algorithms/graph/code-examples";
+import { getHashTableCodeExamples } from "./src/features/algorithms/hash-table/code-examples";
+import { getHashSetCodeExamples } from "./src/features/algorithms/hash-set/code-examples";
+import { getMatrixCodeExamples } from "./src/features/algorithms/matrix/code-examples";
+import { getStringCodeExamples } from "./src/features/algorithms/string/code-examples";
 
-const missing = [];
-const featuresDir = './src/features/algorithms';
+const dsMap: Record<string, any> = {
+  ds_array: getArrayCodeExamples,
+  ds_stack: getStackCodeExamples,
+  ds_queue: getQueueCodeExamples,
+  ds_linked_list: getLinkedListCodeExamples,
+  ds_tree: getTreeCodeExamples,
+  ds_graph: getGraphCodeExamples,
+  ds_hash_table: (slug: string, id: string) => getHashTableCodeExamples(slug.includes("chaining") ? "separate-chaining" : "linear-probing", id),
+  ds_hash_set: getHashSetCodeExamples,
+  ds_matrix: getMatrixCodeExamples,
+  ds_string: getStringCodeExamples,
+};
 
-for (const alg of algorithms) {
-  const dirMap: Record<string, string> = {
-    'ds_array': 'array',
-    'ds_stack': 'stack',
-    'ds_queue': 'queue',
-    'ds_linked_list': 'linked-list',
-    'ds_tree': 'tree',
-    'ds_graph': 'graph',
-    'ds_hash_table': 'hash-table',
-    'ds_hash_set': 'hash-set',
-    'ds_matrix': 'matrix',
-    'ds_string': 'string'
-  };
-  
-  const dsDir = dirMap[alg.dataStructureId];
-  if (!dsDir) {
-    missing.push({ slug: alg.slug, error: 'No mapped directory' });
-    continue;
-  }
-  
-  const codeExamplesPath = path.join(featuresDir, dsDir, 'code-examples.ts');
-  if (!fs.existsSync(codeExamplesPath)) {
-    missing.push({ slug: alg.slug, ds: alg.dataStructureId, error: 'No code-examples.ts' });
-    continue;
-  }
-  
-  const content = fs.readFileSync(codeExamplesPath, 'utf8');
-  if (!content.includes('"' + alg.slug + '"') && !content.includes("'" + alg.slug + "'")) {
-    missing.push({ slug: alg.slug, ds: alg.dataStructureId, error: 'Missing case in switch' });
+let missing = 0;
+let total = 0;
+
+for (const algo of algorithms) {
+  if (algo.isPublished) {
+    total++;
+    const fn = dsMap[algo.dataStructureId];
+    if (fn) {
+      const examples = fn(algo.slug, algo.id);
+      if (!examples || examples.length === 0) {
+        console.log(`[Missing Examples] ${algo.slug} (${algo.name}) in ${algo.dataStructureId}`);
+        missing++;
+      }
+    }
   }
 }
 
-console.log(JSON.stringify(missing, null, 2));
+console.log(`Total: ${total}, Missing Examples: ${missing}`);

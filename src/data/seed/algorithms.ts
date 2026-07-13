@@ -83,7 +83,9 @@ const catalogOnlyAlgorithms: Algorithm[] = [
   catalogAlgorithm({ id: "alg_hset_intersection", operationId: "op_hset_sets", dataStructureId: "ds_hash_set", name: "Set Intersection", slug: "set-intersection", difficulty: "easy", average: "O(n + m)", space: "O(min(n, m))", shortDescription: "Keep only values that appear in both sets.", tags: ["hash-set", "set-ops"], visualizerType: "hash-set", priority: "P1" }),
 ];
 
-export const algorithms: Algorithm[] = [
+import { pseudocodeMap } from "./pseudocode";
+
+const rawAlgorithms: Algorithm[] = [
   // ==================== ARRAY: ACCESS ====================
   {
     id: "alg_arr_access_index",
@@ -1520,3 +1522,8 @@ export const algorithms: Algorithm[] = [
   
   ...catalogOnlyAlgorithms
 ];
+
+export const algorithms: Algorithm[] = rawAlgorithms.map((algo) => ({
+  ...algo,
+  pseudocode: algo.pseudocode || pseudocodeMap[algo.slug] || "",
+}));

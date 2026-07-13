@@ -204,7 +204,7 @@ const genericSnippets: Record<string, Snippet> = {
 };
 
 export function getArrayCodeExamples(slug: string, algorithmId: string): CodeExample[] {
-  const snippet = snippets[slug] ?? genericSnippets[aliases[slug]];
+  const snippet = snippets[slug] ?? snippets[aliases[slug]] ?? genericSnippets[aliases[slug]];
   if (!snippet) return [];
 
   return [

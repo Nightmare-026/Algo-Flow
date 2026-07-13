@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import { algorithms } from "@/data/seed/algorithms";
 import { CodeExample } from "@/types";
-import { defaultVisualizerInputOptions, VisualizerInputOptions } from "@/lib/validation/visualizer-input";
+import { defaultVisualizerInputOptions, VisualizerInputOptions, clampOperationOptions } from "@/lib/validation/visualizer-input";
 import { VisualizerLayout } from "@/features/visualizer-engine/components/VisualizerLayout";
 import { usePlaybackStore } from "@/features/visualizer-engine/playback-store";
 import { algorithmRegistry } from "@/features/visualizer-engine/registry/algorithm-registry";
@@ -50,7 +50,8 @@ export default function VisualizerPage({ params }: { params: Promise<{ slug: str
   useEffect(() => {
     if (!algorithm) return;
     const def = algorithmRegistry[slug];
-    const steps = def ? def.generateSteps(arrayData, options) : [];
+    const clampedOptions = clampOperationOptions(options, arrayData.length, slug);
+    const steps = def ? def.generateSteps(arrayData, clampedOptions) : [];
     loadSteps(steps);
     return () => reset();
   }, [algorithm, arrayData, loadSteps, options, reset, slug]);
@@ -64,7 +65,7 @@ export default function VisualizerPage({ params }: { params: Promise<{ slug: str
   
   let codeExamples: CodeExample[] = [];
   if (def && def.getCodeExamples) {
-    codeExamples = def.getCodeExamples(algorithm.id, algorithm.name);
+    codeExamples = def.getCodeExamples(slug, algorithm.id);
   }
   if (codeExamples.length === 0) {
     codeExamples = createFallbackCodeExamples(slug, algorithm.id, algorithm.name);

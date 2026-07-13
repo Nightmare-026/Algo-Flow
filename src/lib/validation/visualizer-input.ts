@@ -75,9 +75,11 @@ export function validateCapacity(capacity: number, length: number): string | nul
   return null;
 }
 
-export function clampOperationOptions(options: VisualizerInputOptions, length: number): VisualizerInputOptions {
+export function clampOperationOptions(options: VisualizerInputOptions, length: number, slug: string = ""): VisualizerInputOptions {
+  const allowEnd = slug.includes("insert");
+  const maxIndex = allowEnd ? length : length - 1;
   return {
-    index: Math.min(Math.max(0, options.index), Math.max(0, length - 1)),
+    index: Math.min(Math.max(0, options.index), Math.max(0, maxIndex)),
     target: options.target,
     value: options.value,
     capacity: Math.min(Math.max(length, options.capacity), 20),
