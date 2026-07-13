@@ -7,6 +7,7 @@ export interface AlgorithmVisualizerDefinition {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   generateSteps: (data: any, options: VisualizerInputOptions) => VisualStep[];
   getCodeExamples?: (slug: string, algorithmId: string) => CodeExample[];
+  pseudocode?: string;
 }
 
 export interface InputControlsProps {

@@ -120,6 +120,7 @@ export interface Algorithm {
   visualizerType: string;
   priority: PriorityLevel;
   isPublished: boolean;
+  pseudocode?: string;
 }
 
 export interface CodeExample {

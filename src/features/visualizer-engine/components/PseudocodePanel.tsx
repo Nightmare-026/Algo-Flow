@@ -11,7 +11,7 @@ import { getHashTablePseudocode } from "@/features/algorithms/hash-table/pseudoc
 import { getHashSetPseudocode } from "@/features/algorithms/hash-set/pseudocode";
 import { getMatrixPseudocode } from "@/features/algorithms/matrix/pseudocode";
 import { getStringPseudocode } from "@/features/algorithms/string/pseudocode";
-import { algorithmRegistry } from "@/features/visualizer-engine/registry";
+import { algorithmRegistry } from "@/features/visualizer-engine/registry/algorithm-registry";
 import { cn } from "@/lib/utils";
 
 interface PseudocodePanelProps {
@@ -63,7 +63,7 @@ export function PseudocodePanel({ slug }: PseudocodePanelProps) {
       <div className="flex-1 overflow-auto bg-[#121212] p-4 font-mono text-sm text-text-secondary">
         {lines.length > 0 ? (
           <div className="flex flex-col">
-            {lines.map((line, index) => {
+            {lines.map((line: string, index: number) => {
               const lineNum = index + 1;
               const isActive = activeLineNum === lineNum;
               return (

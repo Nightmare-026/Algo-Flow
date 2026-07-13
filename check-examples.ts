@@ -10,7 +10,9 @@ import { getHashSetCodeExamples } from "./src/features/algorithms/hash-set/code-
 import { getMatrixCodeExamples } from "./src/features/algorithms/matrix/code-examples";
 import { getStringCodeExamples } from "./src/features/algorithms/string/code-examples";
 
-const dsMap: Record<string, any> = {
+import { CodeExample } from "./src/types";
+
+const dsMap: Record<string, (slug: string, id: string) => CodeExample[]> = {
   ds_array: getArrayCodeExamples,
   ds_stack: getStackCodeExamples,
   ds_queue: getQueueCodeExamples,
