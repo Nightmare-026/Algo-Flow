@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { getStreak, updateStreakOnActivity } from "@/lib/api/streak";
-import { getCompletedAlgorithms } from "@/lib/api/progress";
-import { getBookmarks } from "@/lib/api/bookmarks";
-import { getSavedSessions } from "@/lib/api/sessions";
+import { getStreak, updateStreakOnActivity } from "@/features/streak/api";
+import { getCompletedAlgorithms } from "@/features/progress/api";
+import { getBookmarks } from "@/features/bookmarks/api";
+import { getSavedSessions } from "@/features/sessions/api";
 import { getActivityTimeline } from "@/lib/api/activity";
 import { getDailyChallenge, isChallengeCompleted } from "@/lib/api/challenges";
 import { algorithms } from "@/data/seed/algorithms";

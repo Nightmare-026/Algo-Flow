@@ -1,5 +1,22 @@
+/**
+ * Phase 3 — Array sort step-generators rewritten to emit canonical
+ * `VisualStepHighlights` shapes via `highlights` helpers, rather than the
+ * legacy inverted `{[elementId]: "bucket"}` literals which tsc could not
+ * catch but which the renderers read as bucket→ids and silently failed to
+ * paint (audit A-03 / RR-01).
+ */
+
 import { VisualStep } from "@/types";
 import { ArrayElement, ArrayVisualState, createElements } from "./types";
+import {
+  compare,
+  conjunct,
+  currentTarget,
+  markBucket,
+  sortedHighlight,
+  succeeded,
+  swap,
+} from "@/features/visualizer-engine/highlights";
 
 // Helper to swap two elements in a deep copy
 function swapElements(elements: ArrayElement[], i: number, j: number) {
@@ -18,12 +35,13 @@ export function generateBubbleSortSteps(arr: number[]): VisualStep[] {
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Bubble Sort",
-    description: "Repeatedly step through the list, compare adjacent elements and swap them if they are in the wrong order.",
+    description:
+      "Repeatedly step through the list, compare adjacent elements and swap them if they are in the wrong order.",
     operation: "sort",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   const n = elements.length;
@@ -32,7 +50,7 @@ export function generateBubbleSortSteps(arr: number[]): VisualStep[] {
   for (let i = 0; i < n - 1; i++) {
     swapped = false;
     for (let j = 0; j < n - i - 1; j++) {
-      // Highlight the two elements being compared
+      // Compare the two elements being compared.
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
@@ -41,15 +59,11 @@ export function generateBubbleSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "compare",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: {
-          [elements[j].id]: "active",
-          [elements[j + 1].id]: "active"
-        },
-        codeLine: 6
+        highlights: compare([elements[j].id, elements[j + 1].id]),
+        codeLine: 6,
       });
 
       if (elements[j].value > elements[j + 1].value) {
-        // Swap needed
         swapElements(elements, j, j + 1);
         swapped = true;
 
@@ -57,23 +71,20 @@ export function generateBubbleSortSteps(arr: number[]): VisualStep[] {
           id: `step-${stepCount}`,
           stepNumber: stepCount++,
           title: "Swap Elements",
-          description: `Yes, ${elements[j+1].value} < ${elements[j].value}. Swapping them.`,
+          description: `Yes, ${elements[j + 1].value} < ${elements[j].value}. Swapping them.`,
           operation: "sort",
           actionType: "update",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-          highlights: {
-            [elements[j].id]: "warning", // Now at j
-            [elements[j + 1].id]: "warning" // Now at j+1
-          },
-          codeLine: 8
+          highlights: swap([elements[j].id, elements[j + 1].id]),
+          codeLine: 8,
         });
       }
     }
 
-    // After each pass, the last element is sorted
-    const sortedHighlights: Record<string, string> = {};
+    // After each outer pass, the trailing elements are sorted.
+    const sortedIds: string[] = [];
     for (let k = n - 1; k >= n - 1 - i; k--) {
-      sortedHighlights[elements[k].id] = "success";
+      sortedIds.push(elements[k].id);
     }
 
     steps.push({
@@ -84,18 +95,14 @@ export function generateBubbleSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "success",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: sortedHighlights,
-      codeLine: 13
+      highlights: sortedHighlight(sortedIds),
+      codeLine: 13,
     });
 
     if (!swapped) {
       break;
     }
   }
-
-  // All sorted
-  const allSorted: Record<string, string> = {};
-  elements.forEach(e => allSorted[e.id] = "success");
 
   steps.push({
     id: `step-${stepCount}`,
@@ -105,8 +112,8 @@ export function generateBubbleSortSteps(arr: number[]): VisualStep[] {
     operation: "sort",
     actionType: "success",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-    highlights: allSorted,
-    codeLine: 16
+    highlights: sortedHighlight(elements.map((e) => e.id)),
+    codeLine: 16,
   });
 
   return steps;
@@ -123,12 +130,13 @@ export function generateSelectionSortSteps(arr: number[]): VisualStep[] {
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Selection Sort",
-    description: "Divide the list into a sorted and an unsorted region. Repeatedly select the smallest element from the unsorted region and swap it to the end of the sorted region.",
+    description:
+      "Divide the list into a sorted and an unsorted region. Repeatedly select the smallest element from the unsorted region and swap it to the end of the sorted region.",
     operation: "sort",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   for (let i = 0; i < n - 1; i++) {
@@ -142,11 +150,12 @@ export function generateSelectionSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "update",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: { [elements[minIdx].id]: "active" },
-      codeLine: 4
+      highlights: currentTarget([elements[minIdx].id]),
+      codeLine: 4,
     });
 
     for (let j = i + 1; j < n; j++) {
+      // "active" = current min; "current" = element we are scanning.
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
@@ -155,11 +164,11 @@ export function generateSelectionSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "compare",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: {
-          [elements[minIdx].id]: "active",
-          [elements[j].id]: "highlight"
-        },
-        codeLine: 6
+        highlights: conjunct([
+          currentTarget([elements[minIdx].id]),
+          compare([elements[j].id]),
+        ]),
+        codeLine: 6,
       });
 
       if (elements[j].value < elements[minIdx].value) {
@@ -172,8 +181,8 @@ export function generateSelectionSortSteps(arr: number[]): VisualStep[] {
           operation: "sort",
           actionType: "update",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-          highlights: { [elements[minIdx].id]: "active" },
-          codeLine: 7
+          highlights: currentTarget([elements[minIdx].id]),
+          codeLine: 7,
         });
       }
     }
@@ -188,17 +197,14 @@ export function generateSelectionSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: {
-          [elements[i].id]: "warning",
-          [elements[minIdx].id]: "warning"
-        },
-        codeLine: 10
+        highlights: swap([elements[i].id, elements[minIdx].id]),
+        codeLine: 10,
       });
     }
 
-    const sortedHighlights: Record<string, string> = {};
+    const sortedIds: string[] = [];
     for (let k = 0; k <= i; k++) {
-      sortedHighlights[elements[k].id] = "success";
+      sortedIds.push(elements[k].id);
     }
 
     steps.push({
@@ -209,13 +215,10 @@ export function generateSelectionSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "success",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: sortedHighlights,
-      codeLine: 12
+      highlights: sortedHighlight(sortedIds),
+      codeLine: 12,
     });
   }
-
-  const allSorted: Record<string, string> = {};
-  elements.forEach(e => allSorted[e.id] = "success");
 
   steps.push({
     id: `step-${stepCount}`,
@@ -225,8 +228,8 @@ export function generateSelectionSortSteps(arr: number[]): VisualStep[] {
     operation: "sort",
     actionType: "success",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-    highlights: allSorted,
-    codeLine: 14
+    highlights: sortedHighlight(elements.map((e) => e.id)),
+    codeLine: 14,
   });
 
   return steps;
@@ -243,12 +246,13 @@ export function generateInsertionSortSteps(arr: number[]): VisualStep[] {
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Insertion Sort",
-    description: "Build the final sorted array one item at a time, by repeatedly taking the next unsorted element and inserting it into its correct position.",
+    description:
+      "Build the final sorted array one item at a time, by repeatedly taking the next unsorted element and inserting it into its correct position.",
     operation: "sort",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   for (let i = 1; i < n; i++) {
@@ -262,8 +266,8 @@ export function generateInsertionSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "update",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: { [elements[i].id]: "active" },
-      codeLine: 4
+      highlights: currentTarget([elements[i].id]),
+      codeLine: 4,
     });
 
     while (j > 0) {
@@ -275,11 +279,11 @@ export function generateInsertionSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "compare",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: {
-          [elements[j].id]: "active",
-          [elements[j - 1].id]: "highlight"
-        },
-        codeLine: 6
+        highlights: conjunct([
+          currentTarget([elements[j].id]),
+          compare([elements[j - 1].id]),
+        ]),
+        codeLine: 6,
       });
 
       if (elements[j].value < elements[j - 1].value) {
@@ -288,15 +292,12 @@ export function generateInsertionSortSteps(arr: number[]): VisualStep[] {
           id: `step-${stepCount}`,
           stepNumber: stepCount++,
           title: "Swap Elements",
-          description: `${elements[j].value} < ${elements[j + 1].value}. Swapping them to shift right.`,
+          description: `${elements[j + 1].value} > ${elements[j].value}. Swapping them to shift right.`,
           operation: "sort",
           actionType: "update",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-          highlights: {
-            [elements[j].id]: "warning",
-            [elements[j - 1].id]: "warning"
-          },
-          codeLine: 8
+          highlights: swap([elements[j].id, elements[j - 1].id]),
+          codeLine: 8,
         });
         j--;
       } else {
@@ -308,16 +309,13 @@ export function generateInsertionSortSteps(arr: number[]): VisualStep[] {
           operation: "sort",
           actionType: "success",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-          highlights: { [elements[j].id]: "success" },
-          codeLine: 10
+          highlights: succeeded([elements[j].id]),
+          codeLine: 10,
         });
         break;
       }
     }
   }
-
-  const allSorted: Record<string, string> = {};
-  elements.forEach(e => allSorted[e.id] = "success");
 
   steps.push({
     id: `step-${stepCount}`,
@@ -327,8 +325,8 @@ export function generateInsertionSortSteps(arr: number[]): VisualStep[] {
     operation: "sort",
     actionType: "success",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-    highlights: allSorted,
-    codeLine: 14
+    highlights: sortedHighlight(elements.map((e) => e.id)),
+    codeLine: 14,
   });
 
   return steps;
@@ -344,18 +342,16 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Merge Sort",
-    description: "Divide the array into halves until each subarray contains a single element. Then merge them back in sorted order.",
+    description:
+      "Divide the array into halves until each subarray contains a single element. Then merge them back in sorted order.",
     operation: "sort",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   function merge(left: number, mid: number, right: number) {
-    const highlights: Record<string, string> = {};
-    for (let i = left; i <= right; i++) highlights[elements[i].id] = "highlight";
-
     steps.push({
       id: `step-${stepCount}`,
       stepNumber: stepCount++,
@@ -364,19 +360,23 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "compare",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: highlights,
-      codeLine: 10
+      highlights: markBucket(
+        elements.slice(left, right + 1).map((e) => e.id),
+        "current"
+      ),
+      codeLine: 10,
     });
 
     const n1 = mid - left + 1;
     const n2 = right - mid;
-    
-    // Create temporary arrays for visual logic, though we will mutate main elements directly for the animation
+
     const L = elements.slice(left, mid + 1);
     const R = elements.slice(mid + 1, right + 1);
 
-    let i = 0, j = 0, k = left;
-    
+    let i = 0;
+    let j = 0;
+    let k = left;
+
     while (i < n1 && j < n2) {
       steps.push({
         id: `step-${stepCount}`,
@@ -386,11 +386,8 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "compare",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: {
-          [L[i].id]: "active",
-          [R[j].id]: "active",
-        },
-        codeLine: 15
+        highlights: compare([L[i].id, R[j].id]),
+        codeLine: 15,
       });
 
       if (L[i].value <= R[j].value) {
@@ -403,8 +400,8 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
           operation: "sort",
           actionType: "update",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-          highlights: { [elements[k].id]: "warning" },
-          codeLine: 17
+          highlights: currentTarget([elements[k].id]),
+          codeLine: 17,
         });
         i++;
       } else {
@@ -417,8 +414,8 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
           operation: "sort",
           actionType: "update",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-          highlights: { [elements[k].id]: "warning" },
-          codeLine: 20
+          highlights: currentTarget([elements[k].id]),
+          codeLine: 20,
         });
         j++;
       }
@@ -435,8 +432,8 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: { [elements[k].id]: "warning" },
-        codeLine: 25
+        highlights: currentTarget([elements[k].id]),
+        codeLine: 25,
       });
       i++;
       k++;
@@ -452,8 +449,8 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: { [elements[k].id]: "warning" },
-        codeLine: 29
+        highlights: currentTarget([elements[k].id]),
+        codeLine: 29,
       });
       j++;
       k++;
@@ -473,7 +470,7 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
       actionType: "update",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 4
+      codeLine: 4,
     });
 
     mergeSort(left, mid);
@@ -483,9 +480,6 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
 
   mergeSort(0, elements.length - 1);
 
-  const allSorted: Record<string, string> = {};
-  elements.forEach(e => allSorted[e.id] = "success");
-
   steps.push({
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
@@ -494,8 +488,8 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
     operation: "sort",
     actionType: "success",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-    highlights: allSorted,
-    codeLine: 35
+    highlights: sortedHighlight(elements.map((e) => e.id)),
+    codeLine: 35,
   });
 
   return steps;
@@ -511,17 +505,18 @@ export function generateQuickSortSteps(arr: number[]): VisualStep[] {
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Quick Sort",
-    description: "Pick a pivot element and partition the array around it, such that smaller elements are to its left and larger to its right.",
+    description:
+      "Pick a pivot element and partition the array around it, such that smaller elements are to its left and larger to its right.",
     operation: "sort",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   function partition(low: number, high: number): number {
     const pivot = elements[high];
-    
+
     steps.push({
       id: `step-${stepCount}`,
       stepNumber: stepCount++,
@@ -530,8 +525,8 @@ export function generateQuickSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "update",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: { [pivot.id]: "active" },
-      codeLine: 9
+      highlights: currentTarget([pivot.id]),
+      codeLine: 9,
     });
 
     let i = low - 1;
@@ -545,11 +540,11 @@ export function generateQuickSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "compare",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: {
-          [elements[j].id]: "highlight",
-          [pivot.id]: "active"
-        },
-        codeLine: 11
+        highlights: conjunct([
+          currentTarget([pivot.id]),
+          compare([elements[j].id]),
+        ]),
+        codeLine: 11,
       });
 
       if (elements[j].value < pivot.value) {
@@ -564,12 +559,11 @@ export function generateQuickSortSteps(arr: number[]): VisualStep[] {
             operation: "sort",
             actionType: "update",
             dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-            highlights: {
-              [elements[i].id]: "warning",
-              [elements[j].id]: "warning",
-              [pivot.id]: "active"
-            },
-            codeLine: 13
+            highlights: conjunct([
+              currentTarget([pivot.id]),
+              swap([elements[i].id, elements[j].id]),
+            ]),
+            codeLine: 13,
           });
         }
       }
@@ -584,8 +578,8 @@ export function generateQuickSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "success",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: { [elements[i + 1].id]: "success" },
-      codeLine: 18
+      highlights: succeeded([elements[i + 1].id]),
+      codeLine: 18,
     });
 
     return i + 1;
@@ -601,9 +595,6 @@ export function generateQuickSortSteps(arr: number[]): VisualStep[] {
 
   quickSort(0, elements.length - 1);
 
-  const allSorted: Record<string, string> = {};
-  elements.forEach(e => allSorted[e.id] = "success");
-
   steps.push({
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
@@ -612,8 +603,8 @@ export function generateQuickSortSteps(arr: number[]): VisualStep[] {
     operation: "sort",
     actionType: "success",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-    highlights: allSorted,
-    codeLine: 25
+    highlights: sortedHighlight(elements.map((e) => e.id)),
+    codeLine: 25,
   });
 
   return steps;
@@ -630,12 +621,13 @@ export function generateHeapSortSteps(arr: number[]): VisualStep[] {
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Heap Sort",
-    description: "Build a max heap from the array, then repeatedly extract the maximum element and place it at the end.",
+    description:
+      "Build a max heap from the array, then repeatedly extract the maximum element and place it at the end.",
     operation: "sort",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   function heapify(n: number, i: number) {
@@ -660,11 +652,8 @@ export function generateHeapSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: {
-          [elements[i].id]: "warning",
-          [elements[largest].id]: "warning"
-        },
-        codeLine: 12
+        highlights: swap([elements[i].id, elements[largest].id]),
+        codeLine: 12,
       });
 
       swapElements(elements, i, largest);
@@ -677,18 +666,14 @@ export function generateHeapSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: {
-          [elements[i].id]: "active",
-          [elements[largest].id]: "active"
-        },
-        codeLine: 13
+        highlights: compare([elements[i].id, elements[largest].id]),
+        codeLine: 13,
       });
 
       heapify(n, largest);
     }
   }
 
-  // Build heap
   steps.push({
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
@@ -698,14 +683,13 @@ export function generateHeapSortSteps(arr: number[]): VisualStep[] {
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 4
+    codeLine: 4,
   });
 
   for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
     heapify(n, i);
   }
 
-  // Extract elements from heap one by one
   for (let i = n - 1; i > 0; i--) {
     steps.push({
       id: `step-${stepCount}`,
@@ -715,11 +699,8 @@ export function generateHeapSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "update",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: {
-        [elements[0].id]: "warning",
-        [elements[i].id]: "warning"
-      },
-      codeLine: 18
+      highlights: swap([elements[0].id, elements[i].id]),
+      codeLine: 18,
     });
 
     swapElements(elements, 0, i);
@@ -732,11 +713,10 @@ export function generateHeapSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "success",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: { [elements[i].id]: "success" },
-      codeLine: 20
+      highlights: succeeded([elements[i].id]),
+      codeLine: 20,
     });
 
-    // Heapify root element to get highest element at root again
     heapify(i, 0);
   }
 
@@ -749,15 +729,10 @@ export function generateHeapSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "success",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: { [elements[0].id]: "success" },
-      codeLine: 23
+      highlights: succeeded([elements[0].id]),
+      codeLine: 23,
     });
   }
-
-  const allSorted: Record<string, string> = {};
-  elements.forEach(e => {
-    allSorted[e.id] = "success";
-  });
 
   steps.push({
     id: `step-${stepCount}`,
@@ -767,8 +742,8 @@ export function generateHeapSortSteps(arr: number[]): VisualStep[] {
     operation: "sort",
     actionType: "success",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-    highlights: allSorted,
-    codeLine: 25
+    highlights: sortedHighlight(elements.map((e) => e.id)),
+    codeLine: 25,
   });
 
   return steps;
@@ -790,7 +765,7 @@ export function generateCountingSortSteps(arr: number[]): VisualStep[] {
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   if (n === 0) return steps;
@@ -813,7 +788,7 @@ export function generateCountingSortSteps(arr: number[]): VisualStep[] {
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 5
+    codeLine: 5,
   });
 
   for (let i = 0; i < n; i++) {
@@ -826,8 +801,8 @@ export function generateCountingSortSteps(arr: number[]): VisualStep[] {
       operation: "sort",
       actionType: "access",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: { [elements[i].id]: "active" },
-      codeLine: 7
+      highlights: currentTarget([elements[i].id]),
+      codeLine: 7,
     });
   }
 
@@ -846,15 +821,12 @@ export function generateCountingSortSteps(arr: number[]): VisualStep[] {
         operation: "sort",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: { [elements[index].id]: "success" },
-        codeLine: 12
+        highlights: succeeded([elements[index].id]),
+        codeLine: 12,
       });
       index++;
     }
   }
-
-  const allSorted: Record<string, string> = {};
-  elements.forEach(e => allSorted[e.id] = "success");
 
   steps.push({
     id: `step-${stepCount}`,
@@ -864,8 +836,8 @@ export function generateCountingSortSteps(arr: number[]): VisualStep[] {
     operation: "sort",
     actionType: "success",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-    highlights: allSorted,
-    codeLine: 15
+    highlights: sortedHighlight(elements.map((e) => e.id)),
+    codeLine: 15,
   });
 
   return steps;
@@ -882,20 +854,19 @@ export function generateRadixSortSteps(arr: number[]): VisualStep[] {
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Radix Sort",
-    description: "Sort by processing each digit position starting from the least significant digit.",
+    description:
+      "Sort by processing each digit position starting from the least significant digit.",
     operation: "sort",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   if (n === 0) return steps;
 
   let max = elements[0].value;
-  for (let i = 1; i < n; i++) {
-    if (elements[i].value > max) max = elements[i].value;
-  }
+  for (let i = 1; i < n; i++) if (elements[i].value > max) max = elements[i].value;
 
   steps.push({
     id: `step-${stepCount}`,
@@ -906,10 +877,9 @@ export function generateRadixSortSteps(arr: number[]): VisualStep[] {
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 5
+    codeLine: 5,
   });
 
-  // Counting sort based on digit
   const countSort = (exp: number) => {
     const output = new Array<ArrayElement>(n);
     const count = new Array(10).fill(0);
@@ -929,7 +899,6 @@ export function generateRadixSortSteps(arr: number[]): VisualStep[] {
       count[digit]--;
     }
 
-    // Apply sorted output to elements
     for (let i = 0; i < n; i++) {
       elements[i] = output[i];
     }
@@ -943,7 +912,7 @@ export function generateRadixSortSteps(arr: number[]): VisualStep[] {
       actionType: "update",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 12
+      codeLine: 12,
     });
   };
 
@@ -957,16 +926,11 @@ export function generateRadixSortSteps(arr: number[]): VisualStep[] {
       actionType: "initialize",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 8
+      codeLine: 8,
     });
-    
+
     countSort(exp);
   }
-
-  const allSorted: Record<string, string> = {};
-  elements.forEach(e => {
-    allSorted[e.id] = "success";
-  });
 
   steps.push({
     id: `step-${stepCount}`,
@@ -976,8 +940,8 @@ export function generateRadixSortSteps(arr: number[]): VisualStep[] {
     operation: "sort",
     actionType: "success",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-    highlights: allSorted,
-    codeLine: 18
+    highlights: sortedHighlight(elements.map((e) => e.id)),
+    codeLine: 18,
   });
 
   return steps;

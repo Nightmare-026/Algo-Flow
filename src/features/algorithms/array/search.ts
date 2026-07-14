@@ -1,5 +1,21 @@
+/**
+ * Phase 3 — Array search step-generators rewritten to emit canonical
+ * `VisualStepHighlights` shapes via `highlights` helpers, rather than the
+ * legacy inverted `{[elementId]: "bucket"}` literals (audit A-03 / RR-01).
+ */
+
 import { VisualStep } from "@/types";
 import { ArrayVisualState, createElements } from "./types";
+import {
+  compare,
+  conjunct,
+  currentTarget,
+  found as foundHL,
+  markBucket,
+  pointerOn,
+  succeeded,
+  visited,
+} from "@/features/visualizer-engine/highlights";
 
 // 1. Linear Search
 export function generateLinearSearchSteps(arr: number[], target: number): VisualStep[] {
@@ -8,7 +24,6 @@ export function generateLinearSearchSteps(arr: number[], target: number): Visual
   let stepCount = 1;
   let found = false;
 
-  // Initial State
   steps.push({
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
@@ -18,11 +33,10 @@ export function generateLinearSearchSteps(arr: number[], target: number): Visual
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2 // Assuming code block has initialization
+    codeLine: 2,
   });
 
   for (let i = 0; i < elements.length; i++) {
-    // Highlighting current element to check
     steps.push({
       id: `step-${stepCount}`,
       stepNumber: stepCount++,
@@ -31,12 +45,11 @@ export function generateLinearSearchSteps(arr: number[], target: number): Visual
       operation: "search",
       actionType: "compare",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: { [elements[i].id]: "active" },
-      codeLine: 4
+      highlights: compare([elements[i].id]),
+      codeLine: 4,
     });
 
     if (elements[i].value === target) {
-      // Found
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
@@ -45,13 +58,12 @@ export function generateLinearSearchSteps(arr: number[], target: number): Visual
         operation: "search",
         actionType: "success",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: { [elements[i].id]: "success" },
-        codeLine: 5
+        highlights: foundHL([elements[i].id]),
+        codeLine: 5,
       });
       found = true;
       break;
     } else {
-      // Not found, mark as visited
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
@@ -60,8 +72,8 @@ export function generateLinearSearchSteps(arr: number[], target: number): Visual
         operation: "search",
         actionType: "compare",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: { [elements[i].id]: "visited" },
-        codeLine: 4
+        highlights: visited([elements[i].id]),
+        codeLine: 4,
       });
     }
   }
@@ -76,7 +88,7 @@ export function generateLinearSearchSteps(arr: number[], target: number): Visual
       actionType: "error",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 8
+      codeLine: 8,
     });
   }
 
@@ -86,14 +98,11 @@ export function generateLinearSearchSteps(arr: number[], target: number): Visual
 // 2. Binary Search
 export function generateBinarySearchSteps(arr: number[], target: number): VisualStep[] {
   const steps: VisualStep[] = [];
-  
-  // Create a copy of elements and actually sort them if they aren't sorted, 
-  // since Binary Search ONLY works on sorted arrays.
+
   const sortedArr = [...arr].sort((a, b) => a - b);
   const elements = createElements(sortedArr);
   let stepCount = 1;
 
-  // Add initial step (if array was unsorted, we note that we sorted it)
   const isSortedBefore = arr.every((val, i) => i === 0 || val >= arr[i - 1]);
   let initDesc = `Array must be sorted for Binary Search. Target: ${target}.`;
   if (!isSortedBefore) {
@@ -109,7 +118,7 @@ export function generateBinarySearchSteps(arr: number[], target: number): Visual
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   let low = 0;
@@ -118,12 +127,11 @@ export function generateBinarySearchSteps(arr: number[], target: number): Visual
 
   while (low <= high) {
     const mid = Math.floor((low + high) / 2);
-    
-    // Highlight the current search bounds
-    const boundsHighlights: Record<string, string> = {};
-    for (let i = low; i <= high; i++) {
-      boundsHighlights[elements[i].id] = i === mid ? "active" : "highlight";
-    }
+
+    // Mid = current comparison target; every other index in [low, high] is
+    // the live search space.
+    const inRange: string[] = [];
+    for (let i = low; i <= high; i++) if (i !== mid) inRange.push(elements[i].id);
 
     steps.push({
       id: `step-${stepCount}`,
@@ -133,8 +141,11 @@ export function generateBinarySearchSteps(arr: number[], target: number): Visual
       operation: "search",
       actionType: "compare",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: boundsHighlights,
-      codeLine: 4
+      highlights: conjunct([
+        markBucket(inRange, "current"),
+        currentTarget([elements[mid].id]),
+      ]),
+      codeLine: 4,
     });
 
     if (elements[mid].value === target) {
@@ -146,8 +157,8 @@ export function generateBinarySearchSteps(arr: number[], target: number): Visual
         operation: "search",
         actionType: "success",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: { [elements[mid].id]: "success" },
-        codeLine: 6
+        highlights: foundHL([elements[mid].id]),
+        codeLine: 6,
       });
       found = true;
       break;
@@ -160,8 +171,8 @@ export function generateBinarySearchSteps(arr: number[], target: number): Visual
         operation: "search",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: { [elements[mid].id]: "visited" },
-        codeLine: 8
+        highlights: visited([elements[mid].id]),
+        codeLine: 8,
       });
       low = mid + 1;
     } else {
@@ -173,8 +184,8 @@ export function generateBinarySearchSteps(arr: number[], target: number): Visual
         operation: "search",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: { [elements[mid].id]: "visited" },
-        codeLine: 10
+        highlights: visited([elements[mid].id]),
+        codeLine: 10,
       });
       high = mid - 1;
     }
@@ -190,7 +201,7 @@ export function generateBinarySearchSteps(arr: number[], target: number): Visual
       actionType: "error",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 13
+      codeLine: 13,
     });
   }
 
@@ -203,7 +214,7 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
   const elements = createElements(arr);
   let stepCount = 1;
   const n = arr.length;
-  
+
   if (n === 0) {
     steps.push({
       id: `step-${stepCount}`,
@@ -214,12 +225,11 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
       actionType: "error",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 1
+      codeLine: 1,
     });
     return steps;
   }
 
-  // Jump size
   const step = Math.floor(Math.sqrt(n));
   let prev = 0;
 
@@ -232,17 +242,21 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
-  // Jump phase
   while (elements[Math.min(step, n) - 1].value < target) {
     const nextPrev = prev;
     prev = step;
-    
-    const h: Record<string, string> = {};
-    h[elements[prev - 1].id] = "active";
-    for (let i = nextPrev; i < prev - 1; i++) h[elements[i].id] = "processed";
+
+    const skipParts: VisualStep["highlights"][] = [
+      currentTarget([elements[prev - 1].id]),
+    ];
+    if (nextPrev < prev - 1) {
+      const processedIds: string[] = [];
+      for (let i = nextPrev; i < prev - 1; i++) processedIds.push(elements[i].id);
+      skipParts.push(visited(processedIds));
+    }
 
     steps.push({
       id: `step-${stepCount}`,
@@ -252,16 +266,12 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
       operation: "search",
       actionType: "access",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: h,
-      codeLine: 4
+      highlights: conjunct(skipParts),
+      codeLine: 4,
     });
 
     if (prev >= n) break;
   }
-
-  // Linear search phase
-  const hBlock: Record<string, string> = {};
-  hBlock[elements[prev].id] = "active";
 
   steps.push({
     id: `step-${stepCount}`,
@@ -271,15 +281,18 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
     operation: "search",
     actionType: "access",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-    highlights: hBlock,
-    codeLine: 7
+    highlights: currentTarget([elements[prev].id]),
+    codeLine: 7,
   });
 
   let found = false;
   for (let i = prev; i < Math.min(prev + step, n); i++) {
-    const hSearch: Record<string, string> = {};
-    hSearch[elements[i].id] = "active";
-    for (let j = prev; j < i; j++) hSearch[elements[j].id] = "processed";
+    const partsHL: VisualStep["highlights"][] = [compare([elements[i].id])];
+    if (prev < i) {
+      const pastIds: string[] = [];
+      for (let j = prev; j < i; j++) pastIds.push(elements[j].id);
+      partsHL.push(visited(pastIds));
+    }
 
     steps.push({
       id: `step-${stepCount}`,
@@ -289,15 +302,12 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
       operation: "search",
       actionType: "access",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: hSearch,
-      codeLine: 8
+      highlights: conjunct(partsHL),
+      codeLine: 8,
     });
 
     if (elements[i].value === target) {
       found = true;
-      const hFound: Record<string, string> = {};
-      hFound[elements[i].id] = "success";
-      
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
@@ -306,8 +316,8 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
         operation: "search",
         actionType: "success",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: hFound,
-        codeLine: 10
+        highlights: foundHL([elements[i].id]),
+        codeLine: 10,
       });
       break;
     }
@@ -323,7 +333,7 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
       actionType: "error",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 13
+      codeLine: 13,
     });
   }
 
@@ -336,7 +346,7 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
   const elements = createElements(arr);
   let stepCount = 1;
   const n = arr.length;
-  
+
   if (n === 0) {
     steps.push({
       id: `step-${stepCount}`,
@@ -347,7 +357,7 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
       actionType: "error",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 1
+      codeLine: 1,
     });
     return steps;
   }
@@ -361,7 +371,7 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
-    codeLine: 2
+    codeLine: 2,
   });
 
   let low = 0;
@@ -372,9 +382,6 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
     if (low === high) {
       if (elements[low].value === target) {
         found = true;
-        const hFoundLow: Record<string, string> = {};
-        hFoundLow[elements[low].id] = "success";
-
         steps.push({
           id: `step-${stepCount}`,
           stepNumber: stepCount++,
@@ -383,20 +390,18 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
           operation: "search",
           actionType: "success",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-          highlights: hFoundLow,
-          codeLine: 10
+          highlights: foundHL([elements[low].id]),
+          codeLine: 10,
         });
       }
       break;
     }
 
-    // Probing the position with keeping uniform distribution in mind
     const pos = low + Math.floor(((high - low) / (elements[high].value - elements[low].value)) * (target - elements[low].value));
 
-    const hProbe: Record<string, string> = {};
-    hProbe[elements[pos].id] = "active";
-    if (low !== pos) hProbe[elements[low].id] = "processed";
-    if (high !== pos) hProbe[elements[high].id] = "processed";
+    const probeParts: VisualStep["highlights"][] = [currentTarget([elements[pos].id])];
+    if (low !== pos) probeParts.push(pointerOn([elements[low].id]));
+    if (high !== pos) probeParts.push(pointerOn([elements[high].id]));
 
     steps.push({
       id: `step-${stepCount}`,
@@ -406,15 +411,12 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
       operation: "search",
       actionType: "access",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: hProbe,
-      codeLine: 6
+      highlights: conjunct(probeParts),
+      codeLine: 6,
     });
 
     if (elements[pos].value === target) {
       found = true;
-      const hFoundPos: Record<string, string> = {};
-      hFoundPos[elements[pos].id] = "success";
-
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
@@ -423,16 +425,13 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
         operation: "search",
         actionType: "success",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: hFoundPos,
-        codeLine: 7
+        highlights: foundHL([elements[pos].id]),
+        codeLine: 7,
       });
       break;
     }
 
     if (elements[pos].value < target) {
-      const hRight: Record<string, string> = {};
-      hRight[elements[pos].id] = "active";
-
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
@@ -441,14 +440,11 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
         operation: "search",
         actionType: "access",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: hRight,
-        codeLine: 9
+        highlights: currentTarget([elements[pos].id]),
+        codeLine: 9,
       });
       low = pos + 1;
     } else {
-      const hLeft: Record<string, string> = {};
-      hLeft[elements[pos].id] = "active";
-
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
@@ -457,8 +453,8 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
         operation: "search",
         actionType: "access",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: hLeft,
-        codeLine: 11
+        highlights: currentTarget([elements[pos].id]),
+        codeLine: 11,
       });
       high = pos - 1;
     }
@@ -474,7 +470,7 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
       actionType: "error",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 14
+      codeLine: 14,
     });
   }
 

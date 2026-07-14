@@ -76,17 +76,17 @@ export async function getStreak(): Promise<UserStreak | null> {
     .select("current_streak, longest_streak, last_active_date")
     .eq("user_id", user.id)
     .single();
-    
+
   if (data) {
     // Check if streak is broken (diff > 1 day)
     const todayStr = new Date().toISOString().split("T")[0];
     const lastDate = data.last_active_date;
-    
+
     if (lastDate && lastDate !== todayStr) {
       const lastDateObj = new Date(lastDate);
       const todayObj = new Date(todayStr);
       const diffDays = Math.floor((todayObj.getTime() - lastDateObj.getTime()) / (1000 * 60 * 60 * 24));
-      
+
       if (diffDays > 1) {
         // Return 0 current streak for UI if broken, without mutating DB until next activity
         return {

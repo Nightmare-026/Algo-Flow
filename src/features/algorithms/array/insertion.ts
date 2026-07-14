@@ -1,10 +1,22 @@
+/**
+ * Phase 3 — Array insertion step-generators emit canonical shapes via the
+ * helpers and route through `ArrayElement.id` (UUID).
+ */
+
 import { VisualStep } from "@/types";
 import { ArrayElement, ArrayVisualState, createElements } from "./types";
 import { v4 as uuidv4 } from "uuid";
+import {
+  compare,
+  conjunct,
+  inserted,
+  pointerOn,
+  sortedHighlight,
+  visited,
+} from "@/features/visualizer-engine/highlights";
 
-// Helper to deep copy array elements
-const clone = (elements: ArrayElement[]): ArrayElement[] => 
-  elements.map(el => ({ ...el }));
+const clone = (elements: ArrayElement[]): ArrayElement[] =>
+  elements.map((el) => ({ ...el }));
 
 /**
  * Array Insertion at Beginning
@@ -15,7 +27,6 @@ export function generateInsertBeginningSteps(arr: number[], value: number): Visu
   let stepCount = 1;
   const newValueId = uuidv4();
 
-  // Step 1: Initial state
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -24,12 +35,10 @@ export function generateInsertBeginningSteps(arr: number[], value: number): Visu
     operation: "insertion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { pointer: ["0"] },
-    variables: { value, length: arr.length },
-    codeLine: 1
+    highlights: pointerOn(["0"]),
+    codeLine: 1,
   });
 
-  // Step 2: Shifting elements to the right
   if (elements.length > 0) {
     for (let i = elements.length - 1; i >= 0; i--) {
       steps.push({
@@ -40,17 +49,18 @@ export function generateInsertBeginningSteps(arr: number[], value: number): Visu
         operation: "insertion",
         actionType: "shift",
         dataState: { elements: clone(elements) } as ArrayVisualState,
-        highlights: { active: [i.toString()], visited: [(i + 1).toString()] },
-        variables: { value, i, length: elements.length },
-        codeLine: 2
+        highlights: conjunct([
+          compare([elements[i].id]),
+          visited([elements[i + 1]?.id ?? (i + 1).toString()]),
+        ]),
+        codeLine: 2,
       });
     }
   }
 
-  // Create new array with shifted elements to represent the insertion
   const newElements: ArrayElement[] = [
     { id: newValueId, value, originalIndex: 0 },
-    ...elements.map((el, i) => ({ ...el, originalIndex: i + 1 }))
+    ...elements.map((el, i) => ({ ...el, originalIndex: i + 1 })),
   ];
 
   steps.push({
@@ -61,12 +71,10 @@ export function generateInsertBeginningSteps(arr: number[], value: number): Visu
     operation: "insertion",
     actionType: "insert",
     dataState: { elements: clone(newElements) } as ArrayVisualState,
-    highlights: { inserted: ["0"] },
-    variables: { value, length: newElements.length },
-    codeLine: 3
+    highlights: inserted([newElements[0].id]),
+    codeLine: 3,
   });
 
-  // Final step
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -75,9 +83,8 @@ export function generateInsertBeginningSteps(arr: number[], value: number): Visu
     operation: "insertion",
     actionType: "success",
     dataState: { elements: clone(newElements) } as ArrayVisualState,
-    highlights: { sorted: ["0"] },
-    variables: { value, length: newElements.length },
-    codeLine: 4
+    highlights: sortedHighlight([newElements[0].id]),
+    codeLine: 4,
   });
 
   return steps;
@@ -92,7 +99,6 @@ export function generateInsertEndSteps(arr: number[], value: number): VisualStep
   let stepCount = 1;
   const newValueId = uuidv4();
 
-  // Step 1: Initial state
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -101,15 +107,13 @@ export function generateInsertEndSteps(arr: number[], value: number): VisualStep
     operation: "insertion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { pointer: [arr.length.toString()] },
-    variables: { value, length: arr.length },
-    codeLine: 1
+    highlights: pointerOn([arr.length.toString()]),
+    codeLine: 1,
   });
 
-  // Create new array with element appended
   const newElements: ArrayElement[] = [
     ...elements,
-    { id: newValueId, value, originalIndex: arr.length }
+    { id: newValueId, value, originalIndex: arr.length },
   ];
 
   steps.push({
@@ -120,12 +124,10 @@ export function generateInsertEndSteps(arr: number[], value: number): VisualStep
     operation: "insertion",
     actionType: "insert",
     dataState: { elements: clone(newElements) } as ArrayVisualState,
-    highlights: { inserted: [arr.length.toString()] },
-    variables: { value, length: newElements.length },
-    codeLine: 2
+    highlights: inserted([newElements[newElements.length - 1].id]),
+    codeLine: 2,
   });
 
-  // Final step
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -134,9 +136,8 @@ export function generateInsertEndSteps(arr: number[], value: number): VisualStep
     operation: "insertion",
     actionType: "success",
     dataState: { elements: clone(newElements) } as ArrayVisualState,
-    highlights: { sorted: [arr.length.toString()] },
-    variables: { value, length: newElements.length },
-    codeLine: 3
+    highlights: sortedHighlight([newElements[newElements.length - 1].id]),
+    codeLine: 3,
   });
 
   return steps;
@@ -150,11 +151,9 @@ export function generateInsertIndexSteps(arr: number[], value: number, insertInd
   const elements = createElements(arr);
   let stepCount = 1;
   const newValueId = uuidv4();
-  
-  // Bound the index to valid range
+
   const idx = Math.max(0, Math.min(insertIndex, arr.length));
 
-  // Step 1: Initial state
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -163,12 +162,10 @@ export function generateInsertIndexSteps(arr: number[], value: number, insertInd
     operation: "insertion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { pointer: [idx.toString()] },
-    variables: { value, index: idx, length: arr.length },
-    codeLine: 1
+    highlights: pointerOn([idx.toString()]),
+    codeLine: 1,
   });
 
-  // Step 2: Shifting elements to the right
   if (idx < elements.length) {
     for (let i = elements.length - 1; i >= idx; i--) {
       steps.push({
@@ -179,14 +176,15 @@ export function generateInsertIndexSteps(arr: number[], value: number, insertInd
         operation: "insertion",
         actionType: "shift",
         dataState: { elements: clone(elements) } as ArrayVisualState,
-        highlights: { active: [i.toString()], visited: [(i + 1).toString()] },
-        variables: { value, index: idx, i, length: elements.length },
-        codeLine: 2
+        highlights: conjunct([
+          compare([elements[i].id]),
+          visited([elements[i + 1]?.id ?? (i + 1).toString()]),
+        ]),
+        codeLine: 2,
       });
     }
   }
 
-  // Create new array with shifted elements
   const newElements: ArrayElement[] = [];
   for (let i = 0; i < idx; i++) newElements.push({ ...elements[i] });
   newElements.push({ id: newValueId, value, originalIndex: idx });
@@ -200,12 +198,10 @@ export function generateInsertIndexSteps(arr: number[], value: number, insertInd
     operation: "insertion",
     actionType: "insert",
     dataState: { elements: clone(newElements) } as ArrayVisualState,
-    highlights: { inserted: [idx.toString()] },
-    variables: { value, index: idx, length: newElements.length },
-    codeLine: 3
+    highlights: inserted([newElements[idx].id]),
+    codeLine: 3,
   });
 
-  // Final step
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -214,9 +210,8 @@ export function generateInsertIndexSteps(arr: number[], value: number, insertInd
     operation: "insertion",
     actionType: "success",
     dataState: { elements: clone(newElements) } as ArrayVisualState,
-    highlights: { sorted: [idx.toString()] },
-    variables: { value, index: idx, length: newElements.length },
-    codeLine: 4
+    highlights: sortedHighlight([newElements[idx].id]),
+    codeLine: 4,
   });
 
   return steps;

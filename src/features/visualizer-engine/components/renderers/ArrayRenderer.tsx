@@ -21,18 +21,21 @@ export function ArrayRenderer() {
   const dataState = currentStep.dataState as ArrayVisualState;
   const highlights: VisualStepHighlights = currentStep.highlights || {};
 
+  // Phase 3 — match highlights against each element's UUID id, NOT
+  // the array index (audit A-03 secondary bug). Algorithm step-generators
+  // emit `{ bucket: [uuid, ...] }`; the renderer compares those UUIDs.
   const getElementColor = (index: number) => {
-    const idxStr = index.toString();
-    if (highlights.error?.includes(idxStr)) return "bg-error border-error-muted text-error-foreground";
-    if (highlights.found?.includes(idxStr)) return "bg-success border-success-muted text-success-foreground shadow-[0_0_15px_rgba(34,197,94,0.5)]";
-    if (highlights.swapped?.includes(idxStr)) return "bg-warning border-warning-muted text-warning-foreground";
-    if (highlights.compared?.includes(idxStr)) return "bg-secondary border-secondary-muted text-secondary-foreground";
-    if (highlights.current?.includes(idxStr) || highlights.active?.includes(idxStr)) return "bg-primary border-primary-muted text-primary-foreground";
-    if (highlights.sorted?.includes(idxStr)) return "bg-success/20 border-success/40 text-success glow-success";
-    if (highlights.visited?.includes(idxStr)) return "bg-bg-surface-elevated border-primary/40 text-primary-muted";
-    if (highlights.inserted?.includes(idxStr)) return "bg-info border-info-muted text-info-foreground";
-    if (highlights.deleted?.includes(idxStr)) return "bg-error/20 border-error/40 text-error-muted opacity-50";
-    
+    const id = dataState.elements[index]?.id ?? index.toString();
+    if (highlights.error?.includes(id)) return "bg-error border-error-muted text-error-foreground";
+    if (highlights.found?.includes(id)) return "bg-success border-success-muted text-success-foreground shadow-[0_0_15px_rgba(34,197,94,0.5)]";
+    if (highlights.swapped?.includes(id)) return "bg-warning border-warning-muted text-warning-foreground";
+    if (highlights.compared?.includes(id)) return "bg-secondary border-secondary-muted text-secondary-foreground";
+    if (highlights.current?.includes(id) || highlights.active?.includes(id)) return "bg-primary border-primary-muted text-primary-foreground";
+    if (highlights.sorted?.includes(id)) return "bg-success/20 border-success/40 text-success glow-success";
+    if (highlights.visited?.includes(id)) return "bg-bg-surface-elevated border-primary/40 text-primary-muted";
+    if (highlights.inserted?.includes(id)) return "bg-info border-info-muted text-info-foreground";
+    if (highlights.deleted?.includes(id)) return "bg-error/20 border-error/40 text-error-muted opacity-50";
+
     // Default style
     return "bg-bg-surface border-border text-text-primary";
   };
@@ -67,7 +70,7 @@ export function ArrayRenderer() {
                 {element.value}
 
                 {/* Pointer Overlay */}
-                {highlights.pointer?.includes(index.toString()) && (
+                {highlights.pointer?.includes(dataState.elements[index]?.id ?? index.toString()) && (
                   <motion.div 
                     layoutId="pointer"
                     className="absolute -bottom-8 text-primary"

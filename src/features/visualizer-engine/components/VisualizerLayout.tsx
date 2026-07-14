@@ -13,9 +13,9 @@ import { StepLog } from "./StepLog";
 import { CodePanel } from "./CodePanel";
 import { PseudocodePanel } from "./PseudocodePanel";
 import { usePlaybackStore } from "../playback-store";
-import { getBookmarks, toggleBookmark } from "@/lib/api/bookmarks";
-import { markCompleted } from "@/lib/api/progress";
-import { saveSession } from "@/lib/api/sessions";
+import { getBookmarks, toggleBookmark } from "@/features/bookmarks/api";
+import { markCompleted } from "@/features/progress/api";
+import { saveSession } from "@/features/sessions/api";
 import { Bookmark, Save } from "lucide-react";
 
 interface VisualizerLayoutProps {

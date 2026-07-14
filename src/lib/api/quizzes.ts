@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { updateStreakOnActivity } from "./streak";
+import { updateStreakOnActivity } from "@/features/streak/api";
 
 export type QuizAttempt = {
   id: string;

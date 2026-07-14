@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import type { UserActionResult } from "./bookmarks";
+import type { UserActionResult } from "@/features/bookmarks/api";
 
 export type SavedSession = {
   id: string;

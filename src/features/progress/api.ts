@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { updateStreakOnActivity } from "@/features/streak/api";
 
 export async function markCompleted(algorithmId: string) {
   const supabase = await createClient();
@@ -23,9 +24,8 @@ export async function markCompleted(algorithmId: string) {
       action_type: "completed",
       algorithm_id: algorithmId,
     });
-    
+
     // Update streak
-    const { updateStreakOnActivity } = await import("./streak");
     await updateStreakOnActivity();
   }
 

@@ -1,9 +1,20 @@
+/**
+ * Phase 3 — Array deletion step-generators emit canonical shapes via the
+ * helpers and route through `ArrayElement.id` (UUID).
+ */
+
 import { VisualStep } from "@/types";
 import { ArrayElement, ArrayVisualState, createElements } from "./types";
+import {
+  compare,
+  conjunct,
+  deleted,
+  found as foundHL,
+  pointerOn,
+} from "@/features/visualizer-engine/highlights";
 
-// Helper to deep copy array elements
-const clone = (elements: ArrayElement[]): ArrayElement[] => 
-  elements.map(el => ({ ...el }));
+const clone = (elements: ArrayElement[]): ArrayElement[] =>
+  elements.map((el) => ({ ...el }));
 
 /**
  * Array Deletion at Beginning
@@ -23,12 +34,11 @@ export function generateDeleteBeginningSteps(arr: number[]): VisualStep[] {
       actionType: "error",
       dataState: { elements: [] } as ArrayVisualState,
       highlights: {},
-      codeLine: 1
+      codeLine: 1,
     });
     return steps;
   }
 
-  // Step 1: Initial state
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -37,14 +47,12 @@ export function generateDeleteBeginningSteps(arr: number[]): VisualStep[] {
     operation: "deletion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { pointer: ["0"] },
-    variables: { length: elements.length },
-    codeLine: 1
+    highlights: pointerOn(["0"]),
+    codeLine: 1,
   });
 
-  // Step 2: Remove element
   const removedValue = elements[0].value;
-  elements[0] = { ...elements[0] }; // Clone for state isolation
+  elements[0] = { ...elements[0] };
 
   steps.push({
     id: `step-${stepCount++}`,
@@ -54,12 +62,10 @@ export function generateDeleteBeginningSteps(arr: number[]): VisualStep[] {
     operation: "deletion",
     actionType: "delete",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { deleted: ["0"] },
-    variables: { deletedValue: removedValue, length: elements.length },
-    codeLine: 2
+    highlights: deleted([elements[0].id]),
+    codeLine: 2,
   });
 
-  // Step 3: Shift elements left
   for (let i = 1; i < elements.length; i++) {
     steps.push({
       id: `step-${stepCount++}`,
@@ -69,15 +75,16 @@ export function generateDeleteBeginningSteps(arr: number[]): VisualStep[] {
       operation: "deletion",
       actionType: "shift",
       dataState: { elements: clone(elements) } as ArrayVisualState,
-      highlights: { active: [i.toString()], visited: [(i - 1).toString()] },
-      variables: { i, length: elements.length },
-      codeLine: 3
+      highlights: conjunct([
+        compare([elements[i].id]),
+        compare([(i - 1).toString()]),
+      ]),
+      codeLine: 3,
     });
   }
 
-  // Step 4: Final array
   const newElements = elements.slice(1).map((el, i) => ({ ...el, originalIndex: i }));
-  
+
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -87,8 +94,7 @@ export function generateDeleteBeginningSteps(arr: number[]): VisualStep[] {
     actionType: "success",
     dataState: { elements: newElements } as ArrayVisualState,
     highlights: {},
-    variables: { length: newElements.length },
-    codeLine: 4
+    codeLine: 4,
   });
 
   return steps;
@@ -112,14 +118,13 @@ export function generateDeleteEndSteps(arr: number[]): VisualStep[] {
       actionType: "error",
       dataState: { elements: [] } as ArrayVisualState,
       highlights: {},
-      codeLine: 1
+      codeLine: 1,
     });
     return steps;
   }
 
   const lastIndex = elements.length - 1;
 
-  // Step 1: Initial state
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -128,14 +133,12 @@ export function generateDeleteEndSteps(arr: number[]): VisualStep[] {
     operation: "deletion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { pointer: [lastIndex.toString()] },
-    variables: { length: elements.length },
-    codeLine: 1
+    highlights: pointerOn([lastIndex.toString()]),
+    codeLine: 1,
   });
 
-  // Step 2: Remove element
   const removedValue = elements[lastIndex].value;
-  elements[lastIndex] = { ...elements[lastIndex] }; // Clone
+  elements[lastIndex] = { ...elements[lastIndex] };
 
   steps.push({
     id: `step-${stepCount++}`,
@@ -145,14 +148,12 @@ export function generateDeleteEndSteps(arr: number[]): VisualStep[] {
     operation: "deletion",
     actionType: "delete",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { deleted: [lastIndex.toString()] },
-    variables: { deletedValue: removedValue, length: elements.length },
-    codeLine: 2
+    highlights: deleted([elements[lastIndex].id]),
+    codeLine: 2,
   });
 
-  // Step 3: Final array
   const newElements = elements.slice(0, lastIndex);
-  
+
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -162,8 +163,7 @@ export function generateDeleteEndSteps(arr: number[]): VisualStep[] {
     actionType: "success",
     dataState: { elements: newElements } as ArrayVisualState,
     highlights: {},
-    variables: { length: newElements.length },
-    codeLine: 3
+    codeLine: 3,
   });
 
   return steps;
@@ -187,12 +187,11 @@ export function generateDeleteIndexSteps(arr: number[], index: number): VisualSt
       actionType: "error",
       dataState: { elements: clone(elements) } as ArrayVisualState,
       highlights: {},
-      codeLine: 1
+      codeLine: 1,
     });
     return steps;
   }
 
-  // Step 1: Initial state
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -201,14 +200,12 @@ export function generateDeleteIndexSteps(arr: number[], index: number): VisualSt
     operation: "deletion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { pointer: [index.toString()] },
-    variables: { index, length: elements.length },
-    codeLine: 1
+    highlights: pointerOn([index.toString()]),
+    codeLine: 1,
   });
 
-  // Step 2: Remove element
   const removedValue = elements[index].value;
-  elements[index] = { ...elements[index] }; // Clone
+  elements[index] = { ...elements[index] };
 
   steps.push({
     id: `step-${stepCount++}`,
@@ -218,12 +215,10 @@ export function generateDeleteIndexSteps(arr: number[], index: number): VisualSt
     operation: "deletion",
     actionType: "delete",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { deleted: [index.toString()] },
-    variables: { deletedValue: removedValue, index, length: elements.length },
-    codeLine: 2
+    highlights: deleted([elements[index].id]),
+    codeLine: 2,
   });
 
-  // Step 3: Shift elements left
   for (let i = index + 1; i < elements.length; i++) {
     steps.push({
       id: `step-${stepCount++}`,
@@ -233,19 +228,20 @@ export function generateDeleteIndexSteps(arr: number[], index: number): VisualSt
       operation: "deletion",
       actionType: "shift",
       dataState: { elements: clone(elements) } as ArrayVisualState,
-      highlights: { active: [i.toString()], visited: [(i - 1).toString()] },
-      variables: { i, length: elements.length },
-      codeLine: 3
+      highlights: conjunct([
+        compare([elements[i].id]),
+        compare([(i - 1).toString()]),
+      ]),
+      codeLine: 3,
     });
   }
 
-  // Step 4: Final array
   const newElements: ArrayElement[] = [];
   for (let i = 0; i < elements.length; i++) {
     if (i === index) continue;
     newElements.push({ ...elements[i], originalIndex: newElements.length });
   }
-  
+
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -255,8 +251,7 @@ export function generateDeleteIndexSteps(arr: number[], index: number): VisualSt
     actionType: "success",
     dataState: { elements: newElements } as ArrayVisualState,
     highlights: {},
-    variables: { length: newElements.length },
-    codeLine: 4
+    codeLine: 4,
   });
 
   return steps;
@@ -280,12 +275,11 @@ export function generateDeleteValueSteps(arr: number[], value: number): VisualSt
       actionType: "error",
       dataState: { elements: [] } as ArrayVisualState,
       highlights: {},
-      codeLine: 1
+      codeLine: 1,
     });
     return steps;
   }
 
-  // Initial State
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -295,8 +289,7 @@ export function generateDeleteValueSteps(arr: number[], value: number): VisualSt
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
     highlights: {},
-    variables: { value, length: elements.length },
-    codeLine: 1
+    codeLine: 1,
   });
 
   let foundIndex = -1;
@@ -310,9 +303,8 @@ export function generateDeleteValueSteps(arr: number[], value: number): VisualSt
       operation: "deletion",
       actionType: "compare",
       dataState: { elements: clone(elements) } as ArrayVisualState,
-      highlights: { active: [i.toString()] },
-      variables: { value, i },
-      codeLine: 2
+      highlights: compare([elements[i].id]),
+      codeLine: 2,
     });
 
     if (elements[i].value === value) {
@@ -325,9 +317,8 @@ export function generateDeleteValueSteps(arr: number[], value: number): VisualSt
         operation: "deletion",
         actionType: "found",
         dataState: { elements: clone(elements) } as ArrayVisualState,
-        highlights: { found: [i.toString()] },
-        variables: { value, foundIndex: i },
-        codeLine: 3
+        highlights: foundHL([elements[i].id]),
+        codeLine: 3,
       });
       break;
     }
@@ -343,13 +334,11 @@ export function generateDeleteValueSteps(arr: number[], value: number): VisualSt
       actionType: "error",
       dataState: { elements: clone(elements) } as ArrayVisualState,
       highlights: {},
-      variables: { value },
-      codeLine: 4
+      codeLine: 4,
     });
     return steps;
   }
 
-  // Remove element
   elements[foundIndex] = { ...elements[foundIndex] };
 
   steps.push({
@@ -360,12 +349,10 @@ export function generateDeleteValueSteps(arr: number[], value: number): VisualSt
     operation: "deletion",
     actionType: "delete",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: { deleted: [foundIndex.toString()] },
-    variables: { deletedValue: value, index: foundIndex },
-    codeLine: 5
+    highlights: deleted([elements[foundIndex].id]),
+    codeLine: 5,
   });
 
-  // Shift elements left
   for (let i = foundIndex + 1; i < elements.length; i++) {
     steps.push({
       id: `step-${stepCount++}`,
@@ -375,19 +362,20 @@ export function generateDeleteValueSteps(arr: number[], value: number): VisualSt
       operation: "deletion",
       actionType: "shift",
       dataState: { elements: clone(elements) } as ArrayVisualState,
-      highlights: { active: [i.toString()], visited: [(i - 1).toString()] },
-      variables: { i, length: elements.length },
-      codeLine: 6
+      highlights: conjunct([
+        compare([elements[i].id]),
+        compare([(i - 1).toString()]),
+      ]),
+      codeLine: 6,
     });
   }
 
-  // Final array
   const newElements: ArrayElement[] = [];
   for (let i = 0; i < elements.length; i++) {
     if (i === foundIndex) continue;
     newElements.push({ ...elements[i], originalIndex: newElements.length });
   }
-  
+
   steps.push({
     id: `step-${stepCount++}`,
     stepNumber: stepCount - 1,
@@ -397,8 +385,7 @@ export function generateDeleteValueSteps(arr: number[], value: number): VisualSt
     actionType: "success",
     dataState: { elements: newElements } as ArrayVisualState,
     highlights: {},
-    variables: { length: newElements.length },
-    codeLine: 7
+    codeLine: 7,
   });
 
   return steps;

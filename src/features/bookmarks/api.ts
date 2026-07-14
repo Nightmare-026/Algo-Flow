@@ -68,3 +68,9 @@ export async function getBookmarks(): Promise<string[]> {
 
   return data?.map((row) => row.algorithm_id) || [];
 }
+
+export type BookmarkAlgorithm = {
+  id: string;
+  slug: string;
+  name: string;
+};
