@@ -11,6 +11,8 @@ import {
   sortedHighlight,
   visited,
   found,
+  inserted,
+  deleted,
   currentTarget,
   pointerOn,
   errorOn,
@@ -41,6 +43,14 @@ describe("Phase 3 — highlights helpers", () => {
 
   it("found returns found bucket", () => {
     expect(found(["n"]).found).toEqual(["n"]);
+  });
+
+  it("inserted returns inserted bucket", () => {
+    expect(inserted(["n", "n"]).inserted).toEqual(["n"]);
+  });
+
+  it("deleted returns deleted bucket", () => {
+    expect(deleted(["n", "n"]).deleted).toEqual(["n"]);
   });
 
   it("currentTarget returns current bucket", () => {

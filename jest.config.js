@@ -14,11 +14,7 @@ const config = {
       },
     ],
   },
-  testPathIgnorePatterns: [
-    "<rootDir>/node_modules/",
-    "<rootDir>/.next/",
-    "<rootDir>/tests/e2e/",
-  ],
+  testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/.next/", "<rootDir>/e2e/"],
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
     "!src/**/*.d.ts",
@@ -36,4 +32,3 @@ const config = {
 };
 
 module.exports = config;
-

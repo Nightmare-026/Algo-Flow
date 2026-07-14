@@ -270,3 +270,22 @@
 ## Decision log (summary)
 
 - 2026-07-14 — Phase 0 baseline + scope. See `DECISIONS.md` §5 for the locked-in *Local + artifacts* rule.
+
+
+---
+
+## 2026-07-14 - Authoritative Phase 2/3 recovery update
+
+This update supersedes the earlier mid-session Phase 3 evidence in this file.
+Detailed evidence is in `docs/RECOVERY_PHASE_2_3.md`.
+
+- [x] B-01 closed: canonical insertion/deletion highlights restored.
+- [x] B-02 runtime recovery closed: composed validator is fail-safe and green.
+- [x] Catalog and implementation registry are in exact 105/105 parity.
+- [x] Typecheck, unit tests, registry validation, production build, and two
+  Chromium recovery smokes pass.
+- [x] Playwright and Jest collection are isolated.
+- [ ] Publication-readiness audit green - 1,365 authored-artifact gaps remain.
+- [ ] Global 85% coverage gate green - current statements coverage is 9.06%.
+- [ ] Database/security findings resolved - intentionally deferred; no DB or
+  remote state was changed in this recovery phase.

@@ -1,4 +1,11 @@
 /**
+ * Future publication-readiness audit shape.
+ *
+ * This is intentionally separate from the authoritative composed runtime
+ * contract in types.ts. Do not cast the live registry to this shape; migrate
+ * entries only when the required artifacts are genuinely authored.
+ */
+/**
  * Phase 3 — Visualizer Engine Contract
  *
  * EVERY field is required. This file deliberately keeps "?" out of the type
@@ -7,12 +14,7 @@
  * type-check but with sub-spec content (e.g. empty pseudocode, missing language).
  */
 
-import type {
-  CodeExample,
-  CodeLanguage,
-  DifficultyLevel,
-  VisualStep,
-} from "@/types";
+import type { CodeExample, CodeLanguage, DifficultyLevel, VisualStep } from "@/types";
 import type { VisualizerInputOptions } from "@/lib/validation/visualizer-input";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -27,7 +29,13 @@ export type LinkedListInput = {
   tailId?: string;
 };
 export type TreeInput = {
-  nodes: ReadonlyArray<{ id: string; value: number; parentId: string | null; leftId: string | null; rightId: string | null; }>;
+  nodes: ReadonlyArray<{
+    id: string;
+    value: number;
+    parentId: string | null;
+    leftId: string | null;
+    rightId: string | null;
+  }>;
   rootId: string | null;
 };
 export type GraphInput = {
@@ -95,7 +103,7 @@ export type VisualizerCategory =
 
 // The four languages each entry MUST cover. (TS is required too, so the
 // runtime can switch by user preference; TS reuses JS code with types.)
-export const REQUIRED_LANGUAGES = ["javascript", "typescript", "python", "cpp", "java"] as const;
+export const REQUIRED_LANGUAGES = ["javascript", "python", "cpp", "java"] as const;
 
 // ─────────────────────────────────────────────────────────────────────
 // Contract
@@ -124,12 +132,11 @@ export interface VisualizerDefinition<TInput> {
   generateSteps: (data: TInput, options: VisualizerInputOptions) => VisualStep[];
 
   /**
-   * Code samples for ALL FIVE required languages. Build-time validator
+   * Code samples for ALL FOUR required languages. The readiness validator
    * refuses any registry where any of these is empty or missing.
    */
   codeExamples: {
     javascript: CodeExample;
-    typescript: CodeExample;
     python: CodeExample;
     cpp: CodeExample;
     java: CodeExample;

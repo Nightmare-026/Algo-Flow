@@ -49,6 +49,18 @@ export function found(ids: ReadonlyArray<string>): VisualStepHighlights {
   return arr.length > 0 ? { found: arr } : {};
 }
 
+/** `inserted` for elements added by an insertion operation. */
+export function inserted(ids: ReadonlyArray<string>): VisualStepHighlights {
+  const arr = Array.from(new Set(ids));
+  return arr.length > 0 ? { inserted: arr } : {};
+}
+
+/** `deleted` for elements removed by a deletion operation. */
+export function deleted(ids: ReadonlyArray<string>): VisualStepHighlights {
+  const arr = Array.from(new Set(ids));
+  return arr.length > 0 ? { deleted: arr } : {};
+}
+
 /** `current` for the search-window focus. */
 export function currentTarget(ids: ReadonlyArray<string>): VisualStepHighlights {
   const arr = Array.from(new Set(ids));

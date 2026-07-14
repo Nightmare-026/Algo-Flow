@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "validate:registry": "tsx scripts/validate-registry.ts",
+    "validate:registry:readiness": "tsx scripts/validate-registry-readiness.ts",
     "prebuild": "npm run validate:registry",
     "build": "next build",
     "start": "next start",
