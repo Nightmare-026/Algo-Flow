@@ -2,14 +2,24 @@
 
 import { createClient } from "@/lib/supabase/server";
 import type { UserActionResult } from "@/features/bookmarks/api";
+import type { Json } from "@/types/database";
+
+function toJson(value: unknown): Json {
+  const serialized = JSON.stringify(value);
+  if (serialized === undefined) {
+    throw new Error("Session state is not JSON serializable.");
+  }
+
+  return JSON.parse(serialized) as Json;
+}
 
 export type SavedSession = {
   id: string;
-  algorithm_id: string;
-  title: string;
-  input_data: unknown;
+  algorithm_id: string | null;
+  title: string | null;
+  input_data: Json;
   current_step: number;
-  visual_state: unknown;
+  visual_state: Json | null;
   speed: string;
   code_language: string;
   created_at: string;
@@ -44,9 +54,9 @@ export async function saveSession(
       user_id: user.id,
       algorithm_id: algorithmId,
       title,
-      input_data: inputData,
+      input_data: toJson(inputData),
       current_step: currentStep,
-      visual_state: visualState,
+      visual_state: toJson(visualState),
       speed,
       code_language: codeLanguage,
     })
@@ -57,13 +67,17 @@ export async function saveSession(
     return { ok: false, message: "Session could not be saved." };
   }
 
-  await supabase.from("activity_timeline").insert({
+  const { error: activityError } = await supabase.from("activity_timeline").insert({
     user_id: user.id,
     action_type: "saved_session",
     algorithm_id: algorithmId,
   });
 
-  return { ok: true, message: "Session saved.", data: data as SavedSession };
+  return {
+    ok: true,
+    message: activityError ? "Session saved; activity could not be recorded." : "Session saved.",
+    data,
+  };
 }
 
 export async function getSavedSessions(): Promise<SavedSession[]> {
@@ -74,13 +88,15 @@ export async function getSavedSessions(): Promise<SavedSession[]> {
 
   if (!user) return [];
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("saved_visualizer_sessions")
     .select("*")
     .eq("user_id", user.id)
     .order("updated_at", { ascending: false });
 
-  return (data as SavedSession[]) || [];
+  if (error) throw new Error("Saved sessions could not be loaded.");
+
+  return data ?? [];
 }
 
 export async function deleteSession(id: string) {
@@ -91,11 +107,15 @@ export async function deleteSession(id: string) {
 
   if (!user) return false;
 
-  await supabase
+  const { data, error } = await supabase
     .from("saved_visualizer_sessions")
     .delete()
     .eq("id", id)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .select("id")
+    .maybeSingle();
 
-  return true;
+  if (error) return false;
+
+  return data !== null;
 }

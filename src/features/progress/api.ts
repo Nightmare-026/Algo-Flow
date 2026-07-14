@@ -1,48 +1,44 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { updateStreakOnActivity } from "@/features/streak/api";
+import type { UserActionResult } from "@/features/bookmarks/api";
 
-export async function markCompleted(algorithmId: string) {
+export async function markCompleted(algorithmId: string): Promise<UserActionResult> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!user) return null;
-
-  // Insert progress (on conflict do nothing)
-  const { error: progressError } = await supabase
-    .from("user_progress")
-    .upsert(
-      { user_id: user.id, algorithm_id: algorithmId, status: "completed" },
-      { onConflict: "user_id,algorithm_id" }
-    );
-
-  if (!progressError) {
-    // Add to activity timeline
-    await supabase.from("activity_timeline").insert({
-      user_id: user.id,
-      action_type: "completed",
-      algorithm_id: algorithmId,
-    });
-
-    // Update streak
-    await updateStreakOnActivity();
+  if (!user) {
+    return { ok: false, requiresAuth: true, message: "Log in to save progress." };
   }
 
-  return true;
+  const { error } = await supabase.rpc("mark_algorithm_completed", {
+    p_algorithm_id: algorithmId,
+  });
+
+  if (error) {
+    return { ok: false, message: "Progress could not be saved." };
+  }
+
+  return { ok: true, message: "Progress saved." };
 }
 
 export async function getCompletedAlgorithms(): Promise<string[]> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) return [];
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("user_progress")
     .select("algorithm_id")
     .eq("user_id", user.id)
     .eq("status", "completed");
 
-  return data?.map(row => row.algorithm_id) || [];
+  if (error) throw new Error("Completed algorithms could not be loaded.");
+
+  return data?.map((row) => row.algorithm_id) ?? [];
 }

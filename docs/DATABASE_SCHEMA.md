@@ -32,3 +32,16 @@
 4. Review every `SECURITY DEFINER` function, its owner, `search_path`, and `EXECUTE` grants.
 5. Add size/shape constraints for JSONB session state and server-side validation for all writes.
 
+
+## 2026-07-14 local reconciliation package
+
+Migration `20260714113326_reconcile_database_contract.sql` supersedes the
+repository-only concerns above for the local branch:
+
+- stable text algorithm IDs at application persistence boundaries;
+- explicit owner RLS and grants for user data;
+- read-only published catalog policies;
+- activity metadata and atomic completion/quiz/streak functions;
+- paired guarded down script under `supabase/rollbacks/`.
+
+Remote state is still unverified, and the local stack image pull timed out

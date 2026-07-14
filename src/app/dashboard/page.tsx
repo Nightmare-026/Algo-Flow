@@ -61,7 +61,7 @@ export default async function DashboardPage() {
         <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-text-primary">
-              Welcome back, {profile?.username || "Learner"}
+              Welcome back, {profile?.full_name || "Learner"}
             </h1>
             <p className="mt-2 text-text-secondary">Here&apos;s your DSA progress summary.</p>
           </div>

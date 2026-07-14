@@ -289,3 +289,15 @@ Detailed evidence is in `docs/RECOVERY_PHASE_2_3.md`.
 - [ ] Global 85% coverage gate green - current statements coverage is 9.06%.
 - [ ] Database/security findings resolved - intentionally deferred; no DB or
   remote state was changed in this recovery phase.
+
+## 2026-07-14 - Recovery Phase 4 database/API update
+
+Detailed evidence: `docs/RECOVERY_PHASE_4_DATABASE_API.md`.
+
+- [x] Local migration reconciles stable text algorithm identifiers.
+- [x] Preferences, activity metadata, typed clients, and mutation error
+  semantics align with the repository schema.
+- [x] Explicit catalog grants/RLS and owner-scoped policies are defined.
+- [x] 8 focused database/API regression tests and all 34 unit tests pass.
+- [ ] Local Supabase reset and live RLS tests pass - database image pull timed
+  out before a container started.

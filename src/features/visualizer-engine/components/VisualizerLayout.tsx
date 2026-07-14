@@ -44,11 +44,13 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
 
   // Check initial bookmark state
   useEffect(() => {
-    getBookmarks().then(bookmarks => {
-      if (bookmarks.includes(algorithm.id)) {
-        setIsBookmarked(true);
-      }
-    });
+    getBookmarks()
+      .then((bookmarks) => {
+        if (bookmarks.includes(algorithm.id)) setIsBookmarked(true);
+      })
+      .catch(() => {
+        setStatusMessage("Bookmarks could not be loaded.");
+      });
   }, [algorithm.id]);
 
   // Handle auto-completion when reaching the end
@@ -56,7 +58,13 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
     if (totalSteps > 0 && currentStepIndex === totalSteps - 1 && !hasCompleted) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setHasCompleted(true);
-      markCompleted(algorithm.id).catch(console.error);
+      markCompleted(algorithm.id)
+        .then((result) => {
+          if (!result.ok) setStatusMessage(result.message);
+        })
+        .catch(() => {
+          setStatusMessage("Progress could not be saved.");
+        });
     }
   }, [currentStepIndex, totalSteps, hasCompleted, algorithm.id]);
 

@@ -22,21 +22,29 @@ export async function toggleBookmark(
   }
 
   if (isBookmarked) {
-    const { error } = await supabase
-      .from("bookmarks")
-      .insert({ user_id: user.id, algorithm_id: algorithmId });
+    const { error } = await supabase.from("bookmarks").insert({
+      user_id: user.id,
+      algorithm_id: algorithmId,
+      bookmark_type: "algorithm",
+      title: algorithmId,
+    });
 
     if (error) {
       return { ok: false, message: "Bookmark could not be saved." };
     }
 
-    await supabase.from("activity_timeline").insert({
+    const { error: activityError } = await supabase.from("activity_timeline").insert({
       user_id: user.id,
       action_type: "bookmarked",
       algorithm_id: algorithmId,
     });
 
-    return { ok: true, message: "Bookmark saved." };
+    return {
+      ok: true,
+      message: activityError
+        ? "Bookmark saved; activity could not be recorded."
+        : "Bookmark saved.",
+    };
   }
 
   const { error } = await supabase
@@ -60,13 +68,15 @@ export async function getBookmarks(): Promise<string[]> {
 
   if (!user) return [];
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("bookmarks")
     .select("algorithm_id")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
-  return data?.map((row) => row.algorithm_id) || [];
+  if (error) throw new Error("Bookmarks could not be loaded.");
+
+  return data?.flatMap((row) => (row.algorithm_id ? [row.algorithm_id] : [])) ?? [];
 }
 
 export type BookmarkAlgorithm = {
