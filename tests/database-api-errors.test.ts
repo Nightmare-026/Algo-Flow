@@ -47,6 +47,9 @@ describe("database API failure semantics", () => {
     await expect(submitQuizAttempt("alg_arr_bubble_sort", 6, 5)).rejects.toThrow(
       "Invalid quiz score."
     );
+    await expect(submitQuizAttempt("alg_arr_bubble_sort", 2.5, 5)).rejects.toThrow(
+      "Invalid quiz score."
+    );
     expect(rpc).toHaveBeenCalledTimes(1);
   });
 

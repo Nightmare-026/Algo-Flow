@@ -87,15 +87,12 @@ export function generateStackPopSteps(
     }
   });
 
-  // Step 4: Pop from stack
-  elements.pop();
-  currentState = { elements: [...elements], maxCapacity };
-  
+  // Step 4: Mark the still-renderable top element for removal.
   steps.push({
     id: uuidv4(),
     stepNumber: 4,
-    title: "Decrement Top",
-    description: `Removed value ${elementToPop.value} and decremented top pointer.`,
+    title: "Remove Top Element",
+    description: `Mark value ${elementToPop.value} for removal before decrementing the top pointer.`,
     operation: "Pop",
     actionType: "pop",
     dataState: { ...currentState },
@@ -103,10 +100,13 @@ export function generateStackPopSteps(
     codeLine: 6,
     pseudocodeLine: 5,
     variables: {
-      "Top": elements.length - 1,
+      "Top": elements.length - 2,
       "Value": elementToPop.value
     }
   });
+
+  elements.pop();
+  currentState = { elements: [...elements], maxCapacity };
 
   // Step 5: Complete
   steps.push({

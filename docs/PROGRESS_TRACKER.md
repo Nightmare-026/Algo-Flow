@@ -5,6 +5,49 @@
 
 ---
 
+## Authoritative Master Specification
+
+- Source: attached `ALGO FLOW - COMPLETE PRODUCTION READINESS, SECURITY, VISUALIZER CORRECTNESS...` specification.
+- Source SHA-256: `3CBB6B4FC69044E1EF9859CC066F1A42D071B166548907F59074D70040D8B8F1`.
+- Incorporated: 2026-07-14.
+- Repository baseline: branch `chore/production-readiness`, commit `c87547f` before the current working-tree changes.
+- Completion rule: a phase is complete only when its acceptance criteria are backed by test, audit, or runtime evidence. File presence and implementation progress alone do not close a phase.
+- Artifact inventory: all 24 repository and documentation artifacts named by the specification exist. Their existence is recorded separately from their content-completeness gates.
+
+### Overall verified phase status
+
+| Scope | State | Verified evidence | Gate preventing completion |
+|---|---|---|---|
+| Phase 0 - Repository baseline | Complete | All 14 baseline requirements recorded; current build/tests, dependency tree, Supabase inventory, 10-width browser audit, screenshots, Lighthouse, accessibility, bundle, routes, console state, and repository inventories have durable evidence | None; discovered failures are carried into their remediation phases |
+| Phase 1 - Complete audit | Complete | Current architecture/product/runtime audit, 10-width browser checks, internal-link crawl, all-visualizer route audit, cycle scan, duplication scan, and classified findings are recorded | None for the audit gate; implementation findings travel to their owning phases |
+| Phase 2 - Architecture restructuring | Complete | Feature APIs, typed registry/control boundaries, server/client route separation, feedback domain, App Router resilience conventions, architecture documentation, and no-regression gates are verified | None for Phase 2; strict visualizer content migration remains explicitly owned by Phase 3 |
+| Phase 3 - Visualizer correctness | In progress | Registry parity/all routes/invariant harness pass; 18 array access/traversal/search/sort entries pass executable artifacts and all 72 four-language runs | `522` genuine authored-artifact gaps and remaining-entry cross-language correctness remain open |
+| Phase 4 - Backend, database, auth, security | Prepared; not active | Correct Supabase target audited; migration up/down dry-runs pass; typecheck, 36 tests, lint, and build pass | Phase 3 exit plus persistent migration approval, generated remote types, live RLS/RPC checks, and complete auth/account lifecycle remain open |
+| Phase 5 - Design system | Pending | Existing design documentation is inventoried | Theme, typography, layout, motion, and component acceptance evidence is not complete |
+| Phase 6 - UX and accessibility | Pending | Existing UX documentation is inventoried | Dashboard flows, keyboard/screen-reader validation, WCAG checks, and legal flows remain open |
+| Phase 7 - Performance | Pending | No qualifying production performance report recorded | LCP <= 2.5 s, INP <= 200 ms, CLS <= 0.1, bundle review, and Lighthouse target remain open |
+| Phase 8 - Testing | In progress | Automated tests exist and the current 36-test suite passes | Public registry, route smoke, algorithm correctness, integration/E2E, accessibility, visual, and database coverage gates remain open; global coverage is `9.06%` |
+| Phase 9 - Observability | Pending | No qualifying production observability report recorded | Error boundaries, structured logging, monitoring, alerting, and operational telemetry remain open |
+| Phase 10 - Deployment and release | Pending | Deployment documentation exists | Staging validation, release checklist, rollback evidence, production deployment, smoke checks, and monitoring remain open |
+| CI quality gates | Pending | Local quality commands have passing evidence | Required automated CI enforcement is not yet verified |
+| Definition of Done | Not met | Progress is traceable in this file | All phase, security, correctness, accessibility, performance, testing, release, and monitoring gates must pass |
+
+### Current release blockers
+
+1. The reconciliation migration has passed transactional up/down validation but has not been persistently applied to Supabase project `mylzlhevgffgkwpeerzh`.
+2. Owner and cross-user RLS checks, RPC checks, and auth-trigger checks have not been rerun against the post-migration live schema.
+3. The composed visualizer inventory reports `522` genuine authored-artifact gaps after the first 18 array entries passed.
+4. Global automated test coverage is `9.94%` statements, below the master specification's release expectation.
+5. Complete algorithm-invariant and four-language implementation validation is not yet demonstrated.
+6. Full auth lifecycle, account export/deletion, OAuth, abuse controls, and rate limiting remain open.
+7. WCAG, performance, observability, CI, staging, deployment, rollback, and monitoring gates remain open.
+
+### Current next action
+
+Continue Phase 3 with the P3-T04 array mutation/rearrangement batch under the executable artifact and language gates. The prepared Phase 4 migration remains behind a later action-specific T3 gate.
+
+---
+
 ## Phase 0 — Repository Safety and Baseline
 
 - [x] Confirm repository root and active branch — `algo-flow/` on `chore/production-readiness` (branched from `main @ 672f9a8`).
@@ -16,20 +59,25 @@
 - [x] Inspect Supabase configuration, migrations, tables, RLS.
 - [x] Inventory components, hooks, stores, APIs, visualizers, tests.
 - [x] Record current build / test / lint results.
-- [ ] Capture baseline screenshots — gated on browser availability.
-- [ ] Run Lighthouse audit — gated on running production build.
+- [x] Capture baseline screenshots — **2026-07-14:** local home, catalog, and bubble-sort pages at 390px, 768px, and 1440px under `docs/baseline-screenshots/`.
+- [x] Run Lighthouse audit — **2026-07-14:** Lighthouse 13.4.0 desktop report saved as `docs/lighthouse-phase0-home.report.{json,html}`.
 - [x] Resolve first blocking question — **done 2026-07-14.** User chose *Option A — Local + write artifacts; you apply.* Captured in `DECISIONS.md` §5.
 
 ### Phase 0 evidence
 
 | Check | Command | Result |
 |---|---|---|
-| Typecheck | `npm run typecheck` | Silent (clean) — no errors |
-| Lint | `npm run lint` | Silent (clean) — no errors |
-| Unit tests | `npx jest --silent` | 2 suites, 8 tests, 1.613 s — all passing |
-| Branch | `git branch --show-current` | `chore/production-readiness` (off `672f9a8` main) |
-| Build | `npm run build` | Not yet run as part of baseline |
-| Coverage | `npx jest --coverage` | Not yet run as part of baseline |
+| Typecheck | `npm run typecheck` | Pass — no errors |
+| Lint | `npm run lint` | Pass — 0 errors, 6 warnings |
+| Unit tests | `npm test -- --runInBand` | Pass — 7 suites, 36 tests |
+| Build + route inventory | `npm run build` | Pass — 15 application routes plus proxy listed |
+| Registry parity | `npm run validate:registry` | Pass — 105 catalog entries / 105 implementations |
+| Strict readiness | `npm run validate:registry:readiness` | Expected fail — 1,365 authored-artifact gaps; carried to Phase 3 |
+| Coverage | `npm run test:coverage -- --runInBand` | Tests pass; global threshold fails at 9.94% statements / 5.05% branches / 7.38% functions / 10.77% lines; carried to Phase 8 |
+| Format baseline | `npm run format:check` | Fail — 147 source files require formatting; carried to CI/quality remediation |
+| Dependency audit | `npm audit --omit=dev --audit-level=moderate` | Two moderate transitive PostCSS advisories through Next.js; no upstream fix currently reported |
+| Responsive/browser | `npx playwright test e2e/responsive-baseline.spec.ts --workers=1` | Pass — 13 tests; all required widths, six public routes, no console/page errors, no framework overlay, no horizontal overflow |
+| Lighthouse desktop | `npx --yes lighthouse ... --preset=desktop` | Performance 98, Accessibility 96, Best Practices 100, SEO 100; LCP 1.0s, CLS 0, TBT 10ms, transfer 358 KiB |
 
 ### Phase 0 deliverables created
 
@@ -42,15 +90,16 @@
 
 ### Phase 0 unresolved risks
 
-1. The first blocking question — scope of "production target" — is unresolved.
-2. `.env.local` exists on disk (gitignored). Contents not inspected in this session; values intentionally unknown.
-3. `docs/supabase_config.md` is in `.gitignore` (suggests a prior sensitive file). Verify nothing is committed.
-4. Vercel deploy state unknown — caller's account only.
-5. Supabase project connection state unknown — caller's project only.
+1. `.env.local` exists on disk and is gitignored; secret values remain intentionally unread and undocumented.
+2. Strict visualizer readiness has 1,365 gaps; Phase 3 owns remediation.
+3. Global coverage is below the 85% release gate; Phase 8 owns remediation.
+4. Prettier reports 147 files; architecture and quality phases must normalize formatting without obscuring functional diffs.
+5. Two moderate transitive PostCSS advisories have no upstream fix in the currently installed Next.js release; monitor and document the exception.
+6. Lighthouse accessibility is 96 rather than the release target; Phases 5-7 own the remaining findings.
 
 ### Phase 0 status
 
-**Completed.**
+**Complete and verified on 2026-07-14.** Phase 0 captured every required baseline dimension without deleting files. Failures discovered by the baseline are assigned to later remediation phases and are not represented as release-ready.
 
 ---
 
@@ -59,22 +108,22 @@
 - [x] Architecture audit — `CURRENT_STATE_AUDIT.md` §2 (A-01 through A-12)
 - [x] Product completeness audit — §3 (P-01 through P-11)
 - [x] Runtime reliability audit — §4 (RR-01 through RR-12)
-- [~] UI / responsive behavior audit (breakpoints: 320 / 360 / 375 / 390 / 414 / 768 / 1024 / 1280 / 1440 / 1920) — static-code hypotheses in §5; live breakpoint verification deferred to Phase 7 (requires `npm run dev` + browser).
-- [x] Classify every finding (Blocker / Critical / High / Medium / Low / Enhancement) — counts: 0 Blocker / 7 Critical / 23 High / 18 Medium / 6 Low
+- [x] UI / responsive behavior audit — **2026-07-14:** all ten required widths pass on six major public routes with no console/page errors, framework overlays, or horizontal overflow.
+- [x] Classify every current finding — authoritative addendum counts: 1 Blocker / 3 Critical / 4 High / 5 Medium.
 - [x] Output a finalized `CURRENT_STATE_AUDIT.md` (§1–§15)
 
 ### Phase 1 evidence
 
 | Check | Command | Result |
 |---|---|---|
-| Typecheck | `npm run typecheck` | Silent (clean) — no errors |
-| Lint | `npm run lint` | Silent (clean) — no errors |
-| Unit tests | `npx jest --silent` | 2 suites, 8 tests, 1.613 s — all passing |
-| Migration list | `ls supabase/migrations/*.sql` | 3 files (`001_auth_profiles.sql`, `002_phase10.sql`, `003_srs_complete.sql`) — R-01/R-02 |
-| Renderer set | `ls src/features/visualizer-engine/components/renderers/*.tsx` | 10 renderers |
-| Algorithm slugs | `grep "slug:" src/data/seed/algorithms.ts` | 107 slugs — P-06 |
-| Catalog tables + RLS | grep on RLS policies | Catalog tables have no policies — BD-01 |
-| App-router boundaries | `find … error.tsx` | None found — A-08 |
+| Build/type/unit | build + typecheck + Jest | Pass: optimized build, clean typecheck, 36 tests |
+| Responsive/browser | Playwright responsive baseline | Pass: 13 tests, ten required widths |
+| Internal links | Playwright public-link audit | Pass: no discovered dead internal link |
+| Published visualizers | Playwright all-route audit | 104/105 routes pass; insertion-sort returns 500 |
+| Registry readiness | strict validator | Fail: 1,365 authored-artifact errors |
+| Circular dependencies | Madge | 178 files, no cycles |
+| Duplication | jscpd | 145 clones; 2,154 duplicated lines / 9.01% |
+| App-router boundaries | file inventory | No error/loading/not-found boundaries — P1-C03 |
 
 ### Phase 1 deliverables
 
@@ -84,12 +133,12 @@
 
 | ID | Severity | What it is | Phase it travels into |
 |---|---|---|---|
-| A-03 / RR-01 | Critical | Highlights shape mismatch (algorithm files use `{[id]: "active"}`, renderers read `{active: [id]}`). Likely cause of "visualizer feels inert." | Phase 3 (visualizer contract) — first concrete fix. |
-| A-01 / P-01 | Critical | Registry contract is too permissive to enforce "no placeholder." | Phase 3 — central deliverable. |
-| BD-01 | Critical | Catalog tables have no RLS — clients cannot read them under RLS defaults. | Phase 4 — migration plan. |
-| A-07 | High | Middleware does not gate `/dashboard/*`. | Phase 4. |
-| A-08 | High | No `error.tsx` / `global-error.tsx`. | Phase 4 / Phase 9. |
-| R-01 / R-02 | High | Migration renumbering + duplicate `quiz_attempts`. | Phase 4. |
+| P1-B01 | Blocker | Insertion-sort route returns HTTP 500 from an out-of-bounds post-swap read. | Phase 3 — first functional fix and regression test. |
+| P1-C01 / C02 | Critical | Registry readiness has 1,365 gaps and runtime fallbacks can mask incomplete definitions. | Phase 3 — central deliverable. |
+| P1-C03 | Critical | No App Router error/loading/not-found boundaries. | Phase 2 / Phase 9. |
+| P1-H01 | High | Global coverage is 9.94% statements. | Phase 8. |
+| P1-H02 | High | Auth actions have no verified rate limiting. | Phase 4. |
+| P1-H04 | High | Live Supabase reconciliation remains unapplied pending exact confirmation. | Phase 4. |
 
 ### Phase 1 unresolved open questions for the user
 
@@ -109,7 +158,7 @@
 
 ### Phase 1 status
 
-**Phase 1 closed. Pending user approval to proceed to Phase 2.**
+**Complete and verified on 2026-07-14.** Audit findings remain open for implementation, but all Phase 1 audit categories and classification requirements have current evidence.
 
 ---
 
@@ -117,7 +166,11 @@
 
 - [x] Plan feature-based restructure against existing tree — see `~/.claude/plans/distributed-gliding-rose.md`
 - [x] Verify deletion candidates (search imports, references, routes, tests) — grep confirmed only `lib/api/*.{bookmarks,progress,sessions,streak}` consumers were `dashboard/page.tsx` and `VisualizerLayout.tsx`; both updated.
-- [~] Refactor with verified tests at every step
+- [x] Refactor with verified tests at every step.
+- [x] Remove explicit `any` from the authoritative runtime visualizer generator and input-control boundaries.
+- [x] Split `/visualizer/[slug]` into a Server Component validation boundary and focused interactive client.
+- [x] Add reusable `components/feedback` domain and root error/loading/not-found conventions.
+- [x] Reconcile current architecture documentation and verify no circular dependencies.
 
 ### Phase 2 evidence
 
@@ -126,9 +179,12 @@
 | Stub deletion | `ls src/app/dashboard/` | confirmed only `page.tsx` remains; empty sub-directories also cleaned.
 | Migration grep (old) | `grep "@/lib/api/(bookmarks|progress|sessions|streak)"` | No matches found in repo |
 | Migration grep (new) | `grep "@/features/{bookmarks|progress|sessions|streak}/api"` | 7 correct imports in dashboard/page.tsx + VisualizerLayout.tsx + cross-feature wiring |
-| Typecheck | `npm run typecheck` | *deferred — Bash classifier returning 503/429 from upstream; will run when Claude side recovers* |
-| Lint | `npm run lint` | *deferred — same reason* |
-| Unit tests | `npx jest --silent` | *deferred — same reason* |
+| Typecheck | `npm run typecheck` | Pass |
+| Lint | `npm run lint` | Pass: 0 errors, 6 pre-existing warnings |
+| Unit tests | `npm test -- --runInBand` | Pass: 7 suites, 36 tests |
+| Production build | `npm run build` | Pass |
+| Browser regression | Playwright recovery + responsive suites | Pass: 16/16 tests on a clean server |
+| Circular dependencies | Madge | None across 178 files |
 
 ### Phase 2 deliverables completed in this session
 
@@ -157,15 +213,15 @@
    - `lib/api/quizzes.ts` — quiz analytics writer (used by `quizzes/` route).
    - `lib/api/preferences.ts` — user theme/preference persistence (used by providers).
 
-### Phase 2 unresolved risks (carry into Phase 2 closeout)
+### Historical Phase 2 risks and current disposition
 
-1. **Test/typecheck gate deferred** — the model-side Bash classifier returned provider `DEGRADED`, `ResourceExhausted` and `rate_limit_error` while attempting to run `npm run typecheck` and `npx jest`. **Action required:** When the harness recovers, run the three commands and append results here.
+1. **Test/typecheck gate — closed.** Current typecheck, 36 unit tests, lint, build, and 16 browser checks pass.
 2. **Dashboard tab layout (Step 1 / Phase 6 work)** — the dashboard currently still renders every section inline. The redirect-stub deletion is the Phase 2 commitment; converting the inline sections to client-side tabs is Phase 6 work. The deleted sub-routes never had content, so pruning does not regress UX.
 3. **Activity/challenges/preferences/quizzes still under `lib/api/`** — defensive call: these are cross-cutting readers, not user-data CRUD. A future PR could move them into `features/timeline`, `features/daily`, `features/preferences`, `features/quizzes` for full consistency; not required by Phase 2.
 
 ### Phase 2 status
 
-**Code-changes complete. Verification gate pending harness recovery. Marking in-progress.**
+**Complete and verified on 2026-07-14.** The architecture follows the adapted domain structure, route boundaries are explicit, resilience conventions exist, and all Phase 2 no-regression gates pass. Detailed evidence: `docs/PHASE_2_COMPLETION.md`.
 
 ## Phase 3 — Visualizer Engine Contract
 
@@ -183,10 +239,21 @@
 
 ## Phase 4 — Backend, Database, Auth, RLS
 
-- [ ] Audit migrations (currently `001_auth_profiles.sql`, `002_phase10.sql`, `003_srs_complete.sql`)
-- [ ] Renumber migrations; deduplicate conflicting schemas (R-01, R-02)
-- [ ] Add explicit catalog-table RLS (read-only public) — BD-01
-- [ ] Tighten `profiles` policies; add INSERT/UPDATE column guards
+- [x] Audit the correct live Supabase target: schema, ledger, policies, grants,
+  functions, advisors, and data quality.
+- [x] Replace the incompatible reconciler with a live-aligned forward migration
+  and guarded down script.
+- [x] Align application APIs and generated-style types to the live contract.
+- [x] Add least-privilege grants, optimized owner RLS, secured auth trigger,
+  security-invoker RPCs, missing indexes, and input constraints.
+- [x] Execute the exact migration in a remote transaction, roll it back, and
+  verify no persistent target change.
+- [x] Pass typecheck, 36 tests, lint with 0 errors, registry validation, and
+  production build.
+- [~] Persistent deployment waits on a backup/restore asset and exact user
+  confirmation.
+- [ ] Canonicalize stale historical migration files/ledger separately; do not
+  use `supabase db push` meanwhile.
 - [ ] Add server actions for sensitive ops (deleteAccount, exportAccountData, account purge)
 - [ ] Verify OAuth callback & allowlist
 - [ ] Add middleware-gated `/dashboard/*` protection — A-07
@@ -294,10 +361,27 @@ Detailed evidence is in `docs/RECOVERY_PHASE_2_3.md`.
 
 Detailed evidence: `docs/RECOVERY_PHASE_4_DATABASE_API.md`.
 
-- [x] Local migration reconciles stable text algorithm identifiers.
-- [x] Preferences, activity metadata, typed clients, and mutation error
-  semantics align with the repository schema.
-- [x] Explicit catalog grants/RLS and owner-scoped policies are defined.
-- [x] 8 focused database/API regression tests and all 34 unit tests pass.
-- [ ] Local Supabase reset and live RLS tests pass - database image pull timed
-  out before a container started.
+- [x] Correct project `mylzlhevgffgkwpeerzh` audited through Supabase MCP.
+- [x] Live-aligned migration, rollback, APIs, types, policies, and grants built.
+- [x] Exact migration transaction dry-run passed and was rolled back.
+- [x] Post-check confirmed UUID schema, one preference row, zero new RPCs, and
+  three migration-ledger entries: no persistent change.
+- [x] 36 tests, typecheck, registry validation, lint, and production build pass.
+- [ ] Persistent migration requires backup/restore preparation and explicit
+  migration-specific confirmation.
+
+## 2026-07-14 - Master specification adoption update
+
+- [x] Registered the attached production-readiness specification as the authoritative acceptance contract.
+- [x] Recorded its SHA-256 so later revisions can be distinguished from this baseline.
+- [x] Confirmed all 24 named repository and documentation artifacts exist.
+- [x] Reconciled phase labels with evidence and removed unsupported `Completed` or `closed` claims from Phases 0-2.
+- [x] Added an overall phase dashboard, release blockers, and one explicit next action.
+- [ ] Close each phase only after every applicable acceptance criterion has durable evidence.
+
+### Update evidence
+
+- Files changed for this update: `docs/PROGRESS_TRACKER.md` only.
+- Validation: documentation diff and whitespace validation; application tests were not rerun because this update changes no runtime, migration, configuration, or dependency files.
+- Risk: historical entries remain for traceability and may describe narrower subphase completion; the authoritative dashboard at the top governs overall completion status.
+- Next phase gate: controlled completion of the open Phase 4 database deployment and post-migration verification steps.

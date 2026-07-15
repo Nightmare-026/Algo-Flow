@@ -5,8 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 export type ActivityItem = {
   id: string;
   action_type: "completed" | "bookmarked" | "saved_session" | "quiz_completed";
-  algorithm_id: string | null;
-  created_at: string;
+  algorithm_id: string;
+  created_at: string | null;
 };
 
 export async function getActivityTimeline(limit: number = 10): Promise<ActivityItem[]> {

@@ -381,7 +381,7 @@ const rawAlgorithms: Algorithm[] = [
   },
   {
     id: "alg_arr_reverse",
-    operationId: "op_arr_reversing",
+    operationId: "op_arr_rearrangement",
     dataStructureId: "ds_array",
     name: "Reverse Array",
     slug: "reverse-array",
@@ -400,7 +400,7 @@ const rawAlgorithms: Algorithm[] = [
   },
   {
     id: "alg_arr_left_rotation",
-    operationId: "op_arr_rotating",
+    operationId: "op_arr_rearrangement",
     dataStructureId: "ds_array",
     name: "Left Rotation",
     slug: "left-rotation",
@@ -419,7 +419,7 @@ const rawAlgorithms: Algorithm[] = [
   },
   {
     id: "alg_arr_right_rotation",
-    operationId: "op_arr_operations",
+    operationId: "op_arr_rearrangement",
     dataStructureId: "ds_array",
     name: "Right Rotation",
     slug: "right-rotation",
@@ -438,7 +438,7 @@ const rawAlgorithms: Algorithm[] = [
   },
   {
     id: "alg_arr_remove_duplicates",
-    operationId: "op_arr_operations",
+    operationId: "op_arr_deletion",
     dataStructureId: "ds_array",
     name: "Remove Duplicates",
     slug: "remove-duplicates",

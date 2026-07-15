@@ -12,7 +12,6 @@ import {
   inserted,
   pointerOn,
   sortedHighlight,
-  visited,
 } from "@/features/visualizer-engine/highlights";
 
 const clone = (elements: ArrayElement[]): ArrayElement[] =>
@@ -35,7 +34,7 @@ export function generateInsertBeginningSteps(arr: number[], value: number): Visu
     operation: "insertion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: pointerOn(["0"]),
+    highlights: pointerOn(elements[0] ? [elements[0].id] : []),
     codeLine: 1,
   });
 
@@ -51,7 +50,7 @@ export function generateInsertBeginningSteps(arr: number[], value: number): Visu
         dataState: { elements: clone(elements) } as ArrayVisualState,
         highlights: conjunct([
           compare([elements[i].id]),
-          visited([elements[i + 1]?.id ?? (i + 1).toString()]),
+          pointerOn([elements[i].id]),
         ]),
         codeLine: 2,
       });
@@ -107,7 +106,7 @@ export function generateInsertEndSteps(arr: number[], value: number): VisualStep
     operation: "insertion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: pointerOn([arr.length.toString()]),
+    highlights: pointerOn(elements.at(-1) ? [elements.at(-1)!.id] : []),
     codeLine: 1,
   });
 
@@ -162,7 +161,13 @@ export function generateInsertIndexSteps(arr: number[], value: number, insertInd
     operation: "insertion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: pointerOn([idx.toString()]),
+    highlights: pointerOn(
+      elements[idx]
+        ? [elements[idx].id]
+        : elements.at(-1)
+          ? [elements.at(-1)!.id]
+          : [],
+    ),
     codeLine: 1,
   });
 
@@ -178,7 +183,7 @@ export function generateInsertIndexSteps(arr: number[], value: number, insertInd
         dataState: { elements: clone(elements) } as ArrayVisualState,
         highlights: conjunct([
           compare([elements[i].id]),
-          visited([elements[i + 1]?.id ?? (i + 1).toString()]),
+          pointerOn([elements[i].id]),
         ]),
         codeLine: 2,
       });

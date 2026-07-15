@@ -23,7 +23,6 @@ function makeStep(input: Omit<VisualStep, "id">): VisualStep {
 export function generateAccessByIndexSteps(arr: number[], indexToAccess: number): VisualStep[] {
   const steps: VisualStep[] = [];
   const elements = createArrayElements(arr);
-  const dataState: ArrayVisualState = { elements };
 
   steps.push({
     ...makeStep({
@@ -61,7 +60,7 @@ export function generateAccessByIndexSteps(arr: number[], indexToAccess: number)
         operation: "Access by Index",
         actionType: "error",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: errorOn([indexToAccess.toString()]),
+        highlights: errorOn([]),
         codeLine: 4,
       }),
     });

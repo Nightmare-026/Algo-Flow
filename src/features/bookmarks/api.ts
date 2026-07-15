@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
 
 export type UserActionResult = {
   ok: boolean;
@@ -12,6 +13,11 @@ export async function toggleBookmark(
   algorithmId: string,
   isBookmarked: boolean
 ): Promise<UserActionResult> {
+  const normalizedAlgorithmId = normalizeAlgorithmId(algorithmId);
+  if (!normalizedAlgorithmId) {
+    return { ok: false, message: "A valid algorithm is required." };
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -24,9 +30,7 @@ export async function toggleBookmark(
   if (isBookmarked) {
     const { error } = await supabase.from("bookmarks").insert({
       user_id: user.id,
-      algorithm_id: algorithmId,
-      bookmark_type: "algorithm",
-      title: algorithmId,
+      algorithm_id: normalizedAlgorithmId,
     });
 
     if (error) {
@@ -36,7 +40,7 @@ export async function toggleBookmark(
     const { error: activityError } = await supabase.from("activity_timeline").insert({
       user_id: user.id,
       action_type: "bookmarked",
-      algorithm_id: algorithmId,
+      algorithm_id: normalizedAlgorithmId,
     });
 
     return {
@@ -51,7 +55,7 @@ export async function toggleBookmark(
     .from("bookmarks")
     .delete()
     .eq("user_id", user.id)
-    .eq("algorithm_id", algorithmId);
+    .eq("algorithm_id", normalizedAlgorithmId);
 
   if (error) {
     return { ok: false, message: "Bookmark could not be removed." };

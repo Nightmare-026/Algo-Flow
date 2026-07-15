@@ -18,7 +18,6 @@ import {
 export function generateForwardTraversalSteps(arr: number[]): VisualStep[] {
   const steps: VisualStep[] = [];
   const elements = createElements(arr);
-  const dataState: ArrayVisualState = { elements };
 
   steps.push({
     id: `step-${steps.length + 1}`,
@@ -74,7 +73,6 @@ export function generateForwardTraversalSteps(arr: number[]): VisualStep[] {
 export function generateReverseTraversalSteps(arr: number[]): VisualStep[] {
   const steps: VisualStep[] = [];
   const elements = createElements(arr);
-  const dataState: ArrayVisualState = { elements };
 
   steps.push({
     id: `step-${steps.length + 1}`,
@@ -130,7 +128,6 @@ export function generateReverseTraversalSteps(arr: number[]): VisualStep[] {
 export function generateRangeTraversalSteps(arr: number[], start: number, end: number): VisualStep[] {
   const steps: VisualStep[] = [];
   const elements = createElements(arr);
-  const dataState: ArrayVisualState = { elements };
 
   steps.push({
     id: `step-${steps.length + 1}`,
@@ -167,10 +164,11 @@ export function generateRangeTraversalSteps(arr: number[], start: number, end: n
       operation: "Range Traversal",
       actionType: "error",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-      highlights: errorOn([
-        elements[start]?.id ?? start.toString(),
-        elements[end]?.id ?? end.toString(),
-      ]),
+      highlights: errorOn(
+        [elements[start]?.id, elements[end]?.id].filter(
+          (id): id is string => Boolean(id),
+        ),
+      ),
       codeLine: 4,
     });
     return steps;

@@ -1,166 +1,108 @@
-# Recovery Phase 4 — Database/API Contract Reconciliation
+# Recovery Phase 4 — Live Supabase Contract Reconciliation
 
 Date: 2026-07-14
+
 Branch: `chore/production-readiness`
-Remote changes: **none**
+
+Target: `mylzlhevgffgkwpeerzh`
+
+Persistent remote changes: **none**
 
 ## Outcome
 
-The repository now has one local forward migration and a paired guarded down
-script for the validated database/API findings. Application persistence uses
-stable text algorithm IDs, Supabase clients are typed, owner data is protected
-by explicit RLS and grants, catalog access is read-only, and progress/quiz/streak
-writes no longer report success after a failed or partially completed sequence.
+The local migration and application contract now match the audited live
+Supabase schema. The exact migration was executed on the target inside a
+transaction whose final statement was replaced with `rollback`; it completed
+without error. A post-check confirmed that the database still has a UUID
+session algorithm key, one preferences row, zero application RPCs, and three
+migration-ledger entries.
 
-This package is **not approved for remote application yet**. The local Supabase
-database image did not finish downloading within the bounded ten-minute start
-window, so `supabase db reset --local --no-seed` remains a required pre-remote
-gate. No linked-project or remote migration command was used.
+The migration is ready for a migration-specific deployment decision. It has
+not been persistently applied.
 
-## Design decision
+## Live source of truth
 
-Problem: the TypeScript registry persists IDs such as `alg_arr_bubble_sort`,
-while migration `003` declared UUID foreign keys and migration `002` already
-declared quiz IDs as text.
+The correct remote contains ten public tables:
 
-Alternatives considered:
+- `profiles`, `preferences`, `user_preferences`
+- `user_progress`, `user_streaks`, `bookmarks`
+- `saved_visualizer_sessions`, `quiz_attempts`
+- `activity_timeline`, `daily_challenges`
 
-1. Convert the application registry to UUIDs. Rejected because it would churn
-   105 stable content identifiers, routes, tests, and persisted references.
-2. Add a UUID/text mapping table. Rejected for this phase because every user
-   write would gain a lookup dependency while the database catalog is not yet
-   authoritative or seeded.
-3. Use stable text IDs at algorithm persistence boundaries. Selected because it
-   matches the shipped registry and the existing quiz schema while preserving
-   existing UUID values through `::text` conversion.
+The migration ledger has three entries:
 
-Catalog child tables retain foreign keys to `algorithms`. User-owned records do
-not depend on the optional database catalog being seeded before they can store a
-valid registry ID.
+1. `20260705083532 phase_8_auth_preferences`
+2. `20260705085529 phase_9_schema`
+3. `20260707024449 srs_complete`
 
-## Implemented
+The ledger and physical schema have prior manual drift: catalog tables recorded
+by `srs_complete` are absent. Therefore the repository's historical
+`001`–`003` files are not authoritative for remote deployment, and
+`supabase db push` must not be used for this release.
 
-- Added CLI-generated migration
-  `supabase/migrations/20260714113326_reconcile_database_contract.sql`.
-- Added paired guarded rollback
-  `supabase/rollbacks/20260714113326_reconcile_database_contract.down.sql`.
-- Converted algorithm IDs at persistence boundaries to text and preserved
-  catalog-child referential integrity.
-- Added `activity_timeline.metadata` and a unique algorithm-bookmark index.
-- Enabled catalog RLS, explicit public read policies, explicit table grants, and
-  optimized owner predicates using `(select auth.uid())`.
-- Rebuilt profile and user-owned policies with `TO authenticated`; profile
-  update now has both `USING` and `WITH CHECK`.
-- Added `SECURITY INVOKER` functions for atomic streak, completion, and quiz
-  operations. Browser roles receive only the required `EXECUTE` grants.
-- Aligned preferences with `user_preferences` and its actual column names.
-- Added checked read errors and removed false-success behavior from completion,
-  session deletion, streak, quiz, and dashboard-facing reads.
-- Added a generated-compatible `Database` contract to all Supabase clients.
-- Initialized local-only Supabase configuration (`supabase/config.toml`).
+## Implemented locally
 
-## Finding status
+- Kept populated `preferences` as the canonical preference store.
+- Aligned profiles to `username`.
+- Aligned streaks to `max_streak` and `last_activity_date`.
+- Restored the live bookmark insert shape.
+- Converted only `saved_visualizer_sessions.algorithm_id` from UUID to text.
+- Added three `SECURITY INVOKER` RPCs for streak, completion, and quiz writes.
+- Hardened `handle_new_user` with an empty search path, preference creation,
+  collision-safe display names, and auth-admin-only execution.
+- Revoked direct API-role execution of `rls_auto_enable`.
+- Rebuilt owner RLS with `TO authenticated`, cached `auth.uid()`, and
+  `WITH CHECK`.
+- Replaced broad Data API grants with the operations the application uses.
+- Added missing foreign-key/query indexes and database input constraints.
+- Replaced handwritten assumptions with generated-style live database types.
+- Added bounded server-side algorithm-ID validation.
 
-| Finding | Status | Evidence |
-|---|---|---|
-| C-01 bookmarks rejected by schema | Closed locally | API supplies type/title; algorithm ID is text; duplicate algorithm bookmarks are constrained. |
-| C-02 progress/session UUID mismatch | Closed locally | Migration converts persistence columns to text. |
-| C-03 preferences table/column mismatch | Closed locally | API now targets `user_preferences.user_id` and declared columns. |
-| C-04 activity metadata missing | Closed locally | JSONB metadata column plus transactional quiz function. |
-| C-05 false mutation success | Closed locally | RPC/delete errors are checked and surfaced. |
-| H-01 conflicting quiz schemas | Closed locally | The reconciler preserves migration `002`'s text/score-total contract. |
-| H-02 catalog RLS/grants absent | Closed locally | RLS, published-read policies, revokes, and select-only grants. |
-| H-03 untyped Supabase clients | Closed locally | Shared `Database` generic on browser/server/middleware clients. |
-| H-04 read errors suppressed | Closed locally | Database errors no longer collapse into empty successful reads. |
-| H-13 no database boundary tests | Partially closed | Static migration/RLS tests and mocked API failure tests pass; live RLS tests still require local reset. |
-
-## Validation evidence
+## Validation
 
 | Gate | Result |
 |---|---|
-| Supabase CLI | `2.109.1` |
-| Focused database tests | 8/8 passed |
-| Full unit suite | 34/34 passed (6 suites) |
+| Live preflight | 0 null session owners; 0 invalid IDs/scores |
+| Exact remote transaction dry-run | Passed, rolled back |
+| Post-rollback remote verification | UUID unchanged; 1 preference; 0 RPCs; 3 migrations |
 | TypeScript | Passed |
-| ESLint | Passed with 6 pre-existing array warnings, 0 errors |
-| Registry validation | 105 catalog / 105 implementations, 0 errors |
-| Production build | Passed; initial sandbox run hit `spawn EPERM`, escalated rerun passed |
-| `git diff --check` | Passed (line-ending notices only) |
-| Local `supabase db reset` | **Not executed**: stack start timed out while pulling the database image; no DB container started |
+| Jest | 7 suites, 36 tests passed |
+| ESLint | 0 errors; 6 pre-existing warnings |
+| Registry validation | 105/105, 0 errors |
+| Production build | Passed |
+| Changed-file Prettier | Passed |
+| Repository-wide Prettier | Existing baseline failure across about 150 files |
 
-## Review report
+Docker was unavailable, so a local Supabase reset was not possible. The exact
+target-database rollback transaction provides stronger compatibility evidence
+for this migration than the stale local historical migrations.
 
-```json
-{
-  "summary": "Local database and API contracts are reconciled around stable text IDs with explicit RLS/grants and transactional critical writes.",
-  "blockers": [
-    "Run a clean local Supabase reset and live owner/cross-user RLS tests before any remote migration."
-  ],
-  "warnings": [
-    "The down script intentionally refuses rollback after non-UUID registry IDs or non-empty activity metadata are written.",
-    "Remote migration history and current data quality remain unverified."
-  ],
-  "missing_tests": [
-    "Fresh migration replay against PostgreSQL",
-    "Anonymous denial, owner CRUD, cross-user denial, and catalog read-only integration tests"
-  ],
-  "suggested_fixes": [
-    "Complete the local image pull, run db reset, generate types from the resulting schema, and compare them with src/types/database.ts."
-  ],
-  "rollback_risk": "high",
-  "verdict": "block"
-}
-```
+## Review verdict
 
-## QA report
+- Risk: high, because this touches auth hooks, RLS, grants, and a production
+  column type.
+- Blockers found during the original audit: resolved in the local patch.
+- Remaining deployment conditions:
+  - capture a usable backup/restore asset;
+  - receive explicit confirmation for this exact target and migration;
+  - apply through the project-scoped Supabase MCP migration operation;
+  - regenerate remote types, rerun advisors, and run owner/cross-user smoke
+    tests immediately after application.
+- Verdict: **pass with deployment conditions**.
 
-```json
-{
-  "checks_run": [
-    "typecheck",
-    "eslint",
-    "full Jest suite",
-    "registry validation",
-    "production build",
-    "static migration/security contract tests"
-  ],
-  "checks_passed": [
-    "typecheck",
-    "eslint (0 errors)",
-    "34 unit tests",
-    "registry validation",
-    "production build",
-    "8 database boundary tests"
-  ],
-  "checks_failed": [],
-  "flaky_or_uncertain": [
-    "Local Supabase stack image pull timed out before migration execution"
-  ],
-  "security_findings": [
-    "No new code-level finding; live RLS enforcement is unverified"
-  ],
-  "release_recommendation": "block",
-  "conditions": [
-    "Successful local db reset",
-    "Live RLS integration tests",
-    "Remote migration ledger comparison and backup",
-    "Migration-specific user confirmation"
-  ]
-}
-```
+## Rollback
 
-## Pre-remote sequence
+Preferred rollback is application-only because the database change is
+forward-compatible with direct table writes. Leave the security hardening and
+text algorithm key in place.
 
-1. Start Docker and run:
-   `supabase start` then `supabase db reset --local --no-seed`.
-2. Run live tests for anonymous denial, owner CRUD, cross-user denial, and
-   catalog read-only behavior.
-3. Generate local database types and compare them to `src/types/database.ts`.
-4. Inspect the remote migration ledger and data for null/orphan identifiers.
-5. Capture a database backup and record its restore command.
-6. Present the exact forward migration, target project, dry-run evidence, and
-   rollback choice for explicit confirmation.
+The paired down script is an emergency compatibility rollback. It refuses to
+convert the session algorithm key back to UUID after any non-UUID registry ID
+has been stored. It intentionally does not restore broad table grants or broad
+function execution.
 
-After real text IDs or quiz metadata are written, rollback must use a database
-snapshot/restore or a purpose-built compatibility migration; the guarded down
-script will refuse lossy coercion by design.
+## Remaining platform action
+
+Supabase Auth leaked-password protection is disabled and cannot be changed by
+the current database MCP operation. Enable it in the project dashboard before
+the production release.

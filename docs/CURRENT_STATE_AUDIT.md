@@ -1,5 +1,55 @@
 # Current State Audit — Classified Findings (Phase 1)
 
+> **Authoritative current addendum — 2026-07-14:** This section supersedes stale runtime counts and unverified responsive claims later in this historical audit. The earlier detail remains below for traceability. Current verification uses the preserved working tree after Phase 2/3 recovery and Phase 4 database/API preparation.
+
+## Current verification summary
+
+| Area | Current evidence |
+|---|---|
+| Build and types | Production build and typecheck pass |
+| Unit tests | 7 suites / 36 tests pass |
+| Registry parity | 105 published catalog entries / 105 runtime registry entries |
+| Strict publication readiness | Fails with 1,365 authored-artifact errors |
+| All visualizer routes | 104/105 pass; `insertion-sort` returns HTTP 500 |
+| Responsive runtime | Six major public routes pass at 320, 360, 375, 390, 414, 768, 1024, 1280, 1440, and 1920px with no console/page errors, framework overlays, or document overflow |
+| Internal links | All internal links discovered on seven major public routes resolve below HTTP 400 |
+| Circular dependencies | `madge` processed 178 files and found none |
+| Duplication | `jscpd` found 145 clones and 2,154 duplicated lines (9.01%) across 174 TS/TSX files |
+| Resilience files | No `error.tsx`, `global-error.tsx`, `loading.tsx`, or custom `not-found.tsx` exists |
+| Accessibility baseline | Lighthouse desktop accessibility 96; color contrast is the failing scored audit |
+
+## Current classified findings
+
+| ID | Severity | Finding and reproduction | Likely root cause | Proposed solution / owner phase |
+|---|---|---|---|---|
+| P1-B01 | Blocker | `npx playwright test e2e/visualizer-route-audit.spec.ts --workers=4` returns HTTP 500 only for `/visualizer/insertion-sort`; 104 other published routes pass. | `src/features/algorithms/array/sort.ts:295` reads `elements[j + 1].value` after a swap. When `j` is the last index, the read is out of bounds. | Capture the compared values before mutation or describe the post-swap pair using valid indices; add generator edge tests and rerun all 105 routes in Phase 3. |
+| P1-C01 | Critical | `npm run validate:registry:readiness` reports 1,365 errors across the 105 published definitions. | The runtime registry still uses a permissive legacy contract and separate metadata/code/pseudocode sources. | Adopt one strict `VisualizerDefinition`, migrate every entry, and make readiness validation block build/CI in Phase 3. |
+| P1-C02 | Critical | Runtime code can synthesize a JavaScript scaffold and a `Structural Properties` panel instead of rejecting incomplete publication (`src/app/visualizer/[slug]/page.tsx:13-37,71,75`). | Fallback UI hides incomplete definitions from ordinary runtime smoke checks. | Remove production fallbacks; unpublished/incomplete entries must be excluded or fail validation in Phase 3. |
+| P1-C03 | Critical | The insertion-sort failure shows a generic `This page couldn't load` recovery surface; no application error or loading boundaries exist. | Missing App Router resilience files and route-specific recovery states. | Add accessible root/segment error, global-error, not-found, and loading boundaries in Phases 2 and 9. |
+| P1-H01 | High | Coverage gate fails at 9.94% statements, 5.05% branches, 7.38% functions, and 10.77% lines. | Most algorithms, renderers, routes, and auth/data flows are untested. | Add invariant, component, integration, E2E, accessibility, and database tests with an enforceable threshold in Phase 8. |
+| P1-H02 | High | Auth server actions have no verified abuse throttling. | No rate-limit boundary is implemented for login, signup, reset, or recovery. | Add server-side per-IP/account rate limits and safe responses in Phase 4. |
+| P1-H03 | High | The core registry still exposes `data: any` and `React.ComponentType<any>` (`registry/types.ts:14,59`). | Family-specific input/control types were not propagated into the runtime registry. | Replace with discriminated family types and typed control props in Phase 2/3. |
+| P1-H04 | High | Live Supabase reconciliation is dry-run verified but not persistently applied; generated types therefore cannot yet prove the remote contract. | Irreversible migration gate correctly awaits action-specific confirmation. | Apply the reviewed migration only after confirmation, regenerate types, and rerun RLS/RPC/auth-trigger checks in Phase 4. |
+| P1-M01 | Medium | `jscpd` reports 145 clones / 9.01% duplicated lines, concentrated in algorithm step emitters and structurally similar controls/renderers. | Repeated step and form scaffolding lacks safe shared helpers. | Extract typed helpers only where behavior is truly identical; retain algorithm clarity in Phase 2/3. |
+| P1-M02 | Medium | Several modules are oversized: `algorithms.ts` 1,529 lines, `array/sort.ts` 948, tree editor 491, array operations 549, visualizer layout 389, dashboard 339. | Catalog, generation logic, and UI responsibilities are bundled by broad file rather than bounded feature. | Split by operation/concern with stable public barrels and regression tests in Phase 2. |
+| P1-M03 | Medium | Lighthouse accessibility is 96 because one or more foreground/background pairs fail color contrast. | Semantic theme tokens do not meet contrast in every combination. | Correct token pairs and validate both themes with axe/Lighthouse in Phases 5/6. |
+| P1-M04 | Medium | `npm run format:check` reports 147 source files. | Repository-wide formatting was never normalized or enforced. | Apply a dedicated mechanical formatting pass after functional recovery and enforce it in CI. |
+| P1-M05 | Medium | `npm audit` reports two moderate transitive PostCSS advisories through the installed Next.js package, with no fix currently reported. | Upstream dependency pin includes the affected transitive version. | Track the advisory, retest when Next.js publishes a compatible fix, and document the temporary exception. |
+
+## Verified negative findings
+
+- No circular dependency was found in 178 analyzed source files.
+- No explicit `any` remains outside the two central registry contract holes listed above.
+- No dead internal link was found on the major public route crawl.
+- No representative-route hydration error, console error, framework overlay, or document-level horizontal overflow was observed across the ten required widths.
+- Catalog and runtime registry slugs are in exact 105/105 parity; completeness, not routing parity, is the remaining publication problem.
+
+## Phase 1 acceptance
+
+The audit gate is **complete**: architecture, product, runtime, responsive, link, dependency, type-safety, resilience, and quality surfaces now have current evidence and every promoted finding has severity, reproduction, root cause, and remediation ownership. Findings remain open for implementation in their assigned phases; audit completion is not release approval.
+
+---
+
 > Updated: 2026-07-14. Methodology: source-level inspection, type/lint/test baselines, route inventory, and component-level review of all 10 renderers + the visualizer page + the auth actions + every API handler. **No live browser test was executed**, so responsive findings from §8 are static-code-based hypotheses flagged ⚠️ until live verification at the listed breakpoints.
 
 Severity scale used: **Blocker → Critical → High → Medium → Low → Enhancement.**

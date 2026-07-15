@@ -15,7 +15,9 @@ import { cn } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     redirect("/login");
@@ -25,11 +27,7 @@ export default async function DashboardPage() {
   await updateStreakOnActivity();
 
   // Fetch profile
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
 
   // Fetch stats
   const streak = await getStreak();
@@ -37,23 +35,24 @@ export default async function DashboardPage() {
   const bookmarkIds = await getBookmarks();
   const sessions = await getSavedSessions();
   const activities = await getActivityTimeline(5);
-  
+
   // Daily challenge
   const dailyChallenge = await getDailyChallenge();
   let challengeCompleted = false;
   let challengeAlgorithm = null;
   if (dailyChallenge) {
     challengeCompleted = await isChallengeCompleted(dailyChallenge.algorithm_id);
-    challengeAlgorithm = algorithms.find(a => a.id === dailyChallenge.algorithm_id);
+    challengeAlgorithm = algorithms.find((a) => a.id === dailyChallenge.algorithm_id);
   }
 
   // Derive Progress
-  const totalAlgorithms = algorithms.filter(a => a.isPublished).length;
-  const progressPercent = totalAlgorithms > 0 ? Math.round((completedIds.length / totalAlgorithms) * 100) : 0;
+  const totalAlgorithms = algorithms.filter((a) => a.isPublished).length;
+  const progressPercent =
+    totalAlgorithms > 0 ? Math.round((completedIds.length / totalAlgorithms) * 100) : 0;
 
   // Next up logic
   const completedSet = new Set(completedIds);
-  const nextAlgorithm = algorithms.find(a => a.isPublished && !completedSet.has(a.id));
+  const nextAlgorithm = algorithms.find((a) => a.isPublished && !completedSet.has(a.id));
 
   return (
     <div className="flex w-full flex-col p-4 md:p-8 space-y-8">
@@ -61,23 +60,29 @@ export default async function DashboardPage() {
         <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-text-primary">
-              Welcome back, {profile?.full_name || "Learner"}
+              Welcome back, {profile?.username || "Learner"}
             </h1>
             <p className="mt-2 text-text-secondary">Here&apos;s your DSA progress summary.</p>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 rounded-xl bg-orange-500/10 px-4 py-2 border border-orange-500/20">
               <Flame className="h-5 w-5 text-orange-500" />
               <div>
-                <div className="text-xs font-semibold text-orange-600 uppercase tracking-wider">Day Streak</div>
-                <div className="text-lg font-bold text-orange-700">{streak?.current_streak || 0}</div>
+                <div className="text-xs font-semibold text-orange-600 uppercase tracking-wider">
+                  Day Streak
+                </div>
+                <div className="text-lg font-bold text-orange-700">
+                  {streak?.current_streak || 0}
+                </div>
               </div>
             </div>
-            
+
             <div className="flex flex-col">
               <span className="text-xs text-text-muted">Max Streak</span>
-              <span className="font-semibold text-text-primary">{streak?.longest_streak || 0} days</span>
+              <span className="font-semibold text-text-primary">
+                {streak?.max_streak || 0} days
+              </span>
             </div>
           </div>
         </header>
@@ -85,29 +90,48 @@ export default async function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-[1fr_300px]">
           {/* Main Content Column */}
           <div className="flex flex-col gap-6">
-            
             {/* Daily Challenge */}
             {challengeAlgorithm && (
-              <Card className={cn("border shadow-sm", challengeCompleted ? "bg-success/5 border-success/20" : "bg-gradient-to-r from-primary/10 to-bg-surface border-primary/20")}>
+              <Card
+                className={cn(
+                  "border shadow-sm",
+                  challengeCompleted
+                    ? "bg-success/5 border-success/20"
+                    : "bg-gradient-to-r from-primary/10 to-bg-surface border-primary/20"
+                )}
+              >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Target className={cn("h-5 w-5", challengeCompleted ? "text-success" : "text-primary")} /> 
+                    <Target
+                      className={cn(
+                        "h-5 w-5",
+                        challengeCompleted ? "text-success" : "text-primary"
+                      )}
+                    />
                     Daily Challenge
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-medium text-text-primary mb-1">
-                      {challengeCompleted ? "Challenge Completed!" : "Complete the quiz to earn your streak."}
+                      {challengeCompleted
+                        ? "Challenge Completed!"
+                        : "Complete the quiz to earn your streak."}
                     </p>
                     <p className="text-sm text-text-secondary">{challengeAlgorithm.name}</p>
                   </div>
                   {!challengeCompleted ? (
-                    <Link href={`/quizzes/${challengeAlgorithm.id}`} className={buttonVariants({ size: "sm" })}>
+                    <Link
+                      href={`/quizzes/${challengeAlgorithm.id}`}
+                      className={buttonVariants({ size: "sm" })}
+                    >
                       Take Quiz
                     </Link>
                   ) : (
-                    <Link href={`/quizzes/${challengeAlgorithm.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+                    <Link
+                      href={`/quizzes/${challengeAlgorithm.id}`}
+                      className={buttonVariants({ variant: "outline", size: "sm" })}
+                    >
                       Review Quiz
                     </Link>
                   )}
@@ -124,10 +148,12 @@ export default async function DashboardPage() {
                 <CardContent>
                   <div className="flex items-end justify-between mb-2">
                     <span className="text-3xl font-bold text-primary">{progressPercent}%</span>
-                    <span className="text-sm text-text-secondary">{completedIds.length} / {totalAlgorithms} completed</span>
+                    <span className="text-sm text-text-secondary">
+                      {completedIds.length} / {totalAlgorithms} completed
+                    </span>
                   </div>
                   <div className="h-3 w-full bg-border rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-primary transition-all duration-1000"
                       style={{ width: `${progressPercent}%` }}
                     />
@@ -145,12 +171,17 @@ export default async function DashboardPage() {
                       <p className="text-sm font-medium text-text-secondary line-clamp-2">
                         {nextAlgorithm.name}
                       </p>
-                      <Link href={`/visualizer/${nextAlgorithm.slug}`} className={buttonVariants({ className: "mt-4 w-full sm:w-auto shadow-sm" })}>
+                      <Link
+                        href={`/visualizer/${nextAlgorithm.slug}`}
+                        className={buttonVariants({ className: "mt-4 w-full sm:w-auto shadow-sm" })}
+                      >
                         <Play className="mr-2 h-4 w-4" /> Start Visualizer
                       </Link>
                     </>
                   ) : (
-                    <div className="text-sm text-success">You&apos;ve completed all available algorithms!</div>
+                    <div className="text-sm text-success">
+                      You&apos;ve completed all available algorithms!
+                    </div>
                   )}
                 </CardContent>
               </Card>
@@ -169,12 +200,17 @@ export default async function DashboardPage() {
                   {bookmarkIds.length > 0 ? (
                     <ul className="divide-y divide-border">
                       {bookmarkIds.map((id) => {
-                        const alg = algorithms.find(a => a.id === id);
+                        const alg = algorithms.find((a) => a.id === id);
                         if (!alg) return null;
                         return (
                           <li key={id}>
-                            <Link href={`/visualizer/${alg.slug}`} className="flex items-center justify-between p-4 hover:bg-bg-surface-hover transition-colors group">
-                              <span className="text-sm font-medium text-text-primary group-hover:text-primary transition-colors">{alg.name}</span>
+                            <Link
+                              href={`/visualizer/${alg.slug}`}
+                              className="flex items-center justify-between p-4 hover:bg-bg-surface-hover transition-colors group"
+                            >
+                              <span className="text-sm font-medium text-text-primary group-hover:text-primary transition-colors">
+                                {alg.name}
+                              </span>
                               <ArrowRight className="h-4 w-4 text-text-muted opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
                             </Link>
                           </li>
@@ -200,13 +236,23 @@ export default async function DashboardPage() {
                   {sessions.length > 0 ? (
                     <ul className="divide-y divide-border">
                       {sessions.map((session) => {
-                        const alg = algorithms.find(a => a.id === session.algorithm_id);
+                        const alg = algorithms.find((a) => a.id === session.algorithm_id);
                         if (!alg) return null;
                         return (
                           <li key={session.id}>
-                            <Link href={`/visualizer/${alg.slug}?session=${session.id}`} className="flex flex-col p-4 hover:bg-bg-surface-hover transition-colors group">
-                              <span className="text-sm font-medium text-text-primary group-hover:text-primary transition-colors">{session.title || "Untitled Session"}</span>
-                              <span className="text-xs text-text-muted">{alg.name} • {new Date(session.updated_at).toLocaleDateString()}</span>
+                            <Link
+                              href={`/visualizer/${alg.slug}?session=${session.id}`}
+                              className="flex flex-col p-4 hover:bg-bg-surface-hover transition-colors group"
+                            >
+                              <span className="text-sm font-medium text-text-primary group-hover:text-primary transition-colors">
+                                {session.title || "Untitled Session"}
+                              </span>
+                              <span className="text-xs text-text-muted">
+                                {alg.name} •{" "}
+                                {session.updated_at
+                                  ? new Date(session.updated_at).toLocaleDateString()
+                                  : "Recently"}
+                              </span>
                             </Link>
                           </li>
                         );
@@ -220,7 +266,6 @@ export default async function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
-
           </div>
 
           {/* Right Column: Activity Timeline */}
@@ -235,9 +280,9 @@ export default async function DashboardPage() {
                 {activities.length > 0 ? (
                   <div className="relative pl-4 border-l border-border space-y-6 mt-2">
                     {activities.map((act) => {
-                      const alg = algorithms.find(a => a.id === act.algorithm_id);
+                      const alg = algorithms.find((a) => a.id === act.algorithm_id);
                       if (!alg) return null;
-                      
+
                       let icon = <Clock className="h-3 w-3" />;
                       let color = "bg-primary text-white";
                       if (act.action_type === "completed") {
@@ -256,7 +301,9 @@ export default async function DashboardPage() {
 
                       return (
                         <div key={act.id} className="relative">
-                          <div className={`absolute -left-[25px] top-1 h-6 w-6 rounded-full flex items-center justify-center border-2 border-bg-surface shadow-sm ${color}`}>
+                          <div
+                            className={`absolute -left-[25px] top-1 h-6 w-6 rounded-full flex items-center justify-center border-2 border-bg-surface shadow-sm ${color}`}
+                          >
                             {icon}
                           </div>
                           <div>
@@ -268,7 +315,9 @@ export default async function DashboardPage() {
                             </p>
                             <p className="text-xs text-text-secondary mt-0.5">{alg.name}</p>
                             <p className="text-xs text-text-muted mt-1">
-                              {new Date(act.created_at).toLocaleDateString()}
+                              {act.created_at
+                                ? new Date(act.created_at).toLocaleDateString()
+                                : "Recently"}
                             </p>
                           </div>
                         </div>
@@ -283,7 +332,6 @@ export default async function DashboardPage() {
               </CardContent>
             </Card>
           </div>
-
         </div>
       </div>
     </div>

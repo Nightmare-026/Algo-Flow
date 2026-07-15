@@ -17,15 +17,17 @@ import { getBookmarks, toggleBookmark } from "@/features/bookmarks/api";
 import { markCompleted } from "@/features/progress/api";
 import { saveSession } from "@/features/sessions/api";
 import { Bookmark, Save } from "lucide-react";
+import type { CodeLineMapping } from "../registry/types";
 
 interface VisualizerLayoutProps {
   algorithm: Algorithm;
   codeExamples: CodeExample[];
+  codeLineMapping?: ReadonlyArray<CodeLineMapping>;
   children: ReactNode;
   controls?: ReactNode;
 }
 
-export function VisualizerLayout({ algorithm, codeExamples, children, controls }: VisualizerLayoutProps) {
+export function VisualizerLayout({ algorithm, codeExamples, codeLineMapping, children, controls }: VisualizerLayoutProps) {
   const { currentStepIndex, totalSteps, reducedMotion, setReducedMotion, isPlaying, pause, steps } = usePlaybackStore();
   const [activeRightTab, setActiveRightTab] = useState<"pseudocode" | "code">("pseudocode");
   const [activeLowerTab, setActiveLowerTab] = useState<"explanation" | "log">("explanation");
@@ -359,7 +361,7 @@ export function VisualizerLayout({ algorithm, codeExamples, children, controls }
               </button>
             </div>
             <div className="flex-1 overflow-hidden">
-              {activeRightTab === "pseudocode" ? <PseudocodePanel slug={algorithm.slug} /> : <CodePanel examples={codeExamples} />}
+              {activeRightTab === "pseudocode" ? <PseudocodePanel slug={algorithm.slug} /> : <CodePanel examples={codeExamples} codeLineMapping={codeLineMapping} />}
             </div>
           </div>
 

@@ -1,237 +1,239 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-type UserStreakRow = {
+type TableDefinition<Row, Insert, Update = Partial<Insert>, Relationships = []> = {
+  Row: Row;
+  Insert: Insert;
+  Update: Update;
+  Relationships: Relationships;
+};
+
+type ActivityTimelineRow = {
+  action_type: string;
+  algorithm_id: string;
+  created_at: string | null;
+  id: string;
+  metadata: Json | null;
   user_id: string;
-  current_streak: number;
-  longest_streak: number;
-  last_active_date: string | null;
-  daily_goal_completed: boolean;
-  updated_at: string;
+};
+
+type BookmarkRow = {
+  algorithm_id: string;
+  created_at: string | null;
+  id: string;
+  user_id: string;
+};
+
+type DailyChallengeRow = {
+  algorithm_id: string;
+  challenge_date: string;
+  created_at: string | null;
+  id: string;
+};
+
+type PreferenceRow = {
+  code_language: string | null;
+  difficulty: string | null;
+  id: string;
+  speed: number | null;
+  theme: string | null;
+  updated_at: string | null;
+};
+
+type ProfileRow = {
+  avatar_url: string | null;
+  id: string;
+  updated_at: string | null;
+  username: string | null;
 };
 
 type QuizAttemptRow = {
-  id: string;
-  user_id: string;
   algorithm_id: string;
+  created_at: string | null;
+  id: string;
   score: number;
   total_questions: number;
-  created_at: string;
+  user_id: string;
+};
+
+type SavedVisualizerSessionRow = {
+  algorithm_id: string | null;
+  code_language: string | null;
+  created_at: string | null;
+  current_step: number | null;
+  id: string;
+  input_data: Json;
+  speed: string | null;
+  title: string | null;
+  updated_at: string | null;
+  user_id: string;
+  visual_state: Json | null;
+};
+
+type UserPreferenceRow = {
+  animation_speed: string | null;
+  default_visualizer_mode: string | null;
+  difficulty_level: string | null;
+  preferred_code_language: string | null;
+  preferred_language: string | null;
+  reduced_motion: boolean | null;
+  theme: string | null;
+  updated_at: string | null;
+  user_id: string;
+};
+
+type UserProgressRow = {
+  algorithm_id: string;
+  completed_at: string | null;
+  id: string;
+  status: string | null;
+  user_id: string;
+};
+
+type UserStreakRow = {
+  current_streak: number | null;
+  last_activity_date: string | null;
+  max_streak: number | null;
+  user_id: string;
 };
 
 export type Database = {
+  __InternalSupabase: {
+    PostgrestVersion: "14.5";
+  };
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          id: string;
-          first_name: string | null;
-          last_name: string | null;
-          full_name: string | null;
-          gender: string | null;
-          email: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id: string;
-          first_name?: string | null;
-          last_name?: string | null;
-          full_name?: string | null;
-          gender?: string | null;
-          email?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          first_name?: string | null;
-          last_name?: string | null;
-          full_name?: string | null;
-          gender?: string | null;
-          email?: string | null;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      user_preferences: {
-        Row: {
-          user_id: string;
-          preferred_language: string;
-          preferred_code_language: string;
-          theme: string;
-          animation_speed: string;
-          reduced_motion: boolean;
-          difficulty_level: string;
-          default_visualizer_mode: string;
-          updated_at: string;
-        };
-        Insert: {
-          user_id: string;
-          preferred_language?: string;
-          preferred_code_language?: string;
-          theme?: string;
-          animation_speed?: string;
-          reduced_motion?: boolean;
-          difficulty_level?: string;
-          default_visualizer_mode?: string;
-          updated_at?: string;
-        };
-        Update: {
-          preferred_language?: string;
-          preferred_code_language?: string;
-          theme?: string;
-          animation_speed?: string;
-          reduced_motion?: boolean;
-          difficulty_level?: string;
-          default_visualizer_mode?: string;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      user_progress: {
-        Row: {
-          id: string;
-          user_id: string;
+      activity_timeline: TableDefinition<
+        ActivityTimelineRow,
+        {
+          action_type: string;
           algorithm_id: string;
-          status: "not_started" | "in_progress" | "completed" | "needs_revision";
-          completion_percentage: number;
-          time_spent_seconds: number;
-          practice_accuracy: number | null;
-          last_practiced_at: string | null;
-          completed_at: string | null;
-          updated_at: string;
-        };
-        Insert: {
+          created_at?: string | null;
           id?: string;
+          metadata?: Json | null;
           user_id: string;
+        }
+      >;
+      bookmarks: TableDefinition<
+        BookmarkRow,
+        {
           algorithm_id: string;
-          status?: "not_started" | "in_progress" | "completed" | "needs_revision";
-          completion_percentage?: number;
-          time_spent_seconds?: number;
-          practice_accuracy?: number | null;
-          last_practiced_at?: string | null;
-          completed_at?: string | null;
-          updated_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["user_progress"]["Insert"]>;
-        Relationships: [];
-      };
-      user_streaks: {
-        Row: UserStreakRow;
-        Insert: {
-          user_id: string;
-          current_streak?: number;
-          longest_streak?: number;
-          last_active_date?: string | null;
-          daily_goal_completed?: boolean;
-          updated_at?: string;
-        };
-        Update: Partial<Omit<UserStreakRow, "user_id">>;
-        Relationships: [];
-      };
-      bookmarks: {
-        Row: {
-          id: string;
-          user_id: string;
-          bookmark_type: "algorithm" | "step" | "code" | "session";
-          data_structure_id: string | null;
-          operation_id: string | null;
-          algorithm_id: string | null;
-          step_number: number | null;
-          title: string;
-          description: string | null;
-          serialized_state: Json | null;
-          created_at: string;
-        };
-        Insert: {
+          created_at?: string | null;
           id?: string;
           user_id: string;
-          bookmark_type?: "algorithm" | "step" | "code" | "session";
-          data_structure_id?: string | null;
-          operation_id?: string | null;
-          algorithm_id?: string | null;
-          step_number?: number | null;
-          title: string;
-          description?: string | null;
-          serialized_state?: Json | null;
-          created_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["bookmarks"]["Insert"]>;
-        Relationships: [];
-      };
-      saved_visualizer_sessions: {
-        Row: {
-          id: string;
-          user_id: string;
-          algorithm_id: string | null;
-          title: string | null;
-          input_data: Json;
-          current_step: number;
-          visual_state: Json | null;
-          speed: string;
-          code_language: string;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          algorithm_id?: string | null;
-          title?: string | null;
-          input_data: Json;
-          current_step?: number;
-          visual_state?: Json | null;
-          speed?: string;
-          code_language?: string;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["saved_visualizer_sessions"]["Insert"]>;
-        Relationships: [];
-      };
-      quiz_attempts: {
-        Row: QuizAttemptRow;
-        Insert: {
-          id?: string;
-          user_id: string;
+        }
+      >;
+      daily_challenges: TableDefinition<
+        DailyChallengeRow,
+        {
           algorithm_id: string;
+          challenge_date: string;
+          created_at?: string | null;
+          id?: string;
+        }
+      >;
+      preferences: TableDefinition<
+        PreferenceRow,
+        {
+          code_language?: string | null;
+          difficulty?: string | null;
+          id: string;
+          speed?: number | null;
+          theme?: string | null;
+          updated_at?: string | null;
+        }
+      >;
+      profiles: TableDefinition<
+        ProfileRow,
+        {
+          avatar_url?: string | null;
+          id: string;
+          updated_at?: string | null;
+          username?: string | null;
+        }
+      >;
+      quiz_attempts: TableDefinition<
+        QuizAttemptRow,
+        {
+          algorithm_id: string;
+          created_at?: string | null;
+          id?: string;
           score: number;
           total_questions: number;
-          created_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["quiz_attempts"]["Insert"]>;
-        Relationships: [];
-      };
-      activity_timeline: {
-        Row: {
-          id: string;
           user_id: string;
-          action_type: string;
-          algorithm_id: string | null;
-          metadata: Json;
-          created_at: string;
-        };
-        Insert: {
+        }
+      >;
+      saved_visualizer_sessions: TableDefinition<
+        SavedVisualizerSessionRow,
+        {
+          algorithm_id?: string | null;
+          code_language?: string | null;
+          created_at?: string | null;
+          current_step?: number | null;
           id?: string;
+          input_data: Json;
+          speed?: string | null;
+          title?: string | null;
+          updated_at?: string | null;
           user_id: string;
-          action_type: string;
-          algorithm_id?: string | null;
-          metadata?: Json;
-          created_at?: string;
-        };
-        Update: {
-          action_type?: string;
-          algorithm_id?: string | null;
-          metadata?: Json;
-        };
-        Relationships: [];
-      };
+          visual_state?: Json | null;
+        },
+        Partial<SavedVisualizerSessionRow>,
+        [
+          {
+            foreignKeyName: "saved_visualizer_sessions_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ]
+      >;
+      user_preferences: TableDefinition<
+        UserPreferenceRow,
+        {
+          animation_speed?: string | null;
+          default_visualizer_mode?: string | null;
+          difficulty_level?: string | null;
+          preferred_code_language?: string | null;
+          preferred_language?: string | null;
+          reduced_motion?: boolean | null;
+          theme?: string | null;
+          updated_at?: string | null;
+          user_id: string;
+        },
+        Partial<UserPreferenceRow>,
+        [
+          {
+            foreignKeyName: "user_preferences_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ]
+      >;
+      user_progress: TableDefinition<
+        UserProgressRow,
+        {
+          algorithm_id: string;
+          completed_at?: string | null;
+          id?: string;
+          status?: string | null;
+          user_id: string;
+        }
+      >;
+      user_streaks: TableDefinition<
+        UserStreakRow,
+        {
+          current_streak?: number | null;
+          last_activity_date?: string | null;
+          max_streak?: number | null;
+          user_id: string;
+        }
+      >;
     };
     Views: { [_ in never]: never };
     Functions: {
-      touch_user_streak: {
-        Args: Record<PropertyKey, never>;
-        Returns: UserStreakRow;
-      };
       mark_algorithm_completed: {
         Args: { p_algorithm_id: string };
         Returns: undefined;
@@ -243,6 +245,10 @@ export type Database = {
           p_total_questions: number;
         };
         Returns: QuizAttemptRow[];
+      };
+      touch_user_streak: {
+        Args: Record<PropertyKey, never>;
+        Returns: UserStreakRow;
       };
     };
     Enums: { [_ in never]: never };

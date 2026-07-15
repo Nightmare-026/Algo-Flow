@@ -13,7 +13,10 @@ export function makeHighlights(parts: Partial<VisualStepHighlights>): VisualStep
   const out: VisualStepHighlights = {};
   for (const [k, v] of Object.entries(parts)) {
     if (Array.isArray(v)) {
-      (out as Record<string, string[]>)[k] = Array.from(v);
+      const ids = Array.from(new Set(v));
+      if (ids.length > 0) {
+        (out as Record<string, string[]>)[k] = ids;
+      }
     }
   }
   return out;

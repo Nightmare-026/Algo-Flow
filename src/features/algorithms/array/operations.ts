@@ -10,7 +10,6 @@ import {
   conjunct,
   currentTarget,
   errorOn,
-  pointerOn,
   succeeded,
   swap,
   visited,
@@ -374,8 +373,8 @@ export function generateLeftRotationSteps(arr: number[]): VisualStep[] {
     codeLine: 3,
   });
 
-  for (let i = 0; i < n - 1; i++) {
-    elements[i] = elements[i + 1];
+  elements.shift();
+  for (let i = 0; i < elements.length; i++) {
     steps.push({
       id: `step-${stepCount}`,
       stepNumber: stepCount++,
@@ -389,7 +388,7 @@ export function generateLeftRotationSteps(arr: number[]): VisualStep[] {
     });
   }
 
-  elements[n - 1] = first;
+  elements.push(first);
 
   steps.push({
     id: `step-${stepCount}`,
@@ -441,8 +440,8 @@ export function generateRightRotationSteps(arr: number[]): VisualStep[] {
     codeLine: 3,
   });
 
-  for (let i = n - 1; i > 0; i--) {
-    elements[i] = elements[i - 1];
+  elements.pop();
+  for (let i = elements.length - 1; i >= 0; i--) {
     steps.push({
       id: `step-${stepCount}`,
       stepNumber: stepCount++,
@@ -456,7 +455,7 @@ export function generateRightRotationSteps(arr: number[]): VisualStep[] {
     });
   }
 
-  elements[0] = last;
+  elements.unshift(last);
 
   steps.push({
     id: `step-${stepCount}`,
@@ -487,6 +486,7 @@ export function generateRemoveDuplicatesSteps(arr: number[]): VisualStep[] {
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
+    codeLine: 1,
   });
 
   const unique: ArrayElement[] = [];
@@ -504,6 +504,7 @@ export function generateRemoveDuplicatesSteps(arr: number[]): VisualStep[] {
       actionType: "compare",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
       highlights: conjunct([currentTarget([el.id]), compare([el.id])]),
+      codeLine: 2,
     });
 
     if (!seen.has(el.value)) {
@@ -519,6 +520,7 @@ export function generateRemoveDuplicatesSteps(arr: number[]): VisualStep[] {
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
         highlights: succeeded([el.id]),
+        codeLine: 2,
       });
     } else {
       steps.push({
@@ -530,6 +532,7 @@ export function generateRemoveDuplicatesSteps(arr: number[]): VisualStep[] {
         actionType: "success",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
         highlights: errorOn([el.id]),
+        codeLine: 2,
       });
     }
   }
@@ -543,6 +546,7 @@ export function generateRemoveDuplicatesSteps(arr: number[]): VisualStep[] {
     actionType: "complete",
     dataState: { elements: structuredClone(unique) } as ArrayVisualState,
     highlights: {},
+    codeLine: 3,
   });
 
   return steps;

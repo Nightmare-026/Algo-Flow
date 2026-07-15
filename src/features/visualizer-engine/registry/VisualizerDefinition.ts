@@ -14,8 +14,15 @@
  * type-check but with sub-spec content (e.g. empty pseudocode, missing language).
  */
 
-import type { CodeExample, CodeLanguage, DifficultyLevel, VisualStep } from "@/types";
+import type { ComponentType } from "react";
+import type {
+  CodeExample,
+  DifficultyLevel,
+  PriorityLevel,
+  VisualStep,
+} from "@/types";
 import type { VisualizerInputOptions } from "@/lib/validation/visualizer-input";
+import type { InputControlsProps } from "./types";
 
 // ─────────────────────────────────────────────────────────────────────
 // Per-data-structure input types — replace the legacy `data: any` on
@@ -86,23 +93,7 @@ export type DataStructureId =
   | "ds_matrix"
   | "ds_string";
 
-export type VisualizerCategory =
-  | "sorting"
-  | "searching"
-  | "access"
-  | "traversal"
-  | "insertion"
-  | "deletion"
-  | "update"
-  | "rotation"
-  | "set-ops"
-  | "transformation"
-  | "reversal"
-  | "construction"
-  | "status";
-
-// The four languages each entry MUST cover. (TS is required too, so the
-// runtime can switch by user preference; TS reuses JS code with types.)
+// The four product languages each published entry must cover.
 export const REQUIRED_LANGUAGES = ["javascript", "python", "cpp", "java"] as const;
 
 // ─────────────────────────────────────────────────────────────────────
@@ -110,6 +101,8 @@ export const REQUIRED_LANGUAGES = ["javascript", "python", "cpp", "java"] as con
 // ─────────────────────────────────────────────────────────────────────
 
 export interface VisualizerDefinition<TInput> {
+  /** Stable catalog identifier. */
+  id: string;
   /** Stable URL-safe slug; must match its catalog entry. */
   slug: string;
   /** Display title ("Bubble Sort"). */
@@ -118,18 +111,37 @@ export interface VisualizerDefinition<TInput> {
   description: string;
   /** Which data-structure family this belongs to. */
   dataStructureId: DataStructureId;
-  /** Algorithmic category. */
-  category: VisualizerCategory;
+  /** User-facing operation/category from the catalog. */
+  operation: string;
   /** Difficulty marker. */
   difficulty: DifficultyLevel;
+  /** Publication importance. */
+  priority: PriorityLevel;
   /** All four complexity dimensions required. */
   timeComplexity: { best: string; average: string; worst: string };
   spaceComplexity: string;
   /** Discoverability tags. */
   tags: ReadonlyArray<string>;
 
+  /** Machine-checkable input contract and representative defaults. */
+  inputSchema: (input: unknown, options: VisualizerInputOptions) => input is TInput;
+  defaultInput: TInput;
+  defaultOptions: VisualizerInputOptions;
+  inputGenerators: ReadonlyArray<{
+    id: string;
+    label: string;
+    generate: () => TInput;
+  }>;
+  InputControls: ComponentType<InputControlsProps>;
+  validateInput: (
+    input: TInput,
+    options: VisualizerInputOptions,
+  ) => ReadonlyArray<string>;
+
   /** Step generator — typed per family. */
   generateSteps: (data: TInput, options: VisualizerInputOptions) => VisualStep[];
+  /** Renderer registered for this visual state family. */
+  Renderer: ComponentType;
 
   /**
    * Code samples for ALL FOUR required languages. The readiness validator
@@ -150,27 +162,25 @@ export interface VisualizerDefinition<TInput> {
   pseudocode: ReadonlyArray<{ line: number; text: string }>;
 
   /**
-   * Test cases: every entry has a name, an input, options, and a list of
-   * expectations. An expectation pairs a stepIndex with the highlight
-   * buckets that step must populate — so a test can assert the algorithm
-   * actually emits a "compare" highlight at step 3, etc.
+   * Executable semantic cases. The verifier returns human-readable failures
+   * instead of binding expectations to generated entity or step identifiers.
    */
   testCases: ReadonlyArray<{
     name: string;
     input: TInput;
     options: VisualizerInputOptions;
-    expectations: ReadonlyArray<{
-      stepIndex: number;
-      highlights: ReadonlyArray<{ bucket: string; containsIds: ReadonlyArray<string> }>;
-    }>;
+    verify: (steps: ReadonlyArray<VisualStep>) => ReadonlyArray<string>;
   }>;
 
   /**
-   * Maps each step emitted by `generateSteps` (by step.id) → the line in
-   * each language's CodeExample that corresponds. The runtime CodePanel
-   * uses this to scroll + highlight the active line.
+   * Maps the stable logical key emitted as `VisualStep.codeLine` to each
+   * language example's physical line. Runtime-generated step and entity IDs
+   * are deliberately excluded from this authored contract.
    */
-  codeLineMapping: ReadonlyArray<{ stepId: string; language: CodeLanguage; line: number }>;
+  codeLineMapping: ReadonlyArray<{
+    logicalLine: number;
+    lines: Record<(typeof REQUIRED_LANGUAGES)[number], number>;
+  }>;
 
   /**
    * Legend describing each highlight bucket. Drives the UI badge strip and

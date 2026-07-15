@@ -10,9 +10,9 @@ import { VisualizerInputOptions } from "@/lib/validation/visualizer-input";
  */
 export interface AlgorithmVisualizerDefinition {
   slug: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  generateSteps: (data: any, options: VisualizerInputOptions) => VisualStep[];
+  generateSteps: (data: number[], options: VisualizerInputOptions) => VisualStep[];
   getCodeExamples: (slug: string, algorithmId: string) => CodeExample[];
+  codeLineMapping?: ReadonlyArray<CodeLineMapping>;
   pseudocode?: string;
 }
 
@@ -41,11 +41,16 @@ export const DATA_STRUCTURE_IDS = [
 export type DataStructureId = (typeof DATA_STRUCTURE_IDS)[number];
 export type RequiredCodeLanguage = (typeof REQUIRED_CODE_LANGUAGES)[number];
 
+export interface CodeLineMapping {
+  logicalLine: number;
+  lines: Record<RequiredCodeLanguage, number>;
+}
+
 export interface InputControlsProps {
   slug: string;
   options: VisualizerInputOptions;
   onOptionsChange: (options: VisualizerInputOptions) => void;
-  onGenerate?: (data: number[]) => void;
+  onGenerate: (data: number[]) => void;
   dataLength?: number;
   defaultSize?: number;
   defaultRows?: number;
@@ -55,6 +60,5 @@ export interface InputControlsProps {
 export interface DataStructureVisualizerDefinition {
   dataStructureId: DataStructureId;
   Renderer: React.ComponentType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  InputControls: React.ComponentType<any>;
+  InputControls: React.ComponentType<InputControlsProps>;
 }

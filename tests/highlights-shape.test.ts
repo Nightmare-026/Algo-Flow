@@ -91,7 +91,11 @@ describe("Phase 3 — highlights helpers", () => {
   });
 
   it("makeHighlights builds canonical shape", () => {
-    const h = makeHighlights({ active: ["a"], sorted: ["b", "c"] });
+    const h = makeHighlights({
+      active: ["a", "a"],
+      sorted: ["b", "c"],
+      visited: [],
+    });
     expect(h).toEqual({ active: ["a"], sorted: ["b", "c"] });
   });
 });

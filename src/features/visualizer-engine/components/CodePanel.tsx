@@ -1,17 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePlaybackStore } from "../playback-store";
 import { CodeExample, CodeLanguage } from "@/types";
 import { cn } from "@/lib/utils";
 import { codeToHtml } from "shiki";
 import { Check, Copy } from "lucide-react";
+import type { CodeLineMapping } from "../registry/types";
+import { resolvePhysicalCodeLine } from "../registry/code-line-mapping";
 
 interface CodePanelProps {
   examples: CodeExample[];
+  codeLineMapping?: ReadonlyArray<CodeLineMapping>;
 }
 
-export function CodePanel({ examples }: CodePanelProps) {
+export function CodePanel({ examples, codeLineMapping }: CodePanelProps) {
   const { steps, currentStepIndex } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
   
@@ -27,6 +30,7 @@ export function CodePanel({ examples }: CodePanelProps) {
   
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const codeContainerRef = useRef<HTMLDivElement>(null);
 
   const activeExample = examples.find((e) => e.language === activeLang);
   const codeString = activeExample?.code || "";
@@ -62,10 +66,14 @@ export function CodePanel({ examples }: CodePanelProps) {
     
     // We wait a tick for React to dangerouslySetInnerHTML
     const timer = setTimeout(() => {
-      const activeLineNum = currentStep?.codeLine;
-      const lines = document.querySelectorAll(".shiki .line");
+      const activeLineNum = resolvePhysicalCodeLine(
+        codeLineMapping,
+        currentStep?.codeLine,
+        activeLang,
+      );
+      const lines = codeContainerRef.current?.querySelectorAll(".shiki .line");
       
-      lines.forEach((line, index) => {
+      lines?.forEach((line, index) => {
         // Shiki lines are 0-indexed in DOM, but codeLine is usually 1-indexed
         if (activeLineNum && index + 1 === activeLineNum) {
           line.classList.add("bg-primary/20", "border-l-2", "border-primary");
@@ -76,7 +84,13 @@ export function CodePanel({ examples }: CodePanelProps) {
     }, 50);
 
     return () => clearTimeout(timer);
-  }, [htmlContent, codeString, currentStep?.codeLine]);
+  }, [
+    activeLang,
+    codeLineMapping,
+    htmlContent,
+    codeString,
+    currentStep?.codeLine,
+  ]);
 
   const handleLangChange = (lang: CodeLanguage) => {
     setActiveLang(lang);
@@ -127,7 +141,8 @@ export function CodePanel({ examples }: CodePanelProps) {
       {/* Code Area */}
       <div className="flex-1 overflow-auto bg-[#121212] relative group">
         {renderedHtml ? (
-          <div 
+          <div
+            ref={codeContainerRef}
             className="p-4 text-sm font-mono [&_pre]:!bg-transparent [&_pre]:!m-0 [&_.line]:px-2 [&_.line]:-mx-2 [&_.line]:transition-colors"
             dangerouslySetInnerHTML={{ __html: renderedHtml }} 
           />

@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import type { UserActionResult } from "@/features/bookmarks/api";
 import type { Json } from "@/types/database";
+import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
 
 function toJson(value: unknown): Json {
   const serialized = JSON.stringify(value);
@@ -18,12 +19,12 @@ export type SavedSession = {
   algorithm_id: string | null;
   title: string | null;
   input_data: Json;
-  current_step: number;
+  current_step: number | null;
   visual_state: Json | null;
-  speed: string;
-  code_language: string;
-  created_at: string;
-  updated_at: string;
+  speed: string | null;
+  code_language: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 };
 
 export type SaveSessionResult = UserActionResult & {
@@ -39,6 +40,11 @@ export async function saveSession(
   speed: string = "normal",
   codeLanguage: string = "python"
 ): Promise<SaveSessionResult> {
+  const normalizedAlgorithmId = normalizeAlgorithmId(algorithmId);
+  if (!normalizedAlgorithmId || !Number.isInteger(currentStep) || currentStep < 0) {
+    return { ok: false, message: "Session state is invalid." };
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -52,8 +58,8 @@ export async function saveSession(
     .from("saved_visualizer_sessions")
     .insert({
       user_id: user.id,
-      algorithm_id: algorithmId,
-      title,
+      algorithm_id: normalizedAlgorithmId,
+      title: title.trim().slice(0, 200),
       input_data: toJson(inputData),
       current_step: currentStep,
       visual_state: toJson(visualState),
@@ -70,7 +76,7 @@ export async function saveSession(
   const { error: activityError } = await supabase.from("activity_timeline").insert({
     user_id: user.id,
     action_type: "saved_session",
-    algorithm_id: algorithmId,
+    algorithm_id: normalizedAlgorithmId,
   });
 
   return {

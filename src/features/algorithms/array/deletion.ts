@@ -47,7 +47,7 @@ export function generateDeleteBeginningSteps(arr: number[]): VisualStep[] {
     operation: "deletion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: pointerOn(["0"]),
+    highlights: pointerOn([elements[0].id]),
     codeLine: 1,
   });
 
@@ -77,7 +77,7 @@ export function generateDeleteBeginningSteps(arr: number[]): VisualStep[] {
       dataState: { elements: clone(elements) } as ArrayVisualState,
       highlights: conjunct([
         compare([elements[i].id]),
-        compare([(i - 1).toString()]),
+        pointerOn([elements[i - 1].id]),
       ]),
       codeLine: 3,
     });
@@ -133,7 +133,7 @@ export function generateDeleteEndSteps(arr: number[]): VisualStep[] {
     operation: "deletion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: pointerOn([lastIndex.toString()]),
+    highlights: pointerOn([elements[lastIndex].id]),
     codeLine: 1,
   });
 
@@ -200,7 +200,7 @@ export function generateDeleteIndexSteps(arr: number[], index: number): VisualSt
     operation: "deletion",
     actionType: "initialize",
     dataState: { elements: clone(elements) } as ArrayVisualState,
-    highlights: pointerOn([index.toString()]),
+    highlights: pointerOn([elements[index].id]),
     codeLine: 1,
   });
 
@@ -230,7 +230,7 @@ export function generateDeleteIndexSteps(arr: number[], index: number): VisualSt
       dataState: { elements: clone(elements) } as ArrayVisualState,
       highlights: conjunct([
         compare([elements[i].id]),
-        compare([(i - 1).toString()]),
+        pointerOn([elements[i - 1].id]),
       ]),
       codeLine: 3,
     });
@@ -364,7 +364,7 @@ export function generateDeleteValueSteps(arr: number[], value: number): VisualSt
       dataState: { elements: clone(elements) } as ArrayVisualState,
       highlights: conjunct([
         compare([elements[i].id]),
-        compare([(i - 1).toString()]),
+        pointerOn([elements[i - 1].id]),
       ]),
       codeLine: 6,
     });

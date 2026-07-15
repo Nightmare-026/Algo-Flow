@@ -2,12 +2,16 @@ import { createClient } from "@/lib/supabase/server";
 
 export type UserPreferences = {
   theme: string;
-  preferred_language: string;
-  preferred_code_language: string;
-  animation_speed: string;
-  reduced_motion: boolean;
-  difficulty_level: string;
-  default_visualizer_mode: string;
+  code_language: string;
+  speed: number;
+  difficulty: string;
+};
+
+const preferenceDefaults: UserPreferences = {
+  theme: "system",
+  code_language: "javascript",
+  speed: 1,
+  difficulty: "medium",
 };
 
 export async function getUserPreferences(): Promise<UserPreferences | null> {
@@ -19,16 +23,20 @@ export async function getUserPreferences(): Promise<UserPreferences | null> {
   if (!user) return null;
 
   const { data, error } = await supabase
-    .from("user_preferences")
-    .select(
-      "theme, preferred_language, preferred_code_language, animation_speed, reduced_motion, difficulty_level, default_visualizer_mode"
-    )
-    .eq("user_id", user.id)
+    .from("preferences")
+    .select("theme, code_language, speed, difficulty")
+    .eq("id", user.id)
     .maybeSingle();
 
   if (error) throw new Error("Preferences could not be loaded.");
+  if (!data) return preferenceDefaults;
 
-  return data;
+  return {
+    theme: data.theme ?? preferenceDefaults.theme,
+    code_language: data.code_language ?? preferenceDefaults.code_language,
+    speed: data.speed ?? preferenceDefaults.speed,
+    difficulty: data.difficulty ?? preferenceDefaults.difficulty,
+  };
 }
 
 export async function updateUserPreferences(updates: Partial<UserPreferences>) {
@@ -39,12 +47,14 @@ export async function updateUserPreferences(updates: Partial<UserPreferences>) {
 
   if (!user) throw new Error("Not authenticated");
 
-  const { error } = await supabase
-    .from("user_preferences")
-    .upsert(
-      { ...updates, user_id: user.id, updated_at: new Date().toISOString() },
-      { onConflict: "user_id" }
-    );
+  const { error } = await supabase.from("preferences").upsert(
+    {
+      id: user.id,
+      ...updates,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "id" }
+  );
 
   if (error) throw new Error("Preferences could not be updated.");
   return true;

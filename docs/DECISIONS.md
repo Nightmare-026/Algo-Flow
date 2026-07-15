@@ -88,3 +88,23 @@ After Phase 1 surfaced four open questions in `CURRENT_STATE_AUDIT.md` §13, the
 ## 2026-07-14 — Phase 1 status
 
 Phase 1 audit (`CURRENT_STATE_AUDIT.md`) is finalized. Progress tracker now reflects that the four open questions are resolved. Phase 2 entry is gated on user approval.
+
+---
+
+## 2026-07-15 - Decision 10: executable semantic artifacts and logical code lines
+
+**Status / owner.** Accepted for Phase 3 / project owner through the instruction to continue the recommended phased implementation.
+
+**Context.** The original draft strict contract expected static generated step/entity identifiers and mapped generated step IDs directly to language lines. Step and entity identifiers are created at runtime, so static expectations would be brittle or fabricated. A generator's existing `VisualStep.codeLine` is stable as a logical algorithm key, but the physical line differs across JavaScript, Python, C++, and Java.
+
+**Options considered.**
+
+1. Freeze generated identifiers and duplicate expectations per fixture.
+2. Keep one numeric code line for every language.
+3. Use executable semantic verifiers plus a stable logical-line key mapped to each language's physical line.
+
+**Decision.** Use option 3. Each authored test case executes `generateSteps` and returns explicit semantic failures. Each mapping binds a positive logical `VisualStep.codeLine` to one physical line in every required language. Readiness executes generators/cases, validates mapping bounds and completeness, and checks that emitted highlight buckets have legend entries. Runtime code highlighting consumes the same authored mapping.
+
+**Consequences.** The contract tests meaning rather than incidental UUIDs and language tabs can highlight different physical lines correctly. Migrated definitions fail closed on missing mappings. Unmigrated definitions temporarily preserve direct-line behavior until completed or pruned.
+
+**Reversal.** Replace the logical key only if a later typed event model provides an equally stable cross-language semantic identifier; migrate mappings and runtime resolution together under the same readiness tests.

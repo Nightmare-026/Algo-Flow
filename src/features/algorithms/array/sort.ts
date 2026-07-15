@@ -287,12 +287,14 @@ export function generateInsertionSortSteps(arr: number[]): VisualStep[] {
       });
 
       if (elements[j].value < elements[j - 1].value) {
+        const currentValue = elements[j].value;
+        const previousValue = elements[j - 1].value;
         swapElements(elements, j, j - 1);
         steps.push({
           id: `step-${stepCount}`,
           stepNumber: stepCount++,
           title: "Swap Elements",
-          description: `${elements[j + 1].value} > ${elements[j].value}. Swapping them to shift right.`,
+          description: `${currentValue} < ${previousValue}. Swapping them to shift ${previousValue} right.`,
           operation: "sort",
           actionType: "update",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
@@ -375,7 +377,7 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
 
     let i = 0;
     let j = 0;
-    let k = left;
+    const merged: ArrayElement[] = [];
 
     while (i < n1 && j < n2) {
       steps.push({
@@ -391,70 +393,84 @@ export function generateMergeSortSteps(arr: number[]): VisualStep[] {
       });
 
       if (L[i].value <= R[j].value) {
-        elements[k] = L[i];
+        const selected = L[i];
+        merged.push(selected);
         steps.push({
           id: `step-${stepCount}`,
           stepNumber: stepCount++,
           title: "Select Element",
-          description: `${L[i].value} is smaller. Placing it at index ${k}.`,
+          description: `${selected.value} is next in the merged order.`,
           operation: "sort",
           actionType: "update",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-          highlights: currentTarget([elements[k].id]),
+          highlights: currentTarget([selected.id]),
           codeLine: 17,
         });
         i++;
       } else {
-        elements[k] = R[j];
+        const selected = R[j];
+        merged.push(selected);
         steps.push({
           id: `step-${stepCount}`,
           stepNumber: stepCount++,
           title: "Select Element",
-          description: `${R[j].value} is smaller. Placing it at index ${k}.`,
+          description: `${selected.value} is next in the merged order.`,
           operation: "sort",
           actionType: "update",
           dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-          highlights: currentTarget([elements[k].id]),
+          highlights: currentTarget([selected.id]),
           codeLine: 20,
         });
         j++;
       }
-      k++;
     }
 
     while (i < n1) {
-      elements[k] = L[i];
+      const selected = L[i];
+      merged.push(selected);
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
         title: "Copy Remaining",
-        description: `Copying remaining element ${L[i].value} from left half to index ${k}.`,
+        description: `Appending remaining element ${selected.value} from the left half.`,
         operation: "sort",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: currentTarget([elements[k].id]),
+        highlights: currentTarget([selected.id]),
         codeLine: 25,
       });
       i++;
-      k++;
     }
 
     while (j < n2) {
-      elements[k] = R[j];
+      const selected = R[j];
+      merged.push(selected);
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
         title: "Copy Remaining",
-        description: `Copying remaining element ${R[j].value} from right half to index ${k}.`,
+        description: `Appending remaining element ${selected.value} from the right half.`,
         operation: "sort",
         actionType: "update",
         dataState: { elements: structuredClone(elements) } as ArrayVisualState,
-        highlights: currentTarget([elements[k].id]),
+        highlights: currentTarget([selected.id]),
         codeLine: 29,
       });
       j++;
-      k++;
     }
+
+    elements.splice(left, merged.length, ...merged);
+    steps.push({
+      id: `step-${stepCount}`,
+      stepNumber: stepCount++,
+      title: "Apply Merged Order",
+      description: `Placed the merged values into positions ${left} through ${right}.`,
+      operation: "sort",
+      actionType: "merge",
+      dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+      highlights: currentTarget(merged.map((element) => element.id)),
+      codeLine: 31,
+    });
   }
 
   function mergeSort(left: number, right: number) {
@@ -769,6 +785,21 @@ export function generateCountingSortSteps(arr: number[]): VisualStep[] {
   });
 
   if (n === 0) return steps;
+  if (elements.some((element) => element.value < 0)) {
+    steps.push({
+      id: `step-${stepCount}`,
+      stepNumber: stepCount++,
+      title: "Unsupported Negative Value",
+      description:
+        "This counting-sort visualizer accepts only non-negative integers.",
+      operation: "sort",
+      actionType: "error",
+      dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+      highlights: {},
+      codeLine: 2,
+    });
+    return steps;
+  }
 
   let max = elements[0].value;
   for (let i = 1; i < n; i++) {
@@ -864,6 +895,21 @@ export function generateRadixSortSteps(arr: number[]): VisualStep[] {
   });
 
   if (n === 0) return steps;
+  if (elements.some((element) => element.value < 0)) {
+    steps.push({
+      id: `step-${stepCount}`,
+      stepNumber: stepCount++,
+      title: "Unsupported Negative Value",
+      description:
+        "This radix-sort visualizer accepts only non-negative integers.",
+      operation: "sort",
+      actionType: "error",
+      dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+      highlights: {},
+      codeLine: 2,
+    });
+    return steps;
+  }
 
   let max = elements[0].value;
   for (let i = 1; i < n; i++) if (elements[i].value > max) max = elements[i].value;

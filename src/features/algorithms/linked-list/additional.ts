@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { VisualStep } from "@/types";
+import { makeHighlights } from "@/features/visualizer-engine/highlights";
 
 const clone = <T>(value: T): T => structuredClone(value);
 
@@ -179,6 +180,7 @@ export function generateSLLDeleteHeadSteps(data: number[]): VisualStep[] {
 
   const oldHead = state.nodes.find((node) => node.id === state.headId)!;
   state.headId = oldHead.nextId;
+  const removalState = clone(state);
   state.nodes = state.nodes.filter((node) => node.id !== oldHead.id);
   steps.push(visualStep({
     stepNumber: 2,
@@ -186,7 +188,7 @@ export function generateSLLDeleteHeadSteps(data: number[]): VisualStep[] {
     description: `Head moves from ${oldHead.value} to the next node, removing the old head from the chain.`,
     operation: "Delete Head",
     actionType: "delete",
-    dataState: clone(state),
+    dataState: removalState,
     highlights: { deleted: [oldHead.id], active: state.headId ? [state.headId] : [] },
     variables: { removed: oldHead.value, newHead: state.headId ? "next" : "null" },
     pseudocodeLine: 4,
@@ -298,6 +300,7 @@ export function generateSLLDetectCycleSteps(data: number[]): VisualStep[] {
     const nextFast = fastNode?.nextId ? state.nodes.find((node) => node.id === fastNode.nextId)?.nextId ?? null : null;
     slow = slowNode?.nextId ?? null;
     fast = nextFast;
+    const pointerIds = [slow, fast].filter(Boolean) as string[];
 
     steps.push(visualStep({
       stepNumber: stepNumber++,
@@ -306,7 +309,10 @@ export function generateSLLDetectCycleSteps(data: number[]): VisualStep[] {
       operation: "Detect Cycle",
       actionType: "move-pointer",
       dataState: clone(state),
-      highlights: { active: [slow, fast].filter(Boolean) as string[], compared: [slow, fast].filter(Boolean) as string[] },
+      highlights: makeHighlights({
+        active: pointerIds,
+        compared: pointerIds,
+      }),
       variables: { slow: slow ? "node" : "null", fast: fast ? "node" : "null" },
       pseudocodeLine: 4,
     }));
@@ -340,4 +346,3 @@ export function generateSLLDetectCycleSteps(data: number[]): VisualStep[] {
   }));
   return steps;
 }
-

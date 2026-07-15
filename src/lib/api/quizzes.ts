@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
 
 export type QuizAttempt = {
   id: string;
@@ -8,7 +9,7 @@ export type QuizAttempt = {
   algorithm_id: string;
   score: number;
   total_questions: number;
-  created_at: string;
+  created_at: string | null;
 };
 
 export async function submitQuizAttempt(
@@ -16,6 +17,9 @@ export async function submitQuizAttempt(
   score: number,
   totalQuestions: number
 ): Promise<QuizAttempt | null> {
+  const normalizedAlgorithmId = normalizeAlgorithmId(algorithmId);
+  if (!normalizedAlgorithmId) throw new Error("Invalid algorithm.");
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -23,12 +27,18 @@ export async function submitQuizAttempt(
 
   if (!user) return null;
 
-  if (totalQuestions <= 0 || score < 0 || score > totalQuestions) {
+  if (
+    !Number.isInteger(score) ||
+    !Number.isInteger(totalQuestions) ||
+    totalQuestions <= 0 ||
+    score < 0 ||
+    score > totalQuestions
+  ) {
     throw new Error("Invalid quiz score.");
   }
 
   const { data, error } = await supabase.rpc("record_quiz_attempt", {
-    p_algorithm_id: algorithmId,
+    p_algorithm_id: normalizedAlgorithmId,
     p_score: score,
     p_total_questions: totalQuestions,
   });

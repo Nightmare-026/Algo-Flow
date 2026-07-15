@@ -1,5 +1,11 @@
 import { AlgorithmVisualizerDefinition } from "@/features/visualizer-engine/registry/types";
 import { getArrayCodeExamples } from "./code-examples";
+import {
+  arrayAccessCodeLineMappings,
+  arraySearchCodeLineMappings,
+  arraySortCodeLineMappings,
+  arrayTraversalCodeLineMappings,
+} from "./code-line-mappings";
 import { generateAccessElementSteps, generateAccessByIndexSteps } from "./access";
 import { generateForwardTraversalSteps, generateReverseTraversalSteps, generateRangeTraversalSteps } from "./traversal";
 import { generateLinearSearchSteps, generateBinarySearchSteps, generateJumpSearchSteps, generateInterpolationSearchSteps } from "./search";
@@ -9,24 +15,24 @@ import { generateDeleteBeginningSteps, generateDeleteEndSteps, generateDeleteInd
 import { generateUpdateByIndexSteps, generateUpdateByValueSteps, generateMergeSortedArraysSteps, generateReverseArraySteps, generateLeftRotationSteps, generateRightRotationSteps, generateRemoveDuplicatesSteps } from "./operations";
 
 export const arrayRegistry: AlgorithmVisualizerDefinition[] = [
-  { slug: "access", generateSteps: (data, opts) => generateAccessElementSteps(data, opts.index), getCodeExamples: getArrayCodeExamples },
-  { slug: "access-by-index", generateSteps: (data, opts) => generateAccessByIndexSteps(data, opts.index), getCodeExamples: getArrayCodeExamples },
-  { slug: "random-access", generateSteps: (data, opts) => generateAccessByIndexSteps(data, opts.index), getCodeExamples: getArrayCodeExamples },
-  { slug: "forward-traversal", generateSteps: (data) => generateForwardTraversalSteps(data), getCodeExamples: getArrayCodeExamples },
-  { slug: "reverse-traversal", generateSteps: (data) => generateReverseTraversalSteps(data), getCodeExamples: getArrayCodeExamples },
-  { slug: "range-traversal", generateSteps: (data, opts) => generateRangeTraversalSteps(data, Math.min(opts.index, data.length - 1), data.length - 1), getCodeExamples: getArrayCodeExamples },
-  { slug: "linear-search", generateSteps: (data, opts) => generateLinearSearchSteps(data, opts.target), getCodeExamples: getArrayCodeExamples },
-  { slug: "binary-search", generateSteps: (data, opts) => generateBinarySearchSteps(data, opts.target), getCodeExamples: getArrayCodeExamples },
-  { slug: "jump-search", generateSteps: (data, opts) => generateJumpSearchSteps(data, opts.target), getCodeExamples: getArrayCodeExamples },
-  { slug: "interpolation-search", generateSteps: (data, opts) => generateInterpolationSearchSteps(data, opts.target), getCodeExamples: getArrayCodeExamples },
-  { slug: "bubble-sort", generateSteps: (data) => generateBubbleSortSteps(data), getCodeExamples: getArrayCodeExamples },
-  { slug: "selection-sort", generateSteps: (data) => generateSelectionSortSteps(data), getCodeExamples: getArrayCodeExamples },
-  { slug: "insertion-sort", generateSteps: (data) => generateInsertionSortSteps(data), getCodeExamples: getArrayCodeExamples },
-  { slug: "merge-sort", generateSteps: (data) => generateMergeSortSteps(data), getCodeExamples: getArrayCodeExamples },
-  { slug: "quick-sort", generateSteps: (data) => generateQuickSortSteps(data), getCodeExamples: getArrayCodeExamples },
-  { slug: "heap-sort", generateSteps: (data) => generateHeapSortSteps(data), getCodeExamples: getArrayCodeExamples },
-  { slug: "counting-sort", generateSteps: (data) => generateCountingSortSteps(data), getCodeExamples: getArrayCodeExamples },
-  { slug: "radix-sort", generateSteps: (data) => generateRadixSortSteps(data), getCodeExamples: getArrayCodeExamples },
+  { slug: "access", generateSteps: (data, opts) => generateAccessElementSteps(data, opts.index), getCodeExamples: getArrayCodeExamples, codeLineMapping: arrayAccessCodeLineMappings.access },
+  { slug: "access-by-index", generateSteps: (data, opts) => generateAccessByIndexSteps(data, opts.index), getCodeExamples: getArrayCodeExamples, codeLineMapping: arrayAccessCodeLineMappings["access-by-index"] },
+  { slug: "random-access", generateSteps: (data, opts) => generateAccessByIndexSteps(data, opts.index), getCodeExamples: getArrayCodeExamples, codeLineMapping: arrayAccessCodeLineMappings["random-access"] },
+  { slug: "forward-traversal", generateSteps: (data) => generateForwardTraversalSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arrayTraversalCodeLineMappings["forward-traversal"] },
+  { slug: "reverse-traversal", generateSteps: (data) => generateReverseTraversalSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arrayTraversalCodeLineMappings["reverse-traversal"] },
+  { slug: "range-traversal", generateSteps: (data, opts) => generateRangeTraversalSteps(data, Math.min(opts.index, data.length - 1), data.length - 1), getCodeExamples: getArrayCodeExamples, codeLineMapping: arrayTraversalCodeLineMappings["range-traversal"] },
+  { slug: "linear-search", generateSteps: (data, opts) => generateLinearSearchSteps(data, opts.target), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySearchCodeLineMappings["linear-search"] },
+  { slug: "binary-search", generateSteps: (data, opts) => generateBinarySearchSteps(data, opts.target), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySearchCodeLineMappings["binary-search"] },
+  { slug: "jump-search", generateSteps: (data, opts) => generateJumpSearchSteps(data, opts.target), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySearchCodeLineMappings["jump-search"] },
+  { slug: "interpolation-search", generateSteps: (data, opts) => generateInterpolationSearchSteps(data, opts.target), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySearchCodeLineMappings["interpolation-search"] },
+  { slug: "bubble-sort", generateSteps: (data) => generateBubbleSortSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySortCodeLineMappings["bubble-sort"] },
+  { slug: "selection-sort", generateSteps: (data) => generateSelectionSortSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySortCodeLineMappings["selection-sort"] },
+  { slug: "insertion-sort", generateSteps: (data) => generateInsertionSortSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySortCodeLineMappings["insertion-sort"] },
+  { slug: "merge-sort", generateSteps: (data) => generateMergeSortSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySortCodeLineMappings["merge-sort"] },
+  { slug: "quick-sort", generateSteps: (data) => generateQuickSortSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySortCodeLineMappings["quick-sort"] },
+  { slug: "heap-sort", generateSteps: (data) => generateHeapSortSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySortCodeLineMappings["heap-sort"] },
+  { slug: "counting-sort", generateSteps: (data) => generateCountingSortSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySortCodeLineMappings["counting-sort"] },
+  { slug: "radix-sort", generateSteps: (data) => generateRadixSortSteps(data), getCodeExamples: getArrayCodeExamples, codeLineMapping: arraySortCodeLineMappings["radix-sort"] },
   { slug: "insert-beginning", generateSteps: (data, opts) => generateInsertBeginningSteps(data, opts.value), getCodeExamples: getArrayCodeExamples },
   { slug: "insert-end", generateSteps: (data, opts) => generateInsertEndSteps(data, opts.value), getCodeExamples: getArrayCodeExamples },
   { slug: "insert-index", generateSteps: (data, opts) => generateInsertIndexSteps(data, opts.value, opts.index), getCodeExamples: getArrayCodeExamples },

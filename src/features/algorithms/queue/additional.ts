@@ -51,14 +51,16 @@ export function generateCircularQueueSteps(data: number[], value: number, capaci
     variables: { front: 0, rear: queue.elements.length - 1, capacity },
     pseudocodeLine: 1,
   }));
-  const removed = queue.elements.shift();
+  const removed = queue.elements[0];
+  const removalState = clone(queue);
+  queue.elements.shift();
   steps.push(visualStep({
     stepNumber: 2,
     title: "Dequeue Frees a Slot",
     description: removed ? `Remove front value ${removed.value}; the front pointer wraps forward.` : "Queue is empty, so no slot is freed.",
     operation: "Circular Queue",
     actionType: "dequeue",
-    dataState: clone(queue),
+    dataState: removalState,
     highlights: removed ? { deleted: [removed.id] } : {},
     variables: { front: queue.elements.length > 0 ? 1 : 0 },
     pseudocodeLine: 3,
@@ -78,4 +80,3 @@ export function generateCircularQueueSteps(data: number[], value: number, capaci
   }));
   return steps;
 }
-

@@ -307,8 +307,8 @@ export function generateChainingDeleteSteps(
     });
 
     if (entry.key === targetValue) {
-      // Remove from array visually
       const deletedEntry = bucket[i];
+      const removalState = structuredClone(state);
       bucket.splice(i, 1);
       state.elementCount--;
       state.loadFactor = state.elementCount / tableSize;
@@ -320,10 +320,23 @@ export function generateChainingDeleteSteps(
         description: `Successfully removed ${targetValue} from bucket ${hashIndex}.`,
         operation: "Delete",
         actionType: "delete",
-        dataState: structuredClone(state),
+        dataState: removalState,
         highlights: { active: [`bucket-${hashIndex}`], deleted: [deletedEntry.id] },
         codeLine: 8,
         pseudocodeLine: 8,
+        variables: { Index: hashIndex, Deleted: "true" }
+      });
+      steps.push({
+        id: uuidv4(),
+        stepNumber: stepNumber++,
+        title: "Deletion Complete",
+        description: `${targetValue} is no longer present in bucket ${hashIndex}.`,
+        operation: "Delete",
+        actionType: "complete",
+        dataState: structuredClone(state),
+        highlights: { active: [`bucket-${hashIndex}`] },
+        codeLine: 9,
+        pseudocodeLine: 9,
         variables: { Index: hashIndex, Deleted: "true" }
       });
       return steps;

@@ -13,7 +13,6 @@ import {
   found as foundHL,
   markBucket,
   pointerOn,
-  succeeded,
   visited,
 } from "@/features/visualizer-engine/highlights";
 
@@ -211,7 +210,8 @@ export function generateBinarySearchSteps(arr: number[], target: number): Visual
 // 3. Jump Search
 export function generateJumpSearchSteps(arr: number[], target: number): VisualStep[] {
   const steps: VisualStep[] = [];
-  const elements = createElements(arr);
+  const sortedArr = [...arr].sort((a, b) => a - b);
+  const elements = createElements(sortedArr);
   let stepCount = 1;
   const n = arr.length;
 
@@ -230,14 +230,15 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
     return steps;
   }
 
-  const step = Math.floor(Math.sqrt(n));
+  const blockSize = Math.max(1, Math.floor(Math.sqrt(n)));
+  let step = blockSize;
   let prev = 0;
 
   steps.push({
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Jump Search",
-    description: `Searching for target value ${target}. Jump step is √${n} ≈ ${step}.`,
+    description: `Searching the sorted values for target ${target}. Jump step is √${n} ≈ ${blockSize}.`,
     operation: "search",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
@@ -246,11 +247,12 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
   });
 
   while (elements[Math.min(step, n) - 1].value < target) {
+    const blockEnd = Math.min(step, n) - 1;
     const nextPrev = prev;
     prev = step;
 
     const skipParts: VisualStep["highlights"][] = [
-      currentTarget([elements[prev - 1].id]),
+      currentTarget([elements[blockEnd].id]),
     ];
     if (nextPrev < prev - 1) {
       const processedIds: string[] = [];
@@ -262,7 +264,7 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
       id: `step-${stepCount}`,
       stepNumber: stepCount++,
       title: "Jump",
-      description: `Value at index ${prev - 1} is ${elements[prev - 1].value} < ${target}. Jumping ahead to index ${Math.min(prev + step, n) - 1}.`,
+      description: `Value at index ${blockEnd} is ${elements[blockEnd].value} < ${target}. Jumping ahead to index ${Math.min(step + blockSize, n) - 1}.`,
       operation: "search",
       actionType: "access",
       dataState: { elements: structuredClone(elements) } as ArrayVisualState,
@@ -270,7 +272,21 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
       codeLine: 4,
     });
 
-    if (prev >= n) break;
+    if (prev >= n) {
+      steps.push({
+        id: `step-${stepCount}`,
+        stepNumber: stepCount++,
+        title: "Target Not Found",
+        description: `Jumped beyond the array. Target ${target} was not found.`,
+        operation: "search",
+        actionType: "error",
+        dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+        highlights: {},
+        codeLine: 13,
+      });
+      return steps;
+    }
+    step += blockSize;
   }
 
   steps.push({
@@ -286,7 +302,7 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
   });
 
   let found = false;
-  for (let i = prev; i < Math.min(prev + step, n); i++) {
+  for (let i = prev; i < Math.min(step, n); i++) {
     const partsHL: VisualStep["highlights"][] = [compare([elements[i].id])];
     if (prev < i) {
       const pastIds: string[] = [];
@@ -343,7 +359,8 @@ export function generateJumpSearchSteps(arr: number[], target: number): VisualSt
 // 4. Interpolation Search
 export function generateInterpolationSearchSteps(arr: number[], target: number): VisualStep[] {
   const steps: VisualStep[] = [];
-  const elements = createElements(arr);
+  const sortedArr = [...arr].sort((a, b) => a - b);
+  const elements = createElements(sortedArr);
   let stepCount = 1;
   const n = arr.length;
 
@@ -366,7 +383,7 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Interpolation Search",
-    description: `Searching for target value ${target} using interpolation.`,
+    description: `Searching the sorted values for target ${target} using interpolation.`,
     operation: "search",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
@@ -379,7 +396,7 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
   let found = false;
 
   while (low <= high && target >= elements[low].value && target <= elements[high].value) {
-    if (low === high) {
+    if (elements[low].value === elements[high].value) {
       if (elements[low].value === target) {
         found = true;
         steps.push({

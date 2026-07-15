@@ -89,15 +89,12 @@ export function generateQueueDequeueSteps(
     }
   });
 
-  // Step 4: Dequeue
-  elements.shift();
-  currentState = { elements: [...elements], maxCapacity };
-  
+  // Step 4: Mark the still-renderable front element for removal.
   steps.push({
     id: uuidv4(),
     stepNumber: 4,
-    title: "Increment Front",
-    description: `Removed value ${elementToDequeue.value} and shifted remaining elements (or incremented front pointer).`,
+    title: "Remove Front Element",
+    description: `Mark value ${elementToDequeue.value} for removal before advancing the front pointer.`,
     operation: "Dequeue",
     actionType: "dequeue",
     dataState: { ...currentState },
@@ -105,11 +102,14 @@ export function generateQueueDequeueSteps(
     codeLine: 6,
     pseudocodeLine: 5,
     variables: {
-      "Front": elements.length > 0 ? 0 : -1,
+      "Front": elements.length > 1 ? 1 : -1,
       "Rear": elements.length - 1,
       "Value": elementToDequeue.value
     }
   });
+
+  elements.shift();
+  currentState = { elements: [...elements], maxCapacity };
 
   // Step 5: Complete
   steps.push({

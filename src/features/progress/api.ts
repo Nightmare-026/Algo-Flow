@@ -2,8 +2,14 @@
 
 import { createClient } from "@/lib/supabase/server";
 import type { UserActionResult } from "@/features/bookmarks/api";
+import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
 
 export async function markCompleted(algorithmId: string): Promise<UserActionResult> {
+  const normalizedAlgorithmId = normalizeAlgorithmId(algorithmId);
+  if (!normalizedAlgorithmId) {
+    return { ok: false, message: "A valid algorithm is required." };
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -14,7 +20,7 @@ export async function markCompleted(algorithmId: string): Promise<UserActionResu
   }
 
   const { error } = await supabase.rpc("mark_algorithm_completed", {
-    p_algorithm_id: algorithmId,
+    p_algorithm_id: normalizedAlgorithmId,
   });
 
   if (error) {

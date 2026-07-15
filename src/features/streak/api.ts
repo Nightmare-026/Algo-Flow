@@ -4,11 +4,11 @@ import { createClient } from "@/lib/supabase/server";
 
 export type UserStreak = {
   current_streak: number;
-  longest_streak: number;
-  last_active_date: string | null;
+  max_streak: number;
+  last_activity_date: string | null;
 };
 
-export async function updateStreakOnActivity() {
+export async function updateStreakOnActivity(): Promise<UserStreak | null> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -17,10 +17,15 @@ export async function updateStreakOnActivity() {
   if (!user) return null;
 
   const { data, error } = await supabase.rpc("touch_user_streak");
-
   if (error) throw new Error("Streak could not be updated.");
 
-  return data;
+  return data
+    ? {
+        current_streak: data.current_streak ?? 0,
+        max_streak: data.max_streak ?? 0,
+        last_activity_date: data.last_activity_date,
+      }
+    : null;
 }
 
 export async function getStreak(): Promise<UserStreak | null> {
@@ -33,33 +38,29 @@ export async function getStreak(): Promise<UserStreak | null> {
 
   const { data, error } = await supabase
     .from("user_streaks")
-    .select("current_streak, longest_streak, last_active_date")
+    .select("current_streak, max_streak, last_activity_date")
     .eq("user_id", user.id)
     .maybeSingle();
 
   if (error) throw new Error("Streak could not be loaded.");
+  if (!data) return null;
 
-  if (data) {
-    // Check if streak is broken (diff > 1 day)
-    const todayStr = new Date().toISOString().split("T")[0];
-    const lastDate = data.last_active_date;
+  const streak: UserStreak = {
+    current_streak: data.current_streak ?? 0,
+    max_streak: data.max_streak ?? 0,
+    last_activity_date: data.last_activity_date,
+  };
 
-    if (lastDate && lastDate !== todayStr) {
-      const lastDateObj = new Date(lastDate);
-      const todayObj = new Date(todayStr);
-      const diffDays = Math.floor(
-        (todayObj.getTime() - lastDateObj.getTime()) / (1000 * 60 * 60 * 24)
-      );
+  const today = new Date().toISOString().split("T")[0];
+  if (streak.last_activity_date && streak.last_activity_date !== today) {
+    const lastDate = new Date(streak.last_activity_date);
+    const todayDate = new Date(today);
+    const diffDays = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
 
-      if (diffDays > 1) {
-        // Return 0 current streak for UI if broken, without mutating DB until next activity
-        return {
-          ...data,
-          current_streak: 0,
-        };
-      }
+    if (diffDays > 1) {
+      return { ...streak, current_streak: 0 };
     }
   }
 
-  return data;
+  return streak;
 }

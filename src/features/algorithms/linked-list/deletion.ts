@@ -68,6 +68,7 @@ export function generateSLLDeleteSteps(
     });
 
     currentState.headId = headNode.nextId;
+    const removalState = structuredClone(currentState);
     currentState.nodes = currentState.nodes.filter(n => n.id !== headNode.id);
     currentState = { ...currentState };
 
@@ -78,7 +79,7 @@ export function generateSLLDeleteSteps(
       description: `Updated head pointer to the next node, effectively removing the old head.`,
       operation: "Delete",
       actionType: "delete",
-      dataState: { ...currentState },
+      dataState: removalState,
       highlights: { deleted: [headNode.id] },
       codeLine: 5,
       pseudocodeLine: 4,
@@ -173,7 +174,7 @@ export function generateSLLDeleteSteps(
         }
       }
 
-      // Remove from nodes array
+      const removalState = structuredClone(currentState);
       currentState.nodes = currentState.nodes.filter(n => n.id !== currentId);
       currentState = { ...currentState };
 
@@ -184,7 +185,7 @@ export function generateSLLDeleteSteps(
         description: `Node with value ${valueToDelete} removed from list.`,
         operation: "Delete",
         actionType: "delete",
-        dataState: { ...currentState },
+        dataState: removalState,
         highlights: { deleted: [currentId] },
         codeLine: 10,
         pseudocodeLine: 9,
@@ -229,6 +230,7 @@ export function generateSLLDeleteSteps(
       pseudocodeLine: 11,
     });
   } else {
+    const remainingIds = new Set(currentState.nodes.map((node) => node.id));
     steps.push({
       id: uuidv4(),
       stepNumber: stepNum,
@@ -237,7 +239,9 @@ export function generateSLLDeleteSteps(
       operation: "Delete",
       actionType: "complete",
       dataState: { ...currentState },
-      highlights: { visited: [...visitedIds] },
+      highlights: {
+        visited: visitedIds.filter((id) => remainingIds.has(id)),
+      },
       codeLine: 13,
       pseudocodeLine: 12,
     });

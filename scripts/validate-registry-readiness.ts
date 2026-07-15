@@ -1,255 +1,345 @@
 /**
- * Phase 3 — Build-time Registry & Catalog Validator.
+ * Publication-readiness validator.
  *
- * `npm run validate:registry` (also wired into `prebuild`).
- *
- * Fails the build when:
- * - any catalog slug lacks a registry entry (Decision 6: prune contracts)
- * - any registry entry is missing required fields
- * - any registry entry lacks any of javascript/typescript/python/cpp/java
- * - pseudocode lines are not strictly increasing from 1
- * - testCases is empty or expectations reference uncovered step ids
- * - codeLineMapping is missing for any step emitted
- * - the catalog contains slugs with no registry entry
- *
- * `npm run validate:registry` exits 0 on success, 1 on failure.
+ * Unlike the runtime registry, a published definition must include authored
+ * input, semantic-test, code-mapping, and legend artifacts. The composed
+ * publication registry resolves metadata, pseudocode, code examples,
+ * generators, renderers, and controls from their authoritative sources first;
+ * this validator therefore reports only genuine remaining artifacts.
  */
 
-import { algorithmRegistry } from "../src/features/visualizer-engine/registry/algorithm-registry";
-import type { VisualizerDefinition } from "../src/features/visualizer-engine/registry/VisualizerDefinition";
-import type { CodeExample, VisualStepHighlights } from "../src/types";
 import { algorithms } from "../src/data/seed/algorithms";
+import {
+  publicationRegistry,
+  type ComposedPublicationDefinition,
+} from "../src/features/visualizer-engine/registry/publication-registry";
+import { REQUIRED_CODE_LANGUAGES } from "../src/features/visualizer-engine/registry/types";
+import type { VisualStepHighlights } from "../src/types";
 
 type Issue = {
-  severity: "error" | "warn";
+  severity: "error" | "warning";
   where: string;
   message: string;
 };
 
 const issues: Issue[] = [];
+const validHighlightBuckets = new Set<keyof VisualStepHighlights>([
+  "current",
+  "compared",
+  "swapped",
+  "sorted",
+  "visited",
+  "target",
+  "error",
+  "found",
+  "inserted",
+  "deleted",
+  "pointer",
+  "path",
+  "active",
+  "success",
+]);
 
-function err(where: string, message: string): void {
-  issues.push({ severity: "error", where, message });
+function report(
+  severity: Issue["severity"],
+  where: string,
+  message: string,
+) {
+  issues.push({ severity, where, message });
 }
-function warn(where: string, message: string): void {
-  issues.push({ severity: "warn", where, message });
+
+function requireText(value: unknown, where: string, field: string) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    report("error", where, `${field} must be a non-empty string`);
+  }
 }
 
-const REQUIRED_LANGS = ["javascript", "python", "cpp", "java"] as const;
-
-const catalogSlugs = new Set<string>();
-for (const a of algorithms) {
-  if (!a || typeof a.slug !== "string") continue;
-  catalogSlugs.add(a.slug);
+function codeLineCount(code: string) {
+  return code.split(/\r?\n/).length;
 }
 
-const registrySlugs = new Set<string>();
+function validateAuthoredArtifacts(
+  where: string,
+  entry: ComposedPublicationDefinition,
+) {
+  const artifacts = entry.authoredArtifacts;
+  if (!artifacts) return;
 
-const registry = algorithmRegistry as unknown as Record<string, VisualizerDefinition<unknown>>;
-
-// Catch duplicate slugs.
-const seenSlugs = new Set<string>();
-
-for (const [slug, entry] of Object.entries(registry)) {
-  if (seenSlugs.has(slug)) {
-    err(`registry.${slug}`, "duplicate slug");
-    continue;
-  }
-  seenSlugs.add(slug);
-  registrySlugs.add(slug);
-
-  const loc = `registry.${slug}`;
-
-  // 1) Required string fields.
-  for (const k of [
-    "title",
-    "description",
-    "dataStructureId",
-    "category",
-    "difficulty",
-    "spaceComplexity",
-  ]) {
-    const v = (entry as unknown as Record<string, unknown>)[k];
-    if (typeof v !== "string" || v.length === 0) {
-      err(loc, `field "${k}" must be a non-empty string`);
-    }
-  }
-
-  // 2) timeComplexity.
-  const tc = entry.timeComplexity;
-  if (
-    !tc ||
-    typeof tc.best !== "string" ||
-    typeof tc.average !== "string" ||
-    typeof tc.worst !== "string"
-  ) {
-    err(loc, 'timeComplexity must be {best, average, worst} strings (e.g. "O(n)")');
-  }
-
-  // 3) tags.
-  if (!Array.isArray(entry.tags) || entry.tags.length === 0) {
-    err(loc, "tags must be a non-empty array of strings");
-  }
-
-  // 4) generateSteps.
-  if (typeof entry.generateSteps !== "function") {
-    err(loc, "generateSteps must be a function");
-  }
-
-  // 5) codeExamples per REQUIRED_LANGS.
-  if (!entry.codeExamples || typeof entry.codeExamples !== "object") {
-    err(loc, "codeExamples is missing");
-  } else {
-    for (const lang of REQUIRED_LANGS) {
-      const ce = (entry.codeExamples as Record<string, CodeExample | undefined>)[lang];
-      if (!ce || typeof ce.code !== "string" || ce.code.trim().length === 0) {
-        err(loc, `codeExamples.${lang} must be a non-empty CodeExample`);
-      }
-      if (ce && ce.language !== lang) {
-        err(loc, `codeExamples.${lang}.language must equal "${lang}" (was "${ce.language}")`);
-      }
-    }
-  }
-
-  // 6) pseudocode.
-  if (!Array.isArray(entry.pseudocode) || entry.pseudocode.length === 0) {
-    err(loc, "pseudocode must be a non-empty array of {line,text}");
-  } else {
-    const seenLines = new Set<number>();
-    let lastLine = -Infinity;
-    for (const pc of entry.pseudocode) {
-      if (
-        typeof pc.line !== "number" ||
-        !Number.isInteger(pc.line) ||
-        typeof pc.text !== "string" ||
-        pc.text.length === 0
-      ) {
-        err(loc, "pseudocode entry must be {line: positive int, text: non-empty string}");
+  for (const generator of artifacts.inputGenerators) {
+    const generatorWhere = `${where}.inputGenerators.${generator.id}`;
+    requireText(generator.id, generatorWhere, "id");
+    requireText(generator.label, generatorWhere, "label");
+    try {
+      const input = generator.generate();
+      if (!artifacts.inputSchema(input, entry.defaultOptions)) {
+        report("error", generatorWhere, "generated input fails inputSchema");
         continue;
       }
-      if (pc.line < 1) {
-        err(loc, `pseudocode line must be ≥ 1 (saw ${pc.line})`);
+      const validationErrors = artifacts.validateInput(
+        input,
+        entry.defaultOptions,
+      );
+      if (validationErrors.length > 0) {
+        report(
+          "error",
+          generatorWhere,
+          `generated input fails validateInput: ${validationErrors.join("; ")}`,
+        );
       }
-      if (seenLines.has(pc.line)) {
-        err(loc, `pseudocode line ${pc.line} duplicates`);
-      }
-      seenLines.add(pc.line);
-      if (pc.line <= lastLine) {
-        err(loc, `pseudocode lines must strictly increase (saw ${pc.line} after ${lastLine})`);
-      }
-      lastLine = pc.line;
+    } catch (error) {
+      report(
+        "error",
+        generatorWhere,
+        `generator threw: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
-  // 7) testCases.
-  if (!Array.isArray(entry.testCases) || entry.testCases.length === 0) {
-    err(loc, "testCases must be a non-empty array");
-  } else {
-    entry.testCases.forEach((tc, i) => {
-      if (typeof tc.name !== "string" || tc.name.length === 0) {
-        err(loc, `testCase[${i}].name must be a non-empty string`);
+  const mappings = new Map<number, (typeof artifacts.codeLineMapping)[number]>();
+  for (const mapping of artifacts.codeLineMapping) {
+    const mappingWhere = `${where}.codeLineMapping.${mapping.logicalLine}`;
+    if (!Number.isInteger(mapping.logicalLine) || mapping.logicalLine < 1) {
+      report("error", mappingWhere, "logicalLine must be a positive integer");
+      continue;
+    }
+    if (mappings.has(mapping.logicalLine)) {
+      report("error", mappingWhere, "logicalLine must be unique");
+    }
+    mappings.set(mapping.logicalLine, mapping);
+
+    for (const language of REQUIRED_CODE_LANGUAGES) {
+      const line = mapping.lines[language];
+      const example = entry.codeExamples[language];
+      if (!Number.isInteger(line) || line < 1) {
+        report(
+          "error",
+          mappingWhere,
+          `${language} line must be a positive integer`,
+        );
+      } else if (example && line > codeLineCount(example.code)) {
+        report(
+          "error",
+          mappingWhere,
+          `${language} line ${line} exceeds the ${codeLineCount(example.code)}-line example`,
+        );
       }
-      if (!tc.options || typeof tc.options !== "object") {
-        err(loc, `testCase[${i}].options must be an object`);
+    }
+  }
+
+  const legendBuckets = new Set(
+    artifacts.legend.map((item) => item.bucketKey),
+  );
+  for (const testCase of artifacts.testCases) {
+    const testWhere = `${where}.testCases.${testCase.name}`;
+    requireText(testCase.name, testWhere, "name");
+    if (!artifacts.inputSchema(testCase.input, testCase.options)) {
+      report("error", testWhere, "test input fails inputSchema");
+      continue;
+    }
+
+    try {
+      const steps = entry.generateSteps(testCase.input, testCase.options);
+      if (steps.length === 0) {
+        report("error", testWhere, "generateSteps returned no steps");
+        continue;
       }
-      if (!Array.isArray(tc.expectations) || tc.expectations.length === 0) {
-        err(loc, `testCase[${i}].expectations must be a non-empty array`);
-      } else {
-        for (const exp of tc.expectations) {
-          if (typeof exp.stepIndex !== "number" || !Number.isInteger(exp.stepIndex)) {
-            err(loc, `testCase[${i}].expectations[?].stepIndex must be a non-negative integer`);
-          } else if (exp.stepIndex < 0) {
-            err(loc, `testCase[${i}].expectations[?].stepIndex must be ≥ 0`);
-          }
-          if (!Array.isArray(exp.highlights)) {
-            err(loc, `testCase[${i}].expectations[?].highlights must be an array`);
+      const failures = testCase.verify(steps);
+      for (const failure of failures) {
+        report("error", testWhere, failure);
+      }
+
+      for (const step of steps) {
+        if (!Number.isInteger(step.codeLine) || (step.codeLine ?? 0) < 1) {
+          report(
+            "error",
+            testWhere,
+            `step ${step.stepNumber} has no positive logical codeLine`,
+          );
+        } else if (!mappings.has(step.codeLine!)) {
+          report(
+            "error",
+            testWhere,
+            `step ${step.stepNumber} references unmapped logical codeLine ${step.codeLine}`,
+          );
+        }
+
+        for (const bucket of Object.keys(
+          step.highlights,
+        ) as (keyof VisualStepHighlights)[]) {
+          if (!legendBuckets.has(bucket)) {
+            report(
+              "error",
+              testWhere,
+              `step ${step.stepNumber} uses highlight bucket ${bucket} without a legend entry`,
+            );
           }
         }
       }
-    });
-  }
-
-  // 8) codeLineMapping.
-  if (!Array.isArray(entry.codeLineMapping) || entry.codeLineMapping.length === 0) {
-    err(loc, "codeLineMapping must be a non-empty array");
-  }
-
-  // 9) legend.
-  if (!Array.isArray(entry.legend) || entry.legend.length === 0) {
-    err(loc, "legend must be a non-empty array");
-  }
-}
-
-// ─── Catalog coverage ───
-for (const catSlug of catalogSlugs) {
-  if (!registrySlugs.has(catSlug)) {
-    err(
-      `catalog.${catSlug}`,
-      "catalog has this slug but the registry is missing an entry — must be added or pruned"
-    );
-  }
-}
-
-// ─── Registry entries not in catalog (warn) ───
-for (const regSlug of registrySlugs) {
-  if (!catalogSlugs.has(regSlug)) {
-    warn(
-      `registry.${regSlug}`,
-      "registry entry exists without a catalog entry — either catalog it or remove from registry"
-    );
-  }
-}
-
-// ─── Convenience: also validate the highlights helper has the buckets that
-// each legend claims ───
-for (const [slug, entry] of Object.entries(registry)) {
-  if (!Array.isArray(entry.legend)) continue;
-  const bucketsInLegend = new Set(entry.legend.map((l) => l.bucketKey));
-  const validKeys = new Set<keyof VisualStepHighlights>([
-    "current",
-    "compared",
-    "swapped",
-    "sorted",
-    "visited",
-    "target",
-    "error",
-    "found",
-    "inserted",
-    "deleted",
-    "pointer",
-    "path",
-    "active",
-    "success",
-  ]);
-  for (const k of bucketsInLegend) {
-    if (!validKeys.has(k)) {
-      err(`registry.${slug}.legend`, `legend references unknown highlight bucket "${String(k)}"`);
+    } catch (error) {
+      report(
+        "error",
+        testWhere,
+        `semantic test threw: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 }
 
-// ─── Report ───
-const errors = issues.filter((i) => i.severity === "error");
-const warnings = issues.filter((i) => i.severity === "warn");
+function validateComposedDefinition(
+  slug: string,
+  entry: ComposedPublicationDefinition,
+) {
+  const where = `publication.${slug}`;
 
-const sortedIssues = [...errors, ...warnings];
+  for (const [field, value] of [
+    ["id", entry.id],
+    ["slug", entry.slug],
+    ["title", entry.title],
+    ["description", entry.description],
+    ["dataStructureId", entry.dataStructureId],
+    ["operation", entry.operation],
+    ["difficulty", entry.difficulty],
+    ["priority", entry.priority],
+    ["spaceComplexity", entry.spaceComplexity],
+  ] as const) {
+    requireText(value, where, field);
+  }
+
+  if (entry.slug !== slug) {
+    report("error", where, "registry key and slug do not match");
+  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entry.slug)) {
+    report("error", where, "slug must be lowercase kebab-case");
+  }
+
+  for (const [field, value] of Object.entries(entry.timeComplexity)) {
+    requireText(value, where, `timeComplexity.${field}`);
+  }
+  if (entry.tags.length === 0) {
+    report("error", where, "tags must be non-empty");
+  }
+  if (!Array.isArray(entry.defaultInput)) {
+    report("error", where, "defaultInput must be an array");
+  }
+  if (!entry.defaultOptions || typeof entry.defaultOptions !== "object") {
+    report("error", where, "defaultOptions must be present");
+  }
+  if (typeof entry.generateSteps !== "function") {
+    report("error", where, "generateSteps must be a function");
+  }
+  requireText(entry.renderer, where, "renderer");
+  requireText(entry.inputControls, where, "inputControls");
+
+  for (const language of REQUIRED_CODE_LANGUAGES) {
+    const example = entry.codeExamples[language];
+    if (!example || example.code.trim().length === 0) {
+      report("error", where, `codeExamples.${language} is missing`);
+    } else if (example.language !== language) {
+      report(
+        "error",
+        where,
+        `codeExamples.${language}.language must equal ${language}`,
+      );
+    }
+  }
+
+  if (entry.pseudocode.length === 0) {
+    report("error", where, "pseudocode must be non-empty");
+  }
+  entry.pseudocode.forEach((line, index) => {
+    if (line.line !== index + 1 || line.text.trim().length === 0) {
+      report(
+        "error",
+        where,
+        "pseudocode lines must be non-empty and sequential from 1",
+      );
+    }
+  });
+
+  const artifacts = entry.authoredArtifacts;
+  if (typeof artifacts?.inputSchema !== "function") {
+    report("error", where, "authored inputSchema is missing");
+  }
+  if (!artifacts?.inputGenerators?.length) {
+    report("error", where, "authored inputGenerators are missing");
+  }
+  if (typeof artifacts?.validateInput !== "function") {
+    report("error", where, "authored validateInput is missing");
+  }
+  if (!artifacts?.testCases?.length) {
+    report("error", where, "authored semantic testCases are missing");
+  }
+  if (!artifacts?.codeLineMapping?.length) {
+    report("error", where, "authored codeLineMapping is missing");
+  }
+  if (!artifacts?.legend?.length) {
+    report("error", where, "authored legend is missing");
+  } else {
+    for (const item of artifacts.legend) {
+      if (!validHighlightBuckets.has(item.bucketKey)) {
+        report(
+          "error",
+          where,
+          `legend references unknown bucket ${String(item.bucketKey)}`,
+        );
+      }
+    }
+  }
+
+  if (artifacts) validateAuthoredArtifacts(where, entry);
+}
+
+const publishedSlugs = new Set(
+  algorithms
+    .filter((algorithm) => algorithm.isPublished)
+    .map((algorithm) => algorithm.slug),
+);
+const publicationSlugs = new Set(Object.keys(publicationRegistry));
+
+for (const slug of publishedSlugs) {
+  const entry = publicationRegistry[slug];
+  if (!entry) {
+    report(
+      "error",
+      `catalog.${slug}`,
+      "published catalog entry has no composed publication definition",
+    );
+    continue;
+  }
+  validateComposedDefinition(slug, entry);
+}
+
+for (const slug of publicationSlugs) {
+  if (!publishedSlugs.has(slug)) {
+    report(
+      "warning",
+      `publication.${slug}`,
+      "definition is not present in the published catalog",
+    );
+  }
+}
+
+const errors = issues.filter((issue) => issue.severity === "error");
+const warnings = issues.filter((issue) => issue.severity === "warning");
 
 console.log(
-  `\nValidator summary — catalog: ${catalogSlugs.size} slugs, registry: ${registrySlugs.size} entries`
+  `\nReadiness summary: ${publishedSlugs.size} published entries, ${publicationSlugs.size} composed definitions`,
 );
-console.log(`Issues — ${errors.length} error(s), ${warnings.length} warning(s)\n`);
+console.log(
+  `Genuine authored-artifact gaps: ${errors.length} error(s), ${warnings.length} warning(s)\n`,
+);
 
-for (const i of sortedIssues) {
-  const prefix = i.severity === "error" ? "❌" : "⚠️";
-  console.log(`  ${prefix} [${i.where}] ${i.message}`);
+for (const issue of issues) {
+  console.log(
+    `[${issue.severity === "error" ? "ERROR" : "WARN"}] ${issue.where}: ${issue.message}`,
+  );
 }
 
 if (errors.length > 0) {
-  console.log(
-    `\nvalidate-registry: FAIL (${errors.length} error${errors.length === 1 ? "" : "s"}).`
+  console.error(
+    `\nvalidate:registry:readiness FAILED with ${errors.length} genuine gap(s).`,
   );
-  process.exit(1);
+  process.exitCode = 1;
+} else {
+  console.log("validate:registry:readiness PASSED");
 }
-
-console.log("validate-registry: PASS");
-process.exit(0);
