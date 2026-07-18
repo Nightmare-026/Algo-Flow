@@ -1,7 +1,7 @@
 import {
   generateInterpolationSearchSteps,
   generateJumpSearchSteps,
-} from "@/features/algorithms/array/search";
+} from "@/visualizers/array/search";
 
 type ArrayState = {
   elements: ReadonlyArray<{ id: string; value: number }>;

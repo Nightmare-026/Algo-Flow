@@ -7,7 +7,7 @@ This is a production-readiness program. Apply the smallest process that controls
 - T2: cross-module, security-sensitive, data-sensitive, or release-program work.
 - T3: production deployment, persistent migration, access-control change, deletion, or another material external action.
 
-The active program is **T2, Phase 3 - Visualizer Correctness**. Persistent Supabase changes and deployment are T3 and require an action-specific preview, recovery evidence, and explicit confirmation.
+The active program is **T2, Phase FE-01 - Frontend Redesign and Verification** (`docs/phases/PHASE-FE-01-FRONTEND-REDESIGN.md`). Persistent Supabase changes and deployment remain T3 and require an action-specific preview, recovery evidence, and explicit confirmation.
 
 ## Required reading
 
@@ -44,6 +44,7 @@ Do not report an unexecuted check as passing. Classify failures as change-caused
 - Operations equivalents: `docs/DEPLOYMENT_AND_ROLLBACK.md` and `docs/RELEASE_CHECKLIST.md`
 - Active phase contracts: `docs/phases/`
 - Restart record: `docs/sessions/SESSION-LATEST.md`
+- Frontend route inventory and redesign evidence: `docs/frontend-redesign/`
 - AI evaluation: not applicable; the shipped product does not contain an LLM or autonomous agent. Create `docs/EVALUATION.md` only if that scope changes.
 
 ## Boundaries and safety

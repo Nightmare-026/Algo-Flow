@@ -1,5 +1,5 @@
-import { generateInsertionSortSteps } from "@/features/algorithms/array/sort";
-import type { ArrayVisualState } from "@/features/algorithms/array/types";
+import { generateInsertionSortSteps } from "@/visualizers/array/sort";
+import type { ArrayVisualState } from "@/visualizers/array/types";
 
 function valuesAt(step: ReturnType<typeof generateInsertionSortSteps>[number]) {
   return (step.dataState as ArrayVisualState).elements.map(

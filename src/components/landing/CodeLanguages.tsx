@@ -81,7 +81,7 @@ export function CodeLanguages() {
     <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="code-languages">
       <div className="mx-auto max-w-7xl">
         <motion.div
-          initial="hidden"
+          initial="visible"
           whileInView="visible"
           viewport={{ once: true, margin: "-90px" }}
           variants={sectionReveal}
@@ -94,19 +94,20 @@ export function CodeLanguages() {
             Keep the implementation beside the animation.
           </h2>
           <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            The visualizer page supports language tabs and highlighted code lines. This preview shows the format learners should expect as coverage expands.
+            The visualizer page supports language tabs and highlighted code lines. This preview
+            shows the format learners use across published visualizers.
           </p>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 36 }}
+          initial={{ opacity: 1, y: 0 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-90px" }}
           transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
           style={glowStyle(5)}
-          className="landing-glow-card rounded-lg border border-white/10 bg-surface/70 shadow-xl"
+          className="landing-glow-card rounded-lg border border-white/75 bg-surface/70 shadow-xl"
         >
-          <div className="flex items-center overflow-x-auto border-b border-white/10 bg-white/[0.04] px-2">
+          <div className="flex items-center overflow-x-auto border-b border-white/75 bg-background px-2">
             {languages.map((language) => (
               <button
                 key={language.id}
@@ -117,7 +118,10 @@ export function CodeLanguages() {
                     : "text-muted-foreground hover:text-secondary-foreground"
                 }`}
               >
-                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: language.color }} />
+                <span
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{ backgroundColor: language.color }}
+                />
                 <span>{language.name}</span>
                 {activeTab === language.id && (
                   <motion.div
@@ -130,12 +134,12 @@ export function CodeLanguages() {
             ))}
           </div>
 
-          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-3">
+          <div className="flex items-center justify-between gap-4 border-b border-white/75 px-5 py-3">
             <span className="text-xs leading-5 text-muted-foreground">
               Bubble Sort: {activeLanguage.description}
             </span>
             <button
-              className="inline-flex h-8 items-center gap-2 rounded-md border border-white/10 px-3 text-xs font-medium text-muted-foreground transition-colors hover:text-[var(--landing-card-tone)]"
+              className="inline-flex h-8 items-center gap-2 rounded-md border border-white/75 px-3 text-xs font-medium text-muted-foreground transition-colors hover:text-[var(--landing-card-tone)]"
               onClick={handleCopy}
             >
               {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}

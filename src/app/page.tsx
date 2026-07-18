@@ -1,7 +1,8 @@
-"use client";
-
-import { Navbar } from "@/components/layout/Navbar";
+﻿import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { createClient } from "@/lib/supabase/server";
+import { algorithms } from "@/data/seed/algorithms";
+import { dataStructures } from "@/data/seed/data-structures";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { DSAWorldPreview } from "@/components/landing/DSAWorldPreview";
 import { HowItWorks } from "@/components/landing/HowItWorks";
@@ -9,35 +10,27 @@ import { LearningFeatures } from "@/components/landing/LearningFeatures";
 import { CodeLanguages } from "@/components/landing/CodeLanguages";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
-    <div data-theme="nature-cinematic">
-      <Navbar />
-
+    <div className="page-shell flex flex-col">
+      <Navbar initialUser={user} />
       <main>
-        {/* Hero with animated background elements */}
-        <HeroSection />
-
-        {/* Product preview */}
+        <HeroSection
+          visualizerCount={algorithms.filter((algorithm) => algorithm.isPublished).length}
+          structureCount={dataStructures.filter((structure) => structure.isPublished).length}
+        />
         <DSAWorldPreview />
-
-        {/* Learning workflow */}
         <HowItWorks />
-
-        {/* Study tools */}
         <LearningFeatures />
-
-        {/* Code panel preview */}
         <CodeLanguages />
-
-        {/* Final Call to Action */}
         <FinalCTA />
       </main>
-
       <Footer />
     </div>
   );
 }
-
-
-

@@ -1,0 +1,88 @@
+import { CodeExample } from "@/types";
+
+const snippets: Record<
+  string,
+  { title: string; js: string; py: string; cpp: string; java: string }
+> = {
+  "separate-chaining": {
+    title: "Hash Table using Separate Chaining",
+    js: `class HashTable {\n  constructor(size = 7) {\n    this.size = size;\n    this.buckets = new Array(size).fill(null).map(() => []);\n  }\n\n  hash(key) {\n    return key % this.size;\n  }\n\n  insert(key) {\n    const index = this.hash(key);\n    const bucket = this.buckets[index];\n    if (!bucket.includes(key)) {\n      bucket.push(key);\n    }\n  }\n\n  search(key) {\n    const index = this.hash(key);\n    const bucket = this.buckets[index];\n    return bucket.includes(key);\n  }\n\n  remove(key) {\n    const index = this.hash(key);\n    const bucket = this.buckets[index];\n    const keyIndex = bucket.indexOf(key);\n    if (keyIndex !== -1) {\n      bucket.splice(keyIndex, 1);\n    }\n  }\n}`,
+    py: `class HashTable:\n    def __init__(self, size=7):\n        self.size = size\n        self.buckets = [[] for _ in range(size)]\n\n    def hash(self, key):\n        return key % self.size\n\n    def insert(self, key):\n        index = self.hash(key)\n        bucket = self.buckets[index]\n        if key not in bucket:\n            bucket.append(key)\n\n    def search(self, key):\n        index = self.hash(key)\n        bucket = self.buckets[index]\n        return key in bucket\n\n    def remove(self, key):\n        index = self.hash(key)\n        bucket = self.buckets[index]\n        if key in bucket:\n            bucket.remove(key)`,
+    cpp: `class HashTable {\nprivate:\n    int size;\n    vector<list<int>> buckets;\n\npublic:\n    HashTable(int s = 7) : size(s) {\n        buckets.resize(size);\n    }\n\n    int hash(int key) {\n        return key % size;\n    }\n\n    void insert(int key) {\n        int index = hash(key);\n        auto& bucket = buckets[index];\n        if (find(bucket.begin(), bucket.end(), key) == bucket.end()) {\n            bucket.push_back(key);\n        }\n    }\n\n    bool search(int key) {\n        int index = hash(key);\n        auto& bucket = buckets[index];\n        return find(bucket.begin(), bucket.end(), key) != bucket.end();\n    }\n\n    void remove(int key) {\n        int index = hash(key);\n        auto& bucket = buckets[index];\n        bucket.remove(key);\n    }\n};`,
+    java: `class HashTable {\n    private int size;\n    private LinkedList<Integer>[] buckets;\n\n    @SuppressWarnings("unchecked")\n    public HashTable(int size) {\n        this.size = size;\n        buckets = new LinkedList[size];\n        for (int i = 0; i < size; i++) {\n            buckets[i] = new LinkedList<>();\n        }\n    }\n\n    private int hash(int key) {\n        return key % size;\n    }\n\n    public void insert(int key) {\n        int index = hash(key);\n        LinkedList<Integer> bucket = buckets[index];\n        if (!bucket.contains(key)) {\n            bucket.add(key);\n        }\n    }\n\n    public boolean search(int key) {\n        int index = hash(key);\n        return buckets[index].contains(key);\n    }\n\n    public void remove(int key) {\n        int index = hash(key);\n        LinkedList<Integer> bucket = buckets[index];\n        bucket.remove((Integer) key);\n    }\n}`,
+  },
+  "linear-probing": {
+    title: "Hash Table using Linear Probing",
+    js: `class HashTable {\n  constructor(size = 7) {\n    this.size = size;\n    this.buckets = new Array(size).fill(null);\n    this.count = 0;\n  }\n\n  hash(key) {\n    return key % this.size;\n  }\n\n  insert(key) {\n    if (this.count >= this.size) return false; // Table full\n    let index = this.hash(key);\n    while (this.buckets[index] !== null && this.buckets[index] !== "DELETED") {\n      if (this.buckets[index] === key) return false; // Duplicate\n      index = (index + 1) % this.size;\n    }\n    this.buckets[index] = key;\n    this.count++;\n    return true;\n  }\n\n  search(key) {\n    let index = this.hash(key);\n    let start = index;\n    while (this.buckets[index] !== null) {\n      if (this.buckets[index] === key) return true;\n      index = (index + 1) % this.size;\n      if (index === start) break;\n    }\n    return false;\n  }\n\n  remove(key) {\n    let index = this.hash(key);\n    let start = index;\n    while (this.buckets[index] !== null) {\n      if (this.buckets[index] === key) {\n        this.buckets[index] = "DELETED";\n        this.count--;\n        return true;\n      }\n      index = (index + 1) % this.size;\n      if (index === start) break;\n    }\n    return false;\n  }\n}`,
+    py: `class HashTable:\n    def __init__(self, size=7):\n        self.size = size\n        self.buckets = [None] * size\n        self.count = 0\n\n    def hash(self, key):\n        return key % self.size\n\n    def insert(self, key):\n        if self.count >= self.size: return False\n        index = self.hash(key)\n        while self.buckets[index] is not None and self.buckets[index] != "DELETED":\n            if self.buckets[index] == key: return False\n            index = (index + 1) % self.size\n        self.buckets[index] = key\n        self.count += 1\n        return True\n\n    def search(self, key):\n        index = self.hash(key)\n        start = index\n        while self.buckets[index] is not None:\n            if self.buckets[index] == key: return True\n            index = (index + 1) % self.size\n            if index == start: break\n        return False\n\n    def remove(self, key):\n        index = self.hash(key)\n        start = index\n        while self.buckets[index] is not None:\n            if self.buckets[index] == key:\n                self.buckets[index] = "DELETED"\n                self.count -= 1\n                return True\n            index = (index + 1) % self.size\n            if index == start: break\n        return False`,
+    cpp: `class HashTable {\nprivate:\n    int size;\n    int count;\n    vector<int*> buckets;\n    int* DELETED = new int(-1); // Tombstone marker\n\npublic:\n    HashTable(int s = 7) : size(s), count(0) {\n        buckets.assign(size, nullptr);\n    }\n\n    int hash(int key) {\n        return key % size;\n    }\n\n    bool insert(int key) {\n        if (count >= size) return false;\n        int index = hash(key);\n        while (buckets[index] != nullptr && buckets[index] != DELETED) {\n            if (*buckets[index] == key) return false;\n            index = (index + 1) % size;\n        }\n        buckets[index] = new int(key);\n        count++;\n        return true;\n    }\n\n    bool search(int key) {\n        int index = hash(key);\n        int start = index;\n        while (buckets[index] != nullptr) {\n            if (buckets[index] != DELETED && *buckets[index] == key) return true;\n            index = (index + 1) % size;\n            if (index == start) break;\n        }\n        return false;\n    }\n\n    bool remove(int key) {\n        int index = hash(key);\n        int start = index;\n        while (buckets[index] != nullptr) {\n            if (buckets[index] != DELETED && *buckets[index] == key) {\n                delete buckets[index];\n                buckets[index] = DELETED;\n                count--;\n                return true;\n            }\n            index = (index + 1) % size;\n            if (index == start) break;\n        }\n        return false;\n    }\n};`,
+    java: `class HashTable {\n    private int size;\n    private int count;\n    private Integer[] buckets;\n    private static final Integer DELETED = Integer.MIN_VALUE; // Tombstone marker\n\n    public HashTable(int size) {\n        this.size = size;\n        this.buckets = new Integer[size];\n        this.count = 0;\n    }\n\n    private int hash(int key) {\n        return key % size;\n    }\n\n    public boolean insert(int key) {\n        if (count >= size) return false;\n        int index = hash(key);\n        while (buckets[index] != null && !buckets[index].equals(DELETED)) {\n            if (buckets[index].equals(key)) return false;\n            index = (index + 1) % size;\n        }\n        buckets[index] = key;\n        count++;\n        return true;\n    }\n\n    public boolean search(int key) {\n        int index = hash(key);\n        int start = index;\n        while (buckets[index] != null) {\n            if (!buckets[index].equals(DELETED) && buckets[index].equals(key)) return true;\n            index = (index + 1) % size;\n            if (index == start) break;\n        }\n        return false;\n    }\n\n    public boolean remove(int key) {\n        int index = hash(key);\n        int start = index;\n        while (buckets[index] != null) {\n            if (!buckets[index].equals(DELETED) && buckets[index].equals(key)) {\n                buckets[index] = DELETED;\n                count--;\n                return true;\n            }\n            index = (index + 1) % size;\n            if (index == start) break;\n        }\n        return false;\n    }\n}`,
+  },
+  "division-hash-method": {
+    title: "Division Hash Method",
+    js: `function hash(key, tableSize) {\n  return key % tableSize;\n}`,
+    py: `def hash_func(key, table_size):\n    return key % table_size`,
+    cpp: `int hashFunc(int key, int tableSize) {\n    return key % tableSize;\n}`,
+    java: `int hashFunc(int key, int tableSize) {\n    return key % tableSize;\n}`,
+  },
+  rehashing: {
+    title: "Rehashing (doubling table size when load factor is high)",
+    js: `function rehash() {\n  const oldBuckets = this.buckets;\n  this.size *= 2;\n  this.count = 0;\n  this.buckets = new Array(this.size).fill(null).map(() => []);\n  for (let bucket of oldBuckets) {\n    for (let key of bucket) this.insert(key);\n  }\n}`,
+    py: `def rehash(self):\n    old_buckets = self.buckets\n    self.size *= 2\n    self.count = 0\n    self.buckets = [[] for _ in range(self.size)]\n    for bucket in old_buckets:\n        for key in bucket: self.insert(key)`,
+    cpp: `void rehash() {\n    vector<list<int>> oldBuckets = buckets;\n    size *= 2;\n    count = 0;\n    buckets.clear();\n    buckets.resize(size);\n    for (auto& bucket : oldBuckets) {\n        for (int key : bucket) insert(key);\n    }\n}`,
+    java: `void rehash() {\n    LinkedList<Integer>[] oldBuckets = buckets;\n    size *= 2;\n    count = 0;\n    buckets = new LinkedList[size];\n    for (int i = 0; i < size; i++) buckets[i] = new LinkedList<>();\n    for (LinkedList<Integer> bucket : oldBuckets) {\n        for (int key : bucket) insert(key);\n    }\n}`,
+  },
+};
+
+const aliases: Record<string, string> = {
+  "hash-insert": "separate-chaining",
+  "hash-search": "separate-chaining",
+  "hash-delete": "separate-chaining",
+  "chaining-insert": "separate-chaining",
+  "chaining-search": "separate-chaining",
+  "chaining-delete": "separate-chaining",
+  "probing-insert": "linear-probing",
+  "probing-search": "linear-probing",
+  "probing-delete": "linear-probing",
+};
+
+export function getHashTableCodeExamples(slug: string, algorithmId: string): CodeExample[] {
+  const actualSlug = aliases[slug] || slug;
+  const snippet = snippets[actualSlug];
+  if (!snippet) return [];
+
+  return [
+    {
+      id: `${algorithmId}-js`,
+      algorithmId,
+      language: "javascript",
+      isPrimary: true,
+      explanation: snippet.title,
+      code: snippet.js,
+    },
+    {
+      id: `${algorithmId}-py`,
+      algorithmId,
+      language: "python",
+      isPrimary: false,
+      explanation: snippet.title,
+      code: snippet.py,
+    },
+    {
+      id: `${algorithmId}-cpp`,
+      algorithmId,
+      language: "cpp",
+      isPrimary: false,
+      explanation: snippet.title,
+      code: snippet.cpp,
+    },
+    {
+      id: `${algorithmId}-java`,
+      algorithmId,
+      language: "java",
+      isPrimary: false,
+      explanation: snippet.title,
+      code: snippet.java,
+    },
+  ];
+}

@@ -1,17 +1,28 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
+import {
+  AlignRight,
+  ChevronRight,
+  CircleDashed,
+  Grid3X3,
+  Hash,
+  Layers,
+  Link as LinkIcon,
+  Network,
+  Search,
+  Share2,
+  SquareSquare,
+  Type,
+} from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { dataStructures } from "@/data/seed/data-structures";
 import { algorithms } from "@/data/seed/algorithms";
-import { Search, ChevronRight, SquareSquare, Link as LinkIcon, Layers, AlignRight, Network, Share2, Hash, CircleDashed, Grid3X3, Type } from "lucide-react";
-import { motion } from "framer-motion";
-import { staggerContainer, fadeInUp } from "@/lib/animation/spring-config";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { cn } from "@/lib/utils";
 
-// Map string icons from seed data to actual Lucide components
 const iconMap: Record<string, React.ElementType> = {
   SquareSquare,
   Link: LinkIcon,
@@ -25,126 +36,156 @@ const iconMap: Record<string, React.ElementType> = {
   Type,
 };
 
+const categories = [
+  { id: "all", label: "All structures" },
+  { id: "linear", label: "Linear" },
+  { id: "non-linear", label: "Non-linear" },
+  { id: "hash-based", label: "Hash-based" },
+] as const;
+
 export default function VisualizersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const reduceMotion = useReducedMotion();
 
-  const categories = [
-    { id: "all", label: "All Structures" },
-    { id: "linear", label: "Linear" },
-    { id: "non-linear", label: "Non-Linear" },
-    { id: "hash-based", label: "Hash-Based" },
-  ];
+  const publishedAlgorithms = useMemo(
+    () => algorithms.filter((algorithm) => algorithm.isPublished),
+    []
+  );
 
-  const filteredDS = dataStructures.filter((ds) => {
-    const matchesSearch = ds.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          ds.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeCategory === "all" || ds.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  }).sort((a, b) => a.displayOrder - b.displayOrder);
+  const countsByStructure = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const algorithm of publishedAlgorithms) {
+      counts.set(algorithm.dataStructureId, (counts.get(algorithm.dataStructureId) ?? 0) + 1);
+    }
+    return counts;
+  }, [publishedAlgorithms]);
 
-  // Get algorithm count for each DS
-  const getAlgoCount = (dsId: string) => algorithms.filter(a => a.dataStructureId === dsId).length;
+  const filteredStructures = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return dataStructures
+      .filter((structure) => structure.isPublished)
+      .filter((structure) => {
+        const matchesQuery =
+          !query ||
+          structure.name.toLowerCase().includes(query) ||
+          structure.description.toLowerCase().includes(query);
+        const matchesCategory = activeCategory === "all" || structure.category === activeCategory;
+        return matchesQuery && matchesCategory;
+      })
+      .sort((left, right) => left.displayOrder - right.displayOrder);
+  }, [activeCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-bg-deep text-text-primary">
+    <div className="page-shell flex min-h-screen flex-col">
       <Navbar />
-
-      <main className="flex-1 pt-32 pb-24">
-        <div className="container mx-auto px-6 max-w-7xl">
-          
-          {/* Header Section */}
-          <div className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-              Visualizer <span className="text-primary">Library</span>
+      <main className="flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8 lg:pt-40">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="section-kicker">Visualizer library</p>
+            <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">
+              Pick a structure. <span className="text-gradient-primary">Trace the behavior.</span>
             </h1>
-            <p className="text-xl text-text-secondary max-w-2xl mb-8">
-              Explore 105+ algorithm visualizers across 10 core data structures. 
-              Step-by-step animations to master computer science fundamentals.
+            <p className="mt-5 text-lg leading-8 text-text-secondary">
+              Search {publishedAlgorithms.length} working visualizers across {dataStructures.length}{" "}
+              data structures. Every result opens a real step-by-step workspace.
             </p>
+          </div>
 
-            {/* Search and Filter */}
-            <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-              <div className="relative w-full md:w-96">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
-                <input 
-                  type="text"
-                  placeholder="Search data structures..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-bg-surface border border-border rounded-lg py-3 pl-10 pr-4 text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                />
-              </div>
+          <div className="neu-raised mt-10 flex flex-col gap-4 rounded-2xl p-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="relative w-full lg:max-w-md">
+              <label htmlFor="structure-search" className="sr-only">
+                Search data structures
+              </label>
+              <Search
+                className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <input
+                id="structure-search"
+                type="search"
+                placeholder="Search structures"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                className="h-12 w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm text-foreground shadow-[var(--shadow-inset)] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+              />
+            </div>
 
-              <div className="flex flex-wrap gap-2">
-                {categories.map((cat) => (
+            <div className="flex flex-wrap gap-2" aria-label="Filter by structure type">
+              {categories.map((category) => {
+                const selected = activeCategory === category.id;
+                return (
                   <button
-                    key={cat.id}
-                    onClick={() => setActiveCategory(cat.id)}
+                    key={category.id}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => setActiveCategory(category.id)}
                     className={cn(
-                      "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border",
-                      activeCategory === cat.id
-                        ? "bg-primary-muted border-primary text-primary"
-                        : "bg-bg-surface border-border text-text-secondary hover:border-border-hover hover:text-text-primary"
+                      "min-h-11 rounded-xl border px-4 text-sm font-semibold transition-colors",
+                      selected
+                        ? "border-primary/20 bg-primary-muted text-primary-active shadow-[var(--shadow-inset)]"
+                        : "border-white/70 bg-surface-light text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary-active"
                     )}
                   >
-                    {cat.label}
+                    {category.label}
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* Grid Section */}
-          {filteredDS.length > 0 ? (
-            <motion.div 
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {filteredDS.map((ds) => {
-                const Icon = ds.icon && iconMap[ds.icon] ? iconMap[ds.icon] : SquareSquare;
-                const algoCount = getAlgoCount(ds.id);
-                
-                return (
-                  <motion.div key={ds.id} variants={fadeInUp}>
-                    <Link href={`/visualizers/${ds.slug}`} className="block h-full">
-                      <div className="group bg-bg-surface border border-border rounded-2xl p-6 h-full transition-all duration-300 hover:border-primary hover:shadow-glow-primary flex flex-col relative overflow-hidden">
-                        
-                        {/* Background glow effect */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-primary opacity-0 group-hover:opacity-5 blur-3xl rounded-full transition-opacity duration-500 pointer-events-none" />
+          <p className="mt-8 text-sm font-semibold text-text-secondary" aria-live="polite">
+            {filteredStructures.length}{" "}
+            {filteredStructures.length === 1 ? "structure" : "structures"}
+          </p>
 
-                        <div className="flex justify-between items-start mb-4">
-                          <div className="w-12 h-12 rounded-xl bg-primary-muted text-primary flex items-center justify-center">
-                            <Icon className="w-6 h-6" />
-                          </div>
-                          <span className={cn(
-                            "px-3 py-1 rounded-full text-xs font-medium border",
-                            ds.difficulty === "easy" ? "bg-success-muted text-success border-success/20" :
-                            ds.difficulty === "medium" ? "bg-warning-muted text-warning border-warning/20" :
-                            "bg-error-muted text-error border-error/20"
-                          )}>
-                            {ds.difficulty.charAt(0).toUpperCase() + ds.difficulty.slice(1)}
-                          </span>
-                        </div>
-                        
-                        <h3 className="text-xl font-bold text-text-primary mb-2 group-hover:text-primary transition-colors">
-                          {ds.name}
-                        </h3>
-                        
-                        <p className="text-text-secondary text-sm mb-6 flex-1">
-                          {ds.description}
-                        </p>
-                        
-                        <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
-                          <span className="text-sm font-medium text-text-muted">
-                            {algoCount} {algoCount === 1 ? 'Algorithm' : 'Algorithms'}
-                          </span>
-                          <div className="w-8 h-8 rounded-full bg-bg-surface-light flex items-center justify-center group-hover:bg-primary group-hover:text-bg-deep transition-colors">
-                            <ChevronRight className="w-4 h-4" />
-                          </div>
-                        </div>
+          {filteredStructures.length > 0 ? (
+            <motion.div
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.045 } } }}
+              className="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+            >
+              {filteredStructures.map((structure) => {
+                const Icon =
+                  structure.icon && iconMap[structure.icon]
+                    ? iconMap[structure.icon]
+                    : SquareSquare;
+                const count = countsByStructure.get(structure.id) ?? 0;
+                return (
+                  <motion.div
+                    key={structure.id}
+                    variants={{
+                      hidden: { opacity: 0, y: 16 },
+                      visible: { opacity: 1, y: 0 },
+                    }}
+                    transition={{ duration: 0.36 }}
+                  >
+                    <Link
+                      href={`/visualizers/${structure.slug}`}
+                      className="group flex h-full flex-col rounded-2xl border border-white/75 bg-surface/90 p-6 shadow-[var(--shadow-raised-sm)] transition-[box-shadow,border-color] hover:border-primary/30 hover:shadow-[var(--shadow-raised)]"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-muted text-primary-active shadow-[var(--shadow-inset)]">
+                          <Icon className="h-6 w-6" aria-hidden="true" />
+                        </span>
+                        <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold capitalize text-text-secondary">
+                          {structure.difficulty}
+                        </span>
+                      </div>
+                      <h2 className="mt-6 text-xl font-extrabold transition-colors group-hover:text-primary-active">
+                        {structure.name}
+                      </h2>
+                      <p className="mt-2 flex-1 text-sm leading-6 text-text-secondary">
+                        {structure.description}
+                      </p>
+                      <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                        <span className="text-sm font-semibold text-muted-foreground">
+                          {count} {count === 1 ? "algorithm" : "algorithms"}
+                        </span>
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background text-primary-active shadow-[var(--shadow-inset)] transition-colors group-hover:bg-primary group-hover:text-white">
+                          <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                        </span>
                       </div>
                     </Link>
                   </motion.div>
@@ -152,21 +193,26 @@ export default function VisualizersPage() {
               })}
             </motion.div>
           ) : (
-            <div className="text-center py-20 bg-bg-surface rounded-2xl border border-border">
-              <Search className="w-12 h-12 text-text-muted mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-text-primary mb-2">No structures found</h3>
-              <p className="text-text-secondary">Try adjusting your search or filters.</p>
-              <button 
-                onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
-                className="mt-6 px-6 py-2 bg-primary-muted text-primary rounded-lg font-medium hover:bg-primary hover:text-bg-deep transition-colors"
+            <div className="neu-inset mt-6 rounded-2xl px-5 py-16 text-center">
+              <Search className="mx-auto h-10 w-10 text-muted-foreground" aria-hidden="true" />
+              <h2 className="mt-4 text-xl font-extrabold">No matching structures</h2>
+              <p className="mt-2 text-sm text-text-secondary">
+                Change the search term or choose a different category.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveCategory("all");
+                }}
+                className="mt-6 min-h-11 rounded-xl bg-primary px-5 text-sm font-bold text-white hover:bg-primary-hover"
               >
-                Clear Filters
+                Clear filters
               </button>
             </div>
           )}
         </div>
       </main>
-
       <Footer />
     </div>
   );

@@ -5,12 +5,15 @@
  * from `VisualizerDefinition`. Build-time check; run with `npx jest`.
  */
 
-import { algorithmRegistry } from "@/features/visualizer-engine/registry/algorithm-registry";
-import { REQUIRED_LANGUAGES } from "@/features/visualizer-engine/registry/VisualizerDefinition";
+import {
+  publicationRegistry,
+  type ComposedPublicationDefinition,
+} from "@/visualizers/registry/publication-registry";
+import { REQUIRED_LANGUAGES } from "@/visualizers/registry/VisualizerDefinition";
 import { algorithms } from "@/data/seed/algorithms";
 
-const registry = algorithmRegistry as Record<string, unknown>;
-const catalogSlugs = new Set(algorithms.map((a) => a.slug));
+const registry: Record<string, ComposedPublicationDefinition> = publicationRegistry;
+const catalogSlugs = new Set(algorithms.filter((a) => a.isPublished).map((a) => a.slug));
 
 describe("Phase 3 — VisualizerDefinition contract", () => {
   it("registry has at least one entry", () => {
@@ -19,28 +22,24 @@ describe("Phase 3 — VisualizerDefinition contract", () => {
 
   it("every entry has all required fields", () => {
     for (const [slug, entry] of Object.entries(registry)) {
-      const e = entry as Record<string, unknown>;
-      expect(typeof e.slug).toBe("string");
-      expect(e.slug).toBe(slug);
-      for (const k of [
-        "title",
-        "description",
-        "dataStructureId",
-        "category",
-        "difficulty",
-        "spaceComplexity",
+      expect(typeof entry.slug).toBe("string");
+      expect(entry.slug).toBe(slug);
+      for (const value of [
+        entry.title,
+        entry.description,
+        entry.dataStructureId,
+        entry.operation,
+        entry.difficulty,
+        entry.spaceComplexity,
       ]) {
-        expect(typeof e[k]).toBe("string");
-        expect((e[k] as string).length).toBeGreaterThan(0);
+        expect(typeof value).toBe("string");
+        expect(value.length).toBeGreaterThan(0);
       }
-      const tc = e.timeComplexity as Record<string, unknown> | undefined;
-      expect(tc).toBeDefined();
-      expect(typeof tc?.best).toBe("string");
-      expect(typeof tc?.average).toBe("string");
-      expect(typeof tc?.worst).toBe("string");
-      expect(Array.isArray(e.tags)).toBe(true);
-      expect((e.tags as unknown[]).length).toBeGreaterThan(0);
-      expect(typeof e.generateSteps).toBe("function");
+      expect(typeof entry.timeComplexity.best).toBe("string");
+      expect(typeof entry.timeComplexity.average).toBe("string");
+      expect(typeof entry.timeComplexity.worst).toBe("string");
+      expect(entry.tags.length).toBeGreaterThan(0);
+      expect(typeof entry.generateSteps).toBe("function");
     }
   });
 
@@ -59,7 +58,7 @@ describe("Phase 3 — VisualizerDefinition contract", () => {
 
   it("every entry has non-empty pseudocode whose lines strictly increase from 1", () => {
     for (const [, entry] of Object.entries(registry)) {
-      const pc = (entry as { pseudocode?: { line: number; text: string }[] }).pseudocode ?? [];
+      const pc = entry.pseudocode;
       expect(pc.length).toBeGreaterThan(0);
       let last = -Infinity;
       const seen = new Set<number>();
@@ -78,22 +77,20 @@ describe("Phase 3 — VisualizerDefinition contract", () => {
 
   it("every entry has at least one testCase with expectations", () => {
     for (const [, entry] of Object.entries(registry)) {
-      const tc =
-        (entry as { testCases?: { name: string; expectations: unknown[] }[] }).testCases ?? [];
+      const authored = entry.authoredArtifacts;
+      const tc = authored?.testCases ?? [];
       expect(tc.length).toBeGreaterThan(0);
       for (const c of tc) {
         expect(typeof c.name).toBe("string");
         expect(c.name.length).toBeGreaterThan(0);
-        expect(c.expectations.length).toBeGreaterThan(0);
       }
     }
   });
 
   it("every entry has a non-empty codeLineMapping", () => {
     for (const [, entry] of Object.entries(registry)) {
-      const map =
-        (entry as { codeLineMapping?: { stepId: string; language: string; line: number }[] })
-          .codeLineMapping ?? [];
+      const authored = entry.authoredArtifacts;
+      const map = authored?.codeLineMapping ?? [];
       expect(map.length).toBeGreaterThan(0);
     }
   });

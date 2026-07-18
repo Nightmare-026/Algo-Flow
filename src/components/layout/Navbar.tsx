@@ -1,202 +1,188 @@
-"use client";
+﻿"use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { LogOut, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
 import { signout } from "@/app/(auth)/login/actions";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 const navLinks = [
   { label: "Visualizers", href: "/visualizers" },
   { label: "Dashboard", href: "/dashboard" },
 ];
 
-export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+export function Navbar({ initialUser }: { initialUser?: User | null }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(initialUser ?? null);
   const pathname = usePathname();
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
-
-    return () => subscription.unsubscribe();
+    return () => data.subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (!mobileMenuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileMenuOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [mobileMenuOpen]);
 
-  // Close menus on route change
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMobileMenuOpen(false);
-  }, [pathname]);
+  const isActive = (href: string) =>
+    href === "/visualizers"
+      ? pathname === href || pathname.startsWith("/visualizer")
+      : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled
-          ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-lg"
-          : "bg-transparent"
-      )}
-    >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-18">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative w-9 h-9 transition-transform duration-300 group-hover:scale-110">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/70 bg-background/88 backdrop-blur-xl">
+      <nav aria-label="Primary navigation" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-18 items-center justify-between">
+          <Link
+            href="/"
+            className="group flex min-h-11 items-center gap-2.5 rounded-xl pr-2"
+            aria-label="Algo Flow home"
+          >
+            <span className="relative h-9 w-9 rounded-xl bg-primary-muted shadow-[var(--shadow-raised-sm)]">
               <Image
                 src="/logo.png"
-                alt="Algo Flow"
+                alt=""
                 fill
                 sizes="36px"
-                className="object-contain"
+                className="object-contain p-1"
                 priority
               />
-            </div>
-            <span className="text-lg font-bold tracking-tight text-foreground hidden sm:inline">
-              Algo
-              <span className="text-primary">Flow</span>
+            </span>
+            <span className="font-display text-lg font-extrabold tracking-tight text-foreground">
+              Algo<span className="text-primary-active">Flow</span>
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="relative px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg hover:bg-surface-hover"
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="hidden items-center gap-1 md:flex">
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "inline-flex min-h-11 items-center rounded-xl px-4 text-sm font-semibold transition-colors",
+                    active
+                      ? "bg-primary-muted text-primary-active shadow-[var(--shadow-inset)]"
+                      : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
-          {/* Right side: Auth */}
           <div className="flex items-center gap-2">
-
-            {/* Auth Buttons */}
             {user ? (
-              <div className="hidden sm:flex items-center gap-2">
-                <div className="text-sm text-secondary-foreground mr-2">
-                  Hi, {user.user_metadata?.username || user.email?.split("@")[0]}
-                </div>
-                <button
-                  onClick={async () => {
-                    await signout();
-                  }}
-                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg hover:bg-surface-hover"
-                >
-                  Log Out
-                </button>
+              <div className="hidden items-center gap-2 sm:flex">
+                <span className="max-w-40 truncate px-2 text-sm font-medium text-text-secondary">
+                  {user.user_metadata?.first_name || user.email?.split("@")[0]}
+                </span>
+                <form action={signout}>
+                  <button
+                    className={buttonVariants({ variant: "ghost", size: "sm" })}
+                    type="submit"
+                  >
+                    <LogOut className="h-4 w-4" aria-hidden="true" />
+                    Log out
+                  </button>
+                </form>
               </div>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="hidden sm:inline-flex items-center px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 rounded-lg hover:bg-surface-hover"
-                >
+              <div className="hidden items-center gap-2 sm:flex">
+                <Link href="/login" className={buttonVariants({ variant: "ghost", size: "sm" })}>
                   Log in
                 </Link>
-                <Link
-                  href="/signup"
-                  className="inline-flex items-center justify-center h-9 px-4 text-sm font-medium text-primary-foreground transition-all duration-200 rounded-lg bg-primary hover:bg-primary-hover shadow-sm hover:shadow-md active:scale-[0.98]"
-                >
+                <Link href="/signup" className={buttonVariants({ size: "sm" })}>
                   Sign up
                 </Link>
-              </>
+              </div>
             )}
 
-            {/* Mobile Menu Button */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-all"
-              aria-label="Toggle menu"
+              type="button"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground hover:bg-primary-muted hover:text-primary-active md:hidden"
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="md:hidden overflow-hidden border-t border-border"
-            >
-              <div className="py-3 space-y-1">
-                {navLinks.map((link) => (
+        {mobileMenuOpen ? (
+          <div id="mobile-navigation" className="border-t border-border py-3 md:hidden">
+            <div className="grid gap-1">
+              {navLinks.map((link) => {
+                const active = isActive(link.href);
+                return (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-lg transition-colors"
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "flex min-h-11 items-center rounded-xl px-4 text-sm font-semibold",
+                      active
+                        ? "bg-primary-muted text-primary-active"
+                        : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+                    )}
                   >
                     {link.label}
                   </Link>
-                ))}
-                {user ? (
+                );
+              })}
+              {user ? (
+                <form action={signout}>
                   <button
-                    onClick={async () => {
-                      await signout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="block w-full text-left px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-lg transition-colors sm:hidden"
+                    className="flex min-h-11 w-full items-center gap-2 rounded-xl px-4 text-left text-sm font-semibold text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+                    type="submit"
                   >
+                    <LogOut className="h-4 w-4" aria-hidden="true" />
                     Log out
                   </button>
-                ) : (
+                </form>
+              ) : (
+                <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
                   <Link
                     href="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-hover rounded-lg transition-colors sm:hidden"
+                    className={buttonVariants({ variant: "outline" })}
                   >
                     Log in
                   </Link>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  <Link
+                    href="/signup"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={buttonVariants()}
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : null}
       </nav>
-    </motion.header>
+    </header>
   );
 }
-
-
-

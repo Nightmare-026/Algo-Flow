@@ -9,11 +9,11 @@
  */
 
 import { algorithms } from "../src/data/seed/algorithms";
-import { algorithmRegistry } from "../src/features/visualizer-engine/registry/algorithm-registry";
+import { algorithmRegistry } from "../src/visualizers/registry/algorithm-registry";
 import {
   DATA_STRUCTURE_IDS,
   REQUIRED_CODE_LANGUAGES,
-} from "../src/features/visualizer-engine/registry/types";
+} from "../src/visualizers/registry/types";
 import type { CodeExample } from "../src/types";
 
 type Issue = {

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "validate:registry": "tsx scripts/validate-registry.ts",
     "validate:registry:readiness": "tsx scripts/validate-registry-readiness.ts",
+    "validate:visualizers:coordination": "tsx scripts/validate-visualizer-coordination.ts",
     "verify:code-examples": "tsx scripts/verify-code-examples.ts",
     "prebuild": "npm run validate:registry",
     "build": "next build",

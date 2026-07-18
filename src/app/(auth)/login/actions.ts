@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -18,23 +18,57 @@ function safeInternalPath(value: FormDataEntryValue | string | null, fallback = 
   }
 }
 
+function textField(formData: FormData, name: string, trim = true) {
+  const value = formData.get(name);
+  if (typeof value !== "string") return "";
+  return trim ? value.trim() : value;
+}
+
+function normalizeOrigin(value: string | undefined) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.origin : null;
+  } catch {
+    return null;
+  }
+}
+
 async function getRequestOrigin() {
+  const configuredOrigin = normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL);
+  if (configuredOrigin) return configuredOrigin;
+
   const headerStore = await headers();
-  return (
-    headerStore.get("origin") ??
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    "http://localhost:3000"
-  );
+  const requestOrigin = normalizeOrigin(headerStore.get("origin") ?? undefined);
+  if (
+    process.env.NODE_ENV !== "production" &&
+    requestOrigin &&
+    ["localhost", "127.0.0.1"].includes(new URL(requestOrigin).hostname)
+  ) {
+    return requestOrigin;
+  }
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("NEXT_PUBLIC_SITE_URL must be configured for authentication redirects.");
+  }
+
+  return "http://localhost:3000";
 }
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
 
   const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
+    email: textField(formData, "email").toLowerCase(),
+    password: textField(formData, "password", false),
   };
   const nextUrl = safeInternalPath(formData.get("next"));
+
+  if (!data.email || !data.password) {
+    redirect(
+      `/login?error=${encodeURIComponent("Email and password are required.")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
 
   const { error } = await supabase.auth.signInWithPassword(data);
 
@@ -75,15 +109,44 @@ export async function loginWithOAuth(provider: "google" | "github") {
 export async function signup(formData: FormData) {
   const supabase = await createClient();
 
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const password_confirm = formData.get("password_confirm") as string;
-  const first_name = formData.get("first_name") as string;
-  const last_name = formData.get("last_name") as string;
-  const gender = formData.get("gender") as string;
+  const email = textField(formData, "email").toLowerCase();
+  const password = textField(formData, "password", false);
+  const password_confirm = textField(formData, "password_confirm", false);
+  const first_name = textField(formData, "first_name");
+  const last_name = textField(formData, "last_name");
+  const gender = textField(formData, "gender");
+  const nextUrl = safeInternalPath(formData.get("next"));
+  const allowedGenders = new Set(["Male", "Female", "Other", "Prefer not to say"]);
+  const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  if (!first_name || !last_name || first_name.length > 80 || last_name.length > 80) {
+    redirect(
+      `/signup?error=${encodeURIComponent("Enter a valid first and last name (up to 80 characters each).")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
+
+  if (!allowedGenders.has(gender)) {
+    redirect(
+      `/signup?error=${encodeURIComponent("Select a valid gender option.")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
+
+  if (!emailLooksValid) {
+    redirect(
+      `/signup?error=${encodeURIComponent("Enter a valid email address.")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
+
+  if (password.length < 6) {
+    redirect(
+      `/signup?error=${encodeURIComponent("Password must contain at least 6 characters.")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
 
   if (password !== password_confirm) {
-    redirect("/signup?error=" + encodeURIComponent("Passwords do not match."));
+    redirect(
+      `/signup?error=${encodeURIComponent("Passwords do not match.")}&next=${encodeURIComponent(nextUrl)}`
+    );
   }
 
   const { data, error } = await supabase.auth.signUp({
@@ -104,21 +167,27 @@ export async function signup(formData: FormData) {
     if (message.includes("already registered")) {
       message = "An account with this email already exists. Please log in instead.";
     }
-    redirect(`/signup?error=${encodeURIComponent(message)}`);
+    redirect(`/signup?error=${encodeURIComponent(message)}&next=${encodeURIComponent(nextUrl)}`);
   }
 
   if (!data.session) {
-    redirect("/signup?success=" + encodeURIComponent("Please check your email to verify your account."));
+    redirect(
+      `/signup?success=${encodeURIComponent("Please check your email to verify your account.")}&next=${encodeURIComponent(nextUrl)}`
+    );
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect(nextUrl);
 }
 
 export async function sendPasswordReset(formData: FormData) {
   const supabase = await createClient();
-  const email = formData.get("email") as string;
+  const email = textField(formData, "email").toLowerCase();
   const origin = await getRequestOrigin();
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    redirect("/forgot-password?error=" + encodeURIComponent("Enter a valid email address."));
+  }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/auth/callback?next=/reset-password`,
@@ -136,8 +205,14 @@ export async function sendPasswordReset(formData: FormData) {
 
 export async function updatePassword(formData: FormData) {
   const supabase = await createClient();
-  const password = formData.get("password") as string;
-  const passwordConfirm = formData.get("password_confirm") as string;
+  const password = textField(formData, "password", false);
+  const passwordConfirm = textField(formData, "password_confirm", false);
+
+  if (password.length < 6) {
+    redirect(
+      "/reset-password?error=" + encodeURIComponent("Password must contain at least 6 characters.")
+    );
+  }
 
   if (password !== passwordConfirm) {
     redirect("/reset-password?error=" + encodeURIComponent("Passwords do not match."));

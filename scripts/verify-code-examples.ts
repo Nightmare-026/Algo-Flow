@@ -1,15 +1,9 @@
-import {
-  existsSync,
-  mkdtempSync,
-  mkdirSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+﻿import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { publicationRegistry } from "../src/features/visualizer-engine/registry/publication-registry";
-import type { RequiredCodeLanguage } from "../src/features/visualizer-engine/registry/types";
+import { publicationRegistry } from "../src/visualizers/registry/publication-registry";
+import type { RequiredCodeLanguage } from "../src/visualizers/registry/types";
 
 type Fixture = {
   expected: string;
@@ -61,14 +55,78 @@ const fixtures: Record<string, Fixture> = {
       java: "new Main().interpolationSearch(array, 15)",
     },
   },
-  "bubble-sort": { expected: "1 2 3", sortStatements: { javascript: "bubbleSort(array);", python: "bubble_sort(array)", cpp: "bubbleSort(array);", java: "new Main().bubbleSort(array);" } },
-  "selection-sort": { expected: "1 2 3", sortStatements: { javascript: "selectionSort(array);", python: "selection_sort(array)", cpp: "selectionSort(array);", java: "new Main().selectionSort(array);" } },
-  "insertion-sort": { expected: "1 2 3", sortStatements: { javascript: "insertionSort(array);", python: "insertion_sort(array)", cpp: "insertionSort(array);", java: "new Main().insertionSort(array);" } },
-  "merge-sort": { expected: "1 2 3", sortStatements: { javascript: "array = mergeSort(array);", python: "array = merge_sort(array)", cpp: "mergeSort(array, 0, array.size() - 1);", java: "new Main().mergeSort(array, 0, array.length - 1);" } },
-  "quick-sort": { expected: "1 2 3", sortStatements: { javascript: "quickSort(array);", python: "quick_sort(array, 0, len(array) - 1)", cpp: "quickSort(array, 0, array.size() - 1);", java: "new Main().quickSort(array, 0, array.length - 1);" } },
-  "heap-sort": { expected: "1 2 3", sortStatements: { javascript: "heapSort(array);", python: "heap_sort(array)", cpp: "heapSort(array);", java: "new Main().heapSort(array);" } },
-  "counting-sort": { expected: "1 2 3", sortStatements: { javascript: "countingSort(array);", python: "counting_sort(array)", cpp: "countingSort(array);", java: "new Main().countingSort(array);" } },
-  "radix-sort": { expected: "1 2 3", sortStatements: { javascript: "radixSort(array);", python: "radix_sort(array)", cpp: "radixSort(array);", java: "new Main().radixSort(array);" } },
+  "bubble-sort": {
+    expected: "1 2 3",
+    sortStatements: {
+      javascript: "bubbleSort(array);",
+      python: "bubble_sort(array)",
+      cpp: "bubbleSort(array);",
+      java: "new Main().bubbleSort(array);",
+    },
+  },
+  "selection-sort": {
+    expected: "1 2 3",
+    sortStatements: {
+      javascript: "selectionSort(array);",
+      python: "selection_sort(array)",
+      cpp: "selectionSort(array);",
+      java: "new Main().selectionSort(array);",
+    },
+  },
+  "insertion-sort": {
+    expected: "1 2 3",
+    sortStatements: {
+      javascript: "insertionSort(array);",
+      python: "insertion_sort(array)",
+      cpp: "insertionSort(array);",
+      java: "new Main().insertionSort(array);",
+    },
+  },
+  "merge-sort": {
+    expected: "1 2 3",
+    sortStatements: {
+      javascript: "array = mergeSort(array);",
+      python: "array = merge_sort(array)",
+      cpp: "mergeSort(array, 0, array.size() - 1);",
+      java: "new Main().mergeSort(array, 0, array.length - 1);",
+    },
+  },
+  "quick-sort": {
+    expected: "1 2 3",
+    sortStatements: {
+      javascript: "quickSort(array);",
+      python: "quick_sort(array, 0, len(array) - 1)",
+      cpp: "quickSort(array, 0, array.size() - 1);",
+      java: "new Main().quickSort(array, 0, array.length - 1);",
+    },
+  },
+  "heap-sort": {
+    expected: "1 2 3",
+    sortStatements: {
+      javascript: "heapSort(array);",
+      python: "heap_sort(array)",
+      cpp: "heapSort(array);",
+      java: "new Main().heapSort(array);",
+    },
+  },
+  "counting-sort": {
+    expected: "1 2 3",
+    sortStatements: {
+      javascript: "countingSort(array);",
+      python: "counting_sort(array)",
+      cpp: "countingSort(array);",
+      java: "new Main().countingSort(array);",
+    },
+  },
+  "radix-sort": {
+    expected: "1 2 3",
+    sortStatements: {
+      javascript: "radixSort(array);",
+      python: "radix_sort(array)",
+      cpp: "radixSort(array);",
+      java: "new Main().radixSort(array);",
+    },
+  },
 };
 
 type RunResult =
@@ -108,7 +166,7 @@ const toolchain = {
 function run(
   command: string,
   args: string[],
-  cwd: string,
+  cwd: string
 ): { ok: true; output: string } | { ok: false; reason: string } {
   const result = spawnSync(command, args, {
     cwd,
@@ -123,37 +181,30 @@ function run(
     return {
       ok: false,
       reason:
-        normalize(result.stderr || result.stdout) ||
-        `command exited with status ${result.status}`,
+        normalize(result.stderr || result.stdout) || `command exited with status ${result.status}`,
     };
   }
   return { ok: true, output: normalize(result.stdout) };
 }
 
 function runFreshExecutable(command: string, cwd: string) {
-  const invoke = () =>
-    process.platform === "win32"
-      ? run(
-          process.env.ComSpec ?? "cmd.exe",
-          ["/d", "/s", "/c", command],
-          cwd,
-        )
-      : run(command, [], cwd);
-  const firstAttempt = invoke();
-  if (
-    !firstAttempt.ok &&
-    /\b(?:UNKNOWN|EBUSY)\b/.test(firstAttempt.reason)
-  ) {
-    return invoke();
-  }
-  return firstAttempt;
-}
+  const invoke = () => run(command, [], cwd);
 
+  let result = invoke();
+  for (let attempt = 1; attempt < 3 && !result.ok; attempt++) {
+    const transientPolicyRace =
+      /\b(?:UNKNOWN|EBUSY)\b/.test(result.reason) || /Device Guard policy/i.test(result.reason);
+    if (!transientPolicyRace) break;
+    waitForExecutablePolicyScan();
+    result = invoke();
+  }
+  return result;
+}
 function waitForExecutablePolicyScan() {
   // Windows Device Guard may inspect a freshly linked binary before allowing
   // execution. A short bounded wait avoids racing that scan.
   if (process.platform === "win32") {
-    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 750);
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1500);
   }
 }
 
@@ -283,11 +334,9 @@ function verifyLanguage(
   language: RequiredCodeLanguage,
   code: string,
   fixture: Fixture,
-  directory: string,
+  directory: string
 ): RunResult {
-  let execution:
-    | { ok: true; output: string }
-    | { ok: false; reason: string };
+  let execution: { ok: true; output: string } | { ok: false; reason: string };
 
   if (language === "javascript") {
     const source = join(directory, "example.js");
@@ -303,30 +352,17 @@ function verifyLanguage(
     }
     const source = join(directory, "example.py");
     writeFileSync(source, pythonSource(code, fixture));
-    execution = run(
-      python.command,
-      [...python.prefix, source],
-      directory,
-    );
+    execution = run(python.command, [...python.prefix, source], directory);
   } else if (language === "cpp") {
     if (!toolchain.cpp) {
       return { status: "not-run", reason: "g++ is unavailable" };
     }
     const source = join(directory, "example.cpp");
-    const program = join(
-      directory,
-      process.platform === "win32" ? "example.exe" : "example",
-    );
+    const program = join(directory, process.platform === "win32" ? "example.exe" : "example");
     writeFileSync(source, cppSource(code, fixture));
-    const compilation = run(
-      "g++",
-      [source, "-std=c++11", "-o", program],
-      directory,
-    );
+    const compilation = run("g++", [source, "-std=c++11", "-o", program], directory);
     if (compilation.ok) waitForExecutablePolicyScan();
-    execution = compilation.ok
-      ? runFreshExecutable(program, directory)
-      : compilation;
+    execution = compilation.ok ? runFreshExecutable(program, directory) : compilation;
   } else {
     if (!toolchain.java) {
       return { status: "not-run", reason: "javac is unavailable" };
@@ -334,9 +370,7 @@ function verifyLanguage(
     const source = join(directory, "Main.java");
     writeFileSync(source, javaSource(code, fixture));
     const compilation = run("javac", [source], directory);
-    execution = compilation.ok
-      ? run("java", ["-cp", directory, "Main"], directory)
-      : compilation;
+    execution = compilation.ok ? run("java", ["-cp", directory, "Main"], directory) : compilation;
   }
 
   if (!execution.ok) return { status: "fail", reason: execution.reason };
@@ -349,10 +383,7 @@ function verifyLanguage(
   return { status: "pass", output: execution.output };
 }
 
-const tempBase =
-  process.platform === "win32" && existsSync("C:\\tmp")
-    ? "C:\\tmp"
-    : tmpdir();
+const tempBase = process.platform === "win32" ? process.cwd() : tmpdir();
 const root = mkdtempSync(join(tempBase, "algo-flow-code-examples-"));
 const failures: string[] = [];
 const notRun: string[] = [];
@@ -366,12 +397,7 @@ try {
       continue;
     }
 
-    for (const language of [
-      "javascript",
-      "python",
-      "cpp",
-      "java",
-    ] as const) {
+    for (const language of ["javascript", "python", "cpp", "java"] as const) {
       const example = definition.codeExamples[language];
       if (!example) {
         failures.push(`${slug}/${language}: code example is missing`);
@@ -379,17 +405,10 @@ try {
       }
       const directory = join(root, `${slug}-${language}`);
       mkdirSync(directory, { recursive: true });
-      const result = verifyLanguage(
-        language,
-        example.code,
-        fixture,
-        directory,
-      );
+      const result = verifyLanguage(language, example.code, fixture, directory);
       if (result.status === "pass") {
         passed += 1;
-        console.log(
-          `[PASS] ${slug}/${language}: ${result.output || "(no output)"}`,
-        );
+        console.log(`[PASS] ${slug}/${language}: ${result.output || "(no output)"}`);
       } else if (result.status === "not-run") {
         notRun.push(`${slug}/${language}: ${result.reason}`);
         console.log(`[NOT RUN] ${slug}/${language}: ${result.reason}`);
@@ -404,7 +423,7 @@ try {
 }
 
 console.log(
-  `\nCode-example summary: ${passed} passed, ${notRun.length} not run, ${failures.length} failed.`,
+  `\nCode-example summary: ${passed} passed, ${notRun.length} not run, ${failures.length} failed.`
 );
 
 if (notRun.length > 0) {
@@ -416,10 +435,7 @@ if (failures.length > 0) {
   for (const item of failures) console.error(`- ${item}`);
   process.exitCode = 1;
 }
-if (
-  process.argv.includes("--require-all") &&
-  notRun.length > 0
-) {
+if (process.argv.includes("--require-all") && notRun.length > 0) {
   console.error("--require-all failed because at least one language was not run.");
   process.exitCode = 1;
 }

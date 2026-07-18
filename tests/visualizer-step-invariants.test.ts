@@ -1,7 +1,7 @@
 import { algorithms } from "@/data/seed/algorithms";
-import { algorithmRegistry } from "@/features/visualizer-engine/registry/algorithm-registry";
-import { createDefaultGraph } from "@/features/algorithms/graph/types";
-import { createDefaultTree } from "@/features/algorithms/tree/types";
+import { algorithmRegistry } from "@/visualizers/registry/algorithm-registry";
+import { createDefaultGraph } from "@/visualizers/graph/types";
+import { createDefaultTree } from "@/visualizers/tree/types";
 import {
   clampOperationOptions,
   defaultVisualizerInputOptions,

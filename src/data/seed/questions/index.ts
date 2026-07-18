@@ -13,19 +13,7 @@ export type QuestionData = {
 
 export const allQuestions = questionsData as QuestionData[];
 
-const STOP_WORDS = new Set([
-  "a",
-  "an",
-  "and",
-  "at",
-  "by",
-  "in",
-  "is",
-  "of",
-  "the",
-  "to",
-  "with",
-]);
+const STOP_WORDS = new Set(["a", "an", "and", "at", "by", "in", "is", "of", "the", "to", "with"]);
 
 const normalizeTokens = (value: string): string[] =>
   value

@@ -1,9 +1,9 @@
 import { algorithms } from "@/data/seed/algorithms";
-import { algorithmRegistry } from "@/features/visualizer-engine/registry/algorithm-registry";
+import { algorithmRegistry } from "@/visualizers/registry/algorithm-registry";
 import {
   DATA_STRUCTURE_IDS,
   REQUIRED_CODE_LANGUAGES,
-} from "@/features/visualizer-engine/registry/types";
+} from "@/visualizers/registry/types";
 
 describe("composed visualizer runtime contract", () => {
   const catalogSlugs = new Set(algorithms.map((algorithm) => algorithm.slug));

@@ -1,5 +1,5 @@
-import { resolvePhysicalCodeLine } from "@/features/visualizer-engine/registry/code-line-mapping";
-import type { CodeLineMapping } from "@/features/visualizer-engine/registry/types";
+import { resolvePhysicalCodeLine } from "@/visualizers/registry/code-line-mapping";
+import type { CodeLineMapping } from "@/visualizers/registry/types";
 
 const mappings: ReadonlyArray<CodeLineMapping> = [
   {

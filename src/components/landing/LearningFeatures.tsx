@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Bookmark, Code2, Gauge, ListChecks, Route, Variable } from "lucide-react";
 import { motion } from "framer-motion";
@@ -7,32 +7,38 @@ import { cardReveal, glowStyle, sectionReveal } from "./landing-effects";
 const features = [
   {
     title: "Playback controls",
-    description: "Run, pause, step backward or forward, restart, skip to the end, and tune the playback speed.",
+    description:
+      "Run, pause, step backward or forward, restart, skip to the end, and tune the playback speed.",
     Icon: Gauge,
   },
   {
     title: "State-aware canvas",
-    description: "Highlights show the active item, comparisons, swaps, insertions, deletions, and found targets.",
+    description:
+      "Highlights show the active item, comparisons, swaps, insertions, deletions, and found targets.",
     Icon: Route,
   },
   {
     title: "Step explanations",
-    description: "Each step carries a short explanation, operation label, complexity note, and changing variables where available.",
+    description:
+      "Each step carries a short explanation, operation label, complexity note, and changing variables where available.",
     Icon: Variable,
   },
   {
     title: "Pseudocode and code",
-    description: "Use side panels to compare the animation with pseudocode and implementation snippets.",
+    description:
+      "Use side panels to compare the animation with pseudocode and implementation snippets.",
     Icon: Code2,
   },
   {
     title: "Execution log",
-    description: "Jump to any recorded step from the log instead of scrubbing blindly through the timeline.",
+    description:
+      "Jump to any recorded step from the log instead of scrubbing blindly through the timeline.",
     Icon: ListChecks,
   },
   {
     title: "Bookmarks and sessions",
-    description: "Logged-in learners can save useful pages and continue from saved sessions in the dashboard.",
+    description:
+      "Logged-in learners can save useful pages and continue from saved sessions in the dashboard.",
     Icon: Bookmark,
   },
 ];
@@ -42,7 +48,7 @@ export function LearningFeatures() {
     <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="features">
       <div className="mx-auto max-w-7xl">
         <motion.div
-          initial="hidden"
+          initial="visible"
           whileInView="visible"
           viewport={{ once: true, margin: "-90px" }}
           variants={sectionReveal}
@@ -55,12 +61,13 @@ export function LearningFeatures() {
             Enough context to understand the step you are seeing.
           </h2>
           <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            The visualizer keeps controls, state, explanation, and code visible together instead of scattering them across pages.
+            The visualizer keeps controls, state, explanation, and code visible together instead of
+            scattering them across pages.
           </p>
         </motion.div>
 
         <motion.div
-          initial="hidden"
+          initial="visible"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
@@ -71,9 +78,9 @@ export function LearningFeatures() {
               custom={index}
               variants={cardReveal}
               style={glowStyle(index + 1)}
-              className="landing-glow-card group rounded-xl border border-border bg-surface/60 p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-primary)] hover:border-primary"
+              className="landing-glow-card group rounded-xl border border-border bg-surface/60 p-6 backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color,color] duration-500 hover:-translate-y-1 hover:shadow-[var(--shadow-glow-primary)] hover:border-primary"
             >
-              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.06] text-[var(--landing-card-tone)]">
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-lg border border-white/75 bg-surface-light text-[var(--landing-card-tone)]">
                 <Icon className="h-5 w-5" />
               </div>
               <h3 className="mb-2 text-lg font-semibold text-foreground transition-colors group-hover:text-[var(--landing-card-tone)]">

@@ -3,11 +3,7 @@ import { algorithms } from "@/data/seed/algorithms";
 import { getQuestionsForAlgorithm } from "@/data/seed/questions";
 import { QuizClient } from "./QuizClient";
 
-export default async function QuizPage({
-  params,
-}: {
-  params: Promise<{ algorithmId: string }>;
-}) {
+export default async function QuizPage({ params }: { params: Promise<{ algorithmId: string }> }) {
   const { algorithmId } = await params;
   const algorithm = algorithms.find((a) => a.id === algorithmId);
 

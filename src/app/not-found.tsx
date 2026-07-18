@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { SearchX } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 export default function NotFound() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4 py-16 text-foreground">
-      <section className="w-full max-w-lg rounded-2xl border border-border bg-surface p-8 text-center shadow-lg">
+      <section className="w-full max-w-lg neu-raised rounded-3xl p-8 text-center">
         <SearchX aria-hidden="true" className="mx-auto h-14 w-14 text-primary" />
         <p className="mt-5 text-sm font-semibold uppercase tracking-[0.2em] text-primary">404</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight">Page not found</h1>

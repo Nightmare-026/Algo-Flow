@@ -1,7 +1,7 @@
 import {
   generateCountingSortSteps,
   generateRadixSortSteps,
-} from "@/features/algorithms/array/sort";
+} from "@/visualizers/array/sort";
 
 describe("non-negative integer sorting guards", () => {
   it.each([

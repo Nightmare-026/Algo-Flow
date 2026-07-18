@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useFormStatus } from "react-dom";
 import { Button, ButtonProps } from "@/components/ui/button";
@@ -9,8 +9,8 @@ export function SubmitButton({ children, ...props }: ButtonProps) {
 
   return (
     <Button {...props} type="submit" disabled={pending || props.disabled}>
-      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-      {children}
+      {pending ? <Loader2 aria-hidden="true" className="mr-2 h-4 w-4 animate-spin" /> : null}
+      <span aria-live="polite">{pending ? "Submitting…" : children}</span>
     </Button>
   );
 }

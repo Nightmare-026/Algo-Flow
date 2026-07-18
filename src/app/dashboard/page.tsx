@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getStreak, updateStreakOnActivity } from "@/features/streak/api";
@@ -66,15 +66,13 @@ export default async function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 rounded-xl bg-orange-500/10 px-4 py-2 border border-orange-500/20">
-              <Flame className="h-5 w-5 text-orange-500" />
+            <div className="flex items-center gap-2 rounded-xl bg-warning-muted px-4 py-2 border border-warning/20">
+              <Flame className="h-5 w-5 text-warning" />
               <div>
-                <div className="text-xs font-semibold text-orange-600 uppercase tracking-wider">
+                <div className="text-xs font-semibold text-warning uppercase tracking-wider">
                   Day Streak
                 </div>
-                <div className="text-lg font-bold text-orange-700">
-                  {streak?.current_streak || 0}
-                </div>
+                <div className="text-lg font-bold text-warning">{streak?.current_streak || 0}</div>
               </div>
             </div>
 
@@ -154,7 +152,7 @@ export default async function DashboardPage() {
                   </div>
                   <div className="h-3 w-full bg-border rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-primary transition-all duration-1000"
+                      className="h-full origin-left bg-primary transition-transform duration-1000 ease-[var(--ease-enter)]"
                       style={{ width: `${progressPercent}%` }}
                     />
                   </div>
@@ -211,7 +209,7 @@ export default async function DashboardPage() {
                               <span className="text-sm font-medium text-text-primary group-hover:text-primary transition-colors">
                                 {alg.name}
                               </span>
-                              <ArrowRight className="h-4 w-4 text-text-muted opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
+                              <ArrowRight className="h-4 w-4 text-text-muted opacity-0 -translate-x-2 transition-[opacity,transform] group-hover:opacity-100 group-hover:translate-x-0" />
                             </Link>
                           </li>
                         );
@@ -248,7 +246,7 @@ export default async function DashboardPage() {
                                 {session.title || "Untitled Session"}
                               </span>
                               <span className="text-xs text-text-muted">
-                                {alg.name} •{" "}
+                                {alg.name} â€¢{" "}
                                 {session.updated_at
                                   ? new Date(session.updated_at).toLocaleDateString()
                                   : "Recently"}
@@ -290,7 +288,7 @@ export default async function DashboardPage() {
                         color = "bg-success text-white";
                       } else if (act.action_type === "bookmarked") {
                         icon = <Bookmark className="h-3 w-3" />;
-                        color = "bg-orange-500 text-white";
+                        color = "bg-warning text-white";
                       } else if (act.action_type === "saved_session") {
                         icon = <Save className="h-3 w-3" />;
                         color = "bg-blue-500 text-white";

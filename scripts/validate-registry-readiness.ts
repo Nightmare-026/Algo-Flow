@@ -12,8 +12,8 @@ import { algorithms } from "../src/data/seed/algorithms";
 import {
   publicationRegistry,
   type ComposedPublicationDefinition,
-} from "../src/features/visualizer-engine/registry/publication-registry";
-import { REQUIRED_CODE_LANGUAGES } from "../src/features/visualizer-engine/registry/types";
+} from "../src/visualizers/registry/publication-registry";
+import { REQUIRED_CODE_LANGUAGES } from "../src/visualizers/registry/types";
 import type { VisualStepHighlights } from "../src/types";
 
 type Issue = {
@@ -40,11 +40,7 @@ const validHighlightBuckets = new Set<keyof VisualStepHighlights>([
   "success",
 ]);
 
-function report(
-  severity: Issue["severity"],
-  where: string,
-  message: string,
-) {
+function report(severity: Issue["severity"], where: string, message: string) {
   issues.push({ severity, where, message });
 }
 
@@ -58,10 +54,7 @@ function codeLineCount(code: string) {
   return code.split(/\r?\n/).length;
 }
 
-function validateAuthoredArtifacts(
-  where: string,
-  entry: ComposedPublicationDefinition,
-) {
+function validateAuthoredArtifacts(where: string, entry: ComposedPublicationDefinition) {
   const artifacts = entry.authoredArtifacts;
   if (!artifacts) return;
 
@@ -75,22 +68,19 @@ function validateAuthoredArtifacts(
         report("error", generatorWhere, "generated input fails inputSchema");
         continue;
       }
-      const validationErrors = artifacts.validateInput(
-        input,
-        entry.defaultOptions,
-      );
+      const validationErrors = artifacts.validateInput(input, entry.defaultOptions);
       if (validationErrors.length > 0) {
         report(
           "error",
           generatorWhere,
-          `generated input fails validateInput: ${validationErrors.join("; ")}`,
+          `generated input fails validateInput: ${validationErrors.join("; ")}`
         );
       }
     } catch (error) {
       report(
         "error",
         generatorWhere,
-        `generator threw: ${error instanceof Error ? error.message : String(error)}`,
+        `generator threw: ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }
@@ -111,24 +101,18 @@ function validateAuthoredArtifacts(
       const line = mapping.lines[language];
       const example = entry.codeExamples[language];
       if (!Number.isInteger(line) || line < 1) {
-        report(
-          "error",
-          mappingWhere,
-          `${language} line must be a positive integer`,
-        );
+        report("error", mappingWhere, `${language} line must be a positive integer`);
       } else if (example && line > codeLineCount(example.code)) {
         report(
           "error",
           mappingWhere,
-          `${language} line ${line} exceeds the ${codeLineCount(example.code)}-line example`,
+          `${language} line ${line} exceeds the ${codeLineCount(example.code)}-line example`
         );
       }
     }
   }
 
-  const legendBuckets = new Set(
-    artifacts.legend.map((item) => item.bucketKey),
-  );
+  const legendBuckets = new Set(artifacts.legend.map((item) => item.bucketKey));
   for (const testCase of artifacts.testCases) {
     const testWhere = `${where}.testCases.${testCase.name}`;
     requireText(testCase.name, testWhere, "name");
@@ -150,27 +134,21 @@ function validateAuthoredArtifacts(
 
       for (const step of steps) {
         if (!Number.isInteger(step.codeLine) || (step.codeLine ?? 0) < 1) {
-          report(
-            "error",
-            testWhere,
-            `step ${step.stepNumber} has no positive logical codeLine`,
-          );
+          report("error", testWhere, `step ${step.stepNumber} has no positive logical codeLine`);
         } else if (!mappings.has(step.codeLine!)) {
           report(
             "error",
             testWhere,
-            `step ${step.stepNumber} references unmapped logical codeLine ${step.codeLine}`,
+            `step ${step.stepNumber} references unmapped logical codeLine ${step.codeLine}`
           );
         }
 
-        for (const bucket of Object.keys(
-          step.highlights,
-        ) as (keyof VisualStepHighlights)[]) {
+        for (const bucket of Object.keys(step.highlights) as (keyof VisualStepHighlights)[]) {
           if (!legendBuckets.has(bucket)) {
             report(
               "error",
               testWhere,
-              `step ${step.stepNumber} uses highlight bucket ${bucket} without a legend entry`,
+              `step ${step.stepNumber} uses highlight bucket ${bucket} without a legend entry`
             );
           }
         }
@@ -179,16 +157,13 @@ function validateAuthoredArtifacts(
       report(
         "error",
         testWhere,
-        `semantic test threw: ${error instanceof Error ? error.message : String(error)}`,
+        `semantic test threw: ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }
 }
 
-function validateComposedDefinition(
-  slug: string,
-  entry: ComposedPublicationDefinition,
-) {
+function validateComposedDefinition(slug: string, entry: ComposedPublicationDefinition) {
   const where = `publication.${slug}`;
 
   for (const [field, value] of [
@@ -235,11 +210,7 @@ function validateComposedDefinition(
     if (!example || example.code.trim().length === 0) {
       report("error", where, `codeExamples.${language} is missing`);
     } else if (example.language !== language) {
-      report(
-        "error",
-        where,
-        `codeExamples.${language}.language must equal ${language}`,
-      );
+      report("error", where, `codeExamples.${language}.language must equal ${language}`);
     }
   }
 
@@ -248,11 +219,7 @@ function validateComposedDefinition(
   }
   entry.pseudocode.forEach((line, index) => {
     if (line.line !== index + 1 || line.text.trim().length === 0) {
-      report(
-        "error",
-        where,
-        "pseudocode lines must be non-empty and sequential from 1",
-      );
+      report("error", where, "pseudocode lines must be non-empty and sequential from 1");
     }
   });
 
@@ -277,11 +244,7 @@ function validateComposedDefinition(
   } else {
     for (const item of artifacts.legend) {
       if (!validHighlightBuckets.has(item.bucketKey)) {
-        report(
-          "error",
-          where,
-          `legend references unknown bucket ${String(item.bucketKey)}`,
-        );
+        report("error", where, `legend references unknown bucket ${String(item.bucketKey)}`);
       }
     }
   }
@@ -290,9 +253,7 @@ function validateComposedDefinition(
 }
 
 const publishedSlugs = new Set(
-  algorithms
-    .filter((algorithm) => algorithm.isPublished)
-    .map((algorithm) => algorithm.slug),
+  algorithms.filter((algorithm) => algorithm.isPublished).map((algorithm) => algorithm.slug)
 );
 const publicationSlugs = new Set(Object.keys(publicationRegistry));
 
@@ -302,7 +263,7 @@ for (const slug of publishedSlugs) {
     report(
       "error",
       `catalog.${slug}`,
-      "published catalog entry has no composed publication definition",
+      "published catalog entry has no composed publication definition"
     );
     continue;
   }
@@ -311,11 +272,7 @@ for (const slug of publishedSlugs) {
 
 for (const slug of publicationSlugs) {
   if (!publishedSlugs.has(slug)) {
-    report(
-      "warning",
-      `publication.${slug}`,
-      "definition is not present in the published catalog",
-    );
+    report("warning", `publication.${slug}`, "definition is not present in the published catalog");
   }
 }
 
@@ -323,22 +280,20 @@ const errors = issues.filter((issue) => issue.severity === "error");
 const warnings = issues.filter((issue) => issue.severity === "warning");
 
 console.log(
-  `\nReadiness summary: ${publishedSlugs.size} published entries, ${publicationSlugs.size} composed definitions`,
+  `\nReadiness summary: ${publishedSlugs.size} published entries, ${publicationSlugs.size} composed definitions`
 );
 console.log(
-  `Genuine authored-artifact gaps: ${errors.length} error(s), ${warnings.length} warning(s)\n`,
+  `Genuine authored-artifact gaps: ${errors.length} error(s), ${warnings.length} warning(s)\n`
 );
 
 for (const issue of issues) {
   console.log(
-    `[${issue.severity === "error" ? "ERROR" : "WARN"}] ${issue.where}: ${issue.message}`,
+    `[${issue.severity === "error" ? "ERROR" : "WARN"}] ${issue.where}: ${issue.message}`
   );
 }
 
 if (errors.length > 0) {
-  console.error(
-    `\nvalidate:registry:readiness FAILED with ${errors.length} genuine gap(s).`,
-  );
+  console.error(`\nvalidate:registry:readiness FAILED with ${errors.length} genuine gap(s).`);
   process.exitCode = 1;
 } else {
   console.log("validate:registry:readiness PASSED");

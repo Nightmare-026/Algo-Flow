@@ -1,9 +1,5 @@
-"use client";
-
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { staggerContainer, staggerItem } from "@/lib/animation/spring-config";
 
 const footerSections = [
   {
@@ -14,97 +10,75 @@ const footerSections = [
     ],
   },
   {
-    title: "DSA Topics",
+    title: "DSA topics",
     links: [
       { label: "Array", href: "/visualizers/array" },
-      { label: "Linked List", href: "/visualizers/linked-list" },
-      { label: "Stack & Queue", href: "/visualizers/stack" },
+      { label: "Linked list", href: "/visualizers/linked-list" },
+      { label: "Stack", href: "/visualizers/stack" },
       { label: "Tree", href: "/visualizers/tree" },
       { label: "Graph", href: "/visualizers/graph" },
-      { label: "Hash Table", href: "/visualizers/hash-table" },
+      { label: "Hash table", href: "/visualizers/hash-table" },
     ],
   },
   {
-    title: "Resources",
+    title: "Learn",
     links: [
-      { label: "How It Works", href: "/#how-it-works" },
-      { label: "Code Examples", href: "/#code-languages" },
-      { label: "Learning Paths", href: "/#features" },
+      { label: "How it works", href: "/#how-it-works" },
+      { label: "Code examples", href: "/#code-languages" },
+      { label: "Study tools", href: "/#features" },
     ],
   },
   {
     title: "Legal",
     links: [
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Privacy policy", href: "/privacy" },
+      { label: "Terms & conditions", href: "/terms" },
     ],
   },
 ];
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-border bg-surface">
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent pointer-events-none opacity-50" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={staggerContainer}
-          className="grid grid-cols-2 md:grid-cols-5 gap-8 py-12 lg:py-16"
-        >
-          {/* Brand Column */}
-          <motion.div variants={staggerItem} className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4 group">
-              <div className="relative w-8 h-8 transition-transform duration-300 group-hover:scale-110">
-                <Image src="/logo.png" alt="Algo Flow" fill sizes="32px" className="object-contain" />
-              </div>
-              <span className="text-base font-bold text-foreground">
-                Algo<span className="text-primary">Flow</span>
+    <footer className="mt-auto border-t border-white/80 bg-surface/72">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_repeat(4,1fr)]">
+          <div>
+            <Link href="/" className="inline-flex min-h-11 items-center gap-2.5 rounded-xl pr-2">
+              <span className="relative h-9 w-9 rounded-xl bg-primary-muted shadow-[var(--shadow-raised-sm)]">
+                <Image src="/logo.png" alt="" fill sizes="36px" className="object-contain p-1" />
+              </span>
+              <span className="font-display text-lg font-extrabold text-foreground">
+                Algo<span className="text-primary-active">Flow</span>
               </span>
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Master Data Structures & Algorithms through beautiful, interactive visual journeys.
+            <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">
+              Trace data, code, and decisions together—one algorithm step at a time.
             </p>
-          </motion.div>
+          </div>
 
-          {/* Link Sections */}
           {footerSections.map((section) => (
-            <motion.div key={section.title} variants={staggerItem}>
-              <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
-                {section.title}
-              </h3>
-              <ul className="space-y-2.5">
+            <div key={section.title}>
+              <h2 className="text-sm font-bold text-foreground">{section.title}</h2>
+              <ul className="mt-4 space-y-2.5">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 animated-underline"
+                      className="animated-underline inline-flex min-h-8 items-center text-sm text-muted-foreground"
                     >
                       {link.label}
                     </Link>
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-border py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">
-            (c) {new Date().getFullYear()} Algo Flow. All rights reserved.
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Built for learners, by learners.
-          </p>
+        </div>
+        <div className="mt-12 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Algo Flow. All rights reserved.</p>
+          <p>Built for careful, visual learning.</p>
         </div>
       </div>
     </footer>
   );
 }
-
-

@@ -1,4 +1,4 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+﻿export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 type TableDefinition<Row, Insert, Update = Partial<Insert>, Relationships = []> = {
   Row: Row;
@@ -41,7 +41,13 @@ type PreferenceRow = {
 
 type ProfileRow = {
   avatar_url: string | null;
+  created_at: string | null;
+  email: string | null;
+  first_name: string | null;
+  full_name: string | null;
+  gender: string | null;
   id: string;
+  last_name: string | null;
   updated_at: string | null;
   username: string | null;
 };
@@ -146,7 +152,13 @@ export type Database = {
         ProfileRow,
         {
           avatar_url?: string | null;
+          created_at?: string | null;
+          email?: string | null;
+          first_name?: string | null;
+          full_name?: string | null;
+          gender?: string | null;
           id: string;
+          last_name?: string | null;
           updated_at?: string | null;
           username?: string | null;
         }

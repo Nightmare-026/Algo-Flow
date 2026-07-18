@@ -1,7 +1,7 @@
-/**
- * Phase 3 — Highlights helpers smoke test.
+﻿/**
+ * Phase 3 â€” Highlights helpers smoke test.
  *
- * Every helper must return a strict bucket→ids[] shape. This guards the
+ * Every helper must return a strict bucketâ†’ids[] shape. This guards the
  * A-03/RR-01 fix.
  */
 
@@ -20,13 +20,13 @@ import {
   conjunct,
   markBucket,
   makeHighlights,
-} from "@/features/visualizer-engine/highlights";
+} from "@/visualizers/shared/highlights";
 
-describe("Phase 3 — highlights helpers", () => {
-  it("compare returns a strict shape with active bucket", () => {
+describe("Phase 3 â€” highlights helpers", () => {
+  it("compare returns a strict shape with compared bucket", () => {
     const h = compare(["a", "b"]);
-    expect(h.active).toEqual(["a", "b"]);
-    expect(Object.keys(h)).toEqual(["active"]);
+    expect(h.compared).toEqual(["a", "b"]);
+    expect(Object.keys(h)).toEqual(["compared"]);
   });
 
   it("swap returns swapped bucket", () => {
@@ -70,7 +70,7 @@ describe("Phase 3 — highlights helpers", () => {
   });
 
   it("dedupes input", () => {
-    expect(compare(["a", "a", "b"]).active).toEqual(["a", "b"]);
+    expect(compare(["a", "a", "b"]).compared).toEqual(["a", "b"]);
   });
 
   it("returns empty object when no ids", () => {
@@ -81,7 +81,7 @@ describe("Phase 3 — highlights helpers", () => {
     const a = compare(["1", "2"]);
     const b = visited(["2", "3"]);
     const merged = conjunct([a, b]);
-    expect(merged.active).toEqual(["1", "2"]);
+    expect(merged.compared).toEqual(["1", "2"]);
     expect(merged.visited).toEqual(["2", "3"]);
   });
 

@@ -1,4 +1,4 @@
--- Reconcile the application contract with the audited production schema.
+﻿-- Reconcile the application contract with the audited production schema.
 -- Target project: mylzlhevgffgkwpeerzh
 -- Local-only until the migration-specific deployment preview is approved.
 
@@ -33,6 +33,18 @@ begin
   end if;
 end;
 $$;
+
+-- Keep the profile contract additive and consistent across fresh, audited, and
+-- previously deployed environments. Existing values are preserved.
+alter table public.profiles add column if not exists username text;
+alter table public.profiles add column if not exists avatar_url text;
+alter table public.profiles add column if not exists first_name text;
+alter table public.profiles add column if not exists last_name text;
+alter table public.profiles add column if not exists full_name text;
+alter table public.profiles add column if not exists gender text;
+alter table public.profiles add column if not exists email text;
+alter table public.profiles add column if not exists created_at timestamptz default now();
+alter table public.profiles add column if not exists updated_at timestamptz default now();
 
 -- Registry algorithm IDs are stable text values. This is the only identifier
 -- conversion required by the audited live schema.
@@ -96,11 +108,17 @@ security definer
 set search_path = ''
 as $$
 declare
-  candidate_username text := nullif(btrim(coalesce(
+  profile_first_name text := nullif(btrim(new.raw_user_meta_data->>'first_name'), '');
+  profile_last_name text := nullif(btrim(new.raw_user_meta_data->>'last_name'), '');
+  profile_full_name text := nullif(btrim(coalesce(
     new.raw_user_meta_data->>'full_name',
+    concat_ws(' ', profile_first_name, profile_last_name)
+  )), '');
+  candidate_username text := nullif(btrim(coalesce(
+    profile_full_name,
     new.raw_user_meta_data->>'name',
     new.raw_user_meta_data->>'user_name',
-    new.raw_user_meta_data->>'first_name',
+    profile_first_name,
     split_part(new.email, '@', 1)
   )), '');
 begin
@@ -112,21 +130,53 @@ begin
   end if;
 
   begin
-    insert into public.profiles (id, username, avatar_url)
-    values (new.id, candidate_username, new.raw_user_meta_data->>'avatar_url')
+    insert into public.profiles (
+      id, username, avatar_url, email, first_name, last_name, full_name, gender
+    )
+    values (
+      new.id,
+      candidate_username,
+      new.raw_user_meta_data->>'avatar_url',
+      new.email,
+      profile_first_name,
+      profile_last_name,
+      profile_full_name,
+      nullif(btrim(new.raw_user_meta_data->>'gender'), '')
+    )
     on conflict (id) do update set
       username = excluded.username,
       avatar_url = excluded.avatar_url,
+      email = excluded.email,
+      first_name = excluded.first_name,
+      last_name = excluded.last_name,
+      full_name = excluded.full_name,
+      gender = excluded.gender,
       updated_at = now();
   exception
     when unique_violation then
       candidate_username := coalesce(candidate_username, 'learner')
         || '_' || replace(new.id::text, '-', '');
-      insert into public.profiles (id, username, avatar_url)
-      values (new.id, candidate_username, new.raw_user_meta_data->>'avatar_url')
+      insert into public.profiles (
+        id, username, avatar_url, email, first_name, last_name, full_name, gender
+      )
+      values (
+        new.id,
+        candidate_username,
+        new.raw_user_meta_data->>'avatar_url',
+        new.email,
+        profile_first_name,
+        profile_last_name,
+        profile_full_name,
+        nullif(btrim(new.raw_user_meta_data->>'gender'), '')
+      )
       on conflict (id) do update set
         username = excluded.username,
         avatar_url = excluded.avatar_url,
+        email = excluded.email,
+        first_name = excluded.first_name,
+        last_name = excluded.last_name,
+        full_name = excluded.full_name,
+        gender = excluded.gender,
         updated_at = now();
   end;
 

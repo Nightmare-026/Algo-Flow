@@ -1,11 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
-import { Input } from "@/components/ui/input";
+import { AuthShell } from "@/components/auth/AuthShell";
+import { FloatingField } from "@/components/auth/FloatingField";
+import { PasswordField } from "@/components/auth/PasswordField";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { Button } from "@/components/ui/button";
-import { login, loginWithOAuth } from "./actions";
+import { createClient } from "@/lib/supabase/server";
+import { login } from "./actions";
 
 export const metadata: Metadata = {
   title: "Log In",
@@ -18,82 +18,76 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string; success?: string; next?: string }>;
 }) {
   const params = await searchParams;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg-deep text-text-primary">
-      <Navbar />
-      <main className="flex flex-1 items-center justify-center px-4 py-28 sm:px-6 lg:px-8">
-        <section className="w-full max-w-md rounded-2xl border border-border bg-bg-surface p-8 shadow-2xl">
-          <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-text-primary">Welcome back</h1>
-            <p className="mt-3 text-sm leading-6 text-text-secondary">
-              Log in to continue your DSA journey.
-            </p>
-          </div>
+    <AuthShell
+      user={user}
+      activeTab="login"
+      eyebrow="Welcome back"
+      title="Sign in to AlgoFlow"
+      description="Log in to return to saved algorithms, sessions, and learning progress."
+    >
+      {params.error ? (
+        <div
+          role="alert"
+          className="mb-6 rounded-xl border border-error/20 bg-error-muted px-4 py-3 text-sm font-medium text-error"
+        >
+          {params.error}
+        </div>
+      ) : null}
+      {params.success ? (
+        <div
+          aria-live="polite"
+          className="mb-6 rounded-xl border border-success/20 bg-success-muted px-4 py-3 text-sm font-medium text-success"
+        >
+          {params.success}
+        </div>
+      ) : null}
 
-          {params?.error && (
-            <div className="mb-6 rounded-lg border border-error/20 bg-error/10 px-4 py-3 text-sm text-error">
-              {params.error}
-            </div>
-          )}
+      <form action={login} className="space-y-5">
+        {params.next ? <input type="hidden" name="next" value={params.next} /> : null}
+        <FloatingField
+          id="login-email"
+          label="Email address"
+          name="email"
+          type="email"
+          autoComplete="email"
+          spellCheck={false}
+          required
+        />
+        <PasswordField
+          id="login-password"
+          label="Password"
+          name="password"
+          autoComplete="current-password"
+          required
+        />
+        <div className="flex justify-end">
+          <Link
+            href="/forgot-password"
+            className="min-h-8 text-sm font-semibold text-primary-active hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
+        <SubmitButton size="lg" className="w-full">
+          Log in
+        </SubmitButton>
+      </form>
 
-          {params?.success && (
-            <div className="mb-6 rounded-lg border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">
-              {params.success}
-            </div>
-          )}
-
-          <form action={login} className="space-y-5">
-            {params?.next && <input type="hidden" name="next" value={params.next} />}
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-text-secondary">Email address</label>
-              <Input name="email" type="email" autoComplete="email" required placeholder="name@example.com" className="h-11" />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-text-secondary">Password</label>
-                <Link href="/forgot-password" className="text-xs font-semibold text-primary hover:text-primary-hover transition-colors">
-                  Forgot password?
-                </Link>
-              </div>
-              <Input name="password" type="password" autoComplete="current-password" required placeholder="********" className="h-11" />
-            </div>
-
-            <SubmitButton size="lg" className="w-full h-11 text-base font-semibold mt-2">
-              Log in
-            </SubmitButton>
-          </form>
-
-          <div className="mt-6 flex items-center justify-between">
-            <span className="w-1/5 border-b border-border lg:w-1/4"></span>
-            <span className="text-xs text-center text-text-secondary uppercase">Or continue with</span>
-            <span className="w-1/5 border-b border-border lg:w-1/4"></span>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-3">
-            <form action={loginWithOAuth.bind(null, "google")}>
-              <Button type="submit" variant="outline" className="w-full h-11 text-base font-semibold border-border bg-bg-surface-light text-text-primary hover:bg-bg-surface-hover hover:text-text-primary">
-                Google
-              </Button>
-            </form>
-            <form action={loginWithOAuth.bind(null, "github")}>
-              <Button type="submit" variant="outline" className="w-full h-11 text-base font-semibold border-border bg-bg-surface-light text-text-primary hover:bg-bg-surface-hover hover:text-text-primary">
-                GitHub
-              </Button>
-            </form>
-          </div>
-
-          <p className="mt-8 text-center text-sm text-text-secondary">
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="font-semibold text-primary hover:text-primary-hover transition-colors">
-              Sign up
-            </Link>
-          </p>
-        </section>
-      </main>
-      <Footer />
-    </div>
+      <p className="mt-7 text-center text-sm text-text-secondary">
+        New to Algo Flow?{" "}
+        <Link
+          href={params.next ? `/signup?next=${encodeURIComponent(params.next)}` : "/signup"}
+          className="font-bold text-primary-active hover:underline"
+        >
+          Create an account
+        </Link>
+      </p>
+    </AuthShell>
   );
 }

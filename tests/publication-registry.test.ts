@@ -1,7 +1,7 @@
 import { algorithms } from "@/data/seed/algorithms";
 import { operations } from "@/data/seed/operations";
-import { publicationRegistry } from "@/features/visualizer-engine/registry/publication-registry";
-import { REQUIRED_CODE_LANGUAGES } from "@/features/visualizer-engine/registry/types";
+import { publicationRegistry } from "@/visualizers/registry/publication-registry";
+import { REQUIRED_CODE_LANGUAGES } from "@/visualizers/registry/types";
 
 describe("composed publication registry", () => {
   const publishedAlgorithms = algorithms.filter(

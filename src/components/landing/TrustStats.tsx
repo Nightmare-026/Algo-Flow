@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef } from "react";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
@@ -65,30 +65,43 @@ export function TrustStats() {
     <section className="px-4 py-20 sm:px-6 lg:px-8 md:py-28">
       <div className="mx-auto max-w-5xl">
         <motion.div
-          initial="hidden"
+          initial="visible"
           whileInView="visible"
           viewport={{ once: true, margin: "-90px" }}
           variants={sectionReveal}
           style={glowStyle(6)}
-          className="landing-glow-card rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)]/60 p-8 text-center backdrop-blur-sm sm:p-12 transition-all duration-500 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]"
+          className="landing-glow-card rounded-2xl border border-[var(--border)] bg-[var(--bg-surface)]/60 p-8 text-center backdrop-blur-sm sm:p-12 transition-[transform,box-shadow,border-color,background-color,color] duration-500 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]"
         >
           <h2 className="mb-3 text-2xl font-bold text-[var(--text-primary)] sm:text-3xl">
             A catalog with real learning surfaces behind it.
           </h2>
           <p className="mx-auto mb-10 max-w-lg text-sm leading-6 text-[var(--text-muted)] sm:text-base">
-            The numbers below come from the local seed catalog, so the section stays aligned with the app instead of marketing guesses.
+            The numbers below come from the local seed catalog, so the section stays aligned with
+            the app instead of marketing guesses.
           </p>
 
           <div className="grid grid-cols-2 gap-5 md:grid-cols-4">
             {stats.map((stat, index) => (
-              <div key={stat.label} className="rounded-xl border border-white/10 bg-black/15 p-4 transition-all duration-500 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]">
-                <div className="mb-2 text-4xl font-bold sm:text-5xl" style={{ color: `var(--landing-card-tone)` }}>
+              <div
+                key={stat.label}
+                className="rounded-xl border border-white/75 bg-background p-4 transition-[transform,box-shadow,border-color,background-color,color] duration-500 hover:shadow-[var(--shadow-glow-primary)] hover:border-[var(--primary)]"
+              >
+                <div
+                  className="mb-2 text-4xl font-bold sm:text-5xl"
+                  style={{ color: `var(--landing-card-tone)` }}
+                >
                   <AnimatedCounter target={stat.value} />
                 </div>
                 <div className="text-xs font-medium uppercase tracking-wider text-[var(--text-muted)]">
                   {stat.label}
                 </div>
-                <span className="mt-3 block h-1 rounded-full" style={{ backgroundColor: `var(--landing-card-tone)`, opacity: 0.5 - index * 0.06 }} />
+                <span
+                  className="mt-3 block h-1 rounded-full"
+                  style={{
+                    backgroundColor: `var(--landing-card-tone)`,
+                    opacity: 0.5 - index * 0.06,
+                  }}
+                />
               </div>
             ))}
           </div>

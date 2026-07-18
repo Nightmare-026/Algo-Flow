@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
-import { generateStackIsEmptySteps, generateStackIsFullSteps, generateStackPeekSteps } from "@/features/algorithms/stack/status";
-import { generateQueueFrontRearSteps, generateQueuePeekSteps } from "@/features/algorithms/queue/peek";
+import { generateStackIsEmptySteps, generateStackIsFullSteps, generateStackPeekSteps } from "@/visualizers/stack/status";
+import { generateQueueFrontRearSteps, generateQueuePeekSteps } from "@/visualizers/queue/peek";
 
 describe("stack status generators", () => {
   it("peeks without removing the top element", () => {

@@ -6,38 +6,38 @@
 // Visual Step — The fundamental unit of algorithm visualization
 // ----------------------------------------------------------------
 export type ActionType =
-  | 'initialize'
-  | 'success'
-  | 'compare'
-  | 'swap'
-  | 'visit'
-  | 'insert'
-  | 'delete'
-  | 'shift'
-  | 'move-pointer'
-  | 'highlight'
-  | 'found'
-  | 'not-found'
-  | 'error'
-  | 'complete'
-  | 'merge'
-  | 'split'
-  | 'rotate'
-  | 'enqueue'
-  | 'dequeue'
-  | 'push'
-  | 'pop'
-  | 'hash'
-  | 'collision'
-  | 'probe'
-  | 'link'
-  | 'unlink'
-  | 'set-pointer'
-  | 'overflow'
-  | 'underflow'
-  | 'build'
-  | 'update'
-  | 'access';
+  | "initialize"
+  | "success"
+  | "compare"
+  | "swap"
+  | "visit"
+  | "insert"
+  | "delete"
+  | "shift"
+  | "move-pointer"
+  | "highlight"
+  | "found"
+  | "not-found"
+  | "error"
+  | "complete"
+  | "merge"
+  | "split"
+  | "rotate"
+  | "enqueue"
+  | "dequeue"
+  | "push"
+  | "pop"
+  | "hash"
+  | "collision"
+  | "probe"
+  | "link"
+  | "unlink"
+  | "set-pointer"
+  | "overflow"
+  | "underflow"
+  | "build"
+  | "update"
+  | "access";
 
 export interface VisualStepHighlights {
   current?: string[];
@@ -74,11 +74,11 @@ export interface VisualStep {
 // ----------------------------------------------------------------
 // Data Structure & Algorithm Models
 // ----------------------------------------------------------------
-export type DifficultyLevel = 'easy' | 'medium' | 'hard';
-export type PriorityLevel = 'P0' | 'P1' | 'P2' | 'P3';
-export type CodeLanguage = 'cpp' | 'java' | 'python' | 'javascript' | 'typescript';
+export type DifficultyLevel = "easy" | "medium" | "hard";
+export type PriorityLevel = "P0" | "P1" | "P2" | "P3";
+export type CodeLanguage = "cpp" | "java" | "python" | "javascript" | "typescript";
 
-export type DSCategory = 'linear' | 'non-linear' | 'hash-based';
+export type DSCategory = "linear" | "non-linear" | "hash-based";
 
 export interface DataStructure {
   id: string;
@@ -146,7 +146,7 @@ export interface AlgorithmStep {
 // ----------------------------------------------------------------
 // Playback State
 // ----------------------------------------------------------------
-export type PlaybackSpeed = 'slow' | 'normal' | 'fast' | 'custom';
+export type PlaybackSpeed = "slow" | "normal" | "fast" | "custom";
 
 export interface PlaybackState {
   steps: VisualStep[];
@@ -161,8 +161,8 @@ export interface PlaybackState {
 // ----------------------------------------------------------------
 // User & Auth Types
 // ----------------------------------------------------------------
-export type UserRole = 'student' | 'admin';
-export type ThemePreference = 'dark-neon' | 'light-edu' | 'nature-cinematic' | 'system';
+export type UserRole = "student" | "admin";
+export type ThemePreference = "dark-neon" | "light-edu" | "nature-cinematic" | "system";
 
 export interface UserProfile {
   id: string;
@@ -187,7 +187,7 @@ export interface UserPreferences {
 // ----------------------------------------------------------------
 // Progress & Streak
 // ----------------------------------------------------------------
-export type ProgressStatus = 'not_started' | 'in_progress' | 'completed' | 'needs_revision';
+export type ProgressStatus = "not_started" | "in_progress" | "completed" | "needs_revision";
 
 export interface UserProgress {
   id: string;
@@ -212,7 +212,7 @@ export interface UserStreak {
 // ----------------------------------------------------------------
 // Bookmarks & Sessions
 // ----------------------------------------------------------------
-export type BookmarkType = 'algorithm' | 'step' | 'code' | 'session';
+export type BookmarkType = "algorithm" | "step" | "code" | "session";
 
 export interface Bookmark {
   id: string;

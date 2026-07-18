@@ -1,6 +1,15 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
+import { Inter, JetBrains_Mono, Manrope } from "next/font/google";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import "./globals.css";
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -34,22 +43,17 @@ export const metadata: Metadata = {
   },
 };
 
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-    >
-      <body className="min-h-screen bg-background text-foreground antialiased font-sans overflow-x-hidden">
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+    <html lang="en" data-theme="light-edu" suppressHydrationWarning>
+      <body
+        className={`${inter.variable} ${manrope.variable} ${jetbrainsMono.variable} min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased`}
+      >
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

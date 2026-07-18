@@ -1,33 +1,56 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+function safeInternalPath(value: string | null, fallback = "/dashboard") {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) return fallback;
+
+  try {
+    const parsed = new URL(value, "https://algo-flow.local");
+    if (parsed.origin !== "https://algo-flow.local") return fallback;
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    return fallback;
+  }
+}
+
+function configuredSiteOrigin(requestOrigin: string) {
+  const candidate = process.env.NEXT_PUBLIC_SITE_URL;
+  if (candidate) {
+    try {
+      const configured = new URL(candidate);
+      if (configured.protocol === "https:" || configured.protocol === "http:") {
+        return configured.origin;
+      }
+    } catch {
+      // Production authentication redirects fail closed below.
+    }
+  }
+
+  return process.env.NODE_ENV === "development" ? requestOrigin : null;
+}
+
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get("code");
-  // if "next" is in param, use it as the redirect URL
-  const nextParam = searchParams.get("next");
-  const next =
-    nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")
-      ? nextParam
-      : "/dashboard";
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
+  const next = safeInternalPath(requestUrl.searchParams.get("next"));
+  const redirectOrigin = configuredSiteOrigin(requestUrl.origin);
+
+  if (!redirectOrigin) {
+    return NextResponse.json(
+      { error: "Authentication redirect origin is not configured." },
+      { status: 500 }
+    );
+  }
 
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
-      const isLocalEnv = process.env.NODE_ENV === "development";
-      if (isLocalEnv) {
-        // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-        return NextResponse.redirect(`${origin}${next}`);
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`);
-      } else {
-        return NextResponse.redirect(`${origin}${next}`);
-      }
+      return NextResponse.redirect(new URL(next, redirectOrigin));
     }
   }
 
-  // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/login?error=Could+not+verify+account`);
+  const loginUrl = new URL("/login", redirectOrigin);
+  loginUrl.searchParams.set("error", "Could not verify account");
+  return NextResponse.redirect(loginUrl);
 }

@@ -1,5 +1,5 @@
-import { GraphVisualState, createDefaultGraph } from "@/features/algorithms/graph/types";
-import { TreeVisualState, createDefaultTree } from "@/features/algorithms/tree/types";
+import { GraphVisualState, createDefaultGraph } from "@/visualizers/graph/types";
+import { TreeVisualState, createDefaultTree } from "@/visualizers/tree/types";
 
 export interface ParseNumberListResult {
   values: number[];
@@ -60,7 +60,11 @@ export function parseNumberList(input: string, maxLength: number = 20): ParseNum
   return { values, error: null };
 }
 
-export function validateIndex(index: number, length: number, allowEnd: boolean = false): string | null {
+export function validateIndex(
+  index: number,
+  length: number,
+  allowEnd: boolean = false
+): string | null {
   const max = allowEnd ? length : length - 1;
   if (!Number.isInteger(index)) return "Index must be a whole number.";
   if (index < 0 || index > max) return `Index must be between 0 and ${Math.max(0, max)}.`;
@@ -75,7 +79,11 @@ export function validateCapacity(capacity: number, length: number): string | nul
   return null;
 }
 
-export function clampOperationOptions(options: VisualizerInputOptions, length: number, slug: string = ""): VisualizerInputOptions {
+export function clampOperationOptions(
+  options: VisualizerInputOptions,
+  length: number,
+  slug: string = ""
+): VisualizerInputOptions {
   const allowEnd = slug.includes("insert");
   const maxIndex = allowEnd ? length : length - 1;
   return {

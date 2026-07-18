@@ -43,22 +43,14 @@ export function randomInt(min: number, max: number): number {
 /**
  * Generate a random array of integers.
  */
-export function generateRandomArray(
-  size: number,
-  min: number = 1,
-  max: number = 99
-): number[] {
+export function generateRandomArray(size: number, min: number = 1, max: number = 99): number[] {
   return Array.from({ length: size }, () => randomInt(min, max));
 }
 
 /**
  * Generate a sorted array.
  */
-export function generateSortedArray(
-  size: number,
-  min: number = 1,
-  max: number = 99
-): number[] {
+export function generateSortedArray(size: number, min: number = 1, max: number = 99): number[] {
   return generateRandomArray(size, min, max).sort((a, b) => a - b);
 }
 
