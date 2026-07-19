@@ -4,6 +4,7 @@ import { MailCheck } from "lucide-react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { FloatingField } from "@/components/auth/FloatingField";
 import { PasswordField } from "@/components/auth/PasswordField";
+import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
@@ -133,6 +134,10 @@ export default async function SignupPage({
               Create account
             </SubmitButton>
           </form>
+
+          <div className="mt-6">
+            <OAuthButtons />
+          </div>
 
           <p className="mt-5 text-xs leading-5 text-muted-foreground">
             By creating an account, you agree to the{" "}
