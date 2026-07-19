@@ -1,4 +1,4 @@
-﻿-- Reconcile the application contract with the audited production schema.
+-- Reconcile the application contract with the audited production schema.
 -- Target project: mylzlhevgffgkwpeerzh
 -- Local-only until the migration-specific deployment preview is approved.
 
@@ -189,6 +189,14 @@ $$;
 revoke all on function public.handle_new_user()
   from public, anon, authenticated, service_role;
 grant execute on function public.handle_new_user() to supabase_auth_admin;
+
+-- Reconcile the Auth hook itself as well as its function. A missing or stale
+-- trigger would otherwise allow account creation without the required profile
+-- and preference rows.
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
 
 -- Event-trigger execution is internal; API roles do not call this function.
 revoke all on function public.rls_auto_enable()

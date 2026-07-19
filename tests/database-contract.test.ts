@@ -1,4 +1,4 @@
-﻿import { readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 describe("database and authentication contract", () => {
@@ -32,6 +32,8 @@ describe("database and authentication contract", () => {
     expect(migration).toContain("new.raw_user_meta_data->>'last_name'");
     expect(migration).toContain("new.raw_user_meta_data->>'gender'");
     expect(migration).toContain("insert into public.preferences (id) values (new.id)");
+    expect(migration).toContain("drop trigger if exists on_auth_user_created on auth.users");
+    expect(migration).toContain("for each row execute function public.handle_new_user()");
   });
 
   test("keeps profile access owner-scoped and validates signup fields server-side", () => {

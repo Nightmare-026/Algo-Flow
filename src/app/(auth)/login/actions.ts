@@ -3,20 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { resolveAuthOrigin, safeInternalPath } from "@/lib/auth/redirects";
 import { createClient } from "@/lib/supabase/server";
-
-function safeInternalPath(value: FormDataEntryValue | string | null, fallback = "/dashboard") {
-  if (typeof value !== "string" || value.length === 0) return fallback;
-  if (!value.startsWith("/") || value.startsWith("//")) return fallback;
-
-  try {
-    const parsed = new URL(value, "http://algo-flow.local");
-    if (parsed.origin !== "http://algo-flow.local") return fallback;
-    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
-  } catch {
-    return fallback;
-  }
-}
 
 function textField(formData: FormData, name: string, trim = true) {
   const value = formData.get(name);
@@ -24,35 +12,13 @@ function textField(formData: FormData, name: string, trim = true) {
   return trim ? value.trim() : value;
 }
 
-function normalizeOrigin(value: string | undefined) {
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" || url.protocol === "http:" ? url.origin : null;
-  } catch {
-    return null;
-  }
-}
-
 async function getRequestOrigin() {
-  const configuredOrigin = normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL);
-  if (configuredOrigin) return configuredOrigin;
-
   const headerStore = await headers();
-  const requestOrigin = normalizeOrigin(headerStore.get("origin") ?? undefined);
-  if (
-    process.env.NODE_ENV !== "production" &&
-    requestOrigin &&
-    ["localhost", "127.0.0.1"].includes(new URL(requestOrigin).hostname)
-  ) {
-    return requestOrigin;
+  const origin = resolveAuthOrigin(process.env, headerStore.get("origin"));
+  if (!origin) {
+    throw new Error("Authentication redirect origin is not configured.");
   }
-
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("NEXT_PUBLIC_SITE_URL must be configured for authentication redirects.");
-  }
-
-  return "http://localhost:3000";
+  return origin;
 }
 
 export async function login(formData: FormData) {
@@ -149,10 +115,13 @@ export async function signup(formData: FormData) {
     );
   }
 
+  const origin = await getRequestOrigin();
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      emailRedirectTo: `${origin}/auth/callback`,
       data: {
         first_name,
         last_name,
@@ -183,12 +152,12 @@ export async function signup(formData: FormData) {
 export async function sendPasswordReset(formData: FormData) {
   const supabase = await createClient();
   const email = textField(formData, "email").toLowerCase();
-  const origin = await getRequestOrigin();
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     redirect("/forgot-password?error=" + encodeURIComponent("Enter a valid email address."));
   }
 
+  const origin = await getRequestOrigin();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/auth/callback?next=/reset-password`,
   });
