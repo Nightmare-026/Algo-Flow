@@ -378,7 +378,7 @@ export default async function DashboardPage() {
           <h3 className="text-xl font-bold font-display text-text-primary px-2">Recommended For You</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <Link href="/visualizers/trees" className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 cursor-pointer border border-transparent hover:border-primary/30">
+            <Link href="/visualizers/tree" className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 cursor-pointer border border-transparent hover:border-primary/30">
               <div className="flex justify-between items-start">
                 <div className="w-12 h-12 rounded-xl bg-surface neu-inset flex items-center justify-center text-primary">
                   <Workflow className="w-6 h-6" />
@@ -391,7 +391,7 @@ export default async function DashboardPage() {
               </div>
             </Link>
 
-            <Link href="/visualizers/sorting" className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 cursor-pointer border border-transparent hover:border-primary/30">
+            <Link href="/visualizers/array" className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 cursor-pointer border border-transparent hover:border-primary/30">
               <div className="flex justify-between items-start">
                 <div className="w-12 h-12 rounded-xl bg-surface neu-inset flex items-center justify-center text-primary">
                   <Code2 className="w-6 h-6" />
@@ -404,7 +404,7 @@ export default async function DashboardPage() {
               </div>
             </Link>
 
-            <Link href="/visualizers/graphs" className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 cursor-pointer border border-transparent hover:border-primary/30">
+            <Link href="/visualizers/graph" className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 cursor-pointer border border-transparent hover:border-primary/30">
               <div className="flex justify-between items-start">
                 <div className="w-12 h-12 rounded-xl bg-surface neu-inset flex items-center justify-center text-primary">
                   <BrainCircuit className="w-6 h-6" />
