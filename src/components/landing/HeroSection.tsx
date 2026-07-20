@@ -239,7 +239,7 @@ export function HeroSection({ visualizerCount, structureCount }: HeroSectionProp
             Learn by tracing what changes
           </div>
           <h1 className="mt-7 max-w-3xl text-5xl font-extrabold leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-[4.45rem]">
-            See the logic.
+            See the logic. 
             <span className="block text-gradient-primary">Then make it stick.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-text-secondary">

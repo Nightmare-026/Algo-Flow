@@ -29,7 +29,7 @@ export default async function LoginPage({
       user={user}
       activeTab="login"
       eyebrow="Welcome back"
-      title="Sign in to AlgoFlow"
+      title="Sign in to Algo Flow"
       description="Log in to return to saved algorithms, sessions, and learning progress."
     >
       {params.error ? (

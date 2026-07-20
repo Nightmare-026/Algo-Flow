@@ -17,11 +17,7 @@ export function QueueRenderer() {
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep?.dataState) {
-    return (
-      <div className="flex h-full w-full items-center justify-center text-text-muted">
-        Preparing the queue state…
-      </div>
-    );
+    return null;
   }
 
   const dataState = currentStep.dataState as QueueVisualState;

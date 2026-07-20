@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback, useEffect } from "react";
 import {
@@ -243,7 +243,7 @@ export function GraphEditorModal({
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "algoflow-graph.json";
+    a.download = "algo-flow-graph.json";
     a.click();
     URL.revokeObjectURL(url);
   };

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback, useRef, useEffect, startTransition } from "react";
 import {
@@ -310,7 +310,7 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "algoflow-tree.json";
+    a.download = "algo-flow-tree.json";
     a.click();
     URL.revokeObjectURL(url);
   };

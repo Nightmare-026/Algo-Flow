@@ -12,11 +12,7 @@ export function StringRenderer() {
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep || !currentStep.dataState) {
-    return (
-      <div className="flex items-center justify-center w-full h-full text-text-muted">
-        Preparing the string state…
-      </div>
-    );
+    return null;
   }
 
   const dataState = currentStep.dataState as StringVisualState;

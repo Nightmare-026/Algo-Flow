@@ -31,7 +31,7 @@ export default async function SignupPage({
       user={user}
       activeTab="signup"
       eyebrow={params.success ? "One more step" : "Create your account"}
-      title={params.success ? "Check your inbox" : "Create your AlgoFlow account"}
+      title={params.success ? "Check your inbox" : "Create your Algo Flow account"}
       description={
         params.success
           ? "Use the verification link we sent, then return to log in."

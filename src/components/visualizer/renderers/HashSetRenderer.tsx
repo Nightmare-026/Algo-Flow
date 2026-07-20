@@ -12,11 +12,7 @@ export function HashSetRenderer() {
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep || !currentStep.dataState) {
-    return (
-      <div className="flex h-full w-full items-center justify-center text-text-muted">
-        Preparing the hash-set state…
-      </div>
-    );
+    return null;
   }
 
   const dataState = currentStep.dataState as HashSetVisualState;

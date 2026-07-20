@@ -55,11 +55,7 @@ export function GraphRenderer() {
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep || !currentStep.dataState) {
-    return (
-      <div className="flex items-center justify-center w-full h-full text-text-muted">
-        Preparing the graph state…
-      </div>
-    );
+    return null;
   }
 
   const dataState = currentStep.dataState as GraphVisualState;

@@ -78,11 +78,7 @@ export function TreeRenderer() {
   }, [dataState.root, containerWidth]);
 
   if (!currentStep || !currentStep.dataState) {
-    return (
-      <div className="flex items-center justify-center w-full h-full text-text-muted">
-        Preparing the tree state…
-      </div>
-    );
+    return null;
   }
 
   return (

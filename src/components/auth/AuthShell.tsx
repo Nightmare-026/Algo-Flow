@@ -1,6 +1,7 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
+import Image from "next/image";
 import { Braces, CheckCircle2 } from "lucide-react";
 import { AuthVisual } from "@/components/auth/AuthVisual";
 import { cn } from "@/lib/utils";
@@ -31,12 +32,19 @@ export function AuthShell({
         <section className="bg-white/78 p-6 sm:p-10 lg:p-12 xl:p-14">
           <div className="mx-auto max-w-md">
             <div className="flex items-center justify-between gap-4">
-              <Link href="/" className="inline-flex min-h-11 items-center gap-2 rounded-xl pr-2">
-                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-primary-active">
-                  dataset
+              <Link href="/" className="group flex min-h-11 items-center gap-2.5 rounded-xl pr-2" aria-label="Algo Flow home">
+                <span className="relative h-9 w-9 rounded-xl bg-primary-muted shadow-[var(--shadow-raised-sm)]">
+                  <Image
+                    src="/logo.png"
+                    alt=""
+                    fill
+                    sizes="36px"
+                    className="object-contain p-1"
+                    priority
+                  />
                 </span>
-                <span className="font-display text-lg font-extrabold tracking-tight text-text-primary">
-                  AlgoFlow
+                <span className="font-display text-lg font-extrabold tracking-tight text-foreground">
+                  Algo Flow
                 </span>
               </Link>
               {user ? (

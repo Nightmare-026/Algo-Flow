@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { AlertCircle, FileEdit, Type, Target } from "lucide-react";
@@ -23,7 +23,7 @@ export function StringInputControls({
   options = defaultVisualizerInputOptions,
   onOptionsChange,
 }: StringInputControlsProps) {
-  const [textInput, setTextInput] = useState(options.text || "ALGOFLOW");
+  const [textInput, setTextInput] = useState(options.text || "ALGO FLOW");
   const [patternInput, setPatternInput] = useState(options.pattern || "FLOW");
   const [error, setError] = useState<string | null>(null);
 

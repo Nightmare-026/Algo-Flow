@@ -12,14 +12,10 @@ import {
   Flame, 
   Play, 
   Bookmark, 
-  Clock, 
-  Activity, 
-  ArrowRight, 
   Save, 
   Target, 
   Star,
   ListChecks,
-  Award,
   ChevronRight,
   BrainCircuit,
   Code2,
@@ -222,7 +218,7 @@ export default async function DashboardPage() {
                     </h3>
                     <p className="text-base text-text-secondary max-w-lg">
                       {challengeCompleted 
-                        ? "You've successfully completed today's challenge. Come back tomorrow for a new one!" 
+                        ? "You&apos;ve successfully completed today&apos;s challenge. Come back tomorrow for a new one!" 
                         : "Test your knowledge and earn your streak. Mastering this is crucial for problem-solving."}
                     </p>
                   </div>
@@ -364,7 +360,7 @@ export default async function DashboardPage() {
                   </>
                 ) : (
                   <div className="text-sm text-success text-center py-8">
-                    You've completed all available algorithms! 🥳
+                    You&apos;ve completed all available algorithms! 🥳
                   </div>
                 )}
               </div>
@@ -412,7 +408,7 @@ export default async function DashboardPage() {
                 <span className="bg-primary-muted text-primary-active px-2 py-1 rounded text-xs font-bold">Graphs</span>
               </div>
               <div>
-                <h4 className="text-lg font-bold font-display text-text-primary">Dijkstra's Algorithm</h4>
+                <h4 className="text-lg font-bold font-display text-text-primary">Dijkstra&apos;s Algorithm</h4>
                 <p className="text-sm text-text-secondary mt-1 line-clamp-2">Find the shortest path between nodes in a graph. Crucial for network routing.</p>
               </div>
             </Link>

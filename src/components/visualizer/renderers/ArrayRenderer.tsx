@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { usePlaybackStore } from "@/stores/playback-store";
@@ -16,11 +16,7 @@ export function ArrayRenderer() {
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep?.dataState) {
-    return (
-      <div className="flex h-full w-full items-center justify-center text-text-muted">
-        Preparing the array state…
-      </div>
-    );
+    return null;
   }
 
   const dataState = currentStep.dataState as ArrayVisualState;
