@@ -1,4 +1,4 @@
-﻿import { redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getStreak, updateStreakOnActivity } from "@/features/streak/api";
@@ -23,25 +23,63 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  // Update streak whenever they visit dashboard
-  await updateStreakOnActivity();
+  // Update streak whenever they visit dashboard (best-effort)
+  let streak: Awaited<ReturnType<typeof getStreak>> = null;
+  try {
+    await updateStreakOnActivity();
+    streak = await getStreak();
+  } catch {
+    // streak table may not exist yet — continue with defaults
+  }
 
-  // Fetch profile
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+  // Fetch profile (best-effort)
+  let profile: Record<string, unknown> | null = null;
+  try {
+    const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+    profile = data;
+  } catch {
+    // profiles table may not exist yet
+  }
 
-  // Fetch stats
-  const streak = await getStreak();
-  const completedIds = await getCompletedAlgorithms();
-  const bookmarkIds = await getBookmarks();
-  const sessions = await getSavedSessions();
-  const activities = await getActivityTimeline(5);
+  // Fetch stats (all best-effort)
+  let completedIds: string[] = [];
+  try {
+    completedIds = await getCompletedAlgorithms();
+  } catch {
+    // user_progress table may not exist yet
+  }
+
+  let bookmarkIds: string[] = [];
+  try {
+    bookmarkIds = await getBookmarks();
+  } catch {
+    // bookmarks table may not exist yet
+  }
+
+  let sessions: Awaited<ReturnType<typeof getSavedSessions>> = [];
+  try {
+    sessions = await getSavedSessions();
+  } catch {
+    // saved_visualizer_sessions table may not exist yet
+  }
+
+  let activities: Awaited<ReturnType<typeof getActivityTimeline>> = [];
+  try {
+    activities = await getActivityTimeline(5);
+  } catch {
+    // activity_timeline table may not exist yet
+  }
 
   // Daily challenge
   const dailyChallenge = await getDailyChallenge();
   let challengeCompleted = false;
   let challengeAlgorithm = null;
   if (dailyChallenge) {
-    challengeCompleted = await isChallengeCompleted(dailyChallenge.algorithm_id);
+    try {
+      challengeCompleted = await isChallengeCompleted(dailyChallenge.algorithm_id);
+    } catch {
+      // challenge check failed — treat as not completed
+    }
     challengeAlgorithm = algorithms.find((a) => a.id === dailyChallenge.algorithm_id);
   }
 
@@ -60,7 +98,7 @@ export default async function DashboardPage() {
         <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-text-primary">
-              Welcome back, {profile?.username || "Learner"}
+              Welcome back, {(profile?.username as string) || "Learner"}
             </h1>
             <p className="mt-2 text-text-secondary">Here&apos;s your DSA progress summary.</p>
           </div>

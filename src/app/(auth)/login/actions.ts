@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -54,7 +54,13 @@ export async function login(formData: FormData) {
 
 export async function loginWithOAuth(provider: "google" | "github") {
   const supabase = await createClient();
-  const origin = await getRequestOrigin();
+
+  let origin: string;
+  try {
+    origin = await getRequestOrigin();
+  } catch {
+    redirect(`/login?error=${encodeURIComponent("Authentication service is temporarily unavailable. Please try again.")}`);
+  }
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
@@ -115,7 +121,14 @@ export async function signup(formData: FormData) {
     );
   }
 
-  const origin = await getRequestOrigin();
+  let origin: string;
+  try {
+    origin = await getRequestOrigin();
+  } catch {
+    redirect(
+      `/signup?error=${encodeURIComponent("Authentication service is temporarily unavailable. Please try again.")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -132,7 +145,7 @@ export async function signup(formData: FormData) {
   });
 
   if (error) {
-    let message = error.message;
+    let message = error.message || "An unexpected error occurred. Please try again.";
     if (message.includes("already registered")) {
       message = "An account with this email already exists. Please log in instead.";
     }
@@ -157,7 +170,12 @@ export async function sendPasswordReset(formData: FormData) {
     redirect("/forgot-password?error=" + encodeURIComponent("Enter a valid email address."));
   }
 
-  const origin = await getRequestOrigin();
+  let origin: string;
+  try {
+    origin = await getRequestOrigin();
+  } catch {
+    redirect("/forgot-password?error=" + encodeURIComponent("Authentication service is temporarily unavailable. Please try again."));
+  }
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/auth/callback?next=/reset-password`,
   });

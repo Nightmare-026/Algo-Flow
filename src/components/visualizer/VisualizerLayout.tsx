@@ -368,7 +368,11 @@ export function VisualizerLayout({
               )}
 
               <div className="absolute right-4 top-4 rounded-lg border border-border bg-surface/80 px-3 py-1.5 text-sm font-medium text-secondary-foreground shadow-sm backdrop-blur">
-                Step {totalSteps > 0 ? currentStepIndex + 1 : 0} / {totalSteps}
+                {totalSteps > 0 ? (
+                  <>Step {currentStepIndex + 1} / {totalSteps}</>
+                ) : (
+                  <span className="inline-block h-4 w-20 animate-pulse rounded bg-muted-foreground/20" />
+                )}
               </div>
               <button
                 onClick={handleFullscreen}

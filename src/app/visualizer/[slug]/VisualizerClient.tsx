@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Algorithm } from "@/types";
 import type { StepLegendItem } from "@/components/visualizer/StepLegend";
 import {
@@ -53,8 +53,15 @@ export function VisualizerClient({
     [visualizerData, clampedOptions, definition]
   );
 
+  const [isReady, setIsReady] = useState(false);
+  const isFirstMount = useRef(true);
+
   useEffect(() => {
     loadSteps(steps);
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      setIsReady(true);
+    }
     return () => reset();
   }, [loadSteps, reset, steps]);
 
@@ -66,6 +73,19 @@ export function VisualizerClient({
   const isImplemented = Boolean(definition && steps.length > 0);
   const Renderer = dataStructureDefinition?.Renderer;
   const Controls = dataStructureDefinition?.InputControls;
+
+  const canvasContent = !isReady ? (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="flex flex-col items-center gap-3">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
+        <span className="text-sm text-muted-foreground">Loading visualizer…</span>
+      </div>
+    </div>
+  ) : isImplemented && Renderer ? (
+    <Renderer />
+  ) : (
+    <UnavailableCanvas name={algorithm.name} />
+  );
   const defaultSize =
     algorithm.dataStructureId === "ds_hash_table" || algorithm.dataStructureId === "ds_hash_set"
       ? 7
@@ -93,7 +113,7 @@ export function VisualizerClient({
       legend={legend}
       controls={controls}
     >
-      {isImplemented && Renderer ? <Renderer /> : <UnavailableCanvas name={algorithm.name} />}
+      {canvasContent}
     </VisualizerLayout>
   );
 }
