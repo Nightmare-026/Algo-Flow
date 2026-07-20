@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { usePlaybackStore } from "@/stores/playback-store";
 import { PlaybackSpeed } from "@/types";
@@ -14,15 +14,15 @@ export function SpeedSlider() {
   ];
 
   return (
-    <div className="flex items-center gap-1 rounded-xl border border-white/75 bg-surface-light p-1 shadow-[var(--shadow-raised-sm)]">
+    <div className="flex items-center gap-1 rounded-xl bg-surface-hover p-1 neu-inset">
       {speeds.map((s) => (
         <button
           key={s.id}
           onClick={() => setSpeed(s.id)}
           className={cn(
-            "min-h-10 px-3 text-xs font-semibold rounded-lg transition-[transform,box-shadow,border-color,background-color,color]",
+            "min-h-10 px-3 text-xs font-semibold rounded-lg transition-all",
             speed === s.id
-              ? "bg-primary-muted text-primary-active shadow-[var(--shadow-inset)] border border-primary/10"
+              ? "bg-surface text-primary-active neu-raised"
               : "text-text-muted hover:text-text-primary"
           )}
         >

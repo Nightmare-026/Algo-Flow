@@ -8,9 +8,23 @@ import { getSavedSessions } from "@/features/sessions/api";
 import { getActivityTimeline } from "@/lib/api/activity";
 import { getDailyChallenge, isChallengeCompleted } from "@/lib/api/challenges";
 import { algorithms } from "@/data/seed/algorithms";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
-import { Flame, Play, Bookmark, Clock, Activity, ArrowRight, Save, Target } from "lucide-react";
+import { 
+  Flame, 
+  Play, 
+  Bookmark, 
+  Clock, 
+  Activity, 
+  ArrowRight, 
+  Save, 
+  Target, 
+  Star,
+  ListChecks,
+  Award,
+  ChevronRight,
+  BrainCircuit,
+  Code2,
+  Workflow
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default async function DashboardPage() {
@@ -65,7 +79,7 @@ export default async function DashboardPage() {
 
   let activities: Awaited<ReturnType<typeof getActivityTimeline>> = [];
   try {
-    activities = await getActivityTimeline(5);
+    activities = await getActivityTimeline(10); // Fetch a few more for activity list
   } catch {
     // activity_timeline table may not exist yet
   }
@@ -85,291 +99,329 @@ export default async function DashboardPage() {
 
   // Derive Progress
   const totalAlgorithms = algorithms.filter((a) => a.isPublished).length;
-  const progressPercent =
-    totalAlgorithms > 0 ? Math.round((completedIds.length / totalAlgorithms) * 100) : 0;
+  const completedCount = completedIds.length;
+  const progressPercent = totalAlgorithms > 0 ? Math.round((completedCount / totalAlgorithms) * 100) : 0;
+  
+  // Calculate mock XP based on completed algorithms
+  const totalXP = completedCount * 150; 
+  
+  // Fake category breakdowns for progress bars (if not explicitly tracked in DB)
+  const linearCount = algorithms.filter(a => a.dataStructureId.includes("list") || a.dataStructureId.includes("stack") || a.dataStructureId.includes("queue") || a.dataStructureId.includes("array")).length;
+  const linearCompleted = completedIds.filter(id => {
+    const a = algorithms.find(alg => alg.id === id);
+    return a && (a.dataStructureId.includes("list") || a.dataStructureId.includes("stack") || a.dataStructureId.includes("queue") || a.dataStructureId.includes("array"));
+  }).length;
+  const linearProgress = linearCount > 0 ? Math.round((linearCompleted / linearCount) * 100) : 0;
+
+  const nonLinearCount = algorithms.filter(a => a.dataStructureId.includes("tree") || a.dataStructureId.includes("graph")).length;
+  const nonLinearCompleted = completedIds.filter(id => {
+    const a = algorithms.find(alg => alg.id === id);
+    return a && (a.dataStructureId.includes("tree") || a.dataStructureId.includes("graph"));
+  }).length;
+  const nonLinearProgress = nonLinearCount > 0 ? Math.round((nonLinearCompleted / nonLinearCount) * 100) : 0;
 
   // Next up logic
   const completedSet = new Set(completedIds);
   const nextAlgorithm = algorithms.find((a) => a.isPublished && !completedSet.has(a.id));
 
   return (
-    <div className="flex w-full flex-col p-4 md:p-8 space-y-8">
-      <div className="mx-auto w-full max-w-7xl">
-        <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="flex w-full flex-col p-4 md:p-8">
+      <div className="mx-auto w-full max-w-7xl flex flex-col gap-6 md:gap-8">
+        
+        {/* Welcome Bar */}
+        <section className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-surface p-6 rounded-xl neu-raised">
           <div>
-            <h1 className="text-3xl font-bold text-text-primary">
+            <h2 className="text-2xl md:text-3xl font-bold font-display text-text-primary">
               Welcome back, {(profile?.username as string) || "Learner"}
-            </h1>
-            <p className="mt-2 text-text-secondary">Here&apos;s your DSA progress summary.</p>
+            </h2>
+            <p className="text-base text-text-secondary mt-1">Ready to conquer some algorithms today?</p>
           </div>
-
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 rounded-xl bg-warning-muted px-4 py-2 border border-warning/20">
-              <Flame className="h-5 w-5 text-warning" />
-              <div>
-                <div className="text-xs font-semibold text-warning uppercase tracking-wider">
-                  Day Streak
-                </div>
-                <div className="text-lg font-bold text-warning">{streak?.current_streak || 0}</div>
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="text-xs text-text-muted">Max Streak</span>
-              <span className="font-semibold text-text-primary">
-                {streak?.max_streak || 0} days
-              </span>
+          <div className="flex items-center gap-4 bg-surface-hover px-6 py-2 rounded-full neu-inset">
+            <span className="text-xl">🔥</span>
+            <div>
+              <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Current Streak</p>
+              <p className="text-xl font-bold text-primary">{streak?.current_streak || 0} Days</p>
             </div>
           </div>
-        </header>
+        </section>
 
-        <div className="grid gap-6 md:grid-cols-[1fr_300px]">
-          {/* Main Content Column */}
-          <div className="flex flex-col gap-6">
+        {/* Stat Cards Row */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* XP Card */}
+          <div className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-2">
+            <div className="flex justify-between items-center text-text-secondary">
+              <span className="text-sm font-semibold">Total XP</span>
+              <Star className="w-5 h-5 text-primary fill-primary" />
+            </div>
+            <div className="text-3xl font-bold font-display text-text-primary">{totalXP.toLocaleString()}</div>
+            <div className="text-xs font-medium text-primary flex items-center gap-1">
+              Keep learning to earn more
+            </div>
+          </div>
+
+          {/* Streak Card */}
+          <div className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-2">
+            <div className="flex justify-between items-center text-text-secondary">
+              <span className="text-sm font-semibold">Max Streak</span>
+              <Flame className="w-5 h-5 text-warning fill-warning" />
+            </div>
+            <div className="text-3xl font-bold font-display text-text-primary">{streak?.max_streak || 0}</div>
+            <div className="text-xs font-medium text-text-muted">Best streak so far</div>
+          </div>
+
+          {/* Topics Card */}
+          <div className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-2">
+            <div className="flex justify-between items-center text-text-secondary">
+              <span className="text-sm font-semibold">Topics</span>
+              <ListChecks className="w-5 h-5 text-primary-active" />
+            </div>
+            <div className="text-3xl font-bold font-display text-text-primary">
+              {completedCount}<span className="text-xl text-text-muted">/{totalAlgorithms}</span>
+            </div>
+            <div className="w-full bg-surface-hover h-2 rounded-full neu-inset mt-1">
+              <div className="bg-primary h-2 rounded-full" style={{ width: `${progressPercent}%` }}></div>
+            </div>
+          </div>
+
+          {/* Bookmarks Card */}
+          <div className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-2">
+            <div className="flex justify-between items-center text-text-secondary">
+              <span className="text-sm font-semibold">Saved</span>
+              <Bookmark className="w-5 h-5 text-primary fill-primary" />
+            </div>
+            <div className="text-3xl font-bold font-display text-text-primary">{bookmarkIds.length}</div>
+            <div className="text-xs font-medium text-text-muted">Bookmarked algorithms</div>
+          </div>
+        </section>
+
+        {/* Bento Grid Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          
+          {/* Left Column (Wider) */}
+          <div className="lg:col-span-2 flex flex-col gap-6 lg:gap-8">
+            
             {/* Daily Challenge */}
-            {challengeAlgorithm && (
-              <Card
-                className={cn(
-                  "border shadow-sm",
-                  challengeCompleted
-                    ? "bg-success/5 border-success/20"
-                    : "bg-gradient-to-r from-primary/10 to-bg-surface border-primary/20"
-                )}
-              >
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Target
-                      className={cn(
-                        "h-5 w-5",
-                        challengeCompleted ? "text-success" : "text-primary"
-                      )}
-                    />
-                    Daily Challenge
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            {challengeAlgorithm ? (
+              <section className={cn(
+                "p-8 rounded-2xl neu-raised relative overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-[12px_12px_28px_rgba(48,72,57,0.15),-12px_-12px_28px_rgba(255,255,255,0.95)]",
+                challengeCompleted ? "bg-primary-muted border-primary/20" : "bg-surface"
+              )}>
+                <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-1/4 -translate-y-1/4 transition-transform group-hover:scale-110 duration-500">
+                  <Target className="w-48 h-48" />
+                </div>
+                <div className="relative z-10 flex flex-col items-start gap-4">
+                  <span className={cn(
+                    "px-3 py-1 rounded-full text-xs font-bold neu-raised inline-block",
+                    challengeCompleted ? "bg-success text-white" : "bg-primary-muted text-primary-active"
+                  )}>
+                    {challengeCompleted ? "Challenge Completed!" : "Daily Challenge"}
+                  </span>
                   <div>
-                    <p className="text-sm font-medium text-text-primary mb-1">
-                      {challengeCompleted
-                        ? "Challenge Completed!"
-                        : "Complete the quiz to earn your streak."}
+                    <h3 className="text-2xl md:text-3xl font-bold font-display text-text-primary mb-2">
+                      {challengeAlgorithm.name}
+                    </h3>
+                    <p className="text-base text-text-secondary max-w-lg">
+                      {challengeCompleted 
+                        ? "You've successfully completed today's challenge. Come back tomorrow for a new one!" 
+                        : "Test your knowledge and earn your streak. Mastering this is crucial for problem-solving."}
                     </p>
-                    <p className="text-sm text-text-secondary">{challengeAlgorithm.name}</p>
                   </div>
-                  {!challengeCompleted ? (
+                  <div className="flex items-center gap-4 mt-4">
                     <Link
-                      href={`/quizzes/${challengeAlgorithm.id}`}
-                      className={buttonVariants({ size: "sm" })}
+                      href={challengeCompleted ? `/quizzes/${challengeAlgorithm.id}` : `/visualizer/${challengeAlgorithm.slug}`}
+                      className={cn(
+                        "px-6 py-2.5 rounded-lg text-sm font-semibold shadow-[var(--shadow-raised-sm)] transition-all duration-200 flex items-center gap-2",
+                        challengeCompleted 
+                          ? "bg-surface text-primary border border-primary/20 hover:bg-surface-hover" 
+                          : "bg-primary text-white hover:bg-primary-hover active:scale-95"
+                      )}
                     >
-                      Take Quiz
+                      {challengeCompleted ? "Review Quiz" : "Start Challenge"} 
+                      <Play className="w-4 h-4 fill-current" />
                     </Link>
-                  ) : (
-                    <Link
-                      href={`/quizzes/${challengeAlgorithm.id}`}
-                      className={buttonVariants({ variant: "outline", size: "sm" })}
-                    >
-                      Review Quiz
-                    </Link>
-                  )}
-                </CardContent>
-              </Card>
+                    {!challengeCompleted && (
+                      <span className="text-sm font-bold text-primary-active flex items-center gap-1">
+                        <Star className="w-4 h-4" /> +30 XP
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </section>
+            ) : (
+               <section className="bg-surface p-8 rounded-2xl neu-raised relative overflow-hidden">
+                 <div className="relative z-10 flex flex-col items-center justify-center text-center gap-2 h-40">
+                   <Target className="w-10 h-10 text-text-muted mb-2" />
+                   <h3 className="text-xl font-bold font-display text-text-primary">No Challenge Active</h3>
+                   <p className="text-text-secondary">Check back later for a new daily challenge.</p>
+                 </div>
+               </section>
             )}
 
-            {/* Progress & Next Up */}
-            <div className="grid gap-6 sm:grid-cols-2">
-              <Card className="bg-bg-surface border-border shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-lg text-text-primary">Course Progress</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-end justify-between mb-2">
-                    <span className="text-3xl font-bold text-primary">{progressPercent}%</span>
-                    <span className="text-sm text-text-secondary">
-                      {completedIds.length} / {totalAlgorithms} completed
-                    </span>
-                  </div>
-                  <div className="h-3 w-full bg-border rounded-full overflow-hidden">
-                    <div
-                      className="h-full origin-left bg-primary transition-transform duration-1000 ease-[var(--ease-enter)]"
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Recent Activity List (Alternative to Heatmap) */}
+            <section className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4">
+              <h3 className="text-xl font-bold font-display text-text-primary">Recent Activity</h3>
+              {activities.length > 0 ? (
+                <div className="flex flex-col gap-2">
+                  {activities.slice(0, 5).map((act) => {
+                    const alg = algorithms.find((a) => a.id === act.algorithm_id);
+                    if (!alg) return null;
+                    return (
+                      <div key={act.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-surface-hover transition-colors group">
+                        <div className="w-10 h-10 rounded-full bg-surface neu-inset flex items-center justify-center text-primary group-hover:scale-110 transition-transform shrink-0">
+                          {act.action_type === "completed" && <ListChecks className="w-5 h-5" />}
+                          {act.action_type === "bookmarked" && <Bookmark className="w-5 h-5" />}
+                          {act.action_type === "saved_session" && <Save className="w-5 h-5" />}
+                          {act.action_type === "quiz_completed" && <Target className="w-5 h-5" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-semibold text-text-primary truncate">
+                            {act.action_type === "completed" && `Completed ${alg.name}`}
+                            {act.action_type === "bookmarked" && `Saved ${alg.name}`}
+                            {act.action_type === "saved_session" && `Saved session for ${alg.name}`}
+                            {act.action_type === "quiz_completed" && `Finished quiz for ${alg.name}`}
+                          </h4>
+                          <p className="text-xs text-text-muted">
+                            {act.created_at ? new Date(act.created_at).toLocaleDateString() : "Recently"}
+                          </p>
+                        </div>
+                        <Link href={`/visualizer/${alg.slug}`} className="text-text-muted group-hover:text-primary transition-colors">
+                          <ChevronRight className="w-5 h-5" />
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-32 text-sm text-text-muted border border-dashed border-border/50 rounded-lg">
+                  No recent activity. Start visualizing to see your progress here!
+                </div>
+              )}
+            </section>
+          </div>
 
-              <Card className="bg-gradient-to-br from-primary-muted to-bg-surface border-border shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-lg text-text-primary">Continue Learning</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col h-full justify-between pb-2">
-                  {nextAlgorithm ? (
-                    <>
-                      <p className="text-sm font-medium text-text-secondary line-clamp-2">
-                        {nextAlgorithm.name}
-                      </p>
+          {/* Right Column */}
+          <div className="flex flex-col gap-6 lg:gap-8">
+            
+            {/* Progress Bars */}
+            <section className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4">
+              <h3 className="text-xl font-bold font-display text-text-primary mb-2">Category Progress</h3>
+              
+              {/* Linear */}
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between text-sm font-semibold">
+                  <span className="text-text-secondary">Linear DS</span>
+                  <span className="text-text-primary">{linearProgress}%</span>
+                </div>
+                <div className="w-full bg-surface-hover h-3 rounded-full neu-inset">
+                  <div className="bg-primary h-3 rounded-full relative overflow-hidden" style={{ width: `${linearProgress}%` }}>
+                    <div className="absolute inset-0 bg-white/20 w-full h-full transform -skew-x-12 translate-x-full animate-[shimmer_2s_infinite]"></div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Non-Linear */}
+              <div className="flex flex-col gap-2 mt-2">
+                <div className="flex justify-between text-sm font-semibold">
+                  <span className="text-text-secondary">Trees & Graphs</span>
+                  <span className="text-text-primary">{nonLinearProgress}%</span>
+                </div>
+                <div className="w-full bg-surface-hover h-3 rounded-full neu-inset">
+                  <div className="bg-primary-hover h-3 rounded-full" style={{ width: `${nonLinearProgress}%` }}></div>
+                </div>
+              </div>
+
+              {/* Overall */}
+              <div className="flex flex-col gap-2 mt-2">
+                <div className="flex justify-between text-sm font-semibold">
+                  <span className="text-text-secondary">Overall Progress</span>
+                  <span className="text-text-primary">{progressPercent}%</span>
+                </div>
+                <div className="w-full bg-surface-hover h-3 rounded-full neu-inset">
+                  <div className="bg-primary-active h-3 rounded-full" style={{ width: `${progressPercent}%` }}></div>
+                </div>
+              </div>
+            </section>
+
+            {/* Continue / Next Algorithm */}
+            <section className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 flex-1">
+              <h3 className="text-xl font-bold font-display text-text-primary">Continue Learning</h3>
+              <div className="flex flex-col h-full justify-between">
+                {nextAlgorithm ? (
+                  <>
+                    <p className="text-sm font-medium text-text-secondary mb-6">
+                      Jump into your next recommended algorithm to keep the streak going.
+                    </p>
+                    <div className="bg-surface-hover p-4 rounded-lg neu-inset border border-transparent hover:border-primary/20 transition-colors">
+                      <h4 className="text-base font-bold text-text-primary mb-1">{nextAlgorithm.name}</h4>
+                      <p className="text-xs text-text-muted mb-4 line-clamp-2">{nextAlgorithm.shortDescription || "Learn how this algorithm works visually."}</p>
                       <Link
                         href={`/visualizer/${nextAlgorithm.slug}`}
-                        className={buttonVariants({ className: "mt-4 w-full sm:w-auto shadow-sm" })}
+                        className="w-full py-2 bg-primary text-white text-sm font-semibold rounded-lg flex items-center justify-center gap-2 shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all"
                       >
-                        <Play className="mr-2 h-4 w-4" /> Start Visualizer
+                        <Play className="w-4 h-4 fill-current" /> Resume
                       </Link>
-                    </>
-                  ) : (
-                    <div className="text-sm text-success">
-                      You&apos;ve completed all available algorithms!
                     </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Bookmarks & Saved Sessions */}
-            <div className="grid gap-6 sm:grid-cols-2">
-              {/* Bookmarks */}
-              <Card className="bg-bg-surface border-border shadow-sm">
-                <CardHeader className="pb-3 border-b border-border">
-                  <CardTitle className="text-lg flex items-center gap-2 text-text-primary">
-                    <Bookmark className="h-4 w-4 text-text-muted" /> Bookmarks
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-4 p-0">
-                  {bookmarkIds.length > 0 ? (
-                    <ul className="divide-y divide-border">
-                      {bookmarkIds.map((id) => {
-                        const alg = algorithms.find((a) => a.id === id);
-                        if (!alg) return null;
-                        return (
-                          <li key={id}>
-                            <Link
-                              href={`/visualizer/${alg.slug}`}
-                              className="flex items-center justify-between p-4 hover:bg-bg-surface-hover transition-colors group"
-                            >
-                              <span className="text-sm font-medium text-text-primary group-hover:text-primary transition-colors">
-                                {alg.name}
-                              </span>
-                              <ArrowRight className="h-4 w-4 text-text-muted opacity-0 -translate-x-2 transition-[opacity,transform] group-hover:opacity-100 group-hover:translate-x-0" />
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  ) : (
-                    <div className="rounded-lg bg-bg-surface-light/50 px-4 py-8 m-4 text-center text-sm text-text-muted border border-dashed border-border/50">
-                      No bookmarks yet. Save algorithms to quickly access them later.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Saved Sessions */}
-              <Card className="bg-bg-surface border-border shadow-sm">
-                <CardHeader className="pb-3 border-b border-border">
-                  <CardTitle className="text-lg flex items-center gap-2 text-text-primary">
-                    <Save className="h-4 w-4 text-text-muted" /> Saved Sessions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-4 p-0">
-                  {sessions.length > 0 ? (
-                    <ul className="divide-y divide-border">
-                      {sessions.map((session) => {
-                        const alg = algorithms.find((a) => a.id === session.algorithm_id);
-                        if (!alg) return null;
-                        return (
-                          <li key={session.id}>
-                            <Link
-                              href={`/visualizer/${alg.slug}?session=${session.id}`}
-                              className="flex flex-col p-4 hover:bg-bg-surface-hover transition-colors group"
-                            >
-                              <span className="text-sm font-medium text-text-primary group-hover:text-primary transition-colors">
-                                {session.title || "Untitled Session"}
-                              </span>
-                              <span className="text-xs text-text-muted">
-                                {alg.name} â€¢{" "}
-                                {session.updated_at
-                                  ? new Date(session.updated_at).toLocaleDateString()
-                                  : "Recently"}
-                              </span>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  ) : (
-                    <div className="rounded-lg bg-bg-surface-light/50 px-4 py-8 m-4 text-center text-sm text-text-muted border border-dashed border-border/50">
-                      No saved sessions. Save your progress while visualizing to resume later.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Right Column: Activity Timeline */}
-          <div>
-            <Card className="bg-bg-surface border-border shadow-sm h-full">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2 text-text-primary">
-                  <Activity className="h-4 w-4 text-text-muted" /> Recent Activity
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {activities.length > 0 ? (
-                  <div className="relative pl-4 border-l border-border space-y-6 mt-2">
-                    {activities.map((act) => {
-                      const alg = algorithms.find((a) => a.id === act.algorithm_id);
-                      if (!alg) return null;
-
-                      let icon = <Clock className="h-3 w-3" />;
-                      let color = "bg-primary text-white";
-                      if (act.action_type === "completed") {
-                        icon = <Play className="h-3 w-3" />;
-                        color = "bg-success text-white";
-                      } else if (act.action_type === "bookmarked") {
-                        icon = <Bookmark className="h-3 w-3" />;
-                        color = "bg-warning text-white";
-                      } else if (act.action_type === "saved_session") {
-                        icon = <Save className="h-3 w-3" />;
-                        color = "bg-blue-500 text-white";
-                      } else if (act.action_type === "quiz_completed") {
-                        icon = <Target className="h-3 w-3" />;
-                        color = "bg-purple-500 text-white";
-                      }
-
-                      return (
-                        <div key={act.id} className="relative">
-                          <div
-                            className={`absolute -left-[25px] top-1 h-6 w-6 rounded-full flex items-center justify-center border-2 border-bg-surface shadow-sm ${color}`}
-                          >
-                            {icon}
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-text-primary">
-                              {act.action_type === "completed" && "Completed visualizer"}
-                              {act.action_type === "bookmarked" && "Bookmarked"}
-                              {act.action_type === "saved_session" && "Saved session for"}
-                              {act.action_type === "quiz_completed" && "Completed quiz for"}
-                            </p>
-                            <p className="text-xs text-text-secondary mt-0.5">{alg.name}</p>
-                            <p className="text-xs text-text-muted mt-1">
-                              {act.created_at
-                                ? new Date(act.created_at).toLocaleDateString()
-                                : "Recently"}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  </>
                 ) : (
-                  <div className="rounded-lg bg-bg-surface-light/50 px-4 py-8 mt-4 text-center text-sm text-text-muted border border-dashed border-border/50">
-                    No recent activity. Start learning!
+                  <div className="text-sm text-success text-center py-8">
+                    You've completed all available algorithms! 🥳
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </section>
+            
           </div>
         </div>
+
+        {/* Recommended Topics (Bottom Row) */}
+        <section className="flex flex-col gap-4 mt-4">
+          <h3 className="text-xl font-bold font-display text-text-primary px-2">Recommended For You</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <Link href="/visualizers/trees" className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 cursor-pointer border border-transparent hover:border-primary/30">
+              <div className="flex justify-between items-start">
+                <div className="w-12 h-12 rounded-xl bg-surface neu-inset flex items-center justify-center text-primary">
+                  <Workflow className="w-6 h-6" />
+                </div>
+                <span className="bg-primary-muted text-primary-active px-2 py-1 rounded text-xs font-bold">Trees</span>
+              </div>
+              <div>
+                <h4 className="text-lg font-bold font-display text-text-primary">Tree Traversals</h4>
+                <p className="text-sm text-text-secondary mt-1 line-clamp-2">Learn DFS and BFS traversal techniques for hierarchical data structures.</p>
+              </div>
+            </Link>
+
+            <Link href="/visualizers/sorting" className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 cursor-pointer border border-transparent hover:border-primary/30">
+              <div className="flex justify-between items-start">
+                <div className="w-12 h-12 rounded-xl bg-surface neu-inset flex items-center justify-center text-primary">
+                  <Code2 className="w-6 h-6" />
+                </div>
+                <span className="bg-primary-muted text-primary-active px-2 py-1 rounded text-xs font-bold">Sorting</span>
+              </div>
+              <div>
+                <h4 className="text-lg font-bold font-display text-text-primary">Advanced Sorting</h4>
+                <p className="text-sm text-text-secondary mt-1 line-clamp-2">Master Merge Sort and Quick Sort to understand divide-and-conquer algorithms.</p>
+              </div>
+            </Link>
+
+            <Link href="/visualizers/graphs" className="bg-surface p-6 rounded-xl neu-raised flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 cursor-pointer border border-transparent hover:border-primary/30">
+              <div className="flex justify-between items-start">
+                <div className="w-12 h-12 rounded-xl bg-surface neu-inset flex items-center justify-center text-primary">
+                  <BrainCircuit className="w-6 h-6" />
+                </div>
+                <span className="bg-primary-muted text-primary-active px-2 py-1 rounded text-xs font-bold">Graphs</span>
+              </div>
+              <div>
+                <h4 className="text-lg font-bold font-display text-text-primary">Dijkstra's Algorithm</h4>
+                <p className="text-sm text-text-secondary mt-1 line-clamp-2">Find the shortest path between nodes in a graph. Crucial for network routing.</p>
+              </div>
+            </Link>
+
+          </div>
+        </section>
+
       </div>
     </div>
   );
 }
+

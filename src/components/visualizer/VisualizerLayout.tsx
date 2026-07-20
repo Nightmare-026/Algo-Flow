@@ -385,17 +385,14 @@ export function VisualizerLayout({
             </div>
           </div>
 
-          <div className="flex h-auto min-h-28 shrink-0 flex-col items-center justify-between gap-4 border-t border-border bg-surface px-4 py-4 shadow-[0_-8px_24px_rgba(48,72,57,0.05)] md:min-h-24 md:flex-row md:gap-6 md:px-6 md:py-3">
-            <div className="w-full md:flex-1 order-1 md:order-2">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 lg:gap-8 border-t border-border bg-surface px-4 py-4 md:px-6 md:py-3 z-20 shadow-[var(--shadow-raised-sm)] shrink-0">
+            <div className="flex items-center gap-4">
+              <PlaybackControls />
+            </div>
+            <div className="flex-1 w-full flex items-center gap-4">
               <StepTimeline />
             </div>
-            <div className="flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:justify-between md:order-1 md:w-auto md:justify-start md:gap-4 order-2">
-              <PlaybackControls />
-              <div className="md:hidden">
-                <SpeedSlider />
-              </div>
-            </div>
-            <div className="hidden md:block order-3">
+            <div className="flex items-center gap-2 shrink-0">
               <SpeedSlider />
             </div>
           </div>

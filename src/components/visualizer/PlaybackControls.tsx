@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { usePlaybackStore } from "@/stores/playback-store";
 
 const controlClass =
-  "inline-flex h-11 w-11 items-center justify-center rounded-xl text-text-secondary transition-colors hover:bg-primary-muted hover:text-primary-active disabled:cursor-not-allowed disabled:opacity-35";
+  "inline-flex h-11 w-11 items-center justify-center rounded-xl bg-surface neu-btn text-text-secondary transition-colors hover:text-primary-active disabled:cursor-not-allowed disabled:opacity-35";
 
 export function PlaybackControls() {
   const {
@@ -69,7 +69,7 @@ export function PlaybackControls() {
         type="button"
         onClick={isPlaying ? pause : play}
         disabled={totalSteps === 0}
-        className="mx-1 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-[var(--shadow-glow-primary)] transition-transform hover:bg-primary-hover hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-45"
+        className="mx-1 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary neu-btn text-white transition-transform hover:bg-primary-hover hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-45"
         title={isPlaying ? "Pause" : "Play"}
         aria-label={isPlaying ? "Pause playback" : "Play visualization"}
       >
