@@ -1,4 +1,10 @@
 (() => {
+  if (
+    typeof window === "undefined" ||
+    (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1")
+  ) {
+    return;
+  }
   if (window.__AGENT_INSPECTOR_INIT__) return;
   window.__AGENT_INSPECTOR_INIT__ = true;
 
