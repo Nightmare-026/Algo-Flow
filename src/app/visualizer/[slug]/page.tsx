@@ -31,6 +31,20 @@ export async function generateMetadata({
       title,
       description,
       url: `/visualizer/${algorithm.slug}`,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: `${algorithm.name} Visualizer - Algo Flow`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/opengraph-image"],
     },
   };
 }
