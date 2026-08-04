@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { algorithms } from '../src/data/seed/algorithms';
 import { algorithmRegistry } from '../src/visualizers/registry/algorithm-registry';
-import { REQUIRED_CODE_LANGUAGES } from '../src/visualizers/registry/types';
+
 
 const outDir = path.join(process.cwd(), 'docs', 'visualizer-audit');
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
@@ -33,7 +33,7 @@ publishedAlgorithms.forEach((a, i) => {
       pyOk = langs.has('python');
       cppOk = langs.has('cpp');
       javaOk = langs.has('java');
-    } catch (e) {
+    } catch {
       // fallback
     }
   }

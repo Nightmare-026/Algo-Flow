@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getStreak, updateStreakOnActivity } from "@/features/streak/api";
 import { getCompletedAlgorithms } from "@/features/progress/api";
 import { getBookmarks } from "@/features/bookmarks/api";
-import { getSavedSessions } from "@/features/sessions/api";
 import { getActivityTimeline } from "@/lib/api/activity";
 import { getDailyChallenge, isChallengeCompleted } from "@/lib/api/challenges";
 import { algorithms } from "@/data/seed/algorithms";
@@ -64,13 +63,6 @@ export default async function DashboardPage() {
     bookmarkIds = await getBookmarks();
   } catch {
     // bookmarks table may not exist yet
-  }
-
-  let sessions: Awaited<ReturnType<typeof getSavedSessions>> = [];
-  try {
-    sessions = await getSavedSessions();
-  } catch {
-    // saved_visualizer_sessions table may not exist yet
   }
 
   let activities: Awaited<ReturnType<typeof getActivityTimeline>> = [];

@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import type { Algorithm } from '../src/types';
 import { algorithms } from '../src/data/seed/algorithms';
 import { VisualizerClient } from '../src/app/visualizer/[slug]/VisualizerClient';
 import { publicationRegistry } from '../src/visualizers/registry/publication-registry';
@@ -67,7 +68,7 @@ describe('Visualizer E2E Comprehensive Mount Tests', () => {
   it.each(publishedAlgorithms.map(a => [a.slug, a]))(
     '[%s] correctly mounts VisualizerClient and plays through without errors',
     async (slug, algorithm) => {
-      const algo = algorithm as any;
+      const algo = algorithm as Algorithm;
       const legend = publicationRegistry[algo.slug]?.authoredArtifacts?.legend ?? [];
 
       const { unmount } = render(

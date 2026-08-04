@@ -29,7 +29,7 @@ describe("Trace Event & Line Mapping Contract", () => {
       it("should emit valid trace events on every step", () => {
         const definition = algorithmRegistry[algorithm.slug];
         
-        let data: any = [15, 23, 4, 8, 42, 16];
+        let data: unknown = [15, 23, 4, 8, 42, 16];
         if (algorithm.dataStructureId === "ds_string") data = "ALGOFLOW";
         if (algorithm.dataStructureId === "ds_matrix") data = [1, 2, 3, 4]; // simplified
 
@@ -39,12 +39,12 @@ describe("Trace Event & Line Mapping Contract", () => {
             graphState: createDefaultGraph(),
             treeState: createDefaultTree(),
           },
-          data.length,
+          Array.isArray(data) ? data.length : typeof data === "string" ? data.length : 0,
           algorithm.slug
         );
 
         try {
-          const steps = definition.generateSteps(data, options);
+          const steps = definition.generateSteps(data as never, options);
           expect(steps.length).toBeGreaterThan(0);
 
           for (const step of steps) {
@@ -55,7 +55,7 @@ describe("Trace Event & Line Mapping Contract", () => {
             const mapping = (definition.codeLineMapping || []).find(m => m.logicalLine === step.codeLine);
             expect(mapping).toBeDefined();
           }
-        } catch (error) {
+        } catch {
           // Some visualizers might fail with default data, but we want to catch if trace contract is violated
           // console.warn(`Failed to generate steps for ${algorithm.slug}`, error);
         }

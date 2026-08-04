@@ -11,7 +11,7 @@ describe("Loop & Recursion Highlighting", () => {
     it(`[${algorithm.slug}] loop and recursion structures step forward or backward logically`, () => {
       const definition = algorithmRegistry[algorithm.slug];
       
-      let data: any = [15, 23, 4, 8, 42, 16];
+      let data: unknown = [15, 23, 4, 8, 42, 16];
       if (algorithm.dataStructureId === "ds_string") data = "ALGOFLOW";
       if (algorithm.dataStructureId === "ds_matrix") data = [1, 2, 3, 4];
       
@@ -21,20 +21,19 @@ describe("Loop & Recursion Highlighting", () => {
           graphState: createDefaultGraph(),
           treeState: createDefaultTree(),
         },
-        data.length,
+        Array.isArray(data) ? data.length : typeof data === "string" ? data.length : 0,
         algorithm.slug
       );
 
       try {
-        const steps = definition.generateSteps(data, options);
-        let hasBackwardJump = false;
+        const steps = definition.generateSteps(data as never, options);
 
         for (let i = 1; i < steps.length; i++) {
           const prev = steps[i - 1].codeLine || 0;
           const curr = steps[i].codeLine || 0;
           
           if (curr < prev) {
-            hasBackwardJump = true;
+            // backward jump observed
           }
         }
 
@@ -43,7 +42,7 @@ describe("Loop & Recursion Highlighting", () => {
            // We expect some loops
            // expect(hasBackwardJump).toBe(true);
         }
-      } catch (error) {
+      } catch {
          // ignore
       }
     });

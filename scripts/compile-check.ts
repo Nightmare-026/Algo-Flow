@@ -21,10 +21,10 @@ Object.values(dirs).forEach(d => fs.mkdirSync(d));
 
 const publishedAlgorithms = algorithms.filter(a => a.isPublished);
 
-let cppFiles: string[] = [];
-let javaFiles: string[] = [];
-let pyFiles: string[] = [];
-let jsFiles: string[] = [];
+const cppFiles: string[] = [];
+const javaFiles: string[] = [];
+const pyFiles: string[] = [];
+const jsFiles: string[] = [];
 
 for (const algo of publishedAlgorithms) {
   const definition = algorithmRegistry[algo.slug];
@@ -33,7 +33,7 @@ for (const algo of publishedAlgorithms) {
   const examples = definition.getCodeExamples(algo.slug, algo.id);
   
   for (const ex of examples) {
-    let code = ex.code;
+    const code = ex.code;
     
     if (ex.language === 'cpp') {
       let innerCode = code;
@@ -108,44 +108,48 @@ ${innerCode}
 console.log(`Generated ${cppFiles.length} C++, ${javaFiles.length} Java, ${pyFiles.length} Python, ${jsFiles.length} JS files.`);
 
 // 1. C++ Syntax Check
-console.log('\\n--- Checking C++ ---');
+console.log('\n--- Checking C++ ---');
 try {
   execSync(`g++ -fsyntax-only "${dirs.cpp}"/*.cpp`, { stdio: 'pipe' });
   console.log('✅ C++ Syntax Check Passed');
-} catch (e: any) {
+} catch (e: unknown) {
+  const err = e as { stderr?: Buffer; message?: string };
   console.log('❌ C++ Syntax Check Failed');
-  console.error(e.stderr?.toString().substring(0, 500) || e.message);
+  console.error(err.stderr?.toString().substring(0, 500) || err.message);
 }
 
 // 2. Java Syntax Check
-console.log('\\n--- Checking Java ---');
+console.log('\n--- Checking Java ---');
 try {
   execSync(`javac "${dirs.java}"/*.java`, { stdio: 'pipe' });
   console.log('✅ Java Syntax Check Passed');
-} catch (e: any) {
+} catch (e: unknown) {
+  const err = e as { stderr?: Buffer; message?: string };
   console.log('❌ Java Syntax Check Failed');
-  console.error(e.stderr?.toString().substring(0, 500) || e.message);
+  console.error(err.stderr?.toString().substring(0, 500) || err.message);
 }
 
 // 3. JS Syntax Check
-console.log('\\n--- Checking JS ---');
+console.log('\n--- Checking JS ---');
 try {
   // Use node to syntax check each file
   jsFiles.forEach(f => {
      execSync(`node --check "${f}"`, { stdio: 'pipe' });
   });
   console.log('✅ JS Syntax Check Passed');
-} catch (e: any) {
+} catch (e: unknown) {
+  const err = e as { stderr?: Buffer; message?: string };
   console.log('❌ JS Syntax Check Failed');
-  console.error(e.stderr?.toString().substring(0, 500) || e.message);
+  console.error(err.stderr?.toString().substring(0, 500) || err.message);
 }
 
 // 4. Python Syntax Check
-console.log('\\n--- Checking Python ---');
+console.log('\n--- Checking Python ---');
 try {
   execSync(`npx pyright "${dirs.py}"`, { stdio: 'pipe' });
   console.log('✅ Python Syntax Check Passed');
-} catch (e: any) {
+} catch (e: unknown) {
+  const err = e as { stdout?: Buffer; message?: string };
   console.log('❌ Python Syntax Check Failed (Pyright found issues or is not installed)');
-  console.error(e.stdout?.toString().substring(0, 500) || e.message);
+  console.error(err.stdout?.toString().substring(0, 500) || err.message);
 }

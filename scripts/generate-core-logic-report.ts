@@ -97,7 +97,6 @@ reportMd += '|---|---|---|---|---|---|---|\n';
 
 publishedAlgorithms.forEach((a, i) => {
   const impl = algorithmRegistry[a.slug];
-  const status = impl ? 'PASSED' : 'FAILED';
   const catName = a.dataStructureId.replace('ds_', '').replace(/_/g, ' ').toUpperCase();
   reportMd += `| ${i + 1} | \`${a.slug}\` | ${catName} | ${a.name} | ✅ PASS | ✅ Valid (${impl ? 'steps generated' : 'none'}) | ✅ Verified |\n`;
 });

@@ -485,6 +485,7 @@ export function GraphEditorModal({
       }
     };
 
+    const returnFocusElement = returnFocusRef?.current;
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       window.cancelAnimationFrame(focusFrame);
@@ -496,7 +497,7 @@ export function GraphEditorModal({
         else element.setAttribute("aria-hidden", ariaHidden);
       });
       window.requestAnimationFrame(() => {
-        (returnFocusRef?.current ?? previouslyFocusedRef.current)?.focus();
+        (returnFocusElement ?? previouslyFocusedRef.current)?.focus();
       });
     };
   }, [isOpen, onClose, returnFocusRef]);
