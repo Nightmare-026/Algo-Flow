@@ -56,6 +56,9 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: { icon: "/icon.png", apple: "/icon.png" },
   robots: { index: true, follow: true },
+  verification: {
+    google: "googlecc74ad26c67f86dd",
+  },
 };
 
 export default function RootLayout({
