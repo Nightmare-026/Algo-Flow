@@ -1,16 +1,11 @@
-import dynamic from "next/dynamic";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { algorithms } from "@/data/seed/algorithms";
 import { dataStructures } from "@/data/seed/data-structures";
 import { HeroSection } from "@/components/landing/HeroSection";
+import { DSAWorldPreviewWrapper as DSAWorldPreview } from "@/components/landing/DSAWorldPreviewWrapper";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-
-const DSAWorldPreview = dynamic(
-  () => import("@/components/landing/DSAWorldPreview").then((mod) => mod.DSAWorldPreview),
-  { ssr: false }
-);
 import { LearningFeatures } from "@/components/landing/LearningFeatures";
 import { CodeLanguages } from "@/components/landing/CodeLanguages";
 import { FinalCTA } from "@/components/landing/FinalCTA";
