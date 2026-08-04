@@ -68,6 +68,12 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} ${jetbrainsMono.variable} min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-2.5 focus:text-sm focus:font-bold focus:text-white focus:shadow-xl"
+        >
+          Skip to main content
+        </a>
         <ThemeProvider>{children}</ThemeProvider>
         {process.env.NODE_ENV === "development" && (
           <Script src="/agent-inspector.js" strategy="afterInteractive" />

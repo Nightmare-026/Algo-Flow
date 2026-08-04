@@ -1,4 +1,4 @@
-﻿import { Navbar } from "@/components/layout/Navbar";
+import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { algorithms } from "@/data/seed/algorithms";
@@ -19,7 +19,7 @@ export default async function HomePage() {
   return (
     <div className="page-shell flex flex-col">
       <Navbar initialUser={user} />
-      <main>
+      <main id="main-content">
         <HeroSection
           visualizerCount={algorithms.filter((algorithm) => algorithm.isPublished).length}
           structureCount={dataStructures.filter((structure) => structure.isPublished).length}

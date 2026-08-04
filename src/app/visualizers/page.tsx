@@ -17,7 +17,7 @@ export default function VisualizersPage() {
   return (
     <div className="page-shell flex min-h-screen flex-col">
       <Navbar />
-      <main className="flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8 lg:pt-40">
+      <main id="main-content" className="flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8 lg:pt-40">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="section-kicker">Visualizer library</p>
