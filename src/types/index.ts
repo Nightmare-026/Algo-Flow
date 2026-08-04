@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------
 export type ActionType =
   | "initialize"
+  | "read"
   | "success"
   | "compare"
   | "swap"
@@ -37,7 +38,20 @@ export type ActionType =
   | "underflow"
   | "build"
   | "update"
-  | "access";
+  | "access"
+  | "recurse"
+  | "return";
+
+export type StepPhase = "idle" | "transitioning" | "committed" | "playing" | "paused";
+
+export type ComparisonOperator = ">" | ">=" | "<" | "<=" | "===" | "!==";
+
+export interface StepPredicate {
+  operator: ComparisonOperator;
+  left: number | string;
+  right: number | string;
+  result: boolean;
+}
 
 export interface VisualStepHighlights {
   current?: string[];
@@ -64,10 +78,16 @@ export interface VisualStep {
   operation: string;
   actionType: ActionType;
   dataState: unknown;
+  beforeState?: unknown;
+  afterState?: unknown;
+  predicate?: StepPredicate;
+  output?: unknown;
   highlights: VisualStepHighlights;
   variables?: Record<string, string | number | boolean | null>;
   pseudocodeLine?: number;
   codeLine?: number;
+  pseudocodeLineIds?: string[];
+  codeLineIds?: Partial<Record<CodeLanguage, string[]>>;
   complexityNote?: string;
 }
 
@@ -152,6 +172,8 @@ export interface PlaybackState {
   steps: VisualStep[];
   currentStepIndex: number;
   isPlaying: boolean;
+  committedStepId: string | null;
+  phase: StepPhase;
   speed: PlaybackSpeed;
   customSpeedMs: number;
   isComplete: boolean;

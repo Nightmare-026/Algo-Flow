@@ -29,6 +29,18 @@ export function getHashTablePseudocode(slug: string): string[] {
         "            return true",
         "    return false",
       ];
+    case "rehashing":
+      return [
+        "if loadFactor >= threshold: rehash",
+        "newTable = createTable(newCapacity)",
+        "for oldIndex from 0 to oldCapacity - 1:",
+        "    if oldTable[oldIndex] is empty: continue",
+        "    newIndex = hash(key) % newCapacity",
+        "    while newTable[newIndex] is occupied: probe next",
+        "    newTable[newIndex] = entry",
+        "    advance oldIndex",
+        "return newTable",
+      ];
     default:
       return [];
   }

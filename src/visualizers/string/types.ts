@@ -9,6 +9,9 @@ export interface StringElement {
 export interface StringVisualState {
   elements: StringElement[];
   patternElements?: StringElement[];
+  lps?: number[];
+  phase?: "preprocessing" | "search" | "complete";
+  matches?: number[];
 }
 
 export function createStringElements(str: string): StringElement[] {

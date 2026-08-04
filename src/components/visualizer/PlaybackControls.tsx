@@ -31,15 +31,19 @@ export function PlaybackControls() {
 
   useEffect(() => {
     if (!isPlaying) return;
+    
+    // If speed is set to exactly 0, play through immediately (instant playback mode)
+    if (customSpeedMs === 0) {
+      skipToEnd();
+      return;
+    }
+    
     const interval = window.setInterval(() => {
-      if (currentStepIndex >= totalSteps - 1) {
-        pause();
-      } else {
-        nextStep();
-      }
+      nextStep();
     }, customSpeedMs);
+    
     return () => window.clearInterval(interval);
-  }, [customSpeedMs, currentStepIndex, isPlaying, nextStep, pause, totalSteps]);
+  }, [customSpeedMs, isPlaying, nextStep, skipToEnd]);
 
   return (
     <div className="flex items-center gap-1" aria-label="Playback controls">

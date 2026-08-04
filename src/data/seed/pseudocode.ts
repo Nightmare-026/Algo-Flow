@@ -107,8 +107,6 @@ export const pseudocodeMap: Record<string, string> = {
   "col-wise-traversal": "for c from 0 to cols-1:\n  for r from 0 to rows-1:\n    visit(mat[r][c])",
   "matrix-search":
     "for r from 0 to rows-1:\n  for c from 0 to cols-1:\n    if mat[r][c] == target: return (r, c)\nreturn (-1, -1)",
-  "matrix-row-traversal":
-    "for r from 0 to rows-1:\n  for c from 0 to cols-1:\n    visit(mat[r][c])",
   "spiral-traversal":
     "top = 0, bottom = R-1, left = 0, right = C-1\nwhile top <= bottom and left <= right:\n  for c from left to right: visit(mat[top][c])\n  top++\n  for r from top to bottom: visit(mat[r][right])\n  right--\n  if top <= bottom:\n    for c from right down to left: visit(mat[bottom][c])\n    bottom--\n  if left <= right:\n    for r from bottom down to top: visit(mat[r][left])\n    left++",
   "row-column-sorted-search":
@@ -131,7 +129,7 @@ export const pseudocodeMap: Record<string, string> = {
   "string-naive-search":
     "for i from 0 to N-M:\n  for j from 0 to M-1:\n    if text[i+j] != pat[j]: break\n  if j == M: return i\nreturn -1",
   "string-kmp-search":
-    "lps = computeLPS(pat)\ni = 0, j = 0\nwhile i < N:\n  if pat[j] == txt[i]: i++, j++\n  if j == M: return i - j\n  else if i < N and pat[j] != txt[i]:\n    if j != 0: j = lps[j-1]\n    else: i++\nreturn -1",
+    "function kmpSearch(text, pattern)\n  lps = array(pattern.length, 0)\n  i = 1; len = 0\n  while i < pattern.length\n    compare pattern[i] with pattern[len]\n    if equal: len++; lps[i] = len; i++\n    else if len > 0: len = lps[len - 1]\n    else: lps[i] = 0; i++\n  preprocessing complete\n  i = 0; j = 0\n  while i < text.length\n    compare text[i] with pattern[j]\n    if equal: i++; j++\n    if j == pattern.length: record i - j\n    after match: j = lps[j - 1]\n    else if mismatch and j > 0\n      j = lps[j - 1]\n    else: i++\n  return all match indexes",
   "string-rabin-karp":
     "pHash = hash(pat), tHash = hash(txt[0..M-1])\nfor i from 0 to N-M:\n  if pHash == tHash and text[i..i+M-1] == pat:\n    return i\n  tHash = rehash(tHash, txt[i], txt[i+M])\nreturn -1",
   "reverse-string": "l = 0, r = len-1\nwhile l < r:\n  swap(str[l++], str[r--])",
@@ -152,7 +150,7 @@ export const pseudocodeMap: Record<string, string> = {
   "linear-probing":
     "idx = hash(key)\nwhile table[idx] is occupied:\n  idx = (idx + 1) % capacity\ntable[idx] = (key, value)",
   rehashing:
-    "newCapacity = capacity * 2\nnewTable = createTable(newCapacity)\nfor entry in oldTable:\n  if entry != null:\n    insert(newTable, entry.key, entry.value)",
+    "if loadFactor >= threshold: rehash\nnewTable = createTable(newCapacity)\nfor oldIndex from 0 to oldCapacity - 1:\n  if oldTable[oldIndex] is empty: continue\n  newIndex = hash(key) % newCapacity\n  while newTable[newIndex] is occupied: probe next\n  newTable[newIndex] = entry\n  advance oldIndex\nreturn newTable",
   "chaining-insert": "idx = hash(key)\ntable[idx].append((key, value))",
   "chaining-search":
     "idx = hash(key)\nfor entry in table[idx]:\n  if entry.key == key: return entry.value\nreturn null",

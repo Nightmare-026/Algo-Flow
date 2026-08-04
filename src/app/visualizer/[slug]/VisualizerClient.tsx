@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Algorithm } from "@/types";
 import type { StepLegendItem } from "@/components/visualizer/StepLegend";
 import {
@@ -39,7 +39,11 @@ export function VisualizerClient({
   const slug = algorithm.slug;
   const { loadSteps, reset } = usePlaybackStore();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [visualizerData, setVisualizerData] = useState<any>([15, 23, 4, 8, 42, 16]);
+  const [visualizerData, setVisualizerData] = useState<any>(() =>
+    algorithm.dataStructureId === "ds_matrix"
+      ? [15, 23, 4, 8, 42, 16, 9, 31, 7, 18, 27, 12, 36, 2, 21, 11]
+      : [15, 23, 4, 8, 42, 16]
+  );
   const [options, setOptions] = useState<VisualizerInputOptions>(defaultVisualizerInputOptions);
 
   const definition = algorithmRegistry[slug];
@@ -56,14 +60,15 @@ export function VisualizerClient({
   const [isReady, setIsReady] = useState(false);
   const isFirstMount = useRef(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     loadSteps(steps);
     if (isFirstMount.current) {
       isFirstMount.current = false;
       setIsReady(true);
     }
-    return () => reset();
-  }, [loadSteps, reset, steps]);
+  }, [loadSteps, steps]);
+
+  useEffect(() => reset, [reset]);
 
   const codeExamples = useMemo(
     () => definition?.getCodeExamples(slug, algorithm.id) ?? [],

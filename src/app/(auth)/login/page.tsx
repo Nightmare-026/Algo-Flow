@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { FloatingField } from "@/components/auth/FloatingField";
 import { PasswordField } from "@/components/auth/PasswordField";
-import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { createClient } from "@/lib/supabase/server";
 import { login } from "./actions";
@@ -80,9 +79,7 @@ export default async function LoginPage({
         </SubmitButton>
       </form>
 
-      <div className="mt-6">
-        <OAuthButtons />
-      </div>
+
 
       <p className="mt-7 text-center text-sm text-text-secondary">
         New to Algo Flow?{" "}

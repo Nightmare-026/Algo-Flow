@@ -32,11 +32,24 @@ export function getStringPseudocode(slug: string): string[] {
     case "string-kmp-search":
       return [
         "function kmpSearch(text, pattern):",
-        "    build LPS table for pattern",
-        "    scan text with i and pattern with j",
-        "    on match advance both pointers",
-        "    on mismatch jump j using LPS",
-        "    return match index or -1",
+        "    lps = array(pattern.length, 0)",
+        "    i = 1; len = 0",
+        "    while i < pattern.length:",
+        "        compare pattern[i] with pattern[len]",
+        "        if equal: len++; lps[i] = len; i++",
+        "        else if len > 0: len = lps[len - 1]",
+        "        else: lps[i] = 0; i++",
+        "    preprocessing complete",
+        "    i = 0; j = 0",
+        "    while i < text.length:",
+        "        compare text[i] with pattern[j]",
+        "        if equal: i++; j++",
+        "        if j == pattern.length: record i - j",
+        "        after match: j = lps[j - 1]",
+        "        else if mismatch and j > 0:",
+        "            j = lps[j - 1]",
+        "        else: i++",
+        "    return all match indexes",
       ];
     case "string-rabin-karp":
       return [

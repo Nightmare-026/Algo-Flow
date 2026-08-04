@@ -17,6 +17,7 @@ import {
   succeeded,
   swap,
 } from "@/visualizers/shared/highlights";
+import { formatPredicateDecision } from "@/visualizers/shared/explanations";
 
 // Helper to swap two elements in a deep copy
 function swapElements(elements: ArrayElement[], i: number, j: number) {
@@ -51,35 +52,53 @@ export function generateBubbleSortSteps(arr: number[]): VisualStep[] {
   for (let i = 0; i < n - 1; i++) {
     swapped = false;
     for (let j = 0; j < n - i - 1; j++) {
+      const left = elements[j].value;
+      const right = elements[j + 1].value;
+      const predicate = {
+        operator: ">" as const,
+        left,
+        right,
+        result: left > right,
+      };
+      const beforeState = { elements: structuredClone(elements) } as ArrayVisualState;
+
       // Compare the two elements being compared.
       steps.push({
         id: `step-${stepCount}`,
         stepNumber: stepCount++,
         title: "Compare Elements",
-        description: `Is ${elements[j].value} > ${elements[j + 1].value}?`,
+        description: `Is ${left} > ${right}?`,
         operation: "sort",
         actionType: "compare",
-        dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+        dataState: beforeState,
+        beforeState,
+        afterState: beforeState,
+        predicate,
         highlights: compare([elements[j].id, elements[j + 1].id]),
         codeLine: 6,
         pseudocodeLine: 5,
       });
 
-      if (elements[j].value > elements[j + 1].value) {
+      if (predicate.result) {
         swapElements(elements, j, j + 1);
         swapped = true;
+        const afterState = { elements: structuredClone(elements) } as ArrayVisualState;
 
         steps.push({
           id: `step-${stepCount}`,
           stepNumber: stepCount++,
           title: "Swap Elements",
-          description: `Yes, ${elements[j + 1].value} < ${elements[j].value}. Swapping them.`,
+          description: formatPredicateDecision(predicate, "Swap them.", "Keep their order."),
           operation: "sort",
-          actionType: "update",
-          dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+          actionType: "swap",
+          dataState: afterState,
+          beforeState,
+          afterState,
+          predicate,
           highlights: swap([elements[j].id, elements[j + 1].id]),
           codeLine: 8,
           pseudocodeLine: 6,
+          variables: { left, right, predicateResult: predicate.result },
         });
       }
     }

@@ -62,14 +62,17 @@ export function generateSLLInsertPositionSteps(
   const initial = createLinkedListNodes(data);
   const state: LinkedListVisualState = { nodes: [...initial.nodes], headId: initial.headId };
   const steps: VisualStep[] = [];
-  const targetIndex = Math.max(0, Math.min(index, state.nodes.length));
+  if (!Number.isInteger(index) || index < 0 || index > state.nodes.length) {
+    throw new RangeError(`Position must be an integer between 0 and ${state.nodes.length}.`);
+  }
+  const targetIndex = index;
   let stepNumber = 1;
 
   steps.push(
     visualStep({
       stepNumber: stepNumber++,
       title: "Choose Insert Position",
-      description: `Clamp requested index ${index} to valid insert position ${targetIndex}.`,
+      description: `Insert ${value} at valid position ${targetIndex}.`,
       operation: "Insert Position",
       actionType: "initialize",
       dataState: clone(state),

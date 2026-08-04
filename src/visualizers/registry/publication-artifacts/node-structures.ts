@@ -101,6 +101,18 @@ const treeLegend = [
     tone: "primary",
   },
   {
+    bucketKey: "visited",
+    label: "Visited tree node",
+    description: "A node already emitted in the traversal output.",
+    tone: "info",
+  },
+  {
+    bucketKey: "success",
+    label: "Traversal complete",
+    description: "A node retained in the completed traversal output.",
+    tone: "success",
+  },
+  {
     bucketKey: "sorted",
     label: "Visited tree node",
     description: "A node completed in traversal order.",

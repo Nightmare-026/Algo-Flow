@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { AlertCircle, FileEdit, Shuffle, SortAsc, Target } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,31 +30,33 @@ export function MatrixInputControls({
   options = defaultVisualizerInputOptions,
   onOptionsChange,
 }: MatrixInputControlsProps) {
+  const squareOnly = slug === "rotate-matrix-90";
   const [rows, setRows] = useState(defaultRows);
-  const [cols, setCols] = useState(defaultCols);
+  const [cols, setCols] = useState(squareOnly ? defaultRows : defaultCols);
   const [customInput, setCustomInput] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const fieldId = useId();
 
-  const updateOption = (key: keyof VisualizerInputOptions, value: number) => {
-    onOptionsChange?.({ ...options, [key]: value });
+  const commitDimensions = (nextRows: number, nextCols: number) => {
+    onOptionsChange?.({ ...options, rows: nextRows, cols: nextCols });
+  };
+
+  const setSquareSize = (size: number) => {
+    setRows(size);
+    setCols(size);
+    commitDimensions(size, size);
   };
 
   const generateRandom = () => {
     setError(null);
-    updateOption("rows", rows);
-    updateOption("cols", cols);
+    commitDimensions(rows, cols);
     onGenerate(Array.from({ length: rows * cols }, () => Math.floor(Math.random() * 99) + 1));
   };
 
   const generateSorted = () => {
     setError(null);
-    updateOption("rows", rows);
-    updateOption("cols", cols);
-    onGenerate(
-      Array.from({ length: rows * cols }, () => Math.floor(Math.random() * 99) + 1).sort(
-        (a, b) => a - b
-      )
-    );
+    commitDimensions(rows, cols);
+    onGenerate(Array.from({ length: rows * cols }, (_, index) => index + 1));
   };
 
   const handleCustomSubmit = (event: React.FormEvent) => {
@@ -64,104 +66,136 @@ export function MatrixInputControls({
       setError(result.error);
       return;
     }
-
-    // Automatically infer grid if exactly matching current rows*cols, or force square-ish
-    const len = result.values.length;
-    let r = rows;
-    let c = cols;
-    if (len !== r * c) {
-      c = Math.ceil(Math.sqrt(len));
-      r = Math.ceil(len / c);
-      setRows(r);
-      setCols(c);
+    const expectedLength = rows * cols;
+    if (result.values.length !== expectedLength) {
+      setError(
+        `Enter exactly ${expectedLength} values for the selected ${rows} × ${cols} matrix.`
+      );
+      return;
     }
 
     setError(null);
-    updateOption("rows", r);
-    updateOption("cols", c);
+    commitDimensions(rows, cols);
     onGenerate(result.values);
   };
 
   return (
     <div className="flex flex-col gap-3 text-sm lg:flex-row lg:items-start">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-text-muted w-12">Rows:</span>
+      <div className="flex flex-wrap items-end gap-3">
+        {squareOnly ? (
+          <label className="flex flex-col gap-1.5" htmlFor={`${fieldId}-size`}>
+            <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+              Square size: {rows} × {cols}
+            </span>
             <input
+              id={`${fieldId}-size`}
               type="range"
               min="1"
               max="10"
               value={rows}
-              onChange={(event) => setRows(Number(event.target.value))}
-              className="w-24 accent-primary"
-              aria-label="Generated matrix rows"
+              onChange={(event) => setSquareSize(Number(event.target.value))}
+              className="h-9 w-36 accent-primary"
             />
-            <span className="w-5 text-text-primary">{rows}</span>
+          </label>
+        ) : (
+          <div className="flex items-end gap-3">
+            <label className="flex flex-col gap-1.5" htmlFor={`${fieldId}-rows`}>
+              <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                Rows: {rows}
+              </span>
+              <input
+                id={`${fieldId}-rows`}
+                type="range"
+                min="1"
+                max="10"
+                value={rows}
+                onChange={(event) => {
+                  const nextRows = Number(event.target.value);
+                  setRows(nextRows);
+                  commitDimensions(nextRows, cols);
+                }}
+                className="h-9 w-28 accent-primary"
+              />
+            </label>
+            <label className="flex flex-col gap-1.5" htmlFor={`${fieldId}-cols`}>
+              <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                Columns: {cols}
+              </span>
+              <input
+                id={`${fieldId}-cols`}
+                type="range"
+                min="1"
+                max="10"
+                value={cols}
+                onChange={(event) => {
+                  const nextCols = Number(event.target.value);
+                  setCols(nextCols);
+                  commitDimensions(rows, nextCols);
+                }}
+                className="h-9 w-28 accent-primary"
+              />
+            </label>
           </div>
-
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-text-muted w-12">Cols:</span>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={cols}
-              onChange={(event) => setCols(Number(event.target.value))}
-              className="w-24 accent-primary"
-              aria-label="Generated matrix columns"
-            />
-            <span className="w-5 text-text-primary">{cols}</span>
-          </div>
-        </div>
+        )}
 
         <div className="flex items-center gap-1">
-          <Button variant="outline" size="sm" onClick={generateRandom}>
-            <Shuffle className="h-4 w-4 text-primary" />
+          <Button type="button" variant="outline" size="sm" onClick={generateRandom}>
+            <Shuffle className="h-4 w-4 text-primary" aria-hidden="true" />
             Random
           </Button>
-          <Button variant="outline" size="sm" onClick={generateSorted}>
-            <SortAsc className="h-4 w-4 text-primary" />
+          <Button type="button" variant="outline" size="sm" onClick={generateSorted}>
+            <SortAsc className="h-4 w-4 text-primary" aria-hidden="true" />
             Sorted
           </Button>
         </div>
 
-        <form onSubmit={handleCustomSubmit} className="flex items-center gap-2">
-          <Input
-            type="text"
-            placeholder="e.g. 10, 25, 5, 8"
-            className="w-48 h-8 text-sm bg-bg-surface border-border focus-visible:ring-primary"
-            value={customInput}
-            onChange={(event) => setCustomInput(event.target.value)}
-          />
+        <form onSubmit={handleCustomSubmit} className="flex items-end gap-2">
+          <label className="flex flex-col gap-1.5" htmlFor={`${fieldId}-custom`}>
+            <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+              Custom matrix values
+            </span>
+            <Input
+              id={`${fieldId}-custom`}
+              type="text"
+              placeholder={`Exactly ${rows * cols} comma-separated values`}
+              className="h-9 w-64 bg-bg-surface text-sm"
+              value={customInput}
+              onChange={(event) => setCustomInput(event.target.value)}
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? `${fieldId}-error` : undefined}
+            />
+          </label>
           <Button type="submit" variant="secondary" size="sm">
-            <FileEdit className="h-4 w-4" />
+            <FileEdit className="h-4 w-4" aria-hidden="true" />
             Set
           </Button>
         </form>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        {needsTarget(slug) && (
-          <div className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
-            <Target className="h-4 w-4 text-primary" />
-            <span className="text-text-muted font-medium">Target:</span>
-            <Input
-              type="number"
-              className="w-20 h-7 border-border bg-bg-base px-2 py-0"
-              value={options.target}
-              onChange={(e) => updateOption("target", Number(e.target.value))}
-            />
-          </div>
-        )}
-      </div>
+      {needsTarget(slug) ? (
+        <label className="flex items-center gap-2 rounded-md border border-border bg-bg-surface/50 px-3 py-1" htmlFor={`${fieldId}-target`}>
+          <Target className="h-4 w-4 text-primary" aria-hidden="true" />
+          <span className="font-medium text-text-muted">Target</span>
+          <Input
+            id={`${fieldId}-target`}
+            type="number"
+            className="h-7 w-20 border-border bg-bg-base px-2 py-0"
+            value={options.target}
+            onChange={(event) => onOptionsChange?.({ ...options, target: Number(event.target.value) })}
+          />
+        </label>
+      ) : null}
 
-      {error && (
-        <div className="flex items-center gap-2 text-error text-sm font-medium animate-in fade-in slide-in-from-top-1 ml-auto">
-          <AlertCircle className="h-4 w-4" />
+      {error ? (
+        <div
+          id={`${fieldId}-error`}
+          role="alert"
+          className="ml-auto flex items-center gap-2 text-sm font-medium text-error"
+        >
+          <AlertCircle className="h-4 w-4" aria-hidden="true" />
           {error}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

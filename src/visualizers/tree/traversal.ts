@@ -1,6 +1,91 @@
 import { v4 as uuidv4 } from "uuid";
 import { VisualStep } from "@/types";
 import { TreeVisualState, TreeNodeData, createCompleteTreeFromArr } from "./types";
+function findPathToNode(root: TreeNodeData | null, targetId: string): number[] {
+  if (!root) return [];
+  if (root.id === targetId) return [root.value];
+
+  const leftPath = findPathToNode(root.left, targetId);
+  if (leftPath.length > 0) return [root.value, ...leftPath];
+
+  const rightPath = findPathToNode(root.right, targetId);
+  return rightPath.length > 0 ? [root.value, ...rightPath] : [];
+}
+
+function decorateTraversalSteps(
+  steps: VisualStep[],
+  root: TreeNodeData | null,
+  traversalName: string,
+  traversalMode: "recursive" | "queue"
+): VisualStep[] {
+  const completeLine = traversalMode === "recursive" ? 6 : 9;
+  const completedSteps =
+    steps.at(-1)?.actionType === "complete"
+      ? steps
+      : [
+          ...steps,
+          {
+            id: uuidv4(),
+            stepNumber: steps.length + 1,
+            title: "Traversal Complete",
+            description: `${traversalName} traversal is complete.`,
+            operation: "Traversal",
+            actionType: "complete" as const,
+            dataState: { root: structuredClone(root) },
+            highlights: {},
+            codeLine: 8,
+            pseudocodeLine: completeLine,
+          },
+        ];
+
+  const output: number[] = [];
+  const visitedIds: string[] = [];
+
+  return completedSteps.map((step) => {
+    const currentId = step.highlights.active?.[0];
+    const currentValue =
+      typeof step.variables?.Current === "number" ? step.variables.Current : undefined;
+
+    if (step.actionType === "visit" && currentValue !== undefined && currentId) {
+      output.push(currentValue);
+      if (!visitedIds.includes(currentId)) visitedIds.push(currentId);
+    }
+
+    const isComplete = step.actionType === "complete";
+    const callStack =
+      traversalMode === "recursive" && currentId && !isComplete
+        ? findPathToNode(root, currentId)
+        : [];
+    const committedOutput = [...output];
+
+    return {
+      ...step,
+      description: isComplete
+        ? `${traversalName} traversal is complete: ${committedOutput.join(" ? ") || "empty"}.`
+        : step.description,
+      dataState: {
+        root: structuredClone(root),
+        traversalOutput: committedOutput,
+        callStack,
+        traversalMode,
+      } satisfies TreeVisualState,
+      highlights: {
+        ...step.highlights,
+        visited: [...visitedIds],
+        ...(isComplete ? { success: [...visitedIds] } : {}),
+      },
+      variables: {
+        ...step.variables,
+        output: committedOutput.join(", ") || "empty",
+        ...(traversalMode === "recursive"
+          ? { callStack: callStack.join(" ? ") || "empty" }
+          : {}),
+      },
+      output: committedOutput,
+      pseudocodeLine: isComplete ? completeLine : step.pseudocodeLine,
+    };
+  });
+}
 
 export function generateTreeInorderSteps(
   initialData: number[],
@@ -28,7 +113,7 @@ export function generateTreeInorderSteps(
     variables: {},
   });
 
-  if (!root) return steps;
+  if (!root) return decorateTraversalSteps(steps, root, "Inorder", "recursive");
 
   function traverse(node: TreeNodeData) {
     steps.push({
@@ -112,7 +197,7 @@ export function generateTreeInorderSteps(
     variables: {},
   });
 
-  return steps;
+  return decorateTraversalSteps(steps, root, "Inorder", "recursive");
 }
 
 export function generateTreePreorderSteps(
@@ -141,7 +226,7 @@ export function generateTreePreorderSteps(
     variables: {},
   });
 
-  if (!root) return steps;
+  if (!root) return decorateTraversalSteps(steps, root, "Preorder", "recursive");
 
   function traverse(node: TreeNodeData) {
     steps.push({
@@ -183,7 +268,7 @@ export function generateTreePreorderSteps(
     variables: {},
   });
 
-  return steps;
+  return decorateTraversalSteps(steps, root, "Preorder", "recursive");
 }
 
 export function generateTreePostorderSteps(
@@ -212,7 +297,7 @@ export function generateTreePostorderSteps(
     variables: {},
   });
 
-  if (!root) return steps;
+  if (!root) return decorateTraversalSteps(steps, root, "Postorder", "recursive");
 
   function traverse(node: TreeNodeData) {
     steps.push({
@@ -268,7 +353,7 @@ export function generateTreePostorderSteps(
     variables: {},
   });
 
-  return steps;
+  return decorateTraversalSteps(steps, root, "Postorder", "recursive");
 }
 
 export function generateTreeLevelOrderSteps(
@@ -297,7 +382,7 @@ export function generateTreeLevelOrderSteps(
     variables: {},
   });
 
-  if (!root) return steps;
+  if (!root) return decorateTraversalSteps(steps, root, "Level-order", "queue");
 
   const queue: TreeNodeData[] = [root];
 
@@ -340,5 +425,5 @@ export function generateTreeLevelOrderSteps(
     variables: {},
   });
 
-  return steps;
+  return decorateTraversalSteps(steps, root, "Level-order", "queue");
 }

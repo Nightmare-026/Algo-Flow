@@ -2,7 +2,6 @@
 
 import { usePlaybackStore } from "@/stores/playback-store";
 import { Info } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 export function StepExplanation() {
   const { steps, currentStepIndex, reducedMotion } = usePlaybackStore();
@@ -28,15 +27,11 @@ export function StepExplanation() {
         </span>
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep.id}
-          initial={reducedMotion ? false : { opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={reducedMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
-          transition={{ duration: reducedMotion ? 0.01 : 0.2 }}
-          className="flex-1 overflow-auto"
-        >
+      <div
+        key={currentStep.id}
+        className="flex-1 overflow-auto"
+        data-reduced-motion={reducedMotion ? "true" : "false"}
+      >
           <h4 className="text-base font-semibold text-primary mb-2">{currentStep.title}</h4>
           <p className="text-text-secondary text-sm leading-relaxed">{currentStep.description}</p>
 
@@ -68,8 +63,7 @@ export function StepExplanation() {
               </div>
             </div>
           )}
-        </motion.div>
-      </AnimatePresence>
+      </div>
     </div>
   );
 }

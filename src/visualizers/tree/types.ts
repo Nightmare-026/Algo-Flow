@@ -9,6 +9,9 @@ export interface TreeNodeData {
 
 export interface TreeVisualState {
   root: TreeNodeData | null;
+  traversalOutput?: number[];
+  callStack?: number[];
+  traversalMode?: "recursive" | "queue";
 }
 
 export function createDefaultTree(): TreeVisualState {

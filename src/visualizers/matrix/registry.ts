@@ -39,17 +39,6 @@ const rawMatrixRegistry: AlgorithmVisualizerDefinition[] = [
     codeLineMapping: matrixCodeLineMappings["row-wise-traversal"],
   },
   {
-    slug: "matrix-row-traversal",
-    generateSteps: (data, opts) =>
-      withLogicalLines(generateRowWiseTraversalSteps(data, opts.rows || 3, opts.cols || 3), {
-        initialize: 1,
-        visit: 3,
-        complete: 4,
-      }),
-    getCodeExamples: getMatrixCodeExamples,
-    codeLineMapping: matrixCodeLineMappings["matrix-row-traversal"],
-  },
-  {
     slug: "col-wise-traversal",
     generateSteps: (data, opts) =>
       withLogicalLines(generateColWiseTraversalSteps(data, opts.rows || 3, opts.cols || 3), {

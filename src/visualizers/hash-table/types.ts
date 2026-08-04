@@ -19,6 +19,10 @@ export interface HashTableVisualState {
   // Track metrics
   elementCount: number;
   loadFactor: number;
+  rehash?: {
+    oldTableSize: number;
+    oldBuckets: (HashEntry | null)[];
+  };
 }
 
 export function createInitialHashTableState(

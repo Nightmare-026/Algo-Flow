@@ -65,8 +65,37 @@ export function HashTableRenderer() {
         </div>
       </div>
 
+      {dataState.rehash && (
+        <section
+          className="mb-3 w-full shrink-0 overflow-x-auto rounded-lg border border-border bg-surface/70 p-3"
+          aria-label={`Old hash table with ${dataState.rehash.oldTableSize} buckets`}
+        >
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
+            Old table ? scan one bucket at a time
+          </h3>
+          <div className="flex min-w-max gap-2">
+            {dataState.rehash.oldBuckets.map((entry, index) => (
+              <div
+                key={`old-bucket-${index}`}
+                className={cn(
+                  "rounded-md border-2 px-2 py-1 text-center font-mono text-xs",
+                  getBucketColor(`old-bucket-${index}`)
+                )}
+              >
+                <span className="block text-[10px] text-text-muted">{index}</span>
+                <span className="block min-w-6 font-bold text-text-primary">
+                  {entry ? entry.key : "?"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
       <div className="flex w-full flex-1 min-h-0 items-start justify-center overflow-y-auto overflow-x-hidden px-2 sm:px-4 pb-4">
         <div className="flex flex-col gap-2 sm:gap-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+            {dataState.rehash ? "New table" : "Hash table"}
+          </h3>
           {dataState.collisionResolution === "linear-probing"
             ? /* Linear Probing Layout */
               (dataState.buckets as (HashEntry | null)[]).map((entry, index) => {

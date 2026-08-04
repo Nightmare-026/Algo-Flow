@@ -1,11 +1,11 @@
-﻿"use client";
+"use client";
 
 import {
   defaultVisualizerInputOptions,
   VisualizerInputOptions,
 } from "@/lib/validation/visualizer-input";
 import { GraphEditorModal } from "./GraphEditorModal";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Edit3 } from "lucide-react";
 
 interface GraphInputControlsProps {
@@ -20,6 +20,7 @@ export function GraphInputControls({
   onOptionsChange,
 }: GraphInputControlsProps) {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const editGraphButtonRef = useRef<HTMLButtonElement>(null);
 
   // Extract all node IDs from current graph state for the start node dropdown
   const graphNodes = options.graphState?.nodes.map((n) => n.id) || ["A", "B", "C", "D", "E", "F"];
@@ -47,6 +48,8 @@ export function GraphInputControls({
       </label>
 
       <button
+        ref={editGraphButtonRef}
+        type="button"
         onClick={() => setIsEditorOpen(true)}
         className="flex h-[38px] items-center justify-center gap-2 rounded-lg bg-primary/10 px-4 text-sm font-bold text-primary transition-colors hover:bg-primary/20"
       >
@@ -63,6 +66,7 @@ export function GraphInputControls({
         initialState={options.graphState}
         isDirected={options.isDirected}
         isWeighted={options.isWeighted}
+        returnFocusRef={editGraphButtonRef}
         onSave={(newGraphState, newIsDirected, newIsWeighted) => {
           // If the selected node no longer exists, reset to the first available node
           let nextText = selectedNode;

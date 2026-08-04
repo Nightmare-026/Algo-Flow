@@ -1,7 +1,6 @@
 export function getMatrixPseudocode(slug: string): string[] {
   switch (slug) {
     case "row-wise-traversal":
-    case "matrix-row-traversal":
       return [
         "function rowWiseTraversal(matrix):",
         "    for row from 0 to rows - 1:",

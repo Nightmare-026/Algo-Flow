@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { use, useMemo, useState } from "react";
 import Link from "next/link";
@@ -204,7 +204,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
                   >
                     <Link
                       href={`/visualizer/${algorithm.slug}`}
-                      className="group flex h-full flex-col rounded-2xl border border-white/75 bg-surface/90 p-6 shadow-[var(--shadow-raised-sm)] transition-[box-shadow,border-color] hover:border-primary/30 hover:shadow-[var(--shadow-raised)]"
+                      className="group flex h-full flex-col rounded-2xl border border-white/75 bg-surface/90 p-6 shadow-[var(--shadow-raised-sm)] transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 hover:ring-1 hover:ring-primary/20"
                     >
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge variant={difficultyVariant(algorithm.difficulty)}>
@@ -243,7 +243,7 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
                           Open visualizer
                         </span>
                         <ChevronRight
-                          className="h-4 w-4 text-primary-active transition-transform group-hover:translate-x-1"
+                          className="h-4 w-4 text-primary-active transition-transform duration-300 group-hover:translate-x-1"
                           aria-hidden="true"
                         />
                       </div>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -163,13 +163,13 @@ export default function VisualizersPage() {
                   >
                     <Link
                       href={`/visualizers/${structure.slug}`}
-                      className="group flex h-full flex-col rounded-2xl border border-white/75 bg-surface/90 p-6 shadow-[var(--shadow-raised-sm)] transition-[box-shadow,border-color] hover:border-primary/30 hover:shadow-[var(--shadow-raised)]"
+                      className="group flex h-full flex-col rounded-2xl border border-white/75 bg-surface/90 p-6 shadow-[var(--shadow-raised-sm)] transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 hover:ring-1 hover:ring-primary/20"
                     >
                       <div className="flex items-start justify-between gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-muted text-primary-active shadow-[var(--shadow-inset)]">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-muted text-primary-active shadow-[var(--shadow-inset)] transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
                           <Icon className="h-6 w-6" aria-hidden="true" />
                         </span>
-                        <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold capitalize text-text-secondary">
+                        <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold capitalize text-text-secondary transition-colors group-hover:border-primary/30">
                           {structure.difficulty}
                         </span>
                       </div>
@@ -183,8 +183,8 @@ export default function VisualizersPage() {
                         <span className="text-sm font-semibold text-muted-foreground">
                           {count} {count === 1 ? "algorithm" : "algorithms"}
                         </span>
-                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background text-primary-active shadow-[var(--shadow-inset)] transition-colors group-hover:bg-primary group-hover:text-white">
-                          <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background text-primary-active shadow-[var(--shadow-inset)] transition-all duration-300 group-hover:bg-primary group-hover:text-white">
+                          <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
                         </span>
                       </div>
                     </Link>

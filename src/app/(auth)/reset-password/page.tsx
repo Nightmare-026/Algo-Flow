@@ -41,10 +41,10 @@ export default async function ResetPasswordPage({
         <PasswordField
           id="new-password"
           label="New password"
-          hint="Use at least 6 characters. A longer, unique passphrase is safer."
+          hint="Use at least 12 characters. Long passphrases and password-manager paste are supported."
           name="password"
           autoComplete="new-password"
-          minLength={6}
+          minLength={12}
           required
         />
         <PasswordField
@@ -52,7 +52,7 @@ export default async function ResetPasswordPage({
           label="Confirm new password"
           name="password_confirm"
           autoComplete="new-password"
-          minLength={6}
+          minLength={12}
           required
         />
         <SubmitButton size="lg" className="w-full">

@@ -4,6 +4,12 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { resolveAuthOrigin, safeInternalPath } from "@/lib/auth/redirects";
+import {
+  ACCOUNT_REGISTRATION_AVAILABLE,
+  PRIVACY_VERSION,
+  REGISTRATION_BLOCK_REASON,
+  TERMS_VERSION,
+} from "@/lib/legal/policy-versions";
 import { createClient } from "@/lib/supabase/server";
 
 function textField(formData: FormData, name: string, trim = true) {
@@ -39,13 +45,9 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    let message = error.message;
-    if (message.includes("Invalid login credentials")) {
-      message = "Email or password is incorrect.";
-    } else if (message.includes("Email not confirmed")) {
-      message = "Please verify your email before logging in.";
-    }
-    redirect(`/login?error=${encodeURIComponent(message)}&next=${encodeURIComponent(nextUrl)}`);
+    redirect(
+      `/login?error=${encodeURIComponent("Email or password is incorrect.")}&next=${encodeURIComponent(nextUrl)}`
+    );
   }
 
   revalidatePath("/", "layout");
@@ -53,6 +55,10 @@ export async function login(formData: FormData) {
 }
 
 export async function loginWithOAuth(provider: "google" | "github") {
+  if (!ACCOUNT_REGISTRATION_AVAILABLE) {
+    redirect(`/login?error=${encodeURIComponent("Social sign-in is temporarily unavailable.")}`);
+  }
+
   const supabase = await createClient();
 
   let origin: string;
@@ -79,45 +85,49 @@ export async function loginWithOAuth(provider: "google" | "github") {
 }
 
 export async function signup(formData: FormData) {
-  const supabase = await createClient();
+  const nextUrl = safeInternalPath(formData.get("next"));
+  if (!ACCOUNT_REGISTRATION_AVAILABLE) {
+    redirect(
+      `/signup?error=${encodeURIComponent(REGISTRATION_BLOCK_REASON)}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
 
   const email = textField(formData, "email").toLowerCase();
   const password = textField(formData, "password", false);
-  const password_confirm = textField(formData, "password_confirm", false);
-  const first_name = textField(formData, "first_name");
-  const last_name = textField(formData, "last_name");
-  const gender = textField(formData, "gender");
-  const nextUrl = safeInternalPath(formData.get("next"));
-  const allowedGenders = new Set(["Male", "Female", "Other", "Prefer not to say"]);
+  const passwordConfirm = textField(formData, "password_confirm", false);
+  const ageConfirmed = textField(formData, "age_confirmed") === "yes";
+  const legalAccepted = textField(formData, "legal_accepted") === "yes";
+  const termsVersion = textField(formData, "terms_version");
+  const privacyVersion = textField(formData, "privacy_version");
   const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  if (!first_name || !last_name || first_name.length > 80 || last_name.length > 80) {
-    redirect(
-      `/signup?error=${encodeURIComponent("Enter a valid first and last name (up to 80 characters each).")}&next=${encodeURIComponent(nextUrl)}`
-    );
-  }
-
-  if (!allowedGenders.has(gender)) {
-    redirect(
-      `/signup?error=${encodeURIComponent("Select a valid gender option.")}&next=${encodeURIComponent(nextUrl)}`
-    );
-  }
 
   if (!emailLooksValid) {
     redirect(
       `/signup?error=${encodeURIComponent("Enter a valid email address.")}&next=${encodeURIComponent(nextUrl)}`
     );
   }
-
-  if (password.length < 6) {
+  if (password.length < 12) {
     redirect(
-      `/signup?error=${encodeURIComponent("Password must contain at least 6 characters.")}&next=${encodeURIComponent(nextUrl)}`
+      `/signup?error=${encodeURIComponent("Password must contain at least 12 characters.")}&next=${encodeURIComponent(nextUrl)}`
     );
   }
-
-  if (password !== password_confirm) {
+  if (password !== passwordConfirm) {
     redirect(
       `/signup?error=${encodeURIComponent("Passwords do not match.")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
+  if (!ageConfirmed) {
+    redirect(
+      `/signup?error=${encodeURIComponent("Accounts are available only to people aged 18 or older.")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
+  if (
+    !legalAccepted ||
+    termsVersion !== TERMS_VERSION ||
+    privacyVersion !== PRIVACY_VERSION
+  ) {
+    redirect(
+      `/signup?error=${encodeURIComponent("Accept the current Terms and acknowledge the current Privacy Policy.")}&next=${encodeURIComponent(nextUrl)}`
     );
   }
 
@@ -130,28 +140,27 @@ export async function signup(formData: FormData) {
     );
   }
 
+  const supabase = await createClient();
+  const acceptedAt = new Date().toISOString();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
       data: {
-        first_name,
-        last_name,
-        full_name: `${first_name} ${last_name}`,
-        gender,
+        age_18_or_older: true,
+        accepted_terms_version: TERMS_VERSION,
+        accepted_privacy_version: PRIVACY_VERSION,
+        legal_accepted_at: acceptedAt,
       },
     },
   });
 
   if (error) {
-    let message = error.message || "An unexpected error occurred. Please try again.";
-    if (message.includes("already registered")) {
-      message = "An account with this email already exists. Please log in instead.";
-    }
-    redirect(`/signup?error=${encodeURIComponent(message)}&next=${encodeURIComponent(nextUrl)}`);
+    redirect(
+      `/signup?error=${encodeURIComponent("Unable to create an account. Check your details or try again later.")}&next=${encodeURIComponent(nextUrl)}`
+    );
   }
-
   if (!data.session) {
     redirect(
       `/signup?success=${encodeURIComponent("Please check your email to verify your account.")}&next=${encodeURIComponent(nextUrl)}`
@@ -161,7 +170,6 @@ export async function signup(formData: FormData) {
   revalidatePath("/", "layout");
   redirect(nextUrl);
 }
-
 export async function sendPasswordReset(formData: FormData) {
   const supabase = await createClient();
   const email = textField(formData, "email").toLowerCase();
@@ -195,9 +203,9 @@ export async function updatePassword(formData: FormData) {
   const password = textField(formData, "password", false);
   const passwordConfirm = textField(formData, "password_confirm", false);
 
-  if (password.length < 6) {
+  if (password.length < 12) {
     redirect(
-      "/reset-password?error=" + encodeURIComponent("Password must contain at least 6 characters.")
+      "/reset-password?error=" + encodeURIComponent("Password must contain at least 12 characters.")
     );
   }
 

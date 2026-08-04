@@ -34,6 +34,8 @@ const getSpeedMs = (speed: PlaybackSpeed, customMs: number) => {
 const initialState: PlaybackState & { reducedMotion: boolean } = {
   steps: [],
   currentStepIndex: 0,
+  committedStepId: null,
+  phase: "idle",
   isPlaying: false,
   speed: "normal",
   customSpeedMs: 600,
@@ -50,6 +52,8 @@ export const usePlaybackStore = create<PlaybackStore>((set, get) => ({
       steps,
       totalSteps: steps.length,
       currentStepIndex: 0,
+      committedStepId: steps[0]?.id ?? null,
+      phase: steps.length > 0 ? "committed" : "idle",
       isComplete: steps.length === 0,
       isPlaying: false,
     }),
@@ -59,35 +63,61 @@ export const usePlaybackStore = create<PlaybackStore>((set, get) => ({
     if (totalSteps === 0) return;
 
     if (currentStepIndex >= totalSteps - 1) {
-      set({ currentStepIndex: 0, isPlaying: true, isComplete: false });
+      const firstStep = get().steps[0];
+      set({
+        currentStepIndex: 0,
+        committedStepId: firstStep?.id ?? null,
+        phase: "playing",
+        isPlaying: true,
+        isComplete: false,
+      });
     } else {
-      set({ isPlaying: true, isComplete: false });
+      set({ phase: "playing", isPlaying: true, isComplete: false });
     }
   },
 
-  pause: () => set({ isPlaying: false }),
+  pause: () => set({ phase: "paused", isPlaying: false }),
 
   nextStep: () => {
     const { currentStepIndex, totalSteps } = get();
     if (currentStepIndex < totalSteps - 1) {
+      const nextIndex = currentStepIndex + 1;
       set({
-        currentStepIndex: currentStepIndex + 1,
-        isComplete: currentStepIndex + 1 === totalSteps - 1,
+        currentStepIndex: nextIndex,
+        committedStepId: get().steps[nextIndex]?.id ?? null,
+        phase: get().isPlaying ? "playing" : "committed",
+        isComplete: nextIndex === totalSteps - 1,
       });
     } else {
-      set({ isComplete: true, isPlaying: false });
+      set({ phase: "committed", isComplete: true, isPlaying: false });
     }
   },
 
   previousStep: () => {
     const { currentStepIndex } = get();
-    if (currentStepIndex > 0) set({ currentStepIndex: currentStepIndex - 1, isComplete: false });
+    if (currentStepIndex > 0) {
+      const previousIndex = currentStepIndex - 1;
+      set({
+        currentStepIndex: previousIndex,
+        committedStepId: get().steps[previousIndex]?.id ?? null,
+        phase: "committed",
+        isComplete: false,
+        isPlaying: false,
+      });
+    }
   },
 
   goToStep: (index) => {
     const { totalSteps } = get();
-    if (index >= 0 && index < totalSteps)
-      set({ currentStepIndex: index, isComplete: index === totalSteps - 1 });
+    if (index >= 0 && index < totalSteps) {
+      set({
+        currentStepIndex: index,
+        committedStepId: get().steps[index]?.id ?? null,
+        phase: "committed",
+        isComplete: index === totalSteps - 1,
+        isPlaying: false,
+      });
+    }
   },
 
   setSpeed: (speed, customMs = 600) =>
@@ -95,18 +125,37 @@ export const usePlaybackStore = create<PlaybackStore>((set, get) => ({
 
   setReducedMotion: (enabled) => set({ reducedMotion: enabled }),
 
-  restart: () => set({ currentStepIndex: 0, isComplete: false, isPlaying: false }),
+  restart: () =>
+    set({
+      currentStepIndex: 0,
+      committedStepId: get().steps[0]?.id ?? null,
+      phase: get().totalSteps > 0 ? "committed" : "idle",
+      isComplete: false,
+      isPlaying: false,
+    }),
 
   skipToEnd: () => {
     const { totalSteps } = get();
     if (totalSteps > 0)
-      set({ currentStepIndex: totalSteps - 1, isComplete: true, isPlaying: false });
+      set({
+        currentStepIndex: totalSteps - 1,
+        committedStepId: get().steps[totalSteps - 1]?.id ?? null,
+        phase: "committed",
+        isComplete: true,
+        isPlaying: false,
+      });
   },
 
   reset: () => {
     const { totalSteps } = get();
     if (totalSteps > 0) {
-      set({ currentStepIndex: 0, isComplete: false, isPlaying: false });
+      set({
+        currentStepIndex: 0,
+        committedStepId: get().steps[0]?.id ?? null,
+        phase: "committed",
+        isComplete: false,
+        isPlaying: false,
+      });
     }
   },
 }));

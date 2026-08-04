@@ -7,6 +7,7 @@ export function getTreePseudocode(slug: string): string[] {
         "        inorder(node.left)",
         "        visit(node)",
         "        inorder(node.right)",
+        "    return output",
       ];
     case "preorder-traversal":
       return [
@@ -15,6 +16,7 @@ export function getTreePseudocode(slug: string): string[] {
         "        visit(node)",
         "        preorder(node.left)",
         "        preorder(node.right)",
+        "    return output",
       ];
     case "postorder-traversal":
       return [
@@ -23,6 +25,7 @@ export function getTreePseudocode(slug: string): string[] {
         "        postorder(node.left)",
         "        postorder(node.right)",
         "        visit(node)",
+        "    return output",
       ];
     case "level-order-traversal":
       return [
@@ -34,6 +37,7 @@ export function getTreePseudocode(slug: string): string[] {
         "        visit(node)",
         "        if node.left: queue.enqueue(node.left)",
         "        if node.right: queue.enqueue(node.right)",
+        "    return output",
       ];
     case "bst-search":
       return [

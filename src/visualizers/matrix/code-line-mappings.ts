@@ -8,7 +8,6 @@ const line = (
 ): CodeLineMapping => ({ logicalLine, lines: { javascript, python, cpp, java } });
 export const matrixCodeLineMappings = {
   "row-wise-traversal": [line(1, 1, 1, 1, 1), line(3, 3, 3, 4, 4), line(4, 8, 4, 9, 9)],
-  "matrix-row-traversal": [line(1, 1, 1, 1, 1), line(3, 3, 3, 4, 4), line(4, 8, 4, 9, 9)],
   "col-wise-traversal": [line(1, 1, 1, 1, 1), line(3, 3, 3, 4, 4), line(4, 8, 6, 9, 9)],
   "spiral-traversal": [line(1, 2, 2, 2, 2), line(3, 6, 5, 6, 6), line(4, 18, 14, 18, 18)],
   "matrix-search": [

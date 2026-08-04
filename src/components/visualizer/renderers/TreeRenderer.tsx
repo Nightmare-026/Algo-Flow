@@ -18,6 +18,25 @@ interface NodeLayout {
   parentId?: string;
 }
 
+function describeTree(root: TreeNodeData | null): string {
+  if (!root) return "Tree is empty.";
+
+  const relationships: string[] = [`root ${root.value}`];
+  const queue: TreeNodeData[] = [root];
+  while (queue.length > 0) {
+    const node = queue.shift()!;
+    if (node.left) {
+      relationships.push(`left child ${node.left.value} of ${node.value}`);
+      queue.push(node.left);
+    }
+    if (node.right) {
+      relationships.push(`right child ${node.right.value} of ${node.value}`);
+      queue.push(node.right);
+    }
+  }
+  return `Tree: ${relationships.join("; ")}.`;
+}
+
 export function TreeRenderer() {
   const { steps, currentStepIndex } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
@@ -38,6 +57,11 @@ export function TreeRenderer() {
 
   const dataState = (currentStep?.dataState as TreeVisualState) || {};
   const highlights: VisualStepHighlights = currentStep?.highlights || {};
+  const traversalOutput = dataState.traversalOutput ?? [];
+  const callStack = dataState.callStack ?? [];
+  const accessibleLabel = `${describeTree(dataState.root)} Current traversal output: ${
+    traversalOutput.join(", ") || "empty"
+  }.`;
 
   const layout = useMemo(() => {
     const nodes: NodeLayout[] = [];
@@ -84,8 +108,29 @@ export function TreeRenderer() {
   return (
     <div
       ref={containerRef}
+      role="img"
+      aria-label={accessibleLabel}
       className="flex items-start justify-center w-full h-full relative overflow-visible bg-bg-surface-light/30 rounded-xl"
     >
+      <div
+        className="absolute bottom-4 left-4 right-4 z-30 flex flex-wrap gap-3 text-xs"
+        aria-hidden="true"
+      >
+        <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm">
+          <span className="font-semibold text-text-secondary">Output: </span>
+          <span className="font-mono text-primary">
+            {traversalOutput.length > 0 ? traversalOutput.join(" ? ") : "Waiting for visits"}
+          </span>
+        </div>
+        {dataState.traversalMode === "recursive" && (
+          <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm">
+            <span className="font-semibold text-text-secondary">Call stack: </span>
+            <span className="font-mono text-secondary">
+              {callStack.length > 0 ? callStack.join(" ? ") : "empty"}
+            </span>
+          </div>
+        )}
+      </div>
       <div className="absolute inset-0 pointer-events-none">
         <svg className="w-full h-full overflow-visible">
           {layout.map((node) => {

@@ -3,7 +3,6 @@ import { CodeExample } from "@/types";
 export function getMatrixCodeExamples(slug: string, algorithmId: string): CodeExample[] {
   switch (slug) {
     case "row-wise-traversal":
-    case "matrix-row-traversal":
       return [
         {
           id: `${algorithmId}-js`,

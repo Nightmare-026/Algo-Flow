@@ -111,6 +111,9 @@ function validateStateAndGetRenderTokens(
     if (Array.isArray(state.patternElements)) {
       state.patternElements.forEach((_, index) => tokens.add(`p-${index}`));
     }
+    if (Array.isArray(state.lps)) {
+      state.lps.forEach((_, index) => tokens.add(`lps-${index}`));
+    }
   }
 
   if (dataStructureId === "ds_linked_list") {
@@ -152,6 +155,10 @@ function validateStateAndGetRenderTokens(
     (state.buckets as unknown[]).forEach((_, index) =>
       tokens.add(`bucket-${index}`),
     );
+    const rehash = state.rehash as Record<string, unknown> | undefined;
+    if (rehash && Array.isArray(rehash.oldBuckets)) {
+      rehash.oldBuckets.forEach((_, index) => tokens.add(`old-bucket-${index}`));
+    }
   }
 
   return tokens;

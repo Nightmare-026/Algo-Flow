@@ -1,12 +1,17 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { MailCheck } from "lucide-react";
+import { MailCheck, ShieldAlert } from "lucide-react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { FloatingField } from "@/components/auth/FloatingField";
 import { PasswordField } from "@/components/auth/PasswordField";
-import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { buttonVariants } from "@/components/ui/button";
+import {
+  ACCOUNT_REGISTRATION_AVAILABLE,
+  PRIVACY_VERSION,
+  REGISTRATION_BLOCK_REASON,
+  TERMS_VERSION,
+} from "@/lib/legal/policy-versions";
 import { createClient } from "@/lib/supabase/server";
 import { signup } from "../login/actions";
 
@@ -30,18 +35,30 @@ export default async function SignupPage({
     <AuthShell
       user={user}
       activeTab="signup"
-      eyebrow={params.success ? "One more step" : "Create your account"}
+      eyebrow={params.success ? "One more step" : "Account eligibility"}
       title={params.success ? "Check your inbox" : "Create your Algo Flow account"}
       description={
         params.success
           ? "Use the verification link we sent, then return to log in."
-          : "Save useful visualizers, resume sessions, and build a real record of what you have practised."
+          : "Public visualizers need no account. Account features are restricted to people aged 18 or older."
       }
     >
-      {params.success ? (
+      {!ACCOUNT_REGISTRATION_AVAILABLE ? (
+        <div className="text-center">
+          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-warning-muted text-warning shadow-[var(--shadow-inset)]">
+            <ShieldAlert className="h-8 w-8" aria-hidden="true" />
+          </span>
+          <div role="status" className="mt-6 rounded-xl border border-warning/25 bg-warning-muted px-4 py-3 text-sm leading-6 text-text-secondary">
+            {REGISTRATION_BLOCK_REASON}
+          </div>
+          <Link href="/visualizers" className={buttonVariants({ size: "lg", className: "mt-7 w-full" })}>
+            Explore visualizers
+          </Link>
+        </div>
+      ) : params.success ? (
         <div className="text-center">
           <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success-muted text-success shadow-[var(--shadow-inset)]">
-            <MailCheck className="h-8 w-8" />
+            <MailCheck className="h-8 w-8" aria-hidden="true" />
           </span>
           <p aria-live="polite" className="mt-6 text-sm leading-6 text-text-secondary">
             {params.success}
@@ -63,44 +80,8 @@ export default async function SignupPage({
 
           <form action={signup} className="space-y-5">
             {params.next ? <input type="hidden" name="next" value={params.next} /> : null}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FloatingField
-                id="first-name"
-                label="First name"
-                name="first_name"
-                autoComplete="given-name"
-                required
-              />
-              <FloatingField
-                id="last-name"
-                label="Last name"
-                name="last_name"
-                autoComplete="family-name"
-                required
-              />
-            </div>
-
-            <div className="relative">
-              <select
-                id="gender"
-                name="gender"
-                required
-                defaultValue=""
-                className="auth-select form-select peer h-14 pb-1 pt-5"
-              >
-                <option value="" disabled hidden aria-label="No gender selected" />
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-              </select>
-              <label
-                htmlFor="gender"
-                className="pointer-events-none absolute left-4 top-2.5 origin-left text-[11px] font-semibold text-text-muted transition-[color,transform,top,font-size] duration-200 peer-invalid:top-1/2 peer-invalid:-translate-y-1/2 peer-invalid:text-sm peer-invalid:font-medium peer-focus-visible:top-2.5 peer-focus-visible:translate-y-0 peer-focus-visible:text-[11px] peer-focus-visible:font-semibold peer-focus-visible:text-primary-active"
-              >
-                Gender
-              </label>
-            </div>
+            <input type="hidden" name="terms_version" value={TERMS_VERSION} />
+            <input type="hidden" name="privacy_version" value={PRIVACY_VERSION} />
 
             <FloatingField
               id="signup-email"
@@ -115,10 +96,10 @@ export default async function SignupPage({
             <PasswordField
               id="signup-password"
               label="Password"
-              hint="Use at least 6 characters. A longer, unique passphrase is safer."
+              hint="Use at least 12 characters. Long passphrases, password managers, and paste are supported."
               name="password"
               autoComplete="new-password"
-              minLength={6}
+              minLength={12}
               required
             />
             <PasswordField
@@ -126,30 +107,47 @@ export default async function SignupPage({
               label="Confirm password"
               name="password_confirm"
               autoComplete="new-password"
-              minLength={6}
+              minLength={12}
               required
             />
+
+            <label className="flex items-start gap-3 rounded-xl border border-border bg-surface-light px-4 py-3 text-sm leading-6 text-text-secondary">
+              <input
+                type="checkbox"
+                name="age_confirmed"
+                value="yes"
+                required
+                className="mt-1 h-4 w-4 shrink-0 rounded border-border text-primary focus:ring-primary"
+              />
+              <span>I confirm that I am 18 years of age or older.</span>
+            </label>
+
+            <label className="flex items-start gap-3 rounded-xl border border-border bg-surface-light px-4 py-3 text-sm leading-6 text-text-secondary">
+              <input
+                type="checkbox"
+                name="legal_accepted"
+                value="yes"
+                required
+                className="mt-1 h-4 w-4 shrink-0 rounded border-border text-primary focus:ring-primary"
+              />
+              <span>
+                I agree to the{" "}
+                <Link href="/terms" className="font-semibold text-primary-active hover:underline">
+                  Terms ({TERMS_VERSION})
+                </Link>{" "}
+                and acknowledge the{" "}
+                <Link href="/privacy" className="font-semibold text-primary-active hover:underline">
+                  Privacy Policy ({PRIVACY_VERSION})
+                </Link>
+                .
+              </span>
+            </label>
 
             <SubmitButton size="lg" className="w-full">
               Create account
             </SubmitButton>
           </form>
 
-          <div className="mt-6">
-            <OAuthButtons />
-          </div>
-
-          <p className="mt-5 text-xs leading-5 text-muted-foreground">
-            By creating an account, you agree to the{" "}
-            <Link href="/terms" className="font-semibold text-primary-active hover:underline">
-              terms
-            </Link>{" "}
-            and acknowledge the{" "}
-            <Link href="/privacy" className="font-semibold text-primary-active hover:underline">
-              privacy policy
-            </Link>
-            .
-          </p>
           <p className="mt-6 text-center text-sm text-text-secondary">
             Already have an account?{" "}
             <Link

@@ -6,41 +6,27 @@ import { ArrowRight, Check, ChevronLeft, ChevronRight, Pause, Play, RotateCcw } 
 import { motion, useReducedMotion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { VisualStep } from "@/types";
+import { generateBubbleSortSteps } from "@/visualizers/array/sort";
+import type { ArrayVisualState } from "@/visualizers/array/types";
 
-const traceSteps = [
-  {
-    values: [12, 5, 9, 3, 16],
-    active: [0, 1],
-    settled: [] as number[],
-    line: 3,
-    action: "Compare 12 and 5",
-    note: "The left value is larger, so the pair is out of order.",
-  },
-  {
-    values: [5, 12, 9, 3, 16],
-    active: [0, 1],
-    settled: [] as number[],
-    line: 4,
-    action: "Swap the pair",
-    note: "5 moves left and 12 continues through the pass.",
-  },
-  {
-    values: [5, 9, 12, 3, 16],
-    active: [1, 2],
-    settled: [0],
-    line: 3,
-    action: "Compare 12 and 9",
-    note: "The next inversion is corrected without losing the previous state.",
-  },
-  {
-    values: [5, 9, 3, 12, 16],
-    active: [2, 3],
-    settled: [0, 1],
-    line: 4,
-    action: "Move 12 to the right",
-    note: "Every control, value, and code line stays synchronized.",
-  },
+const PREVIEW_INPUT = [12, 5, 9, 3, 16];
+const fullPreviewTrace = generateBubbleSortSteps(PREVIEW_INPUT);
+const firstPassEnd = fullPreviewTrace.findIndex((step) => step.title === "Element Sorted");
+const traceSteps = fullPreviewTrace.slice(0, firstPassEnd + 1);
+const previewPseudocode = [
+  "for each pass through the unsorted region",
+  "  compare adjacent values",
+  "  if left > right, swap them",
+  "mark the pass's final value as sorted",
 ] as const;
+
+function getPreviewLine(step: VisualStep) {
+  if (step.actionType === "compare") return 2;
+  if (step.actionType === "swap") return 3;
+  if (step.actionType === "success") return 4;
+  return 1;
+}
 
 type HeroSectionProps = {
   visualizerCount: number;
@@ -52,9 +38,20 @@ function WorkbenchPreview() {
   const [playing, setPlaying] = useState(false);
   const reduceMotion = useReducedMotion();
   const step = traceSteps[stepIndex];
+  const state = step.dataState as ArrayVisualState;
+  const activeIds = new Set([
+    ...(step.highlights.current ?? []),
+    ...(step.highlights.compared ?? []),
+    ...(step.highlights.swapped ?? []),
+  ]);
+  const settledIds = new Set(step.highlights.sorted ?? []);
+  const comparedIndexes = (step.highlights.compared ?? [])
+    .map((id) => state.elements.findIndex((element) => element.id === id))
+    .filter((index) => index >= 0);
+  const isPlaying = playing && !reduceMotion;
 
   useEffect(() => {
-    if (!playing) return;
+    if (!isPlaying) return;
     const atFinalStep = stepIndex === traceSteps.length - 1;
     const timer = window.setTimeout(
       () => {
@@ -67,7 +64,7 @@ function WorkbenchPreview() {
       atFinalStep ? 0 : 1350
     );
     return () => window.clearTimeout(timer);
-  }, [playing, stepIndex]);
+  }, [isPlaying, stepIndex]);
 
   const reset = () => {
     setPlaying(false);
@@ -85,9 +82,9 @@ function WorkbenchPreview() {
       <div className="flex items-center justify-between gap-4 border-b border-border pb-4">
         <div>
           <p className="font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-primary-active">
-            Live trace
+            Generator-backed trace
           </p>
-          <h2 className="mt-1 text-base font-bold">Bubble sort workbench</h2>
+          <h2 className="mt-1 text-base font-bold">Bubble Sort: first pass</h2>
         </div>
         <span className="rounded-full bg-primary-muted px-3 py-1 font-mono text-xs font-semibold text-primary-active">
           Step {stepIndex + 1}/{traceSteps.length}
@@ -96,25 +93,25 @@ function WorkbenchPreview() {
 
       <div className="mt-4 rounded-2xl border border-border/80 bg-background p-4 shadow-[var(--shadow-inset)]">
         <div className="mb-4 flex items-center justify-between gap-3 text-xs">
-          <span className="font-semibold text-text-secondary">Input: [12, 5, 9, 3, 16]</span>
+          <span className="font-semibold text-text-secondary">Input: [{PREVIEW_INPUT.join(", ")}]</span>
           <span className="font-mono text-text-muted">O(n^2)</span>
         </div>
         <div
           className="flex min-h-44 items-end justify-center gap-2 sm:gap-3"
           role="img"
-          aria-label={`Array values ${step.values.join(", ")}. ${step.action}.`}
+          aria-label={`Array values ${state.elements.map((element) => element.value).join(", ")}. ${step.title}. ${step.description}`}
         >
-          {step.values.map((value, index) => {
-            const isActive = (step.active as readonly number[]).includes(index);
-            const isSettled = (step.settled as readonly number[]).includes(index);
+          {state.elements.map((element, index) => {
+            const isActive = activeIds.has(element.id);
+            const isSettled = settledIds.has(element.id);
             return (
               <div
-                key={`${value}-${index}`}
+                key={index}
                 className="flex w-full max-w-14 flex-col items-center gap-2"
               >
                 <motion.div
                   layout
-                  animate={{ height: value * 6.8 }}
+                  animate={{ height: element.value * 6.8 }}
                   transition={{ duration: reduceMotion ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] }}
                   className={cn(
                     "relative w-full rounded-t-xl border",
@@ -132,7 +129,7 @@ function WorkbenchPreview() {
                     />
                   ) : null}
                 </motion.div>
-                <span className="font-mono text-xs font-bold text-text-secondary">{value}</span>
+                <span className="font-mono text-xs font-bold text-text-secondary">{element.value}</span>
               </div>
             );
           })}
@@ -141,23 +138,26 @@ function WorkbenchPreview() {
 
       <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1.12fr]">
         <div className="rounded-2xl border border-white/70 bg-surface-light p-3 shadow-[var(--shadow-raised-sm)]">
-          <p className="text-xs font-bold text-foreground">{step.action}</p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-bold text-foreground">{step.title}</p>
+            <span className="font-mono text-[10px] text-muted-foreground">Pass 1</span>
+          </div>
           <p className="mt-1.5 text-xs leading-5 text-muted-foreground" aria-live="polite">
-            {step.note}
+            {step.description}
           </p>
+          {comparedIndexes.length === 2 ? (
+            <p className="mt-1 font-mono text-[10px] text-primary-active">
+              Comparing indexes {comparedIndexes[0]} and {comparedIndexes[1]}
+            </p>
+          ) : null}
         </div>
         <div className="overflow-hidden rounded-2xl bg-[#173126] p-3 font-mono text-[11px] leading-5 text-emerald-50 shadow-inner">
-          {[
-            "for pass in range(n):",
-            "  for i in range(n-pass-1):",
-            "    if a[i] > a[i+1]:",
-            "      swap(a[i], a[i+1])",
-          ].map((line, index) => (
+          {previewPseudocode.map((line, index) => (
             <div
               key={line}
               className={cn(
                 "rounded px-2",
-                step.line === index + 1
+                getPreviewLine(step) === index + 1
                   ? "bg-emerald-300/18 text-emerald-100"
                   : "text-emerald-50/62"
               )}
@@ -194,10 +194,19 @@ function WorkbenchPreview() {
               if (stepIndex === traceSteps.length - 1) setStepIndex(0);
               setPlaying((current) => !current);
             }}
-            className="inline-flex h-11 min-w-28 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white shadow-[var(--shadow-glow-primary)] hover:bg-primary-hover"
+            disabled={Boolean(reduceMotion)}
+            aria-pressed={isPlaying}
+            aria-label={
+              reduceMotion
+                ? "Autoplay is disabled because reduced motion is enabled"
+                : isPlaying
+                  ? "Pause Bubble Sort preview"
+                  : "Play Bubble Sort preview"
+            }
+            className="inline-flex h-11 min-w-28 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white shadow-[var(--shadow-glow-primary)] hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-current" />}
-            {playing ? "Pause" : "Play trace"}
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-current" />}
+            {reduceMotion ? "Use arrows" : isPlaying ? "Pause" : "Play trace"}
           </button>
         </div>
         <button
@@ -239,7 +248,7 @@ export function HeroSection({ visualizerCount, structureCount }: HeroSectionProp
             Learn by tracing what changes
           </div>
           <h1 className="mt-7 max-w-3xl text-5xl font-extrabold leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-[4.45rem]">
-            See the logic. 
+            See the logic.
             <span className="block text-gradient-primary">Then make it stick.</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-text-secondary">
@@ -265,7 +274,7 @@ export function HeroSection({ visualizerCount, structureCount }: HeroSectionProp
 
           <dl className="mt-10 grid max-w-xl grid-cols-3 divide-x divide-border">
             {[
-              { value: visualizerCount, label: "working traces" },
+              { value: visualizerCount, label: "published pages" },
               { value: structureCount, label: "data structures" },
               { value: 4, label: "code languages" },
             ].map((stat) => (

@@ -38,7 +38,17 @@ export const hashTableCodeLineMappings = {
   "probing-search": probingSearch,
   "hash-delete": probingDelete,
   "probing-delete": probingDelete,
-  rehashing: [line(1, 2, 2, 2, 2), line(2, 3, 3, 3, 3), line(4, 7, 7, 8, 8)],
+  rehashing: [
+    line(1, 1, 1, 1, 1),
+    line(2, 5, 5, 6, 5),
+    line(3, 6, 6, 7, 7),
+    line(4, 6, 6, 7, 7),
+    line(5, 7, 7, 8, 8),
+    line(6, 7, 7, 8, 8),
+    line(7, 7, 7, 8, 8),
+    line(8, 6, 6, 7, 7),
+    line(9, 9, 7, 10, 10),
+  ],
   "chaining-insert": [
     line(1, 11, 9, 15, 18),
     line(2, 12, 10, 16, 19),

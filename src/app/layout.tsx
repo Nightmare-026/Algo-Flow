@@ -1,6 +1,8 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Manrope } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import Script from "next/script";
+import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -12,12 +14,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: "Algo Flow - Master DSA Through Visual Journeys",
     template: "%s | Algo Flow",
   },
   description:
-    "Explore arrays, stacks, queues, trees, graphs, and algorithms with step-by-step animated explanations. Learn DSA visually with 105+ interactive visualizers.",
+    "Explore arrays, stacks, queues, trees, graphs, and algorithms with step-by-step animated explanations. Learn DSA visually across the published visualizer library.",
   keywords: [
     "DSA",
     "data structures",
@@ -38,9 +41,21 @@ export const metadata: Metadata = {
     type: "website",
     title: "Algo Flow - Master DSA Through Visual Journeys",
     description:
-      "Interactive DSA visualizer with 105+ visualizers. Step-by-step animations for arrays, trees, graphs, sorting, searching, and more.",
+      "Interactive DSA visualizers with step-by-step traces for arrays, trees, graphs, sorting, searching, and more.",
     siteName: "Algo Flow",
+    url: "/",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Algo Flow" }],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Algo Flow - Master DSA Through Visual Journeys",
+    description: "Trace data structures and algorithms step by step.",
+    images: ["/opengraph-image"],
+  },
+  alternates: { canonical: "/" },
+  manifest: "/manifest.webmanifest",
+  icons: { icon: "/icon.png", apple: "/icon.png" },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -54,6 +69,9 @@ export default function RootLayout({
         className={`${inter.variable} ${manrope.variable} ${jetbrainsMono.variable} min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased`}
       >
         <ThemeProvider>{children}</ThemeProvider>
+        {process.env.NODE_ENV === "development" && (
+          <Script src="/agent-inspector.js" strategy="afterInteractive" />
+        )}
       </body>
     </html>
   );

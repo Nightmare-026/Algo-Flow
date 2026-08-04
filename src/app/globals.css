@@ -217,6 +217,29 @@
   background: rgba(255, 255, 255, 0.93);
   box-shadow: var(--shadow-float);
 }
+.neu-raised,
+.neu-raised-sm,
+.neu-float,
+.neu-inset {
+  transition: border-color var(--duration-normal) var(--ease-smooth),
+    box-shadow var(--duration-normal) var(--ease-smooth);
+}
+
+.neu-raised:hover {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: var(--shadow-raised), inset 0 0 30px rgba(34, 197, 94, 0.12);
+}
+
+.neu-raised-sm:hover {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: var(--shadow-raised-sm), inset 0 0 20px rgba(34, 197, 94, 0.12);
+}
+
+.neu-float:hover {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: var(--shadow-float), inset 0 0 30px rgba(34, 197, 94, 0.12);
+}
+
 .page-shell {
   min-height: 100vh;
   background: transparent;
@@ -276,6 +299,12 @@
   border: 1px solid rgba(255, 255, 255, 0.75);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(244, 249, 246, 0.9));
   box-shadow: var(--shadow-raised-sm);
+  transition: border-color var(--duration-normal) var(--ease-smooth),
+    box-shadow var(--duration-normal) var(--ease-smooth);
+}
+.landing-glow-card:hover {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: var(--shadow-raised-sm), inset 0 0 20px rgba(34, 197, 94, 0.12);
 }
 .landing-glow-card::before {
   position: absolute;

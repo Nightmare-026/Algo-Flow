@@ -60,6 +60,24 @@ const legend = [
     description: "The removed entry or tombstone location.",
     tone: "error",
   },
+  {
+    bucketKey: "visited",
+    label: "Old bucket visited",
+    description: "An old-table bucket already processed during rehashing.",
+    tone: "info",
+  },
+  {
+    bucketKey: "success",
+    label: "Rehash complete",
+    description: "An entry retained in the completed replacement table.",
+    tone: "success",
+  },
+  {
+    bucketKey: "error",
+    label: "Rehash skipped",
+    description: "The load factor is below the rehash threshold.",
+    tone: "error",
+  },
 ] as const;
 
 function options(overrides: Partial<VisualizerInputOptions> = {}) {
@@ -129,6 +147,7 @@ function artifacts(
 
 const keys = [1, 9, 17];
 const inserted = [1, 9, 17, 25];
+const rehashKeys = [0, 8, 16, 1, 9, 17];
 
 export const hashTablePublicationArtifacts: Record<
   keyof typeof hashTableCodeLineMappings,
@@ -184,9 +203,9 @@ export const hashTablePublicationArtifacts: Record<
   ),
   rehashing: artifacts(
     hashTableCodeLineMappings.rehashing,
-    keys,
+    rehashKeys,
     options(),
-    verifyKeys(keys, ["build", "insert"])
+    verifyKeys(rehashKeys, ["build", "insert"])
   ),
   "chaining-insert": artifacts(
     hashTableCodeLineMappings["chaining-insert"],

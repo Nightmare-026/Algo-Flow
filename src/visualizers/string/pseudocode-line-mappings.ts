@@ -7,7 +7,9 @@ const mappings: Readonly<Record<string, LineMap>> = {
   "string-reverse-traversal": { 1: 1, 3: 3, 4: 3 },
   "string-palindrome": { 1: 1, 3: 3, 4: 4, 6: 5, 8: 6 },
   "string-naive-search": { 1: 1, 3: 2, 4: 3, 6: 4, 8: 5 },
-  "string-kmp-search": { 1: 1, 2: 2, 4: 4, 6: 6, 8: 5, 12: 6 },
+  "string-kmp-search": Object.fromEntries(
+    Array.from({ length: 19 }, (_, index) => [index + 1, index + 1])
+  ),
   "string-rabin-karp": { 1: 1, 2: 2, 4: 3, 6: 4, 8: 4, 10: 5, 12: 5 },
   "reverse-string": { 1: 1, 3: 3, 4: 4, 6: 5 },
   "string-insert": { 1: 1, 2: 1, 3: 2 },

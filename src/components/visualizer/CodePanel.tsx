@@ -41,13 +41,19 @@ export function CodePanel({ examples, codeLineMapping }: CodePanelProps) {
     }
     return examples[0]?.language ?? "javascript";
   });
-  const [htmlContent, setHtmlContent] = useState("");
+  const [highlightedDocument, setHighlightedDocument] = useState<{
+    key: string;
+    html: string;
+  } | null>(null);
   const [copied, setCopied] = useState(false);
   const codeContainerRef = useRef<HTMLDivElement>(null);
   const codeScrollRef = useRef<HTMLDivElement>(null);
 
   const activeExample = examples.find((example) => example.language === activeLang);
   const codeString = activeExample?.code ?? "";
+  const documentKey = `${activeLang}:${codeString}`;
+  const isDocumentReady = highlightedDocument?.key === documentKey;
+  const htmlContent = isDocumentReady ? highlightedDocument.html : "";
   const activeLineNum = resolvePhysicalCodeLine(codeLineMapping, currentStep?.codeLine, activeLang);
 
   useEffect(() => {
@@ -62,17 +68,22 @@ export function CodePanel({ examples, codeLineMapping }: CodePanelProps) {
             activeLang === "javascript" ? "js" : activeLang === "typescript" ? "ts" : activeLang,
           theme: "vitesse-dark",
         });
-        if (isMounted) setHtmlContent(html);
+        if (isMounted) setHighlightedDocument({ key: documentKey, html });
       } catch (error) {
         console.error("Error highlighting code:", error);
-        if (isMounted) setHtmlContent(`<pre><code>${escapeHtml(codeString)}</code></pre>`);
+        if (isMounted) {
+          setHighlightedDocument({
+            key: documentKey,
+            html: `<pre><code>${escapeHtml(codeString)}</code></pre>`,
+          });
+        }
       }
     }
     highlight();
     return () => {
       isMounted = false;
     };
-  }, [activeLang, codeString]);
+  }, [activeLang, codeString, documentKey]);
 
   useEffect(() => {
     if (!htmlContent || !codeString) return;
@@ -169,9 +180,10 @@ export function CodePanel({ examples, codeLineMapping }: CodePanelProps) {
         id="code-language-panel"
         role="tabpanel"
         aria-labelledby={`code-tab-${activeLang}`}
+        aria-busy={!isDocumentReady && Boolean(codeString)}
         className="group relative flex-1 overflow-auto bg-[#121a15]"
       >
-        {htmlContent && codeString ? (
+        {isDocumentReady && htmlContent && codeString ? (
           <div
             ref={codeContainerRef}
             className="code-lines p-4 font-mono text-sm [&_.line]:-mx-2 [&_.line]:px-2 [&_.line]:py-0.5 [&_.line]:transition-[background-color,border-color,box-shadow] [&_pre]:!m-0 [&_pre]:!bg-transparent"

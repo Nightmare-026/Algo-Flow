@@ -1,80 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { Check, Copy } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import type { CodeLanguage } from "@/types";
+import { getArrayCodeExamples } from "@/visualizers/array/code-examples";
 import { glowStyle, sectionReveal } from "./landing-effects";
 
-const languages = [
-  {
-    id: "cpp",
+const languagePresentation: Record<CodeLanguage, { name: string; color: string; description: string }> = {
+  cpp: {
     name: "C++",
     color: "#BAE6FD",
-    description: "Pointer-free view of the loop structure for competitive-programming style study.",
-    code: `void bubbleSort(vector<int>& a) {
-  for (int pass = 0; pass < a.size() - 1; pass++) {
-    for (int i = 0; i < a.size() - pass - 1; i++) {
-      if (a[i] > a[i + 1]) swap(a[i], a[i + 1]);
-    }
-  }
-}`,
+    description: "A reference implementation using std::vector and std::swap.",
   },
-  {
-    id: "java",
+  java: {
     name: "Java",
     color: "#FDE68A",
-    description: "Classroom-friendly implementation with explicit temporary values.",
-    code: `void bubbleSort(int[] a) {
-  for (int pass = 0; pass < a.length - 1; pass++) {
-    for (int i = 0; i < a.length - pass - 1; i++) {
-      if (a[i] > a[i + 1]) {
-        int temp = a[i];
-        a[i] = a[i + 1];
-        a[i + 1] = temp;
-      }
-    }
-  }
-}`,
+    description: "An explicit array implementation with a temporary swap value.",
   },
-  {
-    id: "python",
+  python: {
     name: "Python",
     color: "#DDD6FE",
-    description: "Compact syntax for tracing the same comparisons and swaps.",
-    code: `def bubble_sort(a):
-    for pass_no in range(len(a) - 1):
-        for i in range(len(a) - pass_no - 1):
-            if a[i] > a[i + 1]:
-                a[i], a[i + 1] = a[i + 1], a[i]
-    return a`,
+    description: "The same trace expressed with Python tuple assignment.",
   },
-  {
-    id: "javascript",
+  javascript: {
     name: "JavaScript",
     color: "#BBF7D0",
-    description: "The visualizer engine's primary authored example format.",
-    code: `function bubbleSort(a) {
-  for (let pass = 0; pass < a.length - 1; pass++) {
-    for (let i = 0; i < a.length - pass - 1; i++) {
-      if (a[i] > a[i + 1]) {
-        [a[i], a[i + 1]] = [a[i + 1], a[i]];
-      }
-    }
-  }
-  return a;
-}`,
+    description: "The primary authored implementation for this visualizer.",
   },
-] as const;
+  typescript: {
+    name: "TypeScript",
+    color: "#BFDBFE",
+    description: "A typed JavaScript implementation.",
+  },
+};
+
+const languages = getArrayCodeExamples("bubble-sort", "landing-bubble-sort").map((example) => ({
+  ...example,
+  ...languagePresentation[example.language],
+}));
 
 export function CodeLanguages() {
-  const [activeTab, setActiveTab] = useState<(typeof languages)[number]["id"]>("javascript");
-  const [copied, setCopied] = useState(false);
-  const activeLanguage = languages.find((language) => language.id === activeTab) ?? languages[0];
+  const [activeTab, setActiveTab] = useState<CodeLanguage>("javascript");
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">("idle");
+  const activeLanguage = languages.find((language) => language.language === activeTab) ?? languages[0];
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(activeLanguage.code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1600);
+    try {
+      await navigator.clipboard.writeText(activeLanguage.code);
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("failed");
+    }
+    window.setTimeout(() => setCopyStatus("idle"), 1600);
+  };
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const nextIndex = (index + direction + languages.length) % languages.length;
+    const nextLanguage = languages[nextIndex];
+    setActiveTab(nextLanguage.language);
+    document.getElementById(`code-tab-${nextLanguage.language}`)?.focus();
   };
 
   return (
@@ -94,8 +82,8 @@ export function CodeLanguages() {
             Keep the implementation beside the animation.
           </h2>
           <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            The visualizer page supports language tabs and highlighted code lines. This preview
-            shows the format learners use across published visualizers.
+            These tabs read the same Bubble Sort code examples as the visualizer, so the landing
+            preview cannot drift into a separate implementation.
           </p>
         </motion.div>
 
@@ -107,31 +95,47 @@ export function CodeLanguages() {
           style={glowStyle(5)}
           className="landing-glow-card rounded-lg border border-white/75 bg-surface/70 shadow-xl"
         >
-          <div className="flex items-center overflow-x-auto border-b border-white/75 bg-background px-2">
-            {languages.map((language) => (
-              <button
-                key={language.id}
-                onClick={() => setActiveTab(language.id)}
-                className={`relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors ${
-                  activeTab === language.id
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-secondary-foreground"
-                }`}
-              >
-                <span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: language.color }}
-                />
-                <span>{language.name}</span>
-                {activeTab === language.id && (
-                  <motion.div
-                    layoutId="code-tab-indicator"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--landing-card-tone)]"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          <div
+            className="flex items-center overflow-x-auto border-b border-white/75 bg-background px-2"
+            role="tablist"
+            aria-label="Bubble Sort code languages"
+          >
+            {languages.map((language, index) => {
+              const isActive = activeTab === language.language;
+              return (
+                <button
+                  key={language.language}
+                  id={`code-tab-${language.language}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls="bubble-sort-code-panel"
+                  tabIndex={isActive ? 0 : -1}
+                  onClick={() => setActiveTab(language.language)}
+                  onKeyDown={(event) => handleTabKeyDown(event, index)}
+                  className={`relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors ${
+                    isActive
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-secondary-foreground"
+                  }`}
+                >
+                  <span
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{ backgroundColor: language.color }}
+                    aria-hidden="true"
                   />
-                )}
-              </button>
-            ))}
+                  <span>{language.name}</span>
+                  {isActive ? (
+                    <motion.span
+                      layoutId="code-tab-indicator"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--landing-card-tone)]"
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      aria-hidden="true"
+                    />
+                  ) : null}
+                </button>
+              );
+            })}
           </div>
 
           <div className="flex items-center justify-between gap-4 border-b border-white/75 px-5 py-3">
@@ -139,26 +143,27 @@ export function CodeLanguages() {
               Bubble Sort: {activeLanguage.description}
             </span>
             <button
+              type="button"
               className="inline-flex h-8 items-center gap-2 rounded-md border border-white/75 px-3 text-xs font-medium text-muted-foreground transition-colors hover:text-[var(--landing-card-tone)]"
               onClick={handleCopy}
+              aria-label={`Copy ${activeLanguage.name} Bubble Sort code`}
             >
-              {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-              {copied ? "Copied" : "Copy"}
+              {copyStatus === "copied" ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              <span aria-live="polite">
+                {copyStatus === "copied" ? "Copied" : copyStatus === "failed" ? "Copy failed" : "Copy"}
+              </span>
             </button>
           </div>
 
-          <AnimatePresence mode="wait">
-            <motion.pre
-              key={activeTab}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.22 }}
-              className="overflow-x-auto p-5 text-sm leading-relaxed"
-            >
-              <code className="font-mono text-secondary-foreground">{activeLanguage.code}</code>
-            </motion.pre>
-          </AnimatePresence>
+          <pre
+            id="bubble-sort-code-panel"
+            role="tabpanel"
+            aria-labelledby={`code-tab-${activeLanguage.language}`}
+            tabIndex={0}
+            className="overflow-x-auto p-5 text-sm leading-relaxed"
+          >
+            <code className="font-mono text-secondary-foreground">{activeLanguage.code}</code>
+          </pre>
         </motion.div>
       </div>
     </section>

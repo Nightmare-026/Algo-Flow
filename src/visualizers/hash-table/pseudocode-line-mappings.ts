@@ -15,7 +15,7 @@ const mappings: Readonly<Record<string, LineMap>> = {
   "probing-search": probingSearch,
   "hash-delete": probingDelete,
   "probing-delete": probingDelete,
-  rehashing: { 1: 1, 2: 2, 4: 5 },
+  rehashing: { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9 },
   "chaining-insert": { 1: 1, 2: 1, 4: 2, 5: 2, 8: 2 },
   "chaining-search": { 1: 1, 2: 1, 4: 4, 6: 2, 7: 3, 10: 4 },
   "chaining-delete": { 1: 1, 2: 1, 4: 2, 6: 2, 8: 2, 9: 2, 11: 2 },

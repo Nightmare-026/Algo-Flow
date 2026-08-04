@@ -20,6 +20,42 @@ export function StringRenderer() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full p-8 relative gap-12 overflow-auto">
+      {dataState.lps && (
+        <section className="w-full max-w-3xl" aria-label="KMP LPS table">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-text-secondary">
+              LPS Table
+            </h3>
+            <span className="rounded-full border border-border bg-surface px-2 py-1 text-xs text-text-muted">
+              Phase: {dataState.phase ?? "preprocessing"}
+            </span>
+          </div>
+          <div className="flex max-w-full justify-center gap-1 overflow-x-auto pb-2">
+            {dataState.patternElements?.map((element, index) => (
+              <div
+                key={`lps-${element.id}`}
+                className={cn(
+                  "min-w-11 rounded-lg border-2 bg-surface p-1 text-center font-mono",
+                  highlights.active?.includes(`lps-${index}`)
+                    ? "border-primary shadow-[0_0_0_3px_rgba(34,197,94,0.15)]"
+                    : "border-border"
+                )}
+              >
+                <span className="block text-[10px] text-text-muted">{index}</span>
+                <span className="block text-sm font-semibold text-text-secondary">
+                  {element.char === " " ? "?" : element.char}
+                </span>
+                <span className="block text-lg font-bold text-primary">{dataState.lps![index]}</span>
+              </div>
+            ))}
+          </div>
+          {dataState.matches && dataState.matches.length > 0 && (
+            <p className="mt-1 text-center text-xs font-medium text-success">
+              Match indexes: {dataState.matches.join(", ")}
+            </p>
+          )}
+        </section>
+      )}
       {/* Main String */}
       <div className="flex flex-col items-center gap-2">
         <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-2">

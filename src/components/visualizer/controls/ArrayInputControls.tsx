@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { AlertCircle, FileEdit, Search, Shuffle, SortAsc, SortDesc, Target } from "lucide-react";

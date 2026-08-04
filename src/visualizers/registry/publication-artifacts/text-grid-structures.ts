@@ -271,12 +271,6 @@ export const matrixPublicationArtifacts: Record<
     gridOptions,
     verifyMatrix(["visit", "complete"], grid)
   ),
-  "matrix-row-traversal": matrixArtifacts(
-    "matrix-row-traversal",
-    grid,
-    gridOptions,
-    verifyMatrix(["visit", "complete"], grid)
-  ),
   "col-wise-traversal": matrixArtifacts(
     "col-wise-traversal",
     grid,

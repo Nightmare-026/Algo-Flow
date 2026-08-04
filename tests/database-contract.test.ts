@@ -36,12 +36,18 @@ describe("database and authentication contract", () => {
     expect(migration).toContain("for each row execute function public.handle_new_user()");
   });
 
-  test("keeps profile access owner-scoped and validates signup fields server-side", () => {
+  test("keeps profile access owner-scoped and enforces the minimized signup contract", () => {
     expect(migration).toContain("authenticated_users_read_own_profile");
     expect(migration).toContain("authenticated_users_update_own_profile");
     expect(migration).toContain("with check ((select auth.uid()) = id)");
-    expect(signupAction).toContain('const allowedGenders = new Set(["Male", "Female", "Other"');
-    expect(signupAction).toContain("first_name.length > 80");
-    expect(signupAction).toContain("password.length < 6");
+    expect(signupAction).not.toContain('textField(formData, "first_name")');
+    expect(signupAction).not.toContain('textField(formData, "last_name")');
+    expect(signupAction).not.toContain('textField(formData, "gender")');
+    expect(signupAction).toContain("password.length < 12");
+    expect(signupAction).toContain('textField(formData, "age_confirmed") === "yes"');
+    expect(signupAction).toContain("termsVersion !== TERMS_VERSION");
+    expect(signupAction).toContain("privacyVersion !== PRIVACY_VERSION");
+    expect(signupAction).toContain("accepted_terms_version: TERMS_VERSION");
+    expect(signupAction).toContain("accepted_privacy_version: PRIVACY_VERSION");
   });
 });
