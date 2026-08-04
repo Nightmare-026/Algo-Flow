@@ -3,7 +3,7 @@ import { algorithms } from "@/data/seed/algorithms";
 import { dataStructures } from "@/data/seed/data-structures";
 import { getSiteUrl } from "@/lib/site";
 
-const lastModified = new Date("2026-07-24T00:00:00.000Z");
+const lastModified = new Date();
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
