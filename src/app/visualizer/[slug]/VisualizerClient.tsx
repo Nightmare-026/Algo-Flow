@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Algorithm } from "@/types";
 import type { StepLegendItem } from "@/components/visualizer/StepLegend";
 import {
@@ -29,6 +29,8 @@ function UnavailableCanvas({ name }: { name: string }) {
   );
 }
 
+type VisualizerInputData = number[] | string | Record<string, unknown>;
+
 export function VisualizerClient({
   algorithm,
   legend,
@@ -38,8 +40,7 @@ export function VisualizerClient({
 }) {
   const slug = algorithm.slug;
   const { loadSteps, reset } = usePlaybackStore();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [visualizerData, setVisualizerData] = useState<any>(() =>
+  const [visualizerData, setVisualizerData] = useState<VisualizerInputData>(() =>
     algorithm.dataStructureId === "ds_matrix"
       ? [15, 23, 4, 8, 42, 16, 9, 31, 7, 18, 27, 12, 36, 2, 21, 11]
       : [15, 23, 4, 8, 42, 16]
@@ -48,19 +49,25 @@ export function VisualizerClient({
 
   const definition = algorithmRegistry[slug];
   const dataStructureDefinition = dsRegistry[algorithm.dataStructureId];
+  const dataLength = Array.isArray(visualizerData)
+    ? visualizerData.length
+    : typeof visualizerData === "string"
+      ? visualizerData.length
+      : 0;
+
   const clampedOptions = useMemo(
-    () => clampOperationOptions(options, visualizerData?.length ?? 0, slug),
-    [visualizerData?.length, options, slug]
+    () => clampOperationOptions(options, dataLength, slug),
+    [dataLength, options, slug]
   );
   const steps = useMemo(
-    () => definition?.generateSteps(visualizerData, clampedOptions) ?? [],
+    () => definition?.generateSteps(visualizerData as never, clampedOptions) ?? [],
     [visualizerData, clampedOptions, definition]
   );
 
   const [isReady, setIsReady] = useState(false);
   const isFirstMount = useRef(true);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     loadSteps(steps);
     if (isFirstMount.current) {
       isFirstMount.current = false;
@@ -94,7 +101,7 @@ export function VisualizerClient({
   const defaultSize =
     algorithm.dataStructureId === "ds_hash_table" || algorithm.dataStructureId === "ds_hash_set"
       ? 7
-      : (visualizerData?.length ?? 6);
+      : (dataLength || 6);
 
   const controls =
     Controls && isImplemented ? (
@@ -103,7 +110,7 @@ export function VisualizerClient({
         options={options}
         onOptionsChange={setOptions}
         onGenerate={setVisualizerData}
-        dataLength={visualizerData?.length ?? 0}
+        dataLength={dataLength}
         defaultSize={defaultSize}
         defaultRows={4}
         defaultCols={4}
