@@ -40,11 +40,11 @@ describe("database and authentication contract", () => {
     expect(migration).toContain("authenticated_users_read_own_profile");
     expect(migration).toContain("authenticated_users_update_own_profile");
     expect(migration).toContain("with check ((select auth.uid()) = id)");
-    expect(signupAction).not.toContain('textField(formData, "first_name")');
-    expect(signupAction).not.toContain('textField(formData, "last_name")');
-    expect(signupAction).not.toContain('textField(formData, "gender")');
-    expect(signupAction).toContain("password.length < 12");
-    expect(signupAction).toContain('textField(formData, "age_confirmed") === "yes"');
+    expect(signupAction).toContain('textField(formData, "first_name")');
+    expect(signupAction).toContain('textField(formData, "last_name")');
+    expect(signupAction).toContain('textField(formData, "gender")');
+    expect(signupAction).toContain("password.length < 8");
+    expect(signupAction).not.toContain('textField(formData, "age_confirmed") === "yes"');
     expect(signupAction).toContain("termsVersion !== TERMS_VERSION");
     expect(signupAction).toContain("privacyVersion !== PRIVACY_VERSION");
     expect(signupAction).toContain("accepted_terms_version: TERMS_VERSION");

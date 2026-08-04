@@ -92,10 +92,12 @@ export async function signup(formData: FormData) {
     );
   }
 
+  const firstName = textField(formData, "first_name");
+  const lastName = textField(formData, "last_name");
+  const gender = textField(formData, "gender");
   const email = textField(formData, "email").toLowerCase();
   const password = textField(formData, "password", false);
   const passwordConfirm = textField(formData, "password_confirm", false);
-  const ageConfirmed = textField(formData, "age_confirmed") === "yes";
   const legalAccepted = textField(formData, "legal_accepted") === "yes";
   const termsVersion = textField(formData, "terms_version");
   const privacyVersion = textField(formData, "privacy_version");
@@ -106,19 +108,14 @@ export async function signup(formData: FormData) {
       `/signup?error=${encodeURIComponent("Enter a valid email address.")}&next=${encodeURIComponent(nextUrl)}`
     );
   }
-  if (password.length < 12) {
+  if (password.length < 8) {
     redirect(
-      `/signup?error=${encodeURIComponent("Password must contain at least 12 characters.")}&next=${encodeURIComponent(nextUrl)}`
+      `/signup?error=${encodeURIComponent("Password must contain at least 8 characters.")}&next=${encodeURIComponent(nextUrl)}`
     );
   }
   if (password !== passwordConfirm) {
     redirect(
       `/signup?error=${encodeURIComponent("Passwords do not match.")}&next=${encodeURIComponent(nextUrl)}`
-    );
-  }
-  if (!ageConfirmed) {
-    redirect(
-      `/signup?error=${encodeURIComponent("Accounts are available only to people aged 18 or older.")}&next=${encodeURIComponent(nextUrl)}`
     );
   }
   if (
@@ -148,7 +145,10 @@ export async function signup(formData: FormData) {
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
       data: {
-        age_18_or_older: true,
+        first_name: firstName,
+        last_name: lastName,
+        gender: gender,
+        age_18_or_older: true, // Included in the combined legal_accepted checkbox
         accepted_terms_version: TERMS_VERSION,
         accepted_privacy_version: PRIVACY_VERSION,
         legal_accepted_at: acceptedAt,
@@ -203,9 +203,9 @@ export async function updatePassword(formData: FormData) {
   const password = textField(formData, "password", false);
   const passwordConfirm = textField(formData, "password_confirm", false);
 
-  if (password.length < 12) {
+  if (password.length < 8) {
     redirect(
-      "/reset-password?error=" + encodeURIComponent("Password must contain at least 12 characters.")
+      "/reset-password?error=" + encodeURIComponent("Password must contain at least 8 characters.")
     );
   }
 

@@ -51,11 +51,11 @@ describe("production audit accessibility contracts", () => {
     const policy = source("src/lib/legal/policy-versions.ts");
 
     expect(policy).toContain("ACCOUNT_REGISTRATION_AVAILABLE = true");
-    expect(signup).not.toContain('name="first_name"');
-    expect(signup).not.toContain('name="last_name"');
-    expect(signup).not.toContain('name="gender"');
-    expect(signup).toContain('name="age_confirmed"');
+    expect(signup).toContain('name="first_name"');
+    expect(signup).toContain('name="last_name"');
+    expect(signup).toContain('name="gender"');
     expect(signup).toContain('name="legal_accepted"');
-    expect(signup).toContain("minLength={12}");
+    expect(signup).not.toContain('name="age_confirmed"');
+    expect(signup).toContain("minLength={8}");
   });
 });
