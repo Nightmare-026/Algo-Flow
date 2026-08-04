@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { algorithms } from "@/data/seed/algorithms";
 import { VisualizerClient } from "./VisualizerClient";
 import { publicationRegistry } from "@/visualizers/registry/publication-registry";
+import { getSiteUrl } from "@/lib/site";
 
 export function generateStaticParams() {
   return algorithms
@@ -41,6 +42,61 @@ export default async function VisualizerPage({ params }: { params: Promise<{ slu
   if (!algorithm) notFound();
 
   const legend = publicationRegistry[slug]?.authoredArtifacts?.legend ?? [];
+  const siteUrl = getSiteUrl();
 
-  return <VisualizerClient algorithm={algorithm} legend={legend} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LearningResource",
+        "@id": `${siteUrl}/visualizer/${algorithm.slug}#learning-resource`,
+        "name": `${algorithm.name} Interactive Visualizer`,
+        "description": algorithm.shortDescription,
+        "educationalUse": "Demonstration",
+        "learningResourceType": "Interactive Simulation",
+        "educationalLevel": algorithm.difficulty,
+        "inLanguage": "en",
+        "url": `${siteUrl}/visualizer/${algorithm.slug}`,
+        "provider": {
+          "@type": "Organization",
+          "name": "Algo Flow",
+          "url": siteUrl,
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${siteUrl}/visualizer/${algorithm.slug}#breadcrumb`,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": siteUrl,
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Visualizers",
+            "item": `${siteUrl}/visualizers`,
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": algorithm.name,
+            "item": `${siteUrl}/visualizer/${algorithm.slug}`,
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <VisualizerClient algorithm={algorithm} legend={legend} />
+    </>
+  );
 }
