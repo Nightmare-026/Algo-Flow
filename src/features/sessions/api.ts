@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { UserActionResult } from "@/features/bookmarks/api";
 import type { Json } from "@/types/database";
 import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
+import { checkRateLimit } from "@/lib/security/rate-limit";
 
 function toJson(value: unknown): Json {
   const serialized = JSON.stringify(value);
@@ -52,6 +53,11 @@ export async function saveSession(
 
   if (!user) {
     return { ok: false, requiresAuth: true, message: "Log in to save sessions." };
+  }
+
+  const rateLimit = checkRateLimit(`session:${user.id}`, 20);
+  if (!rateLimit.success) {
+    return { ok: false, message: "Too many requests. Please wait a moment." };
   }
 
   const { data, error } = await supabase

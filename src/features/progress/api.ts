@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import type { UserActionResult } from "@/features/bookmarks/api";
 import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
+import { checkRateLimit } from "@/lib/security/rate-limit";
 
 export async function markCompleted(algorithmId: string): Promise<UserActionResult> {
   const normalizedAlgorithmId = normalizeAlgorithmId(algorithmId);
@@ -17,6 +18,11 @@ export async function markCompleted(algorithmId: string): Promise<UserActionResu
 
   if (!user) {
     return { ok: false, requiresAuth: true, message: "Log in to save progress." };
+  }
+
+  const rateLimit = checkRateLimit(`progress:${user.id}`, 30);
+  if (!rateLimit.success) {
+    return { ok: false, message: "Too many requests. Please wait a moment." };
   }
 
   const { error } = await supabase.rpc("mark_algorithm_completed", {

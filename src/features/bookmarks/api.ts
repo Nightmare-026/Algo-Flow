@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
+import { checkRateLimit } from "@/lib/security/rate-limit";
 
 export type UserActionResult = {
   ok: boolean;
@@ -25,6 +26,11 @@ export async function toggleBookmark(
 
   if (!user) {
     return { ok: false, requiresAuth: true, message: "Log in to save bookmarks." };
+  }
+
+  const rateLimit = checkRateLimit(`bookmark:${user.id}`, 30);
+  if (!rateLimit.success) {
+    return { ok: false, message: "Too many requests. Please wait a moment." };
   }
 
   if (isBookmarked) {
