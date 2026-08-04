@@ -240,9 +240,17 @@ export function VisualizerLayout({
       {statusMessage && (
         <div
           aria-live="polite"
-          className="fixed right-4 top-20 z-[70] rounded-lg border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground shadow-xl"
+          className="fixed right-4 top-20 z-[70] flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-semibold text-foreground shadow-2xl backdrop-blur"
         >
-          {statusMessage}
+          <span>{statusMessage}</span>
+          {statusMessage.toLowerCase().includes("log in") && (
+            <Link
+              href={`/login?next=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "")}`}
+              className="rounded-lg bg-primary px-3 py-1 text-xs font-bold text-white shadow-sm hover:bg-primary-hover"
+            >
+              Log in
+            </Link>
+          )}
         </div>
       )}
 
