@@ -32,48 +32,30 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  // Update streak whenever they visit dashboard (best-effort)
-  let streak: Awaited<ReturnType<typeof getStreak>> = null;
-  try {
-    await updateStreakOnActivity();
-    streak = await getStreak();
-  } catch {
-    // streak table may not exist yet — continue with defaults
-  }
+  // Parallelize dashboard queries for optimal performance
+  const [
+    streakResult,
+    profileResult,
+    completedResult,
+    bookmarksResult,
+    activitiesResult,
+    dailyChallengeResult,
+  ] = await Promise.allSettled([
+    updateStreakOnActivity().then(() => getStreak()),
+    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    getCompletedAlgorithms(),
+    getBookmarks(),
+    getActivityTimeline(10),
+    getDailyChallenge(),
+  ]);
 
-  // Fetch profile (best-effort)
-  let profile: Record<string, unknown> | null = null;
-  try {
-    const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-    profile = data;
-  } catch {
-    // profiles table may not exist yet
-  }
+  const streak = streakResult.status === "fulfilled" ? streakResult.value : null;
+  const profile = profileResult.status === "fulfilled" ? profileResult.value.data : null;
+  const completedIds = completedResult.status === "fulfilled" ? completedResult.value : [];
+  const bookmarkIds = bookmarksResult.status === "fulfilled" ? bookmarksResult.value : [];
+  const activities = activitiesResult.status === "fulfilled" ? activitiesResult.value : [];
+  const dailyChallenge = dailyChallengeResult.status === "fulfilled" ? dailyChallengeResult.value : null;
 
-  // Fetch stats (all best-effort)
-  let completedIds: string[] = [];
-  try {
-    completedIds = await getCompletedAlgorithms();
-  } catch {
-    // user_progress table may not exist yet
-  }
-
-  let bookmarkIds: string[] = [];
-  try {
-    bookmarkIds = await getBookmarks();
-  } catch {
-    // bookmarks table may not exist yet
-  }
-
-  let activities: Awaited<ReturnType<typeof getActivityTimeline>> = [];
-  try {
-    activities = await getActivityTimeline(10); // Fetch a few more for activity list
-  } catch {
-    // activity_timeline table may not exist yet
-  }
-
-  // Daily challenge
-  const dailyChallenge = await getDailyChallenge();
   let challengeCompleted = false;
   let challengeAlgorithm = null;
   if (dailyChallenge) {
