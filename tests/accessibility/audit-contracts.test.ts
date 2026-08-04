@@ -46,11 +46,11 @@ describe("production audit accessibility contracts", () => {
     expect(linkedList).toContain('aria-invalid={Boolean(error)}');
   });
 
-  test("new registration is closed until verified policies and uses explicit future consent controls", () => {
+  test("registration policy and consent controls are active", () => {
     const signup = source("src/app/(auth)/signup/page.tsx");
     const policy = source("src/lib/legal/policy-versions.ts");
 
-    expect(policy).toContain("ACCOUNT_REGISTRATION_AVAILABLE = false");
+    expect(policy).toContain("ACCOUNT_REGISTRATION_AVAILABLE = true");
     expect(signup).not.toContain('name="first_name"');
     expect(signup).not.toContain('name="last_name"');
     expect(signup).not.toContain('name="gender"');
