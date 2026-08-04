@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 interface CodePanelProps {
   examples: CodeExample[];
   codeLineMapping?: ReadonlyArray<CodeLineMapping>;
+  onLanguageChange?: (language: CodeLanguage) => void;
 }
 
 function escapeHtml(value: string) {
@@ -31,16 +32,24 @@ function languageLabel(language: CodeLanguage) {
   return language;
 }
 
-export function CodePanel({ examples, codeLineMapping }: CodePanelProps) {
+export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodePanelProps) {
   const { steps, currentStepIndex, reducedMotion } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
-  const [activeLang, setActiveLang] = useState<CodeLanguage>(() => {
+  const [activeLang, setActiveLangState] = useState<CodeLanguage>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("algo-flow-lang") as CodeLanguage | null;
       if (saved && examples.some((example) => example.language === saved)) return saved;
     }
     return examples[0]?.language ?? "javascript";
   });
+
+  const setActiveLang = (lang: CodeLanguage) => {
+    setActiveLangState(lang);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("algo-flow-lang", lang);
+    }
+    onLanguageChange?.(lang);
+  };
   const [highlightedDocument, setHighlightedDocument] = useState<{
     key: string;
     html: string;

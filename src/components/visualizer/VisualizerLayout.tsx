@@ -14,9 +14,12 @@ import { CodePanel } from "./CodePanel";
 import { PseudocodePanel } from "./PseudocodePanel";
 import { StepLegend, type StepLegendItem } from "./StepLegend";
 import { usePlaybackStore } from "@/stores/playback-store";
-import { getBookmarks, toggleBookmark } from "@/features/bookmarks/api";
-import { markCompleted } from "@/features/progress/api";
-import { saveSession } from "@/features/sessions/api";
+import {
+  useStatusToast,
+  useVisualizerBookmark,
+  useVisualizerCompletion,
+  useVisualizerSaveSession,
+} from "./useVisualizerActions";
 import { Bookmark, Save } from "lucide-react";
 import type { CodeLineMapping } from "@/visualizers/registry/types";
 
@@ -41,44 +44,24 @@ export function VisualizerLayout({
     usePlaybackStore();
   const [activeRightTab, setActiveRightTab] = useState<"pseudocode" | "code">("pseudocode");
   const [activeLowerTab, setActiveLowerTab] = useState<"explanation" | "log">("explanation");
+  const [activeLanguage, setActiveLanguage] = useState<string>("python");
   const [isPracticeMode, setIsPracticeMode] = useState(false);
   const [showPracticePrompt, setShowPracticePrompt] = useState(false);
   const [practiceOptions, setPracticeOptions] = useState<string[]>([]);
   const [practiceAnswer, setPracticeAnswer] = useState<string>("");
   const [practiceSelected, setPracticeSelected] = useState<string | null>(null);
   const [practiceFeedback, setPracticeFeedback] = useState<"correct" | "incorrect" | null>(null);
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [hasCompleted, setHasCompleted] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const statusTimerRef = useRef<number | null>(null);
   const canvasRegionRef = useRef<HTMLDivElement>(null);
 
-  // Check initial bookmark state
-  useEffect(() => {
-    getBookmarks()
-      .then((bookmarks) => {
-        if (bookmarks.includes(algorithm.id)) setIsBookmarked(true);
-      })
-      .catch(() => {
-        setStatusMessage("Bookmarks could not be loaded.");
-      });
-  }, [algorithm.id]);
-
-  // Handle auto-completion when reaching the end
-  useEffect(() => {
-    if (totalSteps > 0 && currentStepIndex === totalSteps - 1 && !hasCompleted) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setHasCompleted(true);
-      markCompleted(algorithm.id)
-        .then((result) => {
-          if (!result.ok) setStatusMessage(result.message);
-        })
-        .catch(() => {
-          setStatusMessage("Progress could not be saved.");
-        });
-    }
-  }, [currentStepIndex, totalSteps, hasCompleted, algorithm.id]);
+  const { statusMessage, showStatus } = useStatusToast();
+  const { isBookmarked, handleToggleBookmark } = useVisualizerBookmark(algorithm.id, showStatus);
+  useVisualizerCompletion(algorithm.id, showStatus);
+  const { isSaving, handleSaveSession } = useVisualizerSaveSession(
+    algorithm.id,
+    algorithm.name,
+    activeLanguage,
+    showStatus
+  );
 
   // Practice mode logic: randomly pause and ask predict-next-step
   useEffect(() => {
@@ -120,17 +103,6 @@ export function VisualizerLayout({
     }
   }, [currentStepIndex, isPracticeMode, isPlaying, totalSteps, steps, pause]);
 
-  const showStatus = (message: string) => {
-    setStatusMessage(message);
-    if (statusTimerRef.current) window.clearTimeout(statusTimerRef.current);
-    statusTimerRef.current = window.setTimeout(() => setStatusMessage(null), 2400);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (statusTimerRef.current) window.clearTimeout(statusTimerRef.current);
-    };
-  }, []);
   const handlePracticeSubmit = () => {
     if (practiceSelected === practiceAnswer) {
       setPracticeFeedback("correct");
@@ -141,43 +113,6 @@ export function VisualizerLayout({
       }, 1500);
     } else {
       setPracticeFeedback("incorrect");
-    }
-  };
-
-  const handleToggleBookmark = async () => {
-    const previousState = isBookmarked;
-    const nextState = !isBookmarked;
-    setIsBookmarked(nextState);
-
-    try {
-      const result = await toggleBookmark(algorithm.id, nextState);
-      if (!result.ok) setIsBookmarked(previousState);
-      showStatus(result.message);
-    } catch {
-      setIsBookmarked(previousState);
-      showStatus("Bookmark could not be updated.");
-    }
-  };
-
-  const handleSaveSession = async () => {
-    if (isSaving) return;
-    setIsSaving(true);
-    try {
-      const name = `${algorithm.name} - Step ${currentStepIndex + 1}`;
-      const result = await saveSession(
-        algorithm.id,
-        name,
-        {},
-        currentStepIndex,
-        steps[currentStepIndex]?.dataState || {},
-        "normal",
-        "python"
-      );
-      showStatus(result.message);
-    } catch {
-      showStatus("Session could not be saved.");
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -438,7 +373,11 @@ export function VisualizerLayout({
               {activeRightTab === "pseudocode" ? (
                 <PseudocodePanel slug={algorithm.slug} fallback={algorithm.pseudocode} />
               ) : (
-                <CodePanel examples={codeExamples} codeLineMapping={codeLineMapping} />
+                <CodePanel
+                  examples={codeExamples}
+                  codeLineMapping={codeLineMapping}
+                  onLanguageChange={setActiveLanguage}
+                />
               )}
             </div>
           </div>
