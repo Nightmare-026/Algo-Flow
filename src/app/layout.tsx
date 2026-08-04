@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.png", apple: "/icon.png" },
   robots: { index: true, follow: true },
   verification: {
-    google: "googlecc74ad26c67f86dd",
+    google: "anEruVcNExQOy-TfI47qMfHCcdMZJh-VVWqkZaYC1qE",
   },
 };
 
