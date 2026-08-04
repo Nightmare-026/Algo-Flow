@@ -247,7 +247,7 @@ export function VisualizerLayout({
       )}
 
       <div className="flex flex-col lg:flex-row flex-1 overflow-y-auto lg:overflow-hidden">
-        <div className="flex min-w-0 w-full shrink-0 flex-col h-auto min-h-[700px] sm:min-h-[640px] lg:min-h-0 lg:h-auto lg:w-0 lg:flex-1 lg:shrink">
+        <div className="flex min-w-0 w-full shrink-0 flex-col h-auto min-h-[380px] sm:min-h-[500px] lg:min-h-0 lg:h-auto lg:w-0 lg:flex-1 lg:shrink">
           <div className="relative flex flex-1 flex-col overflow-hidden bg-background">
             {controls && (
               <div className="w-full shrink-0 border-b border-border bg-surface/50 p-3">
@@ -333,7 +333,7 @@ export function VisualizerLayout({
           </div>
         </div>
 
-        <aside className="flex h-[660px] w-full shrink-0 flex-col border-t border-border bg-background sm:h-[720px] lg:h-full lg:w-[25rem] lg:border-l lg:border-t-0">
+        <aside className="flex h-[520px] w-full shrink-0 flex-col border-t border-border bg-background sm:h-[600px] lg:h-full lg:w-[25rem] lg:border-l lg:border-t-0">
           <div className="flex h-1/2 flex-col p-4 pb-2">
             <div
               className="mb-2 flex items-center gap-2 px-1"
