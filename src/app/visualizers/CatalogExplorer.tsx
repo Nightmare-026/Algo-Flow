@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   AlignRight,
+  ArrowLeftRight,
   ChevronRight,
   CircleDashed,
   Grid3X3,
@@ -11,6 +12,7 @@ import {
   Layers,
   Link as LinkIcon,
   Network,
+  RotateCw,
   Search,
   Share2,
   SquareSquare,
@@ -23,6 +25,8 @@ import { cn } from "@/lib/utils";
 const iconMap: Record<string, React.ElementType> = {
   SquareSquare,
   Link: LinkIcon,
+  ArrowLeftRight,
+  RotateCw,
   Layers,
   AlignRight,
   Network,
