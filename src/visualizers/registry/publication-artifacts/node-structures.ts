@@ -154,8 +154,20 @@ const graphLegend = [
   {
     bucketKey: "visited",
     label: "Visited node",
-    description: "A node already reached by the traversal.",
+    description: "A node already reached by the traversal or included in MST/distances.",
     tone: "success",
+  },
+  {
+    bucketKey: "compared",
+    label: "Compared neighbor",
+    description: "A neighboring node or edge currently inspected.",
+    tone: "info",
+  },
+  {
+    bucketKey: "swapped",
+    label: "Cycle path",
+    description: "Nodes forming a detected cycle in the graph.",
+    tone: "warning",
   },
 ] as const;
 
@@ -227,12 +239,18 @@ function verifyTree(actions: ReadonlyArray<VisualStep["actionType"]>, expectedVa
 
 function verifyGraph(steps: ReadonlyArray<VisualStep>) {
   const failures: string[] = [];
-  if (!steps.some((step) => step.actionType === "visit"))
-    failures.push("Traversal must visit at least one graph node.");
+  if (
+    !steps.some(
+      (step) =>
+        step.actionType === "visit" ||
+        step.actionType === "compare" ||
+        step.actionType === "initialize" ||
+        step.actionType === "enqueue"
+    )
+  )
+    failures.push("Graph algorithm must process at least one node or edge.");
   if (steps.at(-1)?.actionType !== "complete")
-    failures.push("Traversal must finish with a complete step.");
-  if (!steps.at(-1)?.highlights.visited?.length)
-    failures.push("Completion must retain visited graph nodes.");
+    failures.push("Graph algorithm must finish with a complete step.");
   return failures;
 }
 
@@ -521,6 +539,62 @@ export const graphPublicationArtifacts: Record<
   ),
   dfs: artifacts(
     graphCodeLineMappings.dfs,
+    list,
+    graphOptions,
+    verifyGraph,
+    graphLegend,
+    validateGraphInput
+  ),
+  dijkstra: artifacts(
+    graphCodeLineMappings.dijkstra,
+    list,
+    graphOptions,
+    verifyGraph,
+    graphLegend,
+    validateGraphInput
+  ),
+  "bellman-ford": artifacts(
+    graphCodeLineMappings["bellman-ford"],
+    list,
+    graphOptions,
+    verifyGraph,
+    graphLegend,
+    validateGraphInput
+  ),
+  kruskal: artifacts(
+    graphCodeLineMappings.kruskal,
+    list,
+    graphOptions,
+    verifyGraph,
+    graphLegend,
+    validateGraphInput
+  ),
+  prim: artifacts(
+    graphCodeLineMappings.prim,
+    list,
+    graphOptions,
+    verifyGraph,
+    graphLegend,
+    validateGraphInput
+  ),
+  "topological-sort": artifacts(
+    graphCodeLineMappings["topological-sort"],
+    list,
+    graphOptions,
+    verifyGraph,
+    graphLegend,
+    validateGraphInput
+  ),
+  "detect-cycle-graph": artifacts(
+    graphCodeLineMappings["detect-cycle-graph"],
+    list,
+    graphOptions,
+    verifyGraph,
+    graphLegend,
+    validateGraphInput
+  ),
+  "connected-components": artifacts(
+    graphCodeLineMappings["connected-components"],
     list,
     graphOptions,
     verifyGraph,

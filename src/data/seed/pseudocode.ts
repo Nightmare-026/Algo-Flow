@@ -101,6 +101,19 @@ export const pseudocodeMap: Record<string, string> = {
   // Graph
   bfs: "q.enqueue(start)\nvisited[start] = true\nwhile not q.isEmpty():\n  u = q.dequeue()\n  visit(u)\n  for v in adj[u]:\n    if not visited[v]:\n      visited[v] = true\n      q.enqueue(v)",
   dfs: "visited[u] = true\nvisit(u)\nfor v in adj[u]:\n  if not visited[v]:\n    dfs(v)",
+  dijkstra:
+    "dist[start] = 0, dist[others] = inf\nwhile unvisited:\n  u = min(dist[unvisited])\n  for (v, w) in adj[u]:\n    if dist[u] + w < dist[v]: dist[v] = dist[u] + w",
+  "bellman-ford":
+    "dist[src] = 0, dist[others] = inf\nfor i from 1 to |V|-1:\n  for (u, v, w) in edges:\n    if dist[u] + w < dist[v]: dist[v] = dist[u] + w\ncheck negative cycles",
+  kruskal:
+    "sort edges by weight\nfor (u, v, w) in edges:\n  if find(u) != find(v):\n    union(u, v)\n    add (u, v) to MST",
+  prim: "inMST = {root}\nwhile |inMST| < |V|:\n  (u, v) = min cut edge\n  inMST.add(v)\n  add (u, v) to MST",
+  "topological-sort":
+    "compute in-degrees\nq = nodes with in-degree 0\nwhile q not empty:\n  u = q.dequeue(); order.append(u)\n  for v in adj[u]:\n    if --inDegree[v] == 0: q.enqueue(v)",
+  "detect-cycle-graph":
+    "state[u] = UNVISITED\nfor u in V:\n  if state[u] == UNVISITED and dfs(u): return true\nreturn false",
+  "connected-components":
+    "for u in V:\n  if not visited[u]:\n    start new component\n    explore via BFS/DFS\n    save component",
 
   // Matrix
   "row-wise-traversal": "for r from 0 to rows-1:\n  for c from 0 to cols-1:\n    visit(mat[r][c])",
