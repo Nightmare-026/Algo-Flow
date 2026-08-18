@@ -382,10 +382,10 @@ export function VisualizerLayout({
                 aria-controls="panel-pseudocode-or-code"
                 onClick={() => setActiveRightTab("pseudocode")}
                 className={cn(
-                  "min-h-11 rounded-xl px-3 text-xs font-semibold transition-colors",
+                  "min-h-10 rounded-xl px-3.5 text-xs font-semibold transition-all",
                   activeRightTab === "pseudocode"
-                    ? "border border-border bg-surface-light text-primary"
-                    : "text-muted-foreground hover:bg-surface hover:text-foreground"
+                    ? "border border-primary/30 bg-primary-muted font-bold text-primary-active shadow-[var(--shadow-inset)]"
+                    : "text-text-muted hover:bg-bg-surface-hover hover:text-text-primary"
                 )}
               >
                 Pseudocode
@@ -398,10 +398,10 @@ export function VisualizerLayout({
                 aria-controls="panel-pseudocode-or-code"
                 onClick={() => setActiveRightTab("code")}
                 className={cn(
-                  "min-h-11 rounded-xl px-3 text-xs font-semibold transition-colors",
+                  "min-h-10 rounded-xl px-3.5 text-xs font-semibold transition-all",
                   activeRightTab === "code"
-                    ? "border border-border bg-surface-light text-primary"
-                    : "text-muted-foreground hover:bg-surface hover:text-foreground"
+                    ? "border border-primary/30 bg-primary-muted font-bold text-primary-active shadow-[var(--shadow-inset)]"
+                    : "text-text-muted hover:bg-bg-surface-hover hover:text-text-primary"
                 )}
               >
                 Code
@@ -439,10 +439,10 @@ export function VisualizerLayout({
                 aria-controls="panel-explanation-or-log"
                 onClick={() => setActiveLowerTab("explanation")}
                 className={cn(
-                  "min-h-11 rounded-xl px-3 text-xs font-semibold transition-colors",
+                  "min-h-10 rounded-xl px-3.5 text-xs font-semibold transition-all",
                   activeLowerTab === "explanation"
-                    ? "border border-border bg-surface-light text-primary"
-                    : "text-muted-foreground hover:bg-surface hover:text-foreground"
+                    ? "border border-primary/30 bg-primary-muted font-bold text-primary-active shadow-[var(--shadow-inset)]"
+                    : "text-text-muted hover:bg-bg-surface-hover hover:text-text-primary"
                 )}
               >
                 Explanation
@@ -455,10 +455,10 @@ export function VisualizerLayout({
                 aria-controls="panel-explanation-or-log"
                 onClick={() => setActiveLowerTab("log")}
                 className={cn(
-                  "min-h-11 rounded-xl px-3 text-xs font-semibold transition-colors",
+                  "min-h-10 rounded-xl px-3.5 text-xs font-semibold transition-all",
                   activeLowerTab === "log"
-                    ? "border border-border bg-surface-light text-primary"
-                    : "text-muted-foreground hover:bg-surface hover:text-foreground"
+                    ? "border border-primary/30 bg-primary-muted font-bold text-primary-active shadow-[var(--shadow-inset)]"
+                    : "text-text-muted hover:bg-bg-surface-hover hover:text-text-primary"
                 )}
               >
                 Step Log

@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { signout } from "@/app/(auth)/login/actions";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navLinks = [
   { label: "Visualizers", href: "/visualizers" },
@@ -89,7 +90,8 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
             })}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
+            <ThemeToggle />
             {user ? (
               <div className="hidden items-center gap-2 sm:flex">
                 <span className="max-w-40 truncate px-2 text-sm font-medium text-text-secondary">
