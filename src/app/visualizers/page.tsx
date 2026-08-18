@@ -1,35 +1,33 @@
 import type { Metadata } from "next";
-import { dataStructures } from "@/data/seed/data-structures";
-import { algorithms } from "@/data/seed/algorithms";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CatalogExplorer } from "./CatalogExplorer";
 import { getSiteUrl } from "@/lib/site";
+import { catalogStats, publishedAlgorithms, publishedDataStructures } from "@/lib/catalog";
 
 export const metadata: Metadata = {
-  title: "Visualizer Library | Algo Flow",
-  description:
-    "Explore 104+ interactive data structure and algorithm visualizers. Step-by-step traces for arrays, linked lists, stacks, queues, trees, graphs, sorting, searching, and dynamic programming.",
+  title: "Visualizer Library",
+  description: `Explore ${catalogStats.visualizerCount} interactive data structure and algorithm visualizers. Step-by-step traces for arrays, linked lists, stacks, queues, trees, graphs, sorting, searching, and dynamic programming.`,
   alternates: { canonical: "/visualizers" },
   openGraph: {
     title: "Visualizer Library | Algo Flow",
-    description:
-      "Explore 104+ interactive data structure and algorithm visualizers with step-by-step code execution traces.",
+    description: `Explore ${catalogStats.visualizerCount} interactive data structure and algorithm visualizers with step-by-step code execution traces.`,
     url: "/visualizers",
     siteName: "Algo Flow",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Algo Flow Visualizer Library" }],
+    images: [
+      { url: "/opengraph-image", width: 1200, height: 630, alt: "Algo Flow Visualizer Library" },
+    ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Visualizer Library | Algo Flow",
-    description: "Explore 104+ interactive data structure and algorithm visualizers.",
+    description: `Explore ${catalogStats.visualizerCount} interactive data structure and algorithm visualizers.`,
     images: ["/opengraph-image"],
   },
 };
 
 export default function VisualizersPage() {
-  const publishedAlgorithms = algorithms.filter((algorithm) => algorithm.isPublished);
   const siteUrl = getSiteUrl();
 
   const structuredData = {
@@ -78,13 +76,14 @@ export default function VisualizersPage() {
               Pick a structure. <span className="text-gradient-primary">Trace the behavior.</span>
             </h1>
             <p className="mt-5 text-lg leading-8 text-text-secondary">
-              Search {publishedAlgorithms.length} working visualizers across {dataStructures.length}{" "}
-              data structures. Every result opens a real step-by-step workspace.
+              Search {publishedAlgorithms.length} working visualizers across{" "}
+              {publishedDataStructures.length} data structures. Every result opens a real
+              step-by-step workspace.
             </p>
           </div>
 
           <CatalogExplorer
-            dataStructures={dataStructures}
+            dataStructures={publishedDataStructures}
             publishedAlgorithms={publishedAlgorithms}
           />
         </div>

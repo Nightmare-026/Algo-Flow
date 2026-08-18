@@ -63,7 +63,12 @@ export function HashSetRenderer() {
         </div>
       </div>
 
-      <div className="flex w-full h-full max-h-full items-start justify-center overflow-y-auto overflow-x-hidden px-4 pb-4">
+      <div
+        className="flex w-full h-full max-h-full items-start justify-center overflow-y-auto overflow-x-hidden px-4 pb-4"
+        role="region"
+        aria-label="Hash set canvas"
+        tabIndex={0}
+      >
         <div className="flex flex-col gap-3">
           {dataState.collisionResolution === "linear-probing"
             ? /* Linear Probing Layout */

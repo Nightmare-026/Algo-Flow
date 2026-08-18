@@ -19,7 +19,10 @@ export function ErrorState({
   onRetry,
 }: ErrorStateProps) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-16 text-foreground">
+    <main
+      id="main-content"
+      className="flex min-h-screen items-center justify-center bg-background px-4 py-16 text-foreground"
+    >
       <section
         className="w-full max-w-lg rounded-2xl border border-border bg-surface p-8 text-center shadow-lg"
         role="alert"

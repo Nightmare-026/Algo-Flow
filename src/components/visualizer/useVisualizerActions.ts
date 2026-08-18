@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getBookmarks, toggleBookmark } from "@/features/bookmarks/api";
 import { saveSession } from "@/features/sessions/api";
 import { markCompleted } from "@/features/progress/api";
@@ -92,11 +92,11 @@ export function useStatusToast() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const statusTimerRef = useRef<number | null>(null);
 
-  const showStatus = (message: string) => {
+  const showStatus = useCallback((message: string) => {
     setStatusMessage(message);
     if (statusTimerRef.current) window.clearTimeout(statusTimerRef.current);
     statusTimerRef.current = window.setTimeout(() => setStatusMessage(null), 2400);
-  };
+  }, []);
 
   useEffect(() => {
     return () => {

@@ -68,9 +68,7 @@ export function MatrixInputControls({
     }
     const expectedLength = rows * cols;
     if (result.values.length !== expectedLength) {
-      setError(
-        `Enter exactly ${expectedLength} values for the selected ${rows} × ${cols} matrix.`
-      );
+      setError(`Enter exactly ${expectedLength} values for the selected ${rows} × ${cols} matrix.`);
       return;
     }
 
@@ -173,7 +171,10 @@ export function MatrixInputControls({
       </div>
 
       {needsTarget(slug) ? (
-        <label className="flex items-center gap-2 rounded-md border border-border bg-bg-surface/50 px-3 py-1" htmlFor={`${fieldId}-target`}>
+        <label
+          className="flex items-center gap-2 rounded-md border border-border bg-bg-surface/50 px-3 py-1"
+          htmlFor={`${fieldId}-target`}
+        >
           <Target className="h-4 w-4 text-primary" aria-hidden="true" />
           <span className="font-medium text-text-muted">Target</span>
           <Input
@@ -181,7 +182,9 @@ export function MatrixInputControls({
             type="number"
             className="h-7 w-20 border-border bg-bg-base px-2 py-0"
             value={options.target}
-            onChange={(event) => onOptionsChange?.({ ...options, target: Number(event.target.value) })}
+            onChange={(event) =>
+              onOptionsChange?.({ ...options, target: Number(event.target.value) })
+            }
           />
         </label>
       ) : null}

@@ -6,6 +6,7 @@ import { VisualStepHighlights } from "@/types";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useMemo, useRef, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { getVisualElementClassName } from "../visual-state";
 
 interface NodeLayout {
@@ -40,20 +41,24 @@ function describeTree(root: TreeNodeData | null): string {
 export function TreeRenderer() {
   const { steps, currentStepIndex } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
+  const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(800);
 
   useEffect(() => {
-    if (containerRef.current) {
-      const resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          setContainerWidth(entry.contentRect.width);
+    const container = containerRef.current;
+    if (!container) return;
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (typeof container.checkVisibility === "function" && !container.checkVisibility()) {
+          continue;
         }
-      });
-      resizeObserver.observe(containerRef.current);
-      return () => resizeObserver.disconnect();
-    }
-  }, []);
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, [pathname]);
 
   const dataState = (currentStep?.dataState as TreeVisualState) || {};
   const highlights: VisualStepHighlights = currentStep?.highlights || {};

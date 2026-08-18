@@ -54,7 +54,7 @@ export function StackInputControls({
       <div className="flex flex-wrap items-center gap-3">
         {/* Capacity Input */}
         <form onSubmit={handleCapacitySubmit} className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
+          <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
             <span className="text-text-muted font-medium">Capacity:</span>
             <Input
               type="number"
@@ -64,7 +64,7 @@ export function StackInputControls({
               max={15}
               onChange={(e) => setCapInput(e.target.value)}
             />
-          </div>
+          </label>
           <Button type="submit" variant="secondary" size="sm">
             Set Capacity
           </Button>
@@ -72,7 +72,7 @@ export function StackInputControls({
 
         {/* Value Input */}
         <form onSubmit={handlePushSubmit} className="flex flex-wrap items-center gap-2 ml-4">
-          <div className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
+          <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
             <span className="text-text-muted font-medium">Value:</span>
             <Input
               type="number"
@@ -80,7 +80,7 @@ export function StackInputControls({
               value={valInput}
               onChange={(e) => setValInput(e.target.value)}
             />
-          </div>
+          </label>
 
           <div className="flex items-center gap-1">
             <Button

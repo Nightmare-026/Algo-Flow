@@ -23,9 +23,9 @@ export function StringRenderer() {
       {dataState.lps && (
         <section className="w-full max-w-3xl" aria-label="KMP LPS table">
           <div className="mb-2 flex items-center justify-between gap-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-text-secondary">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-text-secondary">
               LPS Table
-            </h3>
+            </h2>
             <span className="rounded-full border border-border bg-surface px-2 py-1 text-xs text-text-muted">
               Phase: {dataState.phase ?? "preprocessing"}
             </span>
@@ -45,7 +45,9 @@ export function StringRenderer() {
                 <span className="block text-sm font-semibold text-text-secondary">
                   {element.char === " " ? "?" : element.char}
                 </span>
-                <span className="block text-lg font-bold text-primary">{dataState.lps![index]}</span>
+                <span className="block text-lg font-bold text-primary">
+                  {dataState.lps![index]}
+                </span>
               </div>
             ))}
           </div>
@@ -58,9 +60,9 @@ export function StringRenderer() {
       )}
       {/* Main String */}
       <div className="flex flex-col items-center gap-2">
-        <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-2">
+        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-2">
           Text
-        </h3>
+        </h2>
         <div className="flex flex-wrap items-center justify-center gap-1 max-w-full">
           <AnimatePresence mode="popLayout">
             {dataState.elements.map((element, index) => {
@@ -123,9 +125,9 @@ export function StringRenderer() {
       {/* Pattern String (if any) */}
       {dataState.patternElements && dataState.patternElements.length > 0 && (
         <div className="flex flex-col items-center gap-2 mt-4">
-          <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-2">
+          <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-2">
             Pattern
-          </h3>
+          </h2>
           <div className="flex flex-wrap items-center justify-center gap-1 max-w-full">
             <AnimatePresence mode="popLayout">
               {dataState.patternElements.map((element, index) => {

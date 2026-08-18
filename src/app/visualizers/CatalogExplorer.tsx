@@ -45,10 +45,7 @@ type CatalogExplorerProps = {
   publishedAlgorithms: Algorithm[];
 };
 
-export function CatalogExplorer({
-  dataStructures,
-  publishedAlgorithms,
-}: CatalogExplorerProps) {
+export function CatalogExplorer({ dataStructures, publishedAlgorithms }: CatalogExplorerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const reduceMotion = useReducedMotion();
@@ -121,8 +118,7 @@ export function CatalogExplorer({
       </div>
 
       <p className="mt-8 text-sm font-semibold text-text-secondary" aria-live="polite">
-        {filteredStructures.length}{" "}
-        {filteredStructures.length === 1 ? "structure" : "structures"}
+        {filteredStructures.length} {filteredStructures.length === 1 ? "structure" : "structures"}
       </p>
 
       {filteredStructures.length > 0 ? (
@@ -134,9 +130,7 @@ export function CatalogExplorer({
         >
           {filteredStructures.map((structure) => {
             const Icon =
-              structure.icon && iconMap[structure.icon]
-                ? iconMap[structure.icon]
-                : SquareSquare;
+              structure.icon && iconMap[structure.icon] ? iconMap[structure.icon] : SquareSquare;
             const count = countsByStructure.get(structure.id) ?? 0;
             return (
               <motion.div
@@ -170,7 +164,10 @@ export function CatalogExplorer({
                       {count} {count === 1 ? "algorithm" : "algorithms"}
                     </span>
                     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background text-primary-active shadow-[var(--shadow-inset)] transition-all duration-300 group-hover:bg-primary group-hover:text-white">
-                      <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden="true" />
+                      <ChevronRight
+                        className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
                     </span>
                   </div>
                 </Link>

@@ -88,7 +88,9 @@ function parseImportedGraph(value: unknown): {
     throw new Error("The graph must contain nodes and edges arrays.");
   }
   if (record.nodes.length > MAX_IMPORT_NODES || record.edges.length > MAX_IMPORT_EDGES) {
-    throw new Error(`Graphs are limited to ${MAX_IMPORT_NODES} nodes and ${MAX_IMPORT_EDGES} edges.`);
+    throw new Error(
+      `Graphs are limited to ${MAX_IMPORT_NODES} nodes and ${MAX_IMPORT_EDGES} edges.`
+    );
   }
 
   const nodeIds = new Set<string>();
@@ -133,7 +135,9 @@ function parseImportedGraph(value: unknown): {
     }
     if (
       edge.weight !== undefined &&
-      (typeof edge.weight !== "number" || !Number.isFinite(edge.weight) || Math.abs(edge.weight) > 1_000_000)
+      (typeof edge.weight !== "number" ||
+        !Number.isFinite(edge.weight) ||
+        Math.abs(edge.weight) > 1_000_000)
     ) {
       throw new Error(`Edge ${index + 1} has an invalid weight.`);
     }
@@ -228,7 +232,7 @@ export function GraphEditorModal({
   const handleAddNode = () => {
     const nextId = String.fromCharCode(65 + nodes.length); // A, B, C...
     const newNode: Node = {
-            id: `node-${Date.now()}`,
+      id: `node-${Date.now()}`,
       position: { x: Math.random() * 300 + 50, y: Math.random() * 300 + 50 },
       data: { label: nextId },
       style: {
@@ -439,10 +443,13 @@ export function GraphEditorModal({
   useEffect(() => {
     if (!isOpen) return;
 
-    previouslyFocusedRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    previouslyFocusedRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const overlay = overlayRef.current;
     const siblings = Array.from(document.body.children)
-      .filter((element): element is HTMLElement => element instanceof HTMLElement && element !== overlay)
+      .filter(
+        (element): element is HTMLElement => element instanceof HTMLElement && element !== overlay
+      )
       .map((element) => ({
         element,
         inert: element.inert,
@@ -519,7 +526,9 @@ export function GraphEditorModal({
         {/* Editor Main Canvas */}
         <div className="relative flex-1 bg-bg-surface-light overflow-hidden flex flex-col">
           <div className="flex items-center justify-between border-b border-border bg-bg-surface p-4 shrink-0">
-            <h2 id="graph-editor-title" className="text-lg font-bold">Interactive Graph Editor</h2>
+            <h2 id="graph-editor-title" className="text-lg font-bold">
+              Interactive Graph Editor
+            </h2>
             <div className="flex items-center gap-2">
               <button
                 ref={closeButtonRef}

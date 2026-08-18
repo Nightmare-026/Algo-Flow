@@ -5,7 +5,10 @@ import { cn } from "@/lib/utils";
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-16 text-foreground">
+    <main
+      id="main-content"
+      className="flex min-h-screen items-center justify-center bg-background px-4 py-16 text-foreground"
+    >
       <section className="w-full max-w-lg neu-raised rounded-3xl p-8 text-center">
         <SearchX aria-hidden="true" className="mx-auto h-14 w-14 text-primary" />
         <p className="mt-5 text-sm font-semibold uppercase tracking-[0.2em] text-primary">404</p>

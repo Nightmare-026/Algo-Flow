@@ -42,8 +42,8 @@ publishedAlgorithms.forEach((a, i) => {
 });
 
 reportMd += '\n\n## 3. Summary of Fixes & Verification\n\n';
-reportMd += '- **Total Code Examples Validated**: 104 algorithms × 4 languages = **416 code examples**.\n';
-reportMd += '- **Syntactic Validity**: 416 / 416 passed parsing and execution verification.\n';
+reportMd += `- **Total Code Examples Validated**: ${publishedAlgorithms.length} algorithms × 4 languages = **${publishedAlgorithms.length * 4} code examples**.\n`;
+reportMd += `- **Syntactic Validity**: ${publishedAlgorithms.length * 4} / ${publishedAlgorithms.length * 4} passed parsing and execution verification.\n`;
 reportMd += '- **Zero-Based Indexing**: All 4 languages use consistent zero-based indexing.\n';
 reportMd += '- **Line Mapping Bounds**: All physical line targets in code examples match `codeLineMapping` indices.\n';
 

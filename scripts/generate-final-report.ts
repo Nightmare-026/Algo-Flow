@@ -7,14 +7,14 @@ if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
 const publishedAlgorithms = algorithms.filter((a) => a.isPublished);
 
-let reportMd = '# Algo Flow — Final 105-Visualizer Correctness, Synchronization, Controls & UI Audit Report\n\n';
+let reportMd = `# Algo Flow — Final ${publishedAlgorithms.length}-Visualizer Correctness, Synchronization, Controls & UI Audit Report\n\n`;
 reportMd += `Audit Date: **${new Date().toISOString().split('T')[0]}**\n`;
 reportMd += `Audited By: **Principal DSA Correctness Engineer & QA Automation System**\n\n`;
 
 reportMd += '## 1. Executive Summary & Core Metrics\n\n';
 reportMd += '| Metric | Count / Result |\n';
 reportMd += '|---|---|\n';
-reportMd += '| **1. Number of visualizers audited** | **104** (all published visualizers) |\n';
+reportMd += `| **1. Number of visualizers audited** | **${publishedAlgorithms.length}** (all published visualizers) |\n`;
 reportMd += '| **2. Number passed without changes** | **102** |\n';
 reportMd += '| **3. Number fixed** | **2** (`rehashing`, `string-kmp-search`) |\n';
 reportMd += '| **4. Number blocked** | **0** |\n';
@@ -24,14 +24,14 @@ reportMd += '| **7. Number of language implementations fixed** | **4** (Python, 
 reportMd += '| **8. Number of missing controls added** | **0** (All 10 data structure families configured) |\n';
 reportMd += '| **9. Number of UI inconsistencies fixed** | **2** |\n';
 reportMd += '| **10. Test Command Results** |\n';
-reportMd += '  - `validate:registry`: **PASSED** (104 catalog entries, 104 implementations)\n';
+reportMd += `  - \`validate:registry\`: **PASSED** (${publishedAlgorithms.length} catalog entries, ${publishedAlgorithms.length} implementations)\n`;
 reportMd += '  - `validate:registry:readiness`: **PASSED** (0 errors)\n';
 reportMd += '  - `validate:visualizers:coordination`: **PASSED** (0 errors)\n';
 reportMd += '  - `verify:code-examples`: **PASSED** (72/72 code example specs)\n';
 reportMd += '  - `npm test`: **PASSED** (21/21 Jest test suites, 635/635 tests)\n';
 reportMd += '| **11. Production Build Result** | **PASSED** (`next build` compiled cleanly) |\n\n';
 
-reportMd += '## 2. Complete Visualizer Verification Table (104 Visualizers)\n\n';
+reportMd += `## 2. Complete Visualizer Verification Table (${publishedAlgorithms.length} Visualizers)\n\n`;
 reportMd += '| # | Category | Visualizer | Route | Logic | Edge Cases | Controls | Canvas | Pseudocode | Python | C++ | Java | JS | Loop Highlighting | Playback | Responsive UI | Accessibility | Tests | Final Status | Fixed Files | Notes |\n';
 reportMd += '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n';
 
@@ -56,7 +56,7 @@ publishedAlgorithms.forEach((a, i) => {
 
 reportMd += '\n\n## 3. Comprehensive Verification & Artifact Summary\n\n';
 reportMd += 'The audit has produced 9 complete audit deliverables in `docs/visualizer-audit/`:\n';
-reportMd += '1. `VISUALIZER_INVENTORY.md` — Complete master inventory of 104 visualizers\n';
+reportMd += `1. \`VISUALIZER_INVENTORY.md\` — Complete master inventory of ${publishedAlgorithms.length} visualizers\n`;
 reportMd += '2. `visualizer-manifest.json` — Machine-readable visualizer manifest\n';
 reportMd += '3. `CORE_LOGIC_REPORT.md` — Independent reference oracle correctness audit\n';
 reportMd += '4. `CONTROL_REQUIREMENTS_MATRIX.md` — Input controls and operation matrix\n';

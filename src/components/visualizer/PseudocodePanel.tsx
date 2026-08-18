@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { usePlaybackStore } from "@/stores/playback-store";
 import { getVisualizerPseudocode } from "@/visualizers/registry/pseudocode";
 import { cn } from "@/lib/utils";
+import { useAutoScrollToActive } from "./useAutoScrollToActive";
 
 interface PseudocodePanelProps {
   slug: string;
@@ -18,21 +19,12 @@ export function PseudocodePanel({ slug, fallback }: PseudocodePanelProps) {
   const lines = getVisualizerPseudocode(slug, fallback);
   const activeLineNum = currentStep?.pseudocodeLine;
 
-  useEffect(() => {
-    const line = activeLineRef.current;
-    const container = scrollContainerRef.current;
-    if (!line || !container) return;
-    const top =
-      container.scrollTop +
-      line.getBoundingClientRect().top -
-      container.getBoundingClientRect().top -
-      container.clientHeight / 2 +
-      line.offsetHeight / 2;
-    container.scrollTo({
-      top: Math.max(0, top),
-      behavior: reducedMotion ? "auto" : "smooth",
-    });
-  }, [activeLineNum, reducedMotion]);
+  useAutoScrollToActive({
+    containerRef: scrollContainerRef,
+    activeElementRef: activeLineRef,
+    reducedMotion,
+    trigger: activeLineNum,
+  });
 
   return (
     <section
@@ -40,11 +32,14 @@ export function PseudocodePanel({ slug, fallback }: PseudocodePanelProps) {
       aria-label="Pseudocode"
     >
       <div className="flex min-h-[46px] shrink-0 items-center border-b border-border bg-bg-surface px-4">
-        <h3 className="text-sm font-semibold text-text-primary">Pseudocode</h3>
+        <h2 className="text-sm font-semibold text-text-primary">Pseudocode</h2>
       </div>
       <div
         ref={scrollContainerRef}
-        className="flex-1 overflow-auto bg-[#173126] p-4 font-mono text-sm text-emerald-50/82"
+        className="flex-1 overflow-auto bg-pseudocode-panel-bg p-4 font-mono text-sm text-emerald-50/82"
+        role="region"
+        aria-label="Pseudocode lines"
+        tabIndex={0}
       >
         {lines.length > 0 ? (
           <div className="flex min-w-max flex-col">

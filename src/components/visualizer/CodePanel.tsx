@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Check, Copy } from "lucide-react";
 import { usePlaybackStore } from "@/stores/playback-store";
 import type { CodeExample, CodeLanguage } from "@/types";
@@ -35,6 +36,7 @@ function languageLabel(language: CodeLanguage) {
 export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodePanelProps) {
   const { steps, currentStepIndex, reducedMotion } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
+  const pathname = usePathname();
   const [activeLang, setActiveLangState] = useState<CodeLanguage>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("algo-flow-lang") as CodeLanguage | null;
@@ -96,7 +98,14 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
 
   useEffect(() => {
     if (!htmlContent || !codeString) return;
-    const frame = window.requestAnimationFrame(() => {
+
+    const container = codeScrollRef.current;
+    if (!container) return;
+
+    const applyHighlight = () => {
+      if (typeof container.checkVisibility === "function" && !container.checkVisibility()) {
+        return;
+      }
       const lines = codeContainerRef.current?.querySelectorAll<HTMLElement>(".shiki .line");
       lines?.forEach((line, index) => {
         const isActive = Boolean(activeLineNum && index + 1 === activeLineNum);
@@ -107,29 +116,40 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
           line.removeAttribute("aria-current");
         }
         line.dataset.line = String(index + 1);
-        if (isActive) {
-          const container = codeScrollRef.current;
-          if (container) {
-            const top =
-              container.scrollTop +
-              line.getBoundingClientRect().top -
-              container.getBoundingClientRect().top -
-              container.clientHeight / 2 +
-              line.offsetHeight / 2;
-            container.scrollTo({
-              top: Math.max(0, top),
-              behavior: reducedMotion ? "auto" : "smooth",
-            });
-          }
-        }
       });
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [activeLineNum, codeString, htmlContent, reducedMotion]);
+
+      const activeLine = codeContainerRef.current?.querySelector<HTMLElement>(
+        ".shiki .is-active-code-line"
+      );
+      if (!activeLine) return;
+      const top =
+        container.scrollTop +
+        activeLine.getBoundingClientRect().top -
+        container.getBoundingClientRect().top -
+        container.clientHeight / 2 +
+        activeLine.offsetHeight / 2;
+      container.scrollTo({
+        top: Math.max(0, top),
+        behavior: reducedMotion ? "auto" : "smooth",
+      });
+    };
+
+    const frame = window.requestAnimationFrame(applyHighlight);
+
+    let resizeObserver: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(applyHighlight);
+      resizeObserver.observe(container);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      resizeObserver?.disconnect();
+    };
+  }, [activeLineNum, codeString, htmlContent, reducedMotion, pathname]);
 
   const handleLangChange = (language: CodeLanguage) => {
     setActiveLang(language);
-    localStorage.setItem("algo-flow-lang", language);
   };
 
   const handleCopy = async () => {
@@ -190,7 +210,7 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
         role="tabpanel"
         aria-labelledby={`code-tab-${activeLang}`}
         aria-busy={!isDocumentReady && Boolean(codeString)}
-        className="group relative flex-1 overflow-auto bg-[#121a15]"
+        className="group relative flex-1 overflow-auto bg-code-panel-bg"
       >
         {isDocumentReady && htmlContent && codeString ? (
           <div

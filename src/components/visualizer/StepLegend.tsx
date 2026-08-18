@@ -34,7 +34,11 @@ export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) 
       aria-label="Step highlight legend"
       className="border-b border-border bg-bg-surface/70 px-3 py-2"
     >
-      <div className="hide-scrollbar flex items-center gap-2 overflow-x-auto" role="list">
+      <div
+        className="hide-scrollbar flex items-center gap-2 overflow-x-auto"
+        role="list"
+        tabIndex={0}
+      >
         <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.14em] text-text-muted">
           Visual state
         </span>

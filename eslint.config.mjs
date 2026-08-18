@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     "test-results/**",
     "playwright-report/**",
     "next-env.d.ts",
+    "algo-flow-code-examples-*",
+    ".tmp/**",
   ]),
 ]);
 

@@ -7,7 +7,10 @@ import type { CodeLanguage } from "@/types";
 import { getArrayCodeExamples } from "@/visualizers/array/code-examples";
 import { glowStyle, sectionReveal } from "./landing-effects";
 
-const languagePresentation: Record<CodeLanguage, { name: string; color: string; description: string }> = {
+const languagePresentation: Record<
+  CodeLanguage,
+  { name: string; color: string; description: string }
+> = {
   cpp: {
     name: "C++",
     color: "#BAE6FD",
@@ -43,7 +46,8 @@ const languages = getArrayCodeExamples("bubble-sort", "landing-bubble-sort").map
 export function CodeLanguages() {
   const [activeTab, setActiveTab] = useState<CodeLanguage>("javascript");
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">("idle");
-  const activeLanguage = languages.find((language) => language.language === activeTab) ?? languages[0];
+  const activeLanguage =
+    languages.find((language) => language.language === activeTab) ?? languages[0];
 
   const handleCopy = async () => {
     try {
@@ -148,9 +152,17 @@ export function CodeLanguages() {
               onClick={handleCopy}
               aria-label={`Copy ${activeLanguage.name} Bubble Sort code`}
             >
-              {copyStatus === "copied" ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              {copyStatus === "copied" ? (
+                <Check className="h-3.5 w-3.5" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
               <span aria-live="polite">
-                {copyStatus === "copied" ? "Copied" : copyStatus === "failed" ? "Copy failed" : "Copy"}
+                {copyStatus === "copied"
+                  ? "Copied"
+                  : copyStatus === "failed"
+                    ? "Copy failed"
+                    : "Copy"}
               </span>
             </button>
           </div>

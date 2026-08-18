@@ -44,3 +44,8 @@ docs/supabase_config.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# temp & audit
+/.tmp/
+/audit-ui/
+

@@ -65,7 +65,9 @@ export async function loginWithOAuth(provider: "google" | "github") {
   try {
     origin = await getRequestOrigin();
   } catch {
-    redirect(`/login?error=${encodeURIComponent("Authentication service is temporarily unavailable. Please try again.")}`);
+    redirect(
+      `/login?error=${encodeURIComponent("Authentication service is temporarily unavailable. Please try again.")}`
+    );
   }
 
   const { data, error } = await supabase.auth.signInWithOAuth({
@@ -118,11 +120,7 @@ export async function signup(formData: FormData) {
       `/signup?error=${encodeURIComponent("Passwords do not match.")}&next=${encodeURIComponent(nextUrl)}`
     );
   }
-  if (
-    !legalAccepted ||
-    termsVersion !== TERMS_VERSION ||
-    privacyVersion !== PRIVACY_VERSION
-  ) {
+  if (!legalAccepted || termsVersion !== TERMS_VERSION || privacyVersion !== PRIVACY_VERSION) {
     redirect(
       `/signup?error=${encodeURIComponent("Accept the current Terms and acknowledge the current Privacy Policy.")}&next=${encodeURIComponent(nextUrl)}`
     );
@@ -182,7 +180,10 @@ export async function sendPasswordReset(formData: FormData) {
   try {
     origin = await getRequestOrigin();
   } catch {
-    redirect("/forgot-password?error=" + encodeURIComponent("Authentication service is temporarily unavailable. Please try again."));
+    redirect(
+      "/forgot-password?error=" +
+        encodeURIComponent("Authentication service is temporarily unavailable. Please try again.")
+    );
   }
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/auth/callback?next=/reset-password`,

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { ArrowRight, Clock, HardDrive, PlayCircle } from "lucide-react";
@@ -28,7 +28,7 @@ export function FeaturedVisualizers() {
     >
       <div className="mx-auto max-w-7xl">
         <motion.div
-          initial="visible"
+          initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-90px" }}
           variants={sectionReveal}
@@ -47,7 +47,7 @@ export function FeaturedVisualizers() {
         </motion.div>
 
         <motion.div
-          initial="visible"
+          initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"

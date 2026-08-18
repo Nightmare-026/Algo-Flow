@@ -17,7 +17,7 @@ interface PlaybackActions {
 
 type PlaybackStore = PlaybackState & { reducedMotion: boolean } & PlaybackActions;
 
-const getSpeedMs = (speed: PlaybackSpeed, customMs: number) => {
+export const getActiveSpeedMs = (speed: PlaybackSpeed, customMs: number) => {
   switch (speed) {
     case "fast":
       return 300;
@@ -120,8 +120,11 @@ export const usePlaybackStore = create<PlaybackStore>((set, get) => ({
     }
   },
 
-  setSpeed: (speed, customMs = 600) =>
-    set({ speed, customSpeedMs: speed === "custom" ? customMs : getSpeedMs(speed, customMs) }),
+  setSpeed: (speed, customMs) =>
+    set((state) => ({
+      speed,
+      customSpeedMs: speed === "custom" && customMs !== undefined ? customMs : state.customSpeedMs,
+    })),
 
   setReducedMotion: (enabled) => set({ reducedMotion: enabled }),
 

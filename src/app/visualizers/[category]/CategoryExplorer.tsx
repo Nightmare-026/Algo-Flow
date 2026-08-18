@@ -120,9 +120,7 @@ export function CategoryExplorer({
           className="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
         >
           {filteredAlgorithms.map((algorithm) => {
-            const operation = structureOperations.find(
-              (item) => item.id === algorithm.operationId
-            );
+            const operation = structureOperations.find((item) => item.id === algorithm.operationId);
             return (
               <motion.article
                 key={algorithm.id}
@@ -170,9 +168,7 @@ export function CategoryExplorer({
                     </div>
                   </dl>
                   <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
-                    <span className="text-sm font-bold text-primary-active">
-                      Open visualizer
-                    </span>
+                    <span className="text-sm font-bold text-primary-active">Open visualizer</span>
                     <ChevronRight
                       className="h-4 w-4 text-primary-active transition-transform duration-300 group-hover:translate-x-1"
                       aria-hidden="true"

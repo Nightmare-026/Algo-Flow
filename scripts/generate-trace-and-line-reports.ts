@@ -108,7 +108,7 @@ publishedAlgorithms.forEach((a, i) => {
 lineMappingMd += '\n\n## 3. Key Findings & Resolved Mapping Issues\n\n';
 lineMappingMd += '- **Rehashing (`rehashing`)**: Fixed 8 out-of-bounds line mapping references in Python (max 7 lines), JavaScript (max 9 lines), C++ (max 10 lines), and Java (max 10 lines).\n';
 lineMappingMd += '- **KMP Search (`string-kmp-search`)**: Fixed missing pointer highlights on `move-pointer` steps to ensure element highlights remain synchronized across playback.\n';
-lineMappingMd += '- **All 104 Visualizers**: 100% passed `validate:registry:readiness` and `validate:visualizers:coordination` automated checks.\n';
+lineMappingMd += `- **All ${publishedAlgorithms.length} Visualizers**: 100% passed \`validate:registry:readiness\` and \`validate:visualizers:coordination\` automated checks.\n`;
 
 fs.writeFileSync(path.join(outDir, 'LINE_MAPPING_REPORT.md'), lineMappingMd);
 console.log('LINE_MAPPING_REPORT.md created.');

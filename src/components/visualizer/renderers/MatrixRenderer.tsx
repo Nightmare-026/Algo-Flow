@@ -25,7 +25,12 @@ export function MatrixRenderer() {
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-full p-4 relative overflow-auto">
+    <div
+      className="flex items-center justify-center w-full h-full p-4 relative overflow-auto"
+      role="region"
+      aria-label="Matrix canvas"
+      tabIndex={0}
+    >
       <div className="flex flex-col gap-2 relative p-4 max-h-full max-w-full">
         {/* Row and Col Headers */}
         <div className="flex w-full mb-2 ml-8">

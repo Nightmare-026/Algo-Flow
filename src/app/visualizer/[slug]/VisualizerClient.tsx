@@ -101,7 +101,7 @@ export function VisualizerClient({
   const defaultSize =
     algorithm.dataStructureId === "ds_hash_table" || algorithm.dataStructureId === "ds_hash_set"
       ? 7
-      : (dataLength || 6);
+      : dataLength || 6;
 
   const controls =
     Controls && isImplemented ? (

@@ -1,4 +1,4 @@
-﻿import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -168,32 +168,55 @@ function run(
   args: string[],
   cwd: string
 ): { ok: true; output: string } | { ok: false; reason: string } {
-  const result = spawnSync(command, args, {
-    cwd,
-    encoding: "utf8",
-    windowsHide: true,
-    timeout: 20_000,
-  });
-  if (result.error) {
-    return { ok: false, reason: result.error.message };
+  let attempts = 0;
+  while (attempts < 10) {
+    const result = spawnSync(command, args, {
+      cwd,
+      encoding: "utf8",
+      windowsHide: true,
+      timeout: 20_000,
+    });
+    if (result.error) {
+      if (process.platform === "win32" && attempts < 9) {
+        attempts++;
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 800);
+        continue;
+      }
+      return { ok: false, reason: result.error.message };
+    }
+    if (result.status !== 0) {
+      const reason =
+        normalize(result.stderr || result.stdout) || `command exited with status ${result.status}`;
+      if (
+        process.platform === "win32" &&
+        attempts < 9 &&
+        /Device Guard|EBUSY|EACCES|UNKNOWN/i.test(reason)
+      ) {
+        attempts++;
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 800);
+        continue;
+      }
+      return { ok: false, reason };
+    }
+    return { ok: true, output: normalize(result.stdout) };
   }
-  if (result.status !== 0) {
-    return {
-      ok: false,
-      reason:
-        normalize(result.stderr || result.stdout) || `command exited with status ${result.status}`,
-    };
-  }
-  return { ok: true, output: normalize(result.stdout) };
+  return { ok: false, reason: "spawnSync retry limit exceeded" };
 }
 
-function runFreshExecutable(command: string, cwd: string) {
-  const invoke = () => run(command, [], cwd);
+function runFreshExecutable(programPath: string, cwd: string) {
+  const invoke = () => {
+    if (process.platform === "win32" && !programPath.includes("\\") && !programPath.includes("/")) {
+      return run(`.\\${programPath}`, [], cwd);
+    }
+    return run(programPath, [], cwd);
+  };
 
   let result = invoke();
-  for (let attempt = 1; attempt < 3 && !result.ok; attempt++) {
+  for (let attempt = 1; attempt < 8 && !result.ok; attempt++) {
     const transientPolicyRace =
-      /\b(?:UNKNOWN|EBUSY)\b/.test(result.reason) || /Device Guard policy/i.test(result.reason);
+      /\b(?:UNKNOWN|EBUSY|EACCES|EPERM)\b/.test(result.reason) ||
+      /Device Guard policy/i.test(result.reason) ||
+      /spawnSync/i.test(result.reason);
     if (!transientPolicyRace) break;
     waitForExecutablePolicyScan();
     result = invoke();
@@ -201,10 +224,10 @@ function runFreshExecutable(command: string, cwd: string) {
   return result;
 }
 function waitForExecutablePolicyScan() {
-  // Windows Device Guard may inspect a freshly linked binary before allowing
+  // Windows Device Guard / Defender may inspect a freshly linked binary before allowing
   // execution. A short bounded wait avoids racing that scan.
   if (process.platform === "win32") {
-    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1500);
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000);
   }
 }
 
@@ -358,7 +381,7 @@ function verifyLanguage(
       return { status: "not-run", reason: "g++ is unavailable" };
     }
     const source = join(directory, "example.cpp");
-    const program = join(directory, process.platform === "win32" ? "example.exe" : "example");
+    const program = process.platform === "win32" ? "example.exe" : "./example";
     writeFileSync(source, cppSource(code, fixture));
     const compilation = run("g++", [source, "-std=c++11", "-o", program], directory);
     if (compilation.ok) waitForExecutablePolicyScan();
@@ -383,7 +406,9 @@ function verifyLanguage(
   return { status: "pass", output: execution.output };
 }
 
-const tempBase = process.platform === "win32" ? process.cwd() : tmpdir();
+const tempDir = join(process.cwd(), ".tmp");
+mkdirSync(tempDir, { recursive: true });
+const tempBase = process.platform === "win32" ? tempDir : tmpdir();
 const root = mkdtempSync(join(tempBase, "algo-flow-code-examples-"));
 const failures: string[] = [];
 const notRun: string[] = [];
@@ -419,7 +444,11 @@ try {
     }
   }
 } finally {
-  rmSync(root, { recursive: true, force: true });
+  try {
+    rmSync(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+  } catch {
+    // Ignore cleanup failure on Windows if files locked by OS scanner
+  }
 }
 
 console.log(

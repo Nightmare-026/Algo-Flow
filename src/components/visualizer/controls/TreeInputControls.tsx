@@ -71,7 +71,7 @@ export function TreeInputControls({
 
         {showTarget && (
           <form onSubmit={handleTargetSubmit} className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
+            <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
               <span className="text-text-muted font-medium">Target:</span>
               <Input
                 type="number"
@@ -79,7 +79,7 @@ export function TreeInputControls({
                 value={targetInput}
                 onChange={(e) => setTargetInput(e.target.value)}
               />
-            </div>
+            </label>
             <Button type="submit" variant="secondary" size="sm">
               <Target className="h-4 w-4 mr-1" /> Set Target
             </Button>
@@ -88,7 +88,7 @@ export function TreeInputControls({
 
         {showValue && (
           <form onSubmit={handleValueSubmit} className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
+            <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
               <span className="text-text-muted font-medium">Value:</span>
               <Input
                 type="number"
@@ -96,7 +96,7 @@ export function TreeInputControls({
                 value={valInput}
                 onChange={(e) => setValInput(e.target.value)}
               />
-            </div>
+            </label>
 
             <Button type="submit" variant="secondary" size="sm">
               <HardDriveDownload className="h-4 w-4 mr-1" /> Set Value

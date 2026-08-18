@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Manrope } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Script from "next/script";
 import { getSiteUrl } from "@/lib/site";
+import { catalogStats } from "@/lib/catalog";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -15,12 +16,20 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
+  applicationName: "Algo Flow",
+  appleWebApp: {
+    title: "Algo Flow",
+    statusBarStyle: "default",
+    capable: true,
+  },
+  other: {
+    site_name: "Algo Flow",
+  },
   title: {
-    default: "Algo Flow - Master DSA Through Visual Journeys",
+    default: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
     template: "%s | Algo Flow",
   },
-  description:
-    "Explore arrays, stacks, queues, trees, graphs, and algorithms with step-by-step animated explanations. Learn DSA visually across the published visualizer library.",
+  description: `Master Data Structures & Algorithms visually. ${catalogStats.visualizerCount} interactive step-by-step visualizers, multi-language code execution (Python, C++, Java, JS), and practice quizzes.`,
   keywords: [
     "Algo Flow",
     "AlgoFlow",
@@ -50,33 +59,19 @@ export const metadata: Metadata = {
     "interactive algorithm visualizer",
     "data structures step by step",
     "coding interview dsa preparation",
-    "DSA",
-    "data structures",
-    "algorithms",
-    "visualizer",
-    "sorting",
-    "searching",
-    "graph",
-    "tree",
-    "stack",
-    "queue",
-    "linked list",
-    "hash table",
-    "interactive learning",
   ],
   authors: [{ name: "Algo Flow" }],
   openGraph: {
     type: "website",
-    title: "Algo Flow - Master DSA Through Visual Journeys",
-    description:
-      "Interactive DSA visualizers with step-by-step traces for arrays, trees, graphs, sorting, searching, and more.",
+    title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
+    description: `Master Data Structures & Algorithms visually with ${catalogStats.visualizerCount} interactive step-by-step visualizers and multi-language code traces.`,
     siteName: "Algo Flow",
     url: "/",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Algo Flow" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Algo Flow - Master DSA Through Visual Journeys",
+    title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
     description: "Trace data structures and algorithms step by step.",
     images: ["/opengraph-image"],
   },
@@ -94,8 +89,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteUrl = getSiteUrl();
+  const globalSiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    url: siteUrl,
+    name: "Algo Flow",
+    alternateName: ["AlgoFlow", "Algo Flow Visualizer", "AlgoFlow DSA"],
+    description: "Interactive Data Structures & Algorithms Visualizer",
+  };
+
   return (
-    <html lang="en" data-theme="light-edu" suppressHydrationWarning>
+    <html lang="en" data-theme="light-edu" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(globalSiteSchema) }}
+        />
+      </head>
       <body
         className={`${inter.variable} ${manrope.variable} ${jetbrainsMono.variable} min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased`}
       >

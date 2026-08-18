@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -154,6 +154,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
               {user ? (
                 <form action={signout}>
                   <button
+                    onClick={() => setMobileMenuOpen(false)}
                     className="flex min-h-11 w-full items-center gap-2 rounded-xl px-4 text-left text-sm font-semibold text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                     type="submit"
                   >

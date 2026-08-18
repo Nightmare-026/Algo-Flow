@@ -2,6 +2,7 @@
 
 import { ReactNode, useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowLeft, BookmarkPlus, Maximize2, Share2 } from "lucide-react";
 import { Algorithm, CodeExample } from "@/types";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,15 @@ interface VisualizerLayoutProps {
   controls?: ReactNode;
 }
 
+function shuffleArray<T>(array: T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 export function VisualizerLayout({
   algorithm,
   codeExamples,
@@ -40,6 +50,7 @@ export function VisualizerLayout({
   children,
   controls,
 }: VisualizerLayoutProps) {
+  const pathname = usePathname();
   const { currentStepIndex, totalSteps, reducedMotion, isPlaying, pause, steps } =
     usePlaybackStore();
   const [activeRightTab, setActiveRightTab] = useState<"pseudocode" | "code">("pseudocode");
@@ -73,6 +84,8 @@ export function VisualizerLayout({
       pause();
 
       const nextStep = steps[currentStepIndex + 1];
+      if (!nextStep) return;
+
       const answerType = nextStep.actionType;
 
       let answerText = "Continue operation";
@@ -88,18 +101,18 @@ export function VisualizerLayout({
         "Highlight an element",
         "Continue operation",
       ].filter((o) => o !== answerText);
-      // Pick three alternate operation labels
-      const options = [
-        answerText,
-        ...distractorOptions.sort(() => 0.5 - Math.random()).slice(0, 3),
-      ].sort(() => 0.5 - Math.random());
 
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPracticeOptions(options);
-      setPracticeAnswer(answerText);
-      setPracticeSelected(null);
-      setPracticeFeedback(null);
-      setShowPracticePrompt(true);
+      const options = shuffleArray([answerText, ...shuffleArray(distractorOptions).slice(0, 3)]);
+
+      const timer = setTimeout(() => {
+        setPracticeOptions(options);
+        setPracticeAnswer(answerText);
+        setPracticeSelected(null);
+        setPracticeFeedback(null);
+        setShowPracticePrompt(true);
+      }, 0);
+
+      return () => clearTimeout(timer);
     }
   }, [currentStepIndex, isPracticeMode, isPlaying, totalSteps, steps, pause]);
 
@@ -140,7 +153,8 @@ export function VisualizerLayout({
   };
 
   return (
-    <div
+    <main
+      id="main-content"
       data-reduced-motion={reducedMotion}
       className="flex min-h-screen lg:h-screen flex-col lg:overflow-hidden bg-background text-foreground"
     >
@@ -245,7 +259,7 @@ export function VisualizerLayout({
           <span>{statusMessage}</span>
           {statusMessage.toLowerCase().includes("log in") && (
             <Link
-              href={`/login?next=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "")}`}
+              href={`/login?next=${encodeURIComponent(pathname)}`}
               className="rounded-lg bg-primary px-3 py-1 text-xs font-bold text-white shadow-sm hover:bg-primary-hover"
             >
               Log in
@@ -297,7 +311,17 @@ export function VisualizerLayout({
                       ))}
                     </div>
 
-                    <div className="flex items-center justify-end">
+                    <div className="flex items-center justify-between">
+                      <button
+                        onClick={() => {
+                          setShowPracticePrompt(false);
+                          const { play } = usePlaybackStore.getState();
+                          play();
+                        }}
+                        className="text-xs font-semibold text-muted-foreground hover:text-foreground"
+                      >
+                        Skip question
+                      </button>
                       <button
                         onClick={handlePracticeSubmit}
                         disabled={!practiceSelected || practiceFeedback === "correct"}
@@ -312,7 +336,9 @@ export function VisualizerLayout({
 
               <div className="absolute right-4 top-4 rounded-lg border border-border bg-surface/80 px-3 py-1.5 text-sm font-medium text-secondary-foreground shadow-sm backdrop-blur">
                 {totalSteps > 0 ? (
-                  <>Step {currentStepIndex + 1} / {totalSteps}</>
+                  <>
+                    Step {currentStepIndex + 1} / {totalSteps}
+                  </>
                 ) : (
                   <span className="inline-block h-4 w-20 animate-pulse rounded bg-muted-foreground/20" />
                 )}
@@ -350,8 +376,10 @@ export function VisualizerLayout({
             >
               <button
                 type="button"
+                id="tab-pseudocode"
                 role="tab"
                 aria-selected={activeRightTab === "pseudocode"}
+                aria-controls="panel-pseudocode-or-code"
                 onClick={() => setActiveRightTab("pseudocode")}
                 className={cn(
                   "min-h-11 rounded-xl px-3 text-xs font-semibold transition-colors",
@@ -364,8 +392,10 @@ export function VisualizerLayout({
               </button>
               <button
                 type="button"
+                id="tab-code"
                 role="tab"
                 aria-selected={activeRightTab === "code"}
+                aria-controls="panel-pseudocode-or-code"
                 onClick={() => setActiveRightTab("code")}
                 className={cn(
                   "min-h-11 rounded-xl px-3 text-xs font-semibold transition-colors",
@@ -377,7 +407,12 @@ export function VisualizerLayout({
                 Code
               </button>
             </div>
-            <div className="flex-1 overflow-hidden">
+            <div
+              id="panel-pseudocode-or-code"
+              role="tabpanel"
+              aria-labelledby={activeRightTab === "pseudocode" ? "tab-pseudocode" : "tab-code"}
+              className="flex-1 overflow-hidden"
+            >
               {activeRightTab === "pseudocode" ? (
                 <PseudocodePanel slug={algorithm.slug} fallback={algorithm.pseudocode} />
               ) : (
@@ -398,8 +433,10 @@ export function VisualizerLayout({
             >
               <button
                 type="button"
+                id="tab-explanation"
                 role="tab"
                 aria-selected={activeLowerTab === "explanation"}
+                aria-controls="panel-explanation-or-log"
                 onClick={() => setActiveLowerTab("explanation")}
                 className={cn(
                   "min-h-11 rounded-xl px-3 text-xs font-semibold transition-colors",
@@ -412,8 +449,10 @@ export function VisualizerLayout({
               </button>
               <button
                 type="button"
+                id="tab-log"
                 role="tab"
                 aria-selected={activeLowerTab === "log"}
+                aria-controls="panel-explanation-or-log"
                 onClick={() => setActiveLowerTab("log")}
                 className={cn(
                   "min-h-11 rounded-xl px-3 text-xs font-semibold transition-colors",
@@ -425,12 +464,17 @@ export function VisualizerLayout({
                 Step Log
               </button>
             </div>
-            <div className="flex-1 overflow-hidden">
+            <div
+              id="panel-explanation-or-log"
+              role="tabpanel"
+              aria-labelledby={activeLowerTab === "explanation" ? "tab-explanation" : "tab-log"}
+              className="flex-1 overflow-hidden"
+            >
               {activeLowerTab === "explanation" ? <StepExplanation /> : <StepLog />}
             </div>
           </div>
         </aside>
       </div>
-    </div>
+    </main>
   );
 }

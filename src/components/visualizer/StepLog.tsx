@@ -1,11 +1,22 @@
 "use client";
 
+import { useRef } from "react";
 import { ListChecks } from "lucide-react";
 import { usePlaybackStore } from "@/stores/playback-store";
 import { cn } from "@/lib/utils";
+import { useAutoScrollToActive } from "./useAutoScrollToActive";
 
 export function StepLog() {
-  const { steps, currentStepIndex, goToStep } = usePlaybackStore();
+  const { steps, currentStepIndex, goToStep, reducedMotion } = usePlaybackStore();
+  const activeItemRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useAutoScrollToActive({
+    containerRef,
+    activeElementRef: activeItemRef,
+    reducedMotion,
+    trigger: currentStepIndex,
+  });
 
   if (steps.length === 0) {
     return (
@@ -17,33 +28,40 @@ export function StepLog() {
   }
 
   return (
-    <div className="h-full overflow-auto rounded-xl border border-border bg-bg-surface-light p-3">
+    <div
+      ref={containerRef}
+      className="h-full overflow-auto rounded-xl border border-border bg-bg-surface-light p-3"
+    >
       <ol className="space-y-2">
-        {steps.map((step, index) => (
-          <li key={step.id}>
-            <button
-              type="button"
-              onClick={() => goToStep(index)}
-              aria-current={index === currentStepIndex ? "step" : undefined}
-              className={cn(
-                "w-full rounded-xl border p-3 text-left transition-[border-color,background-color,box-shadow,color,transform]",
-                index === currentStepIndex
-                  ? "border-primary bg-primary-muted text-primary-active shadow-[var(--shadow-inset)]"
-                  : "border-border bg-bg-surface text-text-secondary hover:border-border-hover hover:text-text-primary"
-              )}
-            >
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider">
-                  Step {step.stepNumber}
-                </span>
-                <span className="rounded bg-bg-surface-light px-2 py-0.5 text-[10px] uppercase text-text-muted">
-                  {step.actionType}
-                </span>
-              </div>
-              <p className="mt-1 text-sm font-medium">{step.title}</p>
-            </button>
-          </li>
-        ))}
+        {steps.map((step, index) => {
+          const isCurrent = index === currentStepIndex;
+          return (
+            <li key={step.id}>
+              <button
+                ref={isCurrent ? activeItemRef : undefined}
+                type="button"
+                onClick={() => goToStep(index)}
+                aria-current={isCurrent ? "step" : undefined}
+                className={cn(
+                  "w-full rounded-xl border p-3 text-left transition-[border-color,background-color,box-shadow,color,transform]",
+                  isCurrent
+                    ? "border-primary bg-primary-muted text-primary-active shadow-[var(--shadow-inset)]"
+                    : "border-border bg-bg-surface text-text-secondary hover:border-border-hover hover:text-text-primary"
+                )}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider">
+                    Step {step.stepNumber}
+                  </span>
+                  <span className="rounded bg-bg-surface-light px-2 py-0.5 text-[10px] uppercase text-text-muted">
+                    {step.actionType}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm font-medium">{step.title}</p>
+              </button>
+            </li>
+          );
+        })}
       </ol>
     </div>
   );

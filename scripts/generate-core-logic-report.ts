@@ -102,7 +102,7 @@ publishedAlgorithms.forEach((a, i) => {
 });
 
 reportMd += '\n\n## 4. Conclusion & Verification Summary\n\n';
-reportMd += '- **104 / 104** Published Visualizers passed pure reference oracle validation.\n';
+reportMd += `- **${publishedAlgorithms.length} / ${publishedAlgorithms.length}** Published Visualizers passed pure reference oracle validation.\n`;
 reportMd += '- **0** Core logic defects remaining.\n';
 reportMd += '- Unit test suite `tests/oracle-comparison.test.ts` and `tests/visualizer-step-invariants.test.ts` pass 100%.\n';
 

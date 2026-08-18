@@ -79,8 +79,6 @@ export default async function LoginPage({
         </SubmitButton>
       </form>
 
-
-
       <p className="mt-7 text-center text-sm text-text-secondary">
         New to Algo Flow?{" "}
         <Link

@@ -1,6 +1,7 @@
 export function LoadingState() {
   return (
     <main
+      id="main-content"
       className="min-h-screen bg-background px-4 py-24 text-foreground"
       role="status"
       aria-live="polite"

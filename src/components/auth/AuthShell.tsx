@@ -24,7 +24,10 @@ export function AuthShell({
   activeTab,
 }: AuthShellProps) {
   return (
-    <main className="page-shell relative flex min-h-screen items-center overflow-hidden px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+    <main
+      id="main-content"
+      className="page-shell relative flex min-h-screen items-center overflow-hidden px-4 py-10 sm:px-6 lg:px-8 lg:py-16"
+    >
       <div className="pointer-events-none absolute left-[4%] top-[7%] h-72 w-72 rounded-full bg-primary/8 blur-3xl" />
       <div className="pointer-events-none absolute bottom-[3%] right-[4%] h-80 w-80 rounded-full bg-secondary/7 blur-3xl" />
 
@@ -32,7 +35,11 @@ export function AuthShell({
         <section className="bg-white/78 p-6 sm:p-10 lg:p-12 xl:p-14">
           <div className="mx-auto max-w-md">
             <div className="flex items-center justify-between gap-4">
-              <Link href="/" className="group flex min-h-11 items-center gap-2.5 rounded-xl pr-2" aria-label="Algo Flow home">
+              <Link
+                href="/"
+                className="group flex min-h-11 items-center gap-2.5 rounded-xl pr-2"
+                aria-label="Algo Flow home"
+              >
                 <span className="relative h-9 w-9 rounded-xl bg-primary-muted shadow-[var(--shadow-raised-sm)]">
                   <Image
                     src="/logo.png"

@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { createClient } from "@/lib/supabase/server";
-import { algorithms } from "@/data/seed/algorithms";
-import { dataStructures } from "@/data/seed/data-structures";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { DSAWorldPreviewWrapper as DSAWorldPreview } from "@/components/landing/DSAWorldPreviewWrapper";
 import { HowItWorks } from "@/components/landing/HowItWorks";
@@ -11,16 +9,15 @@ import { LearningFeatures } from "@/components/landing/LearningFeatures";
 import { CodeLanguages } from "@/components/landing/CodeLanguages";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { getSiteUrl } from "@/lib/site";
+import { catalogStats, publishedAlgorithms, publishedDataStructures } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-  description:
-    "Master Data Structures and Algorithms visually. Interactive step-by-step animations for arrays, trees, graphs, sorting, searching, linked lists, stacks, and queues with multi-language code traces.",
+  description: `Master Data Structures & Algorithms visually. ${catalogStats.visualizerCount} interactive step-by-step visualizers, multi-language code execution (Python, C++, Java, JS), and practice quizzes.`,
   alternates: { canonical: "/" },
   openGraph: {
     title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-    description:
-      "Master Data Structures and Algorithms visually. Interactive step-by-step animations with multi-language code traces.",
+    description: `Master Data Structures & Algorithms visually with ${catalogStats.visualizerCount} interactive step-by-step visualizers and multi-language code traces.`,
     url: "/",
     siteName: "Algo Flow",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Algo Flow Visualizer" }],
@@ -29,7 +26,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-    description: "Master Data Structures and Algorithms visually with step-by-step animations.",
+    description: `Master Data Structures & Algorithms visually with ${catalogStats.visualizerCount} interactive step-by-step visualizers.`,
     images: ["/opengraph-image"],
   },
 };
@@ -40,7 +37,6 @@ export default async function HomePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const publishedAlgos = algorithms.filter((algorithm) => algorithm.isPublished);
   const siteUrl = getSiteUrl();
 
   const structuredData = {
@@ -80,8 +76,8 @@ export default async function HomePage() {
       <Navbar initialUser={user} />
       <main id="main-content">
         <HeroSection
-          visualizerCount={publishedAlgos.length}
-          structureCount={dataStructures.filter((structure) => structure.isPublished).length}
+          visualizerCount={publishedAlgorithms.length}
+          structureCount={publishedDataStructures.length}
         />
         <DSAWorldPreview />
         <HowItWorks />

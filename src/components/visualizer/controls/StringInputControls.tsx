@@ -78,7 +78,7 @@ export function StringInputControls({
     <div className="flex flex-col gap-3 text-sm lg:flex-row lg:items-start">
       <div className="flex flex-wrap items-center gap-3">
         <form onSubmit={handleCustomSubmit} className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
+          <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
             <Type className="h-4 w-4 text-primary" />
             <span className="text-text-muted font-medium">Text:</span>
             <Input
@@ -90,10 +90,10 @@ export function StringInputControls({
               aria-invalid={Boolean(error)}
               aria-describedby={error ? "string-input-error" : undefined}
             />
-          </div>
+          </label>
 
           {needsPattern(slug) && (
-            <div className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
+            <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
               <Target className="h-4 w-4 text-primary" />
               <span className="text-text-muted font-medium">Pattern:</span>
               <Input
@@ -105,7 +105,7 @@ export function StringInputControls({
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? "string-input-error" : undefined}
               />
-            </div>
+            </label>
           )}
 
           <Button type="submit" variant="secondary" size="sm">

@@ -93,7 +93,9 @@ function WorkbenchPreview() {
 
       <div className="mt-4 rounded-2xl border border-border/80 bg-background p-4 shadow-[var(--shadow-inset)]">
         <div className="mb-4 flex items-center justify-between gap-3 text-xs">
-          <span className="font-semibold text-text-secondary">Input: [{PREVIEW_INPUT.join(", ")}]</span>
+          <span className="font-semibold text-text-secondary">
+            Input: [{PREVIEW_INPUT.join(", ")}]
+          </span>
           <span className="font-mono text-text-muted">O(n^2)</span>
         </div>
         <div
@@ -105,10 +107,7 @@ function WorkbenchPreview() {
             const isActive = activeIds.has(element.id);
             const isSettled = settledIds.has(element.id);
             return (
-              <div
-                key={index}
-                className="flex w-full max-w-14 flex-col items-center gap-2"
-              >
+              <div key={index} className="flex w-full max-w-14 flex-col items-center gap-2">
                 <motion.div
                   layout
                   animate={{ height: element.value * 6.8 }}
@@ -129,7 +128,9 @@ function WorkbenchPreview() {
                     />
                   ) : null}
                 </motion.div>
-                <span className="font-mono text-xs font-bold text-text-secondary">{element.value}</span>
+                <span className="font-mono text-xs font-bold text-text-secondary">
+                  {element.value}
+                </span>
               </div>
             );
           })}
@@ -151,7 +152,7 @@ function WorkbenchPreview() {
             </p>
           ) : null}
         </div>
-        <div className="overflow-hidden rounded-2xl bg-[#173126] p-3 font-mono text-[11px] leading-5 text-emerald-50 shadow-inner">
+        <div className="overflow-hidden rounded-2xl bg-pseudocode-panel-bg p-3 font-mono text-[11px] leading-5 text-emerald-50 shadow-inner">
           {previewPseudocode.map((line, index) => (
             <div
               key={line}

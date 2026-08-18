@@ -36,7 +36,9 @@ export async function generateMetadata({
       description,
       url: `/visualizers/${structure.slug}`,
       siteName: "Algo Flow",
-      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${structure.name} Visualizers` }],
+      images: [
+        { url: "/opengraph-image", width: 1200, height: 630, alt: `${structure.name} Visualizers` },
+      ],
       type: "website",
     },
     twitter: {
@@ -56,7 +58,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     return (
       <div className="page-shell flex min-h-screen flex-col">
         <Navbar />
-        <main id="main-content" className="flex flex-1 items-center justify-center px-4 pb-20 pt-32">
+        <main
+          id="main-content"
+          className="flex flex-1 items-center justify-center px-4 pb-20 pt-32"
+        >
           <div className="neu-raised max-w-lg rounded-3xl p-8 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-error" aria-hidden="true" />
             <h1 className="mt-5 text-3xl font-extrabold">Category not found</h1>
@@ -83,7 +88,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
 
   const operationCounts = new Map<string, number>();
   for (const algorithm of structureAlgorithms) {
-    operationCounts.set(algorithm.operationId, (operationCounts.get(algorithm.operationId) ?? 0) + 1);
+    operationCounts.set(
+      algorithm.operationId,
+      (operationCounts.get(algorithm.operationId) ?? 0) + 1
+    );
   }
 
   const structureOperations = operations

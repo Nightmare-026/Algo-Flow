@@ -50,6 +50,9 @@ export async function proxy(request: NextRequest) {
   return supabaseResponse;
 }
 
+// Alias middleware for compatibility
+export const middleware = proxy;
+
 export const config = {
   matcher: [
     /*

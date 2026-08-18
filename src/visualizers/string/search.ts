@@ -337,9 +337,7 @@ export function generateKMPSearchSteps(text: string, pattern: string): VisualSte
           dataState: state("search"),
           highlights: {
             found: [
-              ...Array.from({ length: pattern.length }, (_, index) =>
-                (foundAt + index).toString()
-              ),
+              ...Array.from({ length: pattern.length }, (_, index) => (foundAt + index).toString()),
               ...patternElements.map((_, index) => `p-${index}`),
             ],
           },
