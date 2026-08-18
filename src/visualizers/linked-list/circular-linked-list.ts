@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { VisualStep } from "@/types";
 import {
-  CircularLinkedListVisualState,
   LinkedListNode,
   createCircularLinkedListNodes,
 } from "./types";

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { VisualStep } from "@/types";
-import { LinkedListVisualState, LinkedListNode, createLinkedListNodes } from "./types";
+import { createLinkedListNodes } from "./types";
 
 const clone = <T>(v: T): T => structuredClone(v);
 

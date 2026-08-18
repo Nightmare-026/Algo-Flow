@@ -64,7 +64,7 @@ const rawTreeRegistry: AlgorithmVisualizerDefinition[] = [
   },
   {
     slug: "avl-rotations",
-    generateSteps: (data) => generateAVLRotationsSteps(data),
+    generateSteps: () => generateAVLRotationsSteps(),
     getCodeExamples: getTreeCodeExamples,
     codeLineMapping: treeCodeLineMappings["avl-rotations"],
   },

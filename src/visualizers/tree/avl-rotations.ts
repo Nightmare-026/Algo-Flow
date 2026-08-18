@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { VisualStep } from "@/types";
 import { TreeVisualState, TreeNodeData } from "./types";
 
-export function generateAVLRotationsSteps(initialData: number[] = [30, 20, 10]): VisualStep[] {
+export function generateAVLRotationsSteps(): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
 
