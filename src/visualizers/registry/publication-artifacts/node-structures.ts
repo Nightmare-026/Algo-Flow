@@ -91,6 +91,18 @@ const linkedLegend = [
     description: "A node in its completed linked-list position.",
     tone: "success",
   },
+  {
+    bucketKey: "swapped",
+    label: "Swapped pointers",
+    description: "Pointers or nodes exchanged during reversal.",
+    tone: "warning",
+  },
+  {
+    bucketKey: "success",
+    label: "Operation successful",
+    description: "The newly inserted or configured node in the list.",
+    tone: "success",
+  },
 ] as const;
 
 const treeLegend = [
@@ -326,6 +338,101 @@ export const linkedListPublicationArtifacts: Record<
     [4, 8, 15, 16],
     options(),
     verifyLinked([4, 8, 15, 16], ["move-pointer", "found"]),
+    linkedLegend
+  ),
+  "sll-delete-tail": artifacts(
+    linkedListCodeLineMappings["sll-delete-tail"],
+    list,
+    options(),
+    verifyLinked([4, 8], ["delete", "complete"]),
+    linkedLegend
+  ),
+  "sll-find-middle": artifacts(
+    linkedListCodeLineMappings["sll-find-middle"],
+    list,
+    options(),
+    verifyLinked(list, ["move-pointer", "complete"]),
+    linkedLegend
+  ),
+  "sll-remove-duplicates": artifacts(
+    linkedListCodeLineMappings["sll-remove-duplicates"],
+    [4, 8, 8, 15],
+    options(),
+    verifyLinked([4, 8, 15], ["delete", "complete"]),
+    linkedLegend
+  ),
+
+  // Doubly Linked List
+  "dll-traversal": artifacts(
+    linkedListCodeLineMappings["dll-traversal"],
+    list,
+    options(),
+    verifyLinked(list, ["visit", "complete"]),
+    linkedLegend
+  ),
+  "dll-insert-head": artifacts(
+    linkedListCodeLineMappings["dll-insert-head"],
+    list,
+    options({ value: 23 }),
+    verifyLinked([23, 4, 8, 15], ["link", "insert"]),
+    linkedLegend
+  ),
+  "dll-insert-tail": artifacts(
+    linkedListCodeLineMappings["dll-insert-tail"],
+    list,
+    options({ value: 23 }),
+    verifyLinked([4, 8, 15, 23], ["link", "insert"]),
+    linkedLegend
+  ),
+  "dll-delete-head": artifacts(
+    linkedListCodeLineMappings["dll-delete-head"],
+    list,
+    options(),
+    verifyLinked([8, 15], ["delete", "complete"]),
+    linkedLegend
+  ),
+  "dll-delete-tail": artifacts(
+    linkedListCodeLineMappings["dll-delete-tail"],
+    list,
+    options(),
+    verifyLinked([4, 8], ["delete", "complete"]),
+    linkedLegend
+  ),
+  "dll-reverse": artifacts(
+    linkedListCodeLineMappings["dll-reverse"],
+    list,
+    options(),
+    verifyLinked([15, 8, 4], ["swap", "complete"]),
+    linkedLegend
+  ),
+
+  // Circular Linked List
+  "cll-traversal": artifacts(
+    linkedListCodeLineMappings["cll-traversal"],
+    list,
+    options(),
+    verifyLinked(list, ["visit", "complete"]),
+    linkedLegend
+  ),
+  "cll-insert-head": artifacts(
+    linkedListCodeLineMappings["cll-insert-head"],
+    list,
+    options({ value: 23 }),
+    verifyLinked([23, 4, 8, 15], ["link", "insert"]),
+    linkedLegend
+  ),
+  "cll-insert-tail": artifacts(
+    linkedListCodeLineMappings["cll-insert-tail"],
+    list,
+    options({ value: 23 }),
+    verifyLinked([4, 8, 15, 23], ["link", "insert"]),
+    linkedLegend
+  ),
+  "cll-delete-head": artifacts(
+    linkedListCodeLineMappings["cll-delete-head"],
+    list,
+    options(),
+    verifyLinked([8, 15], ["delete", "complete"]),
     linkedLegend
   ),
 };

@@ -81,6 +81,8 @@ export type DataStructureId =
   | "ds_stack"
   | "ds_queue"
   | "ds_linked_list"
+  | "ds_doubly_linked_list"
+  | "ds_circular_linked_list"
   | "ds_tree"
   | "ds_graph"
   | "ds_hash_table"

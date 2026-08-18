@@ -5,6 +5,8 @@ import { ArrayRenderer } from "@/components/visualizer/renderers/ArrayRenderer";
 import { StackRenderer } from "@/components/visualizer/renderers/StackRenderer";
 import { QueueRenderer } from "@/components/visualizer/renderers/QueueRenderer";
 import { LinkedListRenderer } from "@/components/visualizer/renderers/LinkedListRenderer";
+import { DoublyLinkedListRenderer } from "@/components/visualizer/renderers/DoublyLinkedListRenderer";
+import { CircularLinkedListRenderer } from "@/components/visualizer/renderers/CircularLinkedListRenderer";
 import { TreeRenderer } from "@/components/visualizer/renderers/TreeRenderer";
 import { GraphRenderer } from "@/components/visualizer/renderers/GraphRenderer";
 import { HashTableRenderer } from "@/components/visualizer/renderers/HashTableRenderer";
@@ -17,6 +19,8 @@ import { ArrayInputControls } from "@/components/visualizer/controls/ArrayInputC
 import { StackInputControls } from "@/components/visualizer/controls/StackInputControls";
 import { QueueInputControls } from "@/components/visualizer/controls/QueueInputControls";
 import { LinkedListInputControls } from "@/components/visualizer/controls/LinkedListInputControls";
+import { DoublyLinkedListInputControls } from "@/components/visualizer/controls/DoublyLinkedListInputControls";
+import { CircularLinkedListInputControls } from "@/components/visualizer/controls/CircularLinkedListInputControls";
 import { TreeInputControls } from "@/components/visualizer/controls/TreeInputControls";
 import { GraphInputControls } from "@/components/visualizer/controls/GraphInputControls";
 import { HashTableInputControls } from "@/components/visualizer/controls/HashTableInputControls";
@@ -45,6 +49,16 @@ export const dsRegistry: Record<DataStructureId, DataStructureVisualizerDefiniti
     dataStructureId: "ds_linked_list",
     Renderer: LinkedListRenderer,
     InputControls: LinkedListInputControls,
+  },
+  ds_doubly_linked_list: {
+    dataStructureId: "ds_doubly_linked_list",
+    Renderer: DoublyLinkedListRenderer,
+    InputControls: DoublyLinkedListInputControls,
+  },
+  ds_circular_linked_list: {
+    dataStructureId: "ds_circular_linked_list",
+    Renderer: CircularLinkedListRenderer,
+    InputControls: CircularLinkedListInputControls,
   },
   ds_tree: { dataStructureId: "ds_tree", Renderer: TreeRenderer, InputControls: TreeInputControls },
   ds_graph: {

@@ -25,6 +25,14 @@ export const dataStructureCapabilities: Record<
     renderer: "LinkedListRenderer",
     inputControls: "LinkedListInputControls",
   },
+  ds_doubly_linked_list: {
+    renderer: "DoublyLinkedListRenderer",
+    inputControls: "DoublyLinkedListInputControls",
+  },
+  ds_circular_linked_list: {
+    renderer: "CircularLinkedListRenderer",
+    inputControls: "CircularLinkedListInputControls",
+  },
   ds_tree: {
     renderer: "TreeRenderer",
     inputControls: "TreeInputControls",

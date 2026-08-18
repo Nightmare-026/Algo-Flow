@@ -24,6 +24,30 @@ export const dataStructures: DataStructure[] = [
     icon: "Link",
   },
   {
+    id: "ds_doubly_linked_list",
+    name: "Doubly Linked List",
+    slug: "doubly-linked-list",
+    category: "linear",
+    description:
+      "A linked data structure where each node contains references to both previous and next nodes.",
+    difficulty: "medium",
+    displayOrder: 2.1,
+    isPublished: true,
+    icon: "ArrowLeftRight",
+  },
+  {
+    id: "ds_circular_linked_list",
+    name: "Circular Linked List",
+    slug: "circular-linked-list",
+    category: "linear",
+    description:
+      "A linked list variant where the last node points back to the head node, forming a circle.",
+    difficulty: "medium",
+    displayOrder: 2.2,
+    isPublished: true,
+    icon: "RotateCw",
+  },
+  {
     id: "ds_stack",
     name: "Stack",
     slug: "stack",

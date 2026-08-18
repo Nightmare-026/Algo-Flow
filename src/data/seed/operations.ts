@@ -158,6 +158,73 @@ export const operations: Operation[] = [
     isPublished: true,
   },
 
+  // ==================== DOUBLY LINKED LIST OPERATIONS ====================
+  {
+    id: "op_dll_traversal",
+    dataStructureId: "ds_doubly_linked_list",
+    name: "Traversal",
+    slug: "dll-traversal",
+    description: "Forward and backward traversal across doubly linked nodes.",
+    displayOrder: 1,
+    isPublished: true,
+  },
+  {
+    id: "op_dll_insertion",
+    dataStructureId: "ds_doubly_linked_list",
+    name: "Insertion",
+    slug: "dll-insertion",
+    description: "Inserting nodes at head or tail with bidirectional links.",
+    displayOrder: 2,
+    isPublished: true,
+  },
+  {
+    id: "op_dll_deletion",
+    dataStructureId: "ds_doubly_linked_list",
+    name: "Deletion",
+    slug: "dll-deletion",
+    description: "Removing head or tail nodes in O(1) time.",
+    displayOrder: 3,
+    isPublished: true,
+  },
+  {
+    id: "op_dll_reversal",
+    dataStructureId: "ds_doubly_linked_list",
+    name: "Reversal",
+    slug: "dll-reversal",
+    description: "Reversing doubly linked list by swapping prev and next pointers.",
+    displayOrder: 4,
+    isPublished: true,
+  },
+
+  // ==================== CIRCULAR LINKED LIST OPERATIONS ====================
+  {
+    id: "op_cll_traversal",
+    dataStructureId: "ds_circular_linked_list",
+    name: "Traversal",
+    slug: "cll-traversal",
+    description: "Looping through circular linked list until reaching head.",
+    displayOrder: 1,
+    isPublished: true,
+  },
+  {
+    id: "op_cll_insertion",
+    dataStructureId: "ds_circular_linked_list",
+    name: "Insertion",
+    slug: "cll-insertion",
+    description: "Inserting at head or tail while preserving the circular link.",
+    displayOrder: 2,
+    isPublished: true,
+  },
+  {
+    id: "op_cll_deletion",
+    dataStructureId: "ds_circular_linked_list",
+    name: "Deletion",
+    slug: "cll-deletion",
+    description: "Deleting nodes and updating circular loopback pointer.",
+    displayOrder: 3,
+    isPublished: true,
+  },
+
   // ==================== STACK OPERATIONS ====================
   {
     id: "op_stack_impl",

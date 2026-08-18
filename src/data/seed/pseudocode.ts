@@ -186,6 +186,31 @@ export const pseudocodeMap: Record<string, string> = {
   "queue-front-rear": "return arr[front], arr[rear]",
   "linked-list-types":
     "Singly: node.next\nDoubly: node.prev, node.next\nCircular: tail.next = head",
+  "sll-delete-tail":
+    "if head is null or head.next is null: return null\ncurr = head\nwhile curr.next.next is not null:\n  curr = curr.next\ncurr.next = null\nreturn head",
+  "sll-find-middle":
+    "slow = head, fast = head\nwhile fast is not null and fast.next is not null:\n  slow = slow.next\n  fast = fast.next.next\nreturn slow",
+  "sll-remove-duplicates":
+    "curr = head\nwhile curr is not null and curr.next is not null:\n  if curr.value == curr.next.value:\n    curr.next = curr.next.next\n  else: curr = curr.next\nreturn head",
+  "dll-traversal":
+    "curr = head\nwhile curr is not null: visit(curr); curr = curr.next\ncurr = tail\nwhile curr is not null: visit(curr); curr = curr.prev",
+  "dll-insert-head":
+    "node = new DNode(val, prev=null, next=head)\nif head is not null: head.prev = node\nhead = node; return head",
+  "dll-insert-tail":
+    "node = new DNode(val, prev=tail, next=null)\nif tail is not null: tail.next = node\ntail = node; return tail",
+  "dll-delete-head":
+    "if head is null: return null\nhead = head.next\nif head is not null: head.prev = null\nreturn head",
+  "dll-delete-tail":
+    "if tail is null: return null\ntail = tail.prev\nif tail is not null: tail.next = null\nreturn tail",
+  "dll-reverse":
+    "curr = head, temp = null\nwhile curr is not null:\n  swap(curr.prev, curr.next)\n  curr = curr.prev\nreturn new_head",
+  "cll-traversal":
+    "if head is null: return\ncurr = head\nrepeat: visit(curr); curr = curr.next\nuntil curr == head",
+  "cll-insert-head":
+    "node = new Node(val, next=head)\nupdate tail.next = node\nhead = node; return head",
+  "cll-insert-tail": "node = new Node(val, next=head)\ntail.next = node\ntail = node; return tail",
+  "cll-delete-head":
+    "if head is null or head.next == head: return null\ntail.next = head.next\nhead = head.next; return head",
   "heap-insert":
     "arr.append(val)\ni = arr.length - 1\nwhile i > 0 and arr[parent(i)] < arr[i]:\n  swap(arr[i], arr[parent(i)])\n  i = parent(i)",
   "trie-insert-word":

@@ -13,6 +13,25 @@ import {
   generateSLLReverseSteps,
   generateSLLDetectCycleSteps,
 } from "./additional";
+import {
+  generateSLLDeleteTailSteps,
+  generateSLLFindMiddleSteps,
+  generateSLLRemoveDuplicatesSteps,
+} from "./sll-advanced";
+import {
+  generateDLLTraversalSteps,
+  generateDLLInsertHeadSteps,
+  generateDLLInsertTailSteps,
+  generateDLLDeleteHeadSteps,
+  generateDLLDeleteTailSteps,
+  generateDLLReverseSteps,
+} from "./doubly-linked-list";
+import {
+  generateCLLTraversalSteps,
+  generateCLLInsertHeadSteps,
+  generateCLLInsertTailSteps,
+  generateCLLDeleteHeadSteps,
+} from "./circular-linked-list";
 
 const rawLinkedListRegistry: AlgorithmVisualizerDefinition[] = [
   {
@@ -64,16 +83,98 @@ const rawLinkedListRegistry: AlgorithmVisualizerDefinition[] = [
     codeLineMapping: linkedListCodeLineMappings["sll-delete-head"],
   },
   {
+    slug: "sll-delete-tail",
+    generateSteps: (data) => generateSLLDeleteTailSteps(data),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["sll-delete-tail"],
+  },
+  {
     slug: "sll-reverse",
     generateSteps: (data) => generateSLLReverseSteps(data),
     getCodeExamples: getLinkedListCodeExamples,
     codeLineMapping: linkedListCodeLineMappings["sll-reverse"],
   },
   {
+    slug: "sll-find-middle",
+    generateSteps: (data) => generateSLLFindMiddleSteps(data),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["sll-find-middle"],
+  },
+  {
+    slug: "sll-remove-duplicates",
+    generateSteps: (data) => generateSLLRemoveDuplicatesSteps(data),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["sll-remove-duplicates"],
+  },
+  {
     slug: "sll-detect-cycle",
     generateSteps: (data) => generateSLLDetectCycleSteps(data),
     getCodeExamples: getLinkedListCodeExamples,
     codeLineMapping: linkedListCodeLineMappings["sll-detect-cycle"],
+  },
+
+  // Doubly Linked List
+  {
+    slug: "dll-traversal",
+    generateSteps: (data) => generateDLLTraversalSteps(data),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["dll-traversal"],
+  },
+  {
+    slug: "dll-insert-head",
+    generateSteps: (data, opts) => generateDLLInsertHeadSteps(data, opts.value ?? 10),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["dll-insert-head"],
+  },
+  {
+    slug: "dll-insert-tail",
+    generateSteps: (data, opts) => generateDLLInsertTailSteps(data, opts.value ?? 99),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["dll-insert-tail"],
+  },
+  {
+    slug: "dll-delete-head",
+    generateSteps: (data) => generateDLLDeleteHeadSteps(data),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["dll-delete-head"],
+  },
+  {
+    slug: "dll-delete-tail",
+    generateSteps: (data) => generateDLLDeleteTailSteps(data),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["dll-delete-tail"],
+  },
+  {
+    slug: "dll-reverse",
+    generateSteps: (data) => generateDLLReverseSteps(data),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["dll-reverse"],
+  },
+
+  // Circular Linked List
+  {
+    slug: "cll-traversal",
+    generateSteps: (data) => generateCLLTraversalSteps(data),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["cll-traversal"],
+  },
+  {
+    slug: "cll-insert-head",
+    generateSteps: (data, opts) => generateCLLInsertHeadSteps(data, opts.value ?? 10),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["cll-insert-head"],
+  },
+  {
+    slug: "cll-insert-tail",
+    generateSteps: (data, opts) => generateCLLInsertTailSteps(data, opts.value ?? 99),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["cll-insert-tail"],
+  },
+  {
+    slug: "cll-delete-head",
+    generateSteps: (data) => generateCLLDeleteHeadSteps(data),
+    getCodeExamples: getLinkedListCodeExamples,
+    codeLineMapping: linkedListCodeLineMappings["cll-delete-head"],
   },
 ];
 
