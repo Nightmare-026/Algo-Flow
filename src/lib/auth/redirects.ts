@@ -1,4 +1,4 @@
-﻿type AuthEnvironment = Record<string, string | undefined>;
+type AuthEnvironment = Record<string, string | undefined>;
 
 function normalizeOrigin(value: string | undefined) {
   if (!value) return null;
@@ -16,7 +16,12 @@ export function safeInternalPath(
   value: FormDataEntryValue | string | null,
   fallback = "/dashboard"
 ) {
-  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//")) {
+  if (
+    typeof value !== "string" ||
+    !value.startsWith("/") ||
+    value.startsWith("//") ||
+    /[\r\n\t\0\s\\]/.test(value)
+  ) {
     return fallback;
   }
 

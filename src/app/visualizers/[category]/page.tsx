@@ -9,6 +9,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { buttonVariants } from "@/components/ui/button";
 import { CategoryExplorer } from "./CategoryExplorer";
 import { getSiteUrl } from "@/lib/site";
+import { safeJsonLd } from "@/lib/security/safe-json";
 
 export function generateStaticParams() {
   return dataStructures
@@ -144,7 +145,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     <div className="page-shell flex min-h-screen flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
       />
       <Navbar />
       <main id="main-content" className="flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8 lg:pt-40">

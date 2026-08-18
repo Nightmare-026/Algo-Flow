@@ -11,11 +11,23 @@ import {
   TERMS_VERSION,
 } from "@/lib/legal/policy-versions";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit } from "@/lib/security/rate-limit";
 
 function textField(formData: FormData, name: string, trim = true) {
   const value = formData.get(name);
   if (typeof value !== "string") return "";
   return trim ? value.trim() : value;
+}
+
+async function getClientIdentifier(action: string, fallbackKey: string = "anon"): Promise<string> {
+  try {
+    const headerStore = await headers();
+    const forwarded = headerStore.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0].trim() : headerStore.get("x-real-ip") ?? "local";
+    return `auth:${action}:${ip}`;
+  } catch {
+    return `auth:${action}:${fallbackKey}`;
+  }
 }
 
 async function getRequestOrigin() {
@@ -35,6 +47,14 @@ export async function login(formData: FormData) {
     password: textField(formData, "password", false),
   };
   const nextUrl = safeInternalPath(formData.get("next"));
+
+  const clientId = await getClientIdentifier("login", data.email || "anon");
+  const rateLimit = checkRateLimit(clientId, 10, 60000);
+  if (!rateLimit.success) {
+    redirect(
+      `/login?error=${encodeURIComponent("Too many login attempts. Please wait a minute and try again.")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
 
   if (!data.email || !data.password) {
     redirect(
@@ -105,6 +125,14 @@ export async function signup(formData: FormData) {
   const privacyVersion = textField(formData, "privacy_version");
   const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+  const clientId = await getClientIdentifier("signup", email || "anon");
+  const rateLimit = checkRateLimit(clientId, 5, 60000);
+  if (!rateLimit.success) {
+    redirect(
+      `/signup?error=${encodeURIComponent("Too many registration attempts. Please wait a minute and try again.")}&next=${encodeURIComponent(nextUrl)}`
+    );
+  }
+
   if (!emailLooksValid) {
     redirect(
       `/signup?error=${encodeURIComponent("Enter a valid email address.")}&next=${encodeURIComponent(nextUrl)}`
@@ -172,6 +200,15 @@ export async function sendPasswordReset(formData: FormData) {
   const supabase = await createClient();
   const email = textField(formData, "email").toLowerCase();
 
+  const clientId = await getClientIdentifier("reset", email || "anon");
+  const rateLimit = checkRateLimit(clientId, 3, 60000);
+  if (!rateLimit.success) {
+    redirect(
+      "/forgot-password?error=" +
+        encodeURIComponent("Too many password reset attempts. Please wait a minute and try again.")
+    );
+  }
+
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     redirect("/forgot-password?error=" + encodeURIComponent("Enter a valid email address."));
   }
@@ -190,7 +227,10 @@ export async function sendPasswordReset(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/forgot-password?error=${encodeURIComponent(error.message)}`);
+    redirect(
+      "/forgot-password?error=" +
+        encodeURIComponent("Unable to send reset email. Please verify your address or try again later.")
+    );
   }
 
   redirect(
@@ -203,6 +243,15 @@ export async function updatePassword(formData: FormData) {
   const supabase = await createClient();
   const password = textField(formData, "password", false);
   const passwordConfirm = textField(formData, "password_confirm", false);
+
+  const clientId = await getClientIdentifier("update-pass", "session");
+  const rateLimit = checkRateLimit(clientId, 5, 60000);
+  if (!rateLimit.success) {
+    redirect(
+      "/reset-password?error=" +
+        encodeURIComponent("Too many password update attempts. Please wait a minute and try again.")
+    );
+  }
 
   if (password.length < 8) {
     redirect(
@@ -217,7 +266,10 @@ export async function updatePassword(formData: FormData) {
   const { error } = await supabase.auth.updateUser({ password });
 
   if (error) {
-    redirect(`/reset-password?error=${encodeURIComponent(error.message)}`);
+    redirect(
+      "/reset-password?error=" +
+        encodeURIComponent("Unable to update password. Please try again or request a new reset link.")
+    );
   }
 
   revalidatePath("/", "layout");

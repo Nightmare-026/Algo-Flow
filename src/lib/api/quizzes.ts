@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
+import { checkRateLimit } from "@/lib/security/rate-limit";
 
 export type QuizAttempt = {
   id: string;
@@ -26,6 +27,11 @@ export async function submitQuizAttempt(
   } = await supabase.auth.getUser();
 
   if (!user) return null;
+
+  const rateLimit = checkRateLimit(`quiz:${user.id}`, 30);
+  if (!rateLimit.success) {
+    throw new Error("Too many requests. Please wait a moment.");
+  }
 
   if (
     !Number.isInteger(score) ||

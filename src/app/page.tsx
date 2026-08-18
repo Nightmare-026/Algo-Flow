@@ -10,6 +10,7 @@ import { CodeLanguages } from "@/components/landing/CodeLanguages";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { getSiteUrl } from "@/lib/site";
 import { catalogStats, publishedAlgorithms, publishedDataStructures } from "@/lib/catalog";
+import { safeJsonLd } from "@/lib/security/safe-json";
 
 export const metadata: Metadata = {
   title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
@@ -71,7 +72,7 @@ export default async function HomePage() {
     <div className="page-shell flex flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
       />
       <Navbar initialUser={user} />
       <main id="main-content">

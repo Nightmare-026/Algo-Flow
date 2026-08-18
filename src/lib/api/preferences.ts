@@ -1,4 +1,7 @@
+"use server";
+
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit } from "@/lib/security/rate-limit";
 
 export type UserPreferences = {
   theme: string;
@@ -6,6 +9,10 @@ export type UserPreferences = {
   speed: number;
   difficulty: string;
 };
+
+const ALLOWED_THEMES = new Set(["system", "light-edu", "dark-neon", "nature-cinematic"]);
+const ALLOWED_LANGUAGES = new Set(["javascript", "typescript", "python", "java", "cpp"]);
+const ALLOWED_DIFFICULTIES = new Set(["all", "easy", "medium", "hard"]);
 
 const preferenceDefaults: UserPreferences = {
   theme: "system",
@@ -47,10 +54,38 @@ export async function updateUserPreferences(updates: Partial<UserPreferences>) {
 
   if (!user) throw new Error("Not authenticated");
 
+  const rateLimit = checkRateLimit(`preferences:${user.id}`, 30);
+  if (!rateLimit.success) {
+    throw new Error("Too many requests. Please wait a moment.");
+  }
+
+  const sanitized: Partial<UserPreferences> = {};
+  if (typeof updates.theme === "string" && ALLOWED_THEMES.has(updates.theme)) {
+    sanitized.theme = updates.theme;
+  }
+  if (typeof updates.code_language === "string" && ALLOWED_LANGUAGES.has(updates.code_language)) {
+    sanitized.code_language = updates.code_language;
+  }
+  if (
+    typeof updates.speed === "number" &&
+    Number.isFinite(updates.speed) &&
+    updates.speed >= 0.25 &&
+    updates.speed <= 4
+  ) {
+    sanitized.speed = updates.speed;
+  }
+  if (typeof updates.difficulty === "string" && ALLOWED_DIFFICULTIES.has(updates.difficulty)) {
+    sanitized.difficulty = updates.difficulty;
+  }
+
+  if (Object.keys(sanitized).length === 0) {
+    return true;
+  }
+
   const { error } = await supabase.from("preferences").upsert(
     {
       id: user.id,
-      ...updates,
+      ...sanitized,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "id" }

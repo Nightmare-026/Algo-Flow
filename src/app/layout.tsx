@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Script from "next/script";
 import { getSiteUrl } from "@/lib/site";
 import { catalogStats } from "@/lib/catalog";
+import { safeJsonLd } from "@/lib/security/safe-json";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -105,7 +106,7 @@ export default function RootLayout({
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(globalSiteSchema) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(globalSiteSchema) }}
         />
       </head>
       <body

@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CatalogExplorer } from "./CatalogExplorer";
 import { getSiteUrl } from "@/lib/site";
 import { catalogStats, publishedAlgorithms, publishedDataStructures } from "@/lib/catalog";
+import { safeJsonLd } from "@/lib/security/safe-json";
 
 export const metadata: Metadata = {
   title: "Visualizer Library",
@@ -65,7 +66,7 @@ export default function VisualizersPage() {
     <div className="page-shell flex min-h-screen flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
       />
       <Navbar />
       <main id="main-content" className="flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8 lg:pt-40">

@@ -4,6 +4,7 @@ import { algorithms } from "@/data/seed/algorithms";
 import { VisualizerClient } from "./VisualizerClient";
 import { publicationRegistry } from "@/visualizers/registry/publication-registry";
 import { getSiteUrl } from "@/lib/site";
+import { safeJsonLd } from "@/lib/security/safe-json";
 
 export function generateStaticParams() {
   return algorithms
@@ -108,7 +109,7 @@ export default async function VisualizerPage({ params }: { params: Promise<{ slu
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
       />
       <VisualizerClient algorithm={algorithm} legend={legend} />
     </>
