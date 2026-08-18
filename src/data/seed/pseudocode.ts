@@ -97,6 +97,14 @@ export const pseudocodeMap: Record<string, string> = {
     "if root == null: return Node(val)\nif val < root.val:\n  root.left = insert(root.left, val)\nelse if val > root.val:\n  root.right = insert(root.right, val)\nreturn root",
   "bst-search":
     "if root == null or root.val == target: return root\nif target < root.val:\n  return search(root.left, target)\nreturn search(root.right, target)",
+  "bst-deletion":
+    "if root == null: return null\nif val < root.val: root.left = delete(root.left, val)\nelse if val > root.val: root.right = delete(root.right, val)\nelse:\n  if not root.left: return root.right\n  if not root.right: return root.left\n  succ = findMin(root.right)\n  root.val = succ.val\n  root.right = delete(root.right, succ.val)\nreturn root",
+  "avl-rotations":
+    "bf = height(left) - height(right)\nif bf > 1:\n  if height(left.left) >= height(left.right): return rightRotate(root)\n  else: root.left = leftRotate(root.left); return rightRotate(root)\nif bf < -1:\n  if height(right.right) >= height(right.left): return leftRotate(root)\n  else: root.right = rightRotate(root.right); return leftRotate(root)",
+  "heap-extract-max": "max = heap[0]\nheap[0] = heap.pop()\nsiftDown(0)\nreturn max",
+  heapify: "for i from floor(n/2)-1 down to 0:\n  siftDown(arr, n, i)",
+  "trie-search":
+    "curr = root\nfor char in word:\n  if char not in curr.children: return false\n  curr = curr.children[char]\nreturn curr.isEndOfWord",
 
   // Graph
   bfs: "q.enqueue(start)\nvisited[start] = true\nwhile not q.isEmpty():\n  u = q.dequeue()\n  visit(u)\n  for v in adj[u]:\n    if not visited[v]:\n      visited[v] = true\n      q.enqueue(v)",

@@ -128,6 +128,34 @@ const snippets: Record<
     cpp: `struct TreeNode {\n    int value;\n    TreeNode* left;\n    TreeNode* right;\n    TreeNode(int val) : value(val), left(nullptr), right(nullptr) {}\n};`,
     java: `class TreeNode {\n    int value;\n    TreeNode left;\n    TreeNode right;\n    TreeNode(int val) { this.value = val; }\n}`,
   },
+  "avl-rotations": {
+    title: "AVL Tree Rotations",
+    js: `function rightRotate(y) {\n  let x = y.left;\n  let T2 = x.right;\n  x.right = y;\n  y.left = T2;\n  return x;\n}\nfunction leftRotate(x) {\n  let y = x.right;\n  let T2 = y.left;\n  y.left = x;\n  x.right = T2;\n  return y;\n}`,
+    py: `def right_rotate(y):\n    x = y.left\n    t2 = x.right\n    x.right = y\n    y.left = t2\n    return x\ndef left_rotate(x):\n    y = x.right\n    t2 = y.left\n    y.left = x\n    x.right = t2\n    return y`,
+    cpp: `Node* rightRotate(Node* y) {\n    Node* x = y->left;\n    Node* T2 = x->right;\n    x->right = y;\n    y->left = T2;\n    return x;\n}\nNode* leftRotate(Node* x) {\n    Node* y = x->right;\n    Node* T2 = y->left;\n    y->left = x;\n    x->right = T2;\n    return y;\n}`,
+    java: `Node rightRotate(Node y) {\n    Node x = y.left;\n    Node T2 = x.right;\n    x.right = y;\n    y.left = T2;\n    return x;\n}\nNode leftRotate(Node x) {\n    Node y = x.right;\n    Node T2 = y.left;\n    y.left = x;\n    x.right = T2;\n    return y;\n}`,
+  },
+  "heap-extract-max": {
+    title: "Max-Heap Extract Max (Pop)",
+    js: `function extractMax(heap) {\n  if (heap.length === 0) return null;\n  const max = heap[0];\n  heap[0] = heap.pop();\n  let i = 0;\n  while (2 * i + 1 < heap.length) {\n    let l = 2 * i + 1, r = 2 * i + 2, maxIdx = i;\n    if (heap[l] > heap[maxIdx]) maxIdx = l;\n    if (r < heap.length && heap[r] > heap[maxIdx]) maxIdx = r;\n    if (maxIdx === i) break;\n    [heap[i], heap[maxIdx]] = [heap[maxIdx], heap[i]];\n    i = maxIdx;\n  }\n  return max;\n}`,
+    py: `def extract_max(heap):\n    if not heap: return None\n    max_val = heap[0]\n    heap[0] = heap.pop()\n    i = 0\n    while 2 * i + 1 < len(heap):\n        l, r, largest = 2 * i + 1, 2 * i + 2, i\n        if heap[l] > heap[largest]: largest = l\n        if r < len(heap) and heap[r] > heap[largest]: largest = r\n        if largest == i: break\n        heap[i], heap[largest] = heap[largest], heap[i]\n        i = largest\n    return max_val`,
+    cpp: `int extractMax(vector<int>& heap) {\n    if (heap.empty()) return -1;\n    int maxVal = heap[0];\n    heap[0] = heap.back(); heap.pop_back();\n    int i = 0, n = heap.size();\n    while (2 * i + 1 < n) {\n        int l = 2 * i + 1, r = 2 * i + 2, largest = i;\n        if (heap[l] > heap[largest]) largest = l;\n        if (r < n && heap[r] > heap[largest]) largest = r;\n        if (largest == i) break;\n        swap(heap[i], heap[largest]);\n        i = largest;\n    }\n    return maxVal;\n}`,
+    java: `public int extractMax(List<Integer> heap) {\n    if (heap.isEmpty()) return -1;\n    int maxVal = heap.get(0);\n    heap.set(0, heap.remove(heap.size() - 1));\n    int i = 0, n = heap.size();\n    while (2 * i + 1 < n) {\n        int l = 2 * i + 1, r = 2 * i + 2, largest = i;\n        if (heap.get(l) > heap.get(largest)) largest = l;\n        if (r < n && heap.get(r) > heap.get(largest)) largest = r;\n        if (largest == i) break;\n        Collections.swap(heap, i, largest);\n        i = largest;\n    }\n    return maxVal;\n}`,
+  },
+  heapify: {
+    title: "Build Max-Heap (Heapify in O(n))",
+    js: `function buildMaxHeap(arr) {\n  for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {\n    heapifyDown(arr, arr.length, i);\n  }\n}\nfunction heapifyDown(arr, n, i) {\n  let largest = i, l = 2 * i + 1, r = 2 * i + 2;\n  if (l < n && arr[l] > arr[largest]) largest = l;\n  if (r < n && arr[r] > arr[largest]) largest = r;\n  if (largest !== i) {\n    [arr[i], arr[largest]] = [arr[largest], arr[i]];\n    heapifyDown(arr, n, largest);\n  }\n}`,
+    py: `def build_max_heap(arr):\n    for i in range(len(arr) // 2 - 1, -1, -1):\n        heapify_down(arr, len(arr), i)\ndef heapify_down(arr, n, i):\n    largest, l, r = i, 2 * i + 1, 2 * i + 2\n    if l < n and arr[l] > arr[largest]: largest = l\n    if r < n and arr[r] > arr[largest]: largest = r\n    if largest != i:\n        arr[i], arr[largest] = arr[largest], arr[i]\n        heapify_down(arr, n, largest)`,
+    cpp: `void heapify(vector<int>& arr, int n, int i) {\n    int largest = i, l = 2 * i + 1, r = 2 * i + 2;\n    if (l < n && arr[l] > arr[largest]) largest = l;\n    if (r < n && arr[r] > arr[largest]) largest = r;\n    if (largest != i) {\n        swap(arr[i], arr[largest]);\n        heapify(arr, n, largest);\n    }\n}\nvoid buildMaxHeap(vector<int>& arr) {\n    for (int i = arr.size() / 2 - 1; i >= 0; i--) heapify(arr, arr.size(), i);\n}`,
+    java: `void heapify(int[] arr, int n, int i) {\n    int largest = i, l = 2 * i + 1, r = 2 * i + 2;\n    if (l < n && arr[l] > arr[largest]) largest = l;\n    if (r < n && arr[r] > arr[largest]) largest = r;\n    if (largest != i) {\n        int temp = arr[i]; arr[i] = arr[largest]; arr[largest] = temp;\n        heapify(arr, n, largest);\n    }\n}\nvoid buildMaxHeap(int[] arr) {\n    for (int i = arr.length / 2 - 1; i >= 0; i--) heapify(arr, arr.length, i);\n}`,
+  },
+  "trie-search": {
+    title: "Search Word in Trie",
+    js: `function searchTrie(root, word) {\n  let curr = root;\n  for (const ch of word) {\n    if (!curr.children[ch]) return false;\n    curr = curr.children[ch];\n  }\n  return curr.isEndOfWord === true;\n}`,
+    py: `def search_trie(root, word):\n    curr = root\n    for ch in word:\n        if ch not in curr.children: return False\n        curr = curr.children[ch]\n    return curr.is_end_of_word`,
+    cpp: `bool search(TrieNode* root, string word) {\n    TrieNode* curr = root;\n    for (char c : word) {\n        if (!curr->children[c - 'a']) return false;\n        curr = curr->children[c - 'a'];\n    }\n    return curr->isEndOfWord;\n}`,
+    java: `public boolean search(TrieNode root, String word) {\n    TrieNode curr = root;\n    for (char c : word.toCharArray()) {\n        if (curr.children[c - 'a'] == null) return false;\n        curr = curr.children[c - 'a'];\n    }\n    return curr.isEndOfWord;\n}`,
+  },
 };
 
 const aliases: Record<string, string> = {

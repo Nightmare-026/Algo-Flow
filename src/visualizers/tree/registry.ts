@@ -9,6 +9,10 @@ import {
   generateTreeLevelOrderSteps,
 } from "./traversal";
 import { generateBSTSearchSteps, generateBSTInsertSteps } from "./bst-operations";
+import { generateBSTDeleteSteps } from "./bst-deletion";
+import { generateAVLRotationsSteps } from "./avl-rotations";
+import { generateHeapExtractMaxSteps, generateHeapifySteps } from "./heap-operations";
+import { generateTrieSearchSteps } from "./trie-search";
 import {
   generateHeapInsertSteps,
   generateTrieInsertWordSteps,
@@ -53,16 +57,46 @@ const rawTreeRegistry: AlgorithmVisualizerDefinition[] = [
     codeLineMapping: treeCodeLineMappings["bst-insertion"],
   },
   {
+    slug: "bst-deletion",
+    generateSteps: (data, opts) => generateBSTDeleteSteps(data, opts.target ?? 3, opts.treeState),
+    getCodeExamples: getTreeCodeExamples,
+    codeLineMapping: treeCodeLineMappings["bst-deletion"],
+  },
+  {
+    slug: "avl-rotations",
+    generateSteps: (data) => generateAVLRotationsSteps(data),
+    getCodeExamples: getTreeCodeExamples,
+    codeLineMapping: treeCodeLineMappings["avl-rotations"],
+  },
+  {
     slug: "heap-insert",
     generateSteps: (data, opts) => generateHeapInsertSteps(data, opts.value!),
     getCodeExamples: getTreeCodeExamples,
     codeLineMapping: treeCodeLineMappings["heap-insert"],
   },
   {
+    slug: "heap-extract-max",
+    generateSteps: (data) => generateHeapExtractMaxSteps(data),
+    getCodeExamples: getTreeCodeExamples,
+    codeLineMapping: treeCodeLineMappings["heap-extract-max"],
+  },
+  {
+    slug: "heapify",
+    generateSteps: (data) => generateHeapifySteps(data),
+    getCodeExamples: getTreeCodeExamples,
+    codeLineMapping: treeCodeLineMappings["heapify"],
+  },
+  {
     slug: "trie-insert-word",
     generateSteps: () => generateTrieInsertWordSteps(),
     getCodeExamples: getTreeCodeExamples,
     codeLineMapping: treeCodeLineMappings["trie-insert-word"],
+  },
+  {
+    slug: "trie-search",
+    generateSteps: (_, opts) => generateTrieSearchSteps(opts.text || "CODE"),
+    getCodeExamples: getTreeCodeExamples,
+    codeLineMapping: treeCodeLineMappings["trie-search"],
   },
   {
     slug: "build-segment-tree",

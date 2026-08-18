@@ -142,6 +142,18 @@ const treeLegend = [
     description: "The child and parent exchanged during heap restoration.",
     tone: "warning",
   },
+  {
+    bucketKey: "compared",
+    label: "Compared tree node",
+    description: "A child or subtree node compared against key.",
+    tone: "info",
+  },
+  {
+    bucketKey: "deleted",
+    label: "Deleted tree node",
+    description: "The node targeted for removal from the tree.",
+    tone: "error",
+  },
 ] as const;
 
 const graphLegend = [
@@ -520,6 +532,41 @@ export const treePublicationArtifacts: Record<
     list,
     options(),
     verifyTree(["build"], 27),
+    treeLegend
+  ),
+  "bst-deletion": artifacts(
+    treeCodeLineMappings["bst-deletion"],
+    list,
+    options({ treeState: bstState, target: 2 }),
+    verifyTree(["visit", "complete"]),
+    treeLegend
+  ),
+  "avl-rotations": artifacts(
+    treeCodeLineMappings["avl-rotations"],
+    list,
+    options(),
+    verifyTree(["compare", "complete"]),
+    treeLegend
+  ),
+  "heap-extract-max": artifacts(
+    treeCodeLineMappings["heap-extract-max"],
+    list,
+    options(),
+    verifyTree(["delete", "complete"]),
+    treeLegend
+  ),
+  heapify: artifacts(
+    treeCodeLineMappings["heapify"],
+    list,
+    options(),
+    verifyTree(["visit", "complete"]),
+    treeLegend
+  ),
+  "trie-search": artifacts(
+    treeCodeLineMappings["trie-search"],
+    list,
+    options({ text: "CODE" }),
+    verifyTree(["compare", "complete"]),
     treeLegend
   ),
 };
