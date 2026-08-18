@@ -46,6 +46,34 @@ const queueSnippets: Record<
     cpp: `class CircularQueue {\n    int *arr;\n    int front, rear, size;\npublic:\n    CircularQueue(int k) {\n        size = k;\n        arr = new int[k];\n        front = rear = -1;\n    }\n    bool enQueue(int value) {\n        if (isFull()) return false;\n        if (isEmpty()) front = 0;\n        rear = (rear + 1) % size;\n        arr[rear] = value;\n        return true;\n    }\n    bool deQueue() {\n        if (isEmpty()) return false;\n        if (front == rear) front = rear = -1;\n        else front = (front + 1) % size;\n        return true;\n    }\n    bool isFull() { return (rear + 1) % size == front; }\n    bool isEmpty() { return front == -1; }\n};`,
     java: `class CircularQueue {\n    int[] arr;\n    int front, rear, size;\n    public CircularQueue(int k) {\n        size = k;\n        arr = new int[k];\n        front = rear = -1;\n    }\n    public boolean enQueue(int value) {\n        if (isFull()) return false;\n        if (isEmpty()) front = 0;\n        rear = (rear + 1) % size;\n        arr[rear] = value;\n        return true;\n    }\n    public boolean deQueue() {\n        if (isEmpty()) return false;\n        if (front == rear) front = rear = -1;\n        else front = (front + 1) % size;\n        return true;\n    }\n    public boolean isFull() { return (rear + 1) % size == front; }\n    public boolean isEmpty() { return front == -1; }\n}`,
   },
+  "deque-push-front": {
+    title: "Push element to front of Deque",
+    js: `deque.unshift(value);`,
+    py: `from collections import deque\nd = deque()\nd.appendleft(value)`,
+    cpp: `#include <deque>\nstd::deque<int> dq;\ndq.push_front(value);`,
+    java: `import java.util.ArrayDeque;\nimport java.util.Deque;\nDeque<Integer> dq = new ArrayDeque<>();\ndq.addFirst(value);`,
+  },
+  "deque-pop-rear": {
+    title: "Pop element from rear of Deque",
+    js: `const val = deque.pop();`,
+    py: `val = d.pop()`,
+    cpp: `int val = dq.back();\ndq.pop_back();`,
+    java: `int val = dq.removeLast();`,
+  },
+  "priority-queue-enqueue": {
+    title: "Enqueue element by priority",
+    js: `pq.push({ value, priority });\npq.sort((a, b) => b.priority - a.priority);`,
+    py: `import heapq\nheapq.heappush(pq, (-priority, value))`,
+    cpp: `#include <queue>\nstd::priority_queue<int> pq;\npq.push(value);`,
+    java: `import java.util.PriorityQueue;\nPriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> b - a);\npq.offer(value);`,
+  },
+  "priority-queue-dequeue": {
+    title: "Dequeue highest priority element",
+    js: `const highest = pq.shift();`,
+    py: `priority, value = heapq.heappop(pq)`,
+    cpp: `int highest = pq.top();\npq.pop();`,
+    java: `int highest = pq.poll();`,
+  },
 };
 
 export function getQueueCodeExamples(slug: string, algorithmId: string): CodeExample[] {

@@ -232,4 +232,32 @@ export const queuePublicationArtifacts: Record<
     [4, 8, 15],
     ["access", "complete"]
   ),
+  "deque-push-front": artifacts(
+    queueCodeLineMappings["deque-push-front"],
+    [20, 30, 40],
+    options({ value: 10 }),
+    [10, 20, 30, 40],
+    ["enqueue", "complete"]
+  ),
+  "deque-pop-rear": artifacts(
+    queueCodeLineMappings["deque-pop-rear"],
+    [10, 20, 30, 40],
+    options(),
+    [10, 20, 30],
+    ["dequeue", "complete"]
+  ),
+  "priority-queue-enqueue": artifacts(
+    queueCodeLineMappings["priority-queue-enqueue"],
+    [40, 30, 20, 10],
+    options({ value: 25 }),
+    [40, 30, 25, 20, 10],
+    ["enqueue", "complete"]
+  ),
+  "priority-queue-dequeue": artifacts(
+    queueCodeLineMappings["priority-queue-dequeue"],
+    [50, 40, 30, 20, 10],
+    options(),
+    [40, 30, 20, 10],
+    ["dequeue", "complete"]
+  ),
 };

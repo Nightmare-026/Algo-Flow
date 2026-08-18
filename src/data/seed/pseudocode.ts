@@ -83,6 +83,12 @@ export const pseudocodeMap: Record<string, string> = {
   "stack-pop": "if top >= 0:\n  return arr[top--]",
   "queue-enqueue": "rear = (rear + 1) % capacity\narr[rear] = value\nsize++",
   "queue-dequeue": "val = arr[front]\nfront = (front + 1) % capacity\nsize--\nreturn val",
+  "deque-push-front": "front = (front - 1 + capacity) % capacity\narr[front] = value\nsize++",
+  "deque-pop-rear": "val = arr[rear]\nrear = (rear - 1 + capacity) % capacity\nsize--\nreturn val",
+  "priority-queue-enqueue":
+    "i = size - 1\nwhile i >= 0 and arr[i] < value:\n  arr[i+1] = arr[i]\n  i--\narr[i+1] = value\nsize++",
+  "priority-queue-dequeue":
+    "val = arr[0]\nfor i from 0 to size-2:\n  arr[i] = arr[i+1]\nsize--\nreturn val",
 
   // Tree
   "inorder-traversal":

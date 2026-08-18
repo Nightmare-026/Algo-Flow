@@ -6,6 +6,11 @@ import { generateQueueEnqueueSteps } from "./enqueue";
 import { generateQueueDequeueSteps } from "./dequeue";
 import { generateQueueFrontRearSteps, generateQueuePeekSteps } from "./peek";
 import { generateSimpleQueueSteps, generateCircularQueueSteps } from "./additional";
+import { generateDequePushFrontSteps, generateDequePopRearSteps } from "./deque";
+import {
+  generatePriorityQueueEnqueueSteps,
+  generatePriorityQueueDequeueSteps,
+} from "./priority-queue";
 
 const rawQueueRegistry: AlgorithmVisualizerDefinition[] = [
   {
@@ -43,6 +48,32 @@ const rawQueueRegistry: AlgorithmVisualizerDefinition[] = [
     generateSteps: (data, opts) => generateQueueFrontRearSteps(data, opts.capacity!),
     getCodeExamples: getQueueCodeExamples,
     codeLineMapping: queueCodeLineMappings["queue-front-rear"],
+  },
+  {
+    slug: "deque-push-front",
+    generateSteps: (data, opts) =>
+      generateDequePushFrontSteps(data, opts.value ?? 10, opts.capacity ?? 8),
+    getCodeExamples: getQueueCodeExamples,
+    codeLineMapping: queueCodeLineMappings["deque-push-front"],
+  },
+  {
+    slug: "deque-pop-rear",
+    generateSteps: (data, opts) => generateDequePopRearSteps(data, opts.capacity ?? 8),
+    getCodeExamples: getQueueCodeExamples,
+    codeLineMapping: queueCodeLineMappings["deque-pop-rear"],
+  },
+  {
+    slug: "priority-queue-enqueue",
+    generateSteps: (data, opts) =>
+      generatePriorityQueueEnqueueSteps(data, opts.value ?? 25, opts.capacity ?? 8),
+    getCodeExamples: getQueueCodeExamples,
+    codeLineMapping: queueCodeLineMappings["priority-queue-enqueue"],
+  },
+  {
+    slug: "priority-queue-dequeue",
+    generateSteps: (data, opts) => generatePriorityQueueDequeueSteps(data, opts.capacity ?? 8),
+    getCodeExamples: getQueueCodeExamples,
+    codeLineMapping: queueCodeLineMappings["priority-queue-dequeue"],
   },
 ];
 

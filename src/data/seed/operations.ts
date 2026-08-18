@@ -327,6 +327,24 @@ export const operations: Operation[] = [
     displayOrder: 5,
     isPublished: true,
   },
+  {
+    id: "op_queue_deque",
+    dataStructureId: "ds_queue",
+    name: "Deque Operations",
+    slug: "deque",
+    description: "Double-ended queue insertions and deletions at both ends.",
+    displayOrder: 6,
+    isPublished: true,
+  },
+  {
+    id: "op_queue_priority",
+    dataStructureId: "ds_queue",
+    name: "Priority Queue",
+    slug: "priority",
+    description: "Ordered priority-based element enqueue and extraction.",
+    displayOrder: 7,
+    isPublished: true,
+  },
 
   // ==================== TREE OPERATIONS ====================
   {

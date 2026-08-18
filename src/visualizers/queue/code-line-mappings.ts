@@ -39,4 +39,8 @@ export const queueCodeLineMappings = {
     line(3, 2, 2, 4, 5),
     line(4, 2, 2, 4, 5),
   ],
+  "deque-push-front": oneLineOperation([1, 2, 3, 4]),
+  "deque-pop-rear": oneLineOperation([1, 2, 3, 4, 5]),
+  "priority-queue-enqueue": oneLineOperation([1, 2, 3, 4, 5]),
+  "priority-queue-dequeue": oneLineOperation([1, 2, 3, 4, 5]),
 } as const satisfies Record<string, ReadonlyArray<CodeLineMapping>>;

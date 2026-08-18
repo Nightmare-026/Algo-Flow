@@ -31,6 +31,37 @@ export function getQueuePseudocode(slug: string): string[] {
         "    rearValue = queue[rear]",
         "    return frontValue, rearValue",
       ];
+    case "deque-push-front":
+      return [
+        "function pushFront(deque, value):",
+        "    if isFull(deque): return overflow",
+        "    front = (front - 1 + capacity) % capacity; deque[front] = value",
+        "    return success",
+      ];
+    case "deque-pop-rear":
+      return [
+        "function popRear(deque):",
+        "    if isEmpty(deque): return underflow",
+        "    value = deque[rear]",
+        "    rear = (rear - 1 + capacity) % capacity",
+        "    return value",
+      ];
+    case "priority-queue-enqueue":
+      return [
+        "function priorityEnqueue(pq, value):",
+        "    if isFull(pq): return overflow",
+        "    find slot index i matching priority order",
+        "    insert value at index i",
+        "    return success",
+      ];
+    case "priority-queue-dequeue":
+      return [
+        "function priorityDequeue(pq):",
+        "    if isEmpty(pq): return underflow",
+        "    maxElem = pq[front]",
+        "    remove pq[front] and shift",
+        "    return maxElem",
+      ];
     default:
       return [];
   }
