@@ -1,13 +1,12 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Trophy, XCircle, RotateCcw, Compass } from "lucide-react";
 import { Algorithm } from "@/types";
 import { QuestionData } from "@/data/seed/questions";
 import { submitQuizAttempt } from "@/lib/api/quizzes";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface QuizClientProps {
@@ -25,11 +24,18 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
 
   if (questions.length === 0) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center p-4">
-        <h2 className="text-xl font-bold mb-4">No questions available for {algorithm.name} yet.</h2>
-        <Link href="/dashboard" className={buttonVariants()}>
-          Back to Dashboard
-        </Link>
+      <div className="flex min-h-[60vh] flex-col items-center justify-center p-4 text-center">
+        <div className="neu-float max-w-md rounded-3xl p-8 border border-border">
+          <h2 className="text-xl font-bold font-display text-text-primary mb-3">
+            No Quiz Questions Yet
+          </h2>
+          <p className="text-sm text-text-secondary mb-6">
+            Practice questions for {algorithm.name} are currently being authored.
+          </p>
+          <Link href="/dashboard" className={buttonVariants()}>
+            Back to Dashboard
+          </Link>
+        </div>
       </div>
     );
   }
@@ -56,11 +62,11 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
       setSelectedOption(null);
       setIsAnswered(false);
     } else {
-      // Finish quiz
       setIsSubmitting(true);
+      const finalScore = score + (selectedOption === correctOptionIndex ? 1 : 0);
       await submitQuizAttempt(
         algorithm.id,
-        score + (selectedOption === correctOptionIndex ? 1 : 0),
+        finalScore,
         questions.length
       );
       setIsFinished(true);
@@ -70,72 +76,95 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
 
   if (isFinished) {
     const percentage = Math.round((score / questions.length) * 100);
+    const passed = percentage >= 60;
     return (
-      <div className="mx-auto flex h-full max-w-2xl flex-col justify-center p-4 space-y-8">
-        <Card className="text-center p-8 bg-bg-surface border-border">
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold">Quiz Complete!</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="my-8 flex items-center justify-center">
-              <div className="flex h-32 w-32 flex-col items-center justify-center rounded-full border-8 border-primary/20 bg-primary/10">
-                <span className="text-4xl font-bold text-primary">{percentage}%</span>
-                <span className="text-sm text-text-muted">
-                  {score} / {questions.length}
-                </span>
-              </div>
+      <div className="mx-auto flex min-h-[70vh] max-w-xl flex-col justify-center p-4">
+        <div className="neu-float rounded-3xl p-8 sm:p-10 text-center border border-border">
+          <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] text-primary">
+            <Trophy className="h-8 w-8 text-primary" />
+          </span>
+          <p className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
+            Quiz Results
+          </p>
+          <h1 className="mt-1 text-2xl sm:text-3xl font-extrabold font-display text-text-primary">
+            {algorithm.name} Quiz Complete!
+          </h1>
+
+          <div className="my-8 flex items-center justify-center">
+            <div className={cn(
+              "flex h-32 w-32 flex-col items-center justify-center rounded-full border-4 shadow-[var(--shadow-raised-sm)]",
+              passed ? "border-primary bg-primary-muted text-primary" : "border-warning bg-warning-muted text-warning"
+            )}>
+              <span className="text-3xl font-extrabold font-display">{percentage}%</span>
+              <span className="text-xs font-mono font-bold text-text-muted mt-0.5">
+                {score} / {questions.length} Correct
+              </span>
             </div>
-            <p className="text-lg text-text-secondary">
-              {percentage >= 60
-                ? "Great job! You've successfully passed this quiz."
-                : "Keep practicing to improve your score!"}
-            </p>
-          </CardContent>
-          <CardFooter className="flex justify-center gap-4">
+          </div>
+
+          <p className="text-sm leading-relaxed text-text-secondary max-w-sm mx-auto mb-8">
+            {passed
+              ? "Outstanding! You demonstrated solid algorithmic comprehension."
+              : "Good effort! Review the step-by-step visualizer and try again to master this algorithm."}
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-3">
             <Link
               href={`/visualizer/${algorithm.slug}`}
-              className={buttonVariants({ variant: "outline" })}
+              className={buttonVariants({ variant: "outline", size: "lg" })}
             >
+              <RotateCcw className="h-4 w-4" />
               Review Visualizer
             </Link>
-            <Link href="/dashboard" className={buttonVariants()}>
-              Back to Dashboard
+            <Link href="/dashboard" className={buttonVariants({ size: "lg" })}>
+              <Compass className="h-4 w-4" />
+              Return to Dashboard
             </Link>
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto flex h-full max-w-3xl flex-col p-4 md:p-8">
+    <div className="mx-auto flex w-full max-w-3xl flex-col px-4 py-8">
+      {/* Header */}
       <header className="mb-8 flex items-center justify-between">
         <Link
           href={`/visualizer/${algorithm.slug}`}
           className={buttonVariants({
             variant: "ghost",
             size: "sm",
-            className: "-ml-2 text-text-muted hover:text-text-primary",
+            className: "text-text-muted hover:text-text-primary",
           })}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Visualizer
+          <ArrowLeft className="mr-1.5 h-4 w-4" /> Back to Visualizer
         </Link>
-        <div className="text-sm font-medium text-text-secondary">
+        <div className="neu-inset px-3 py-1 rounded-full font-mono text-xs font-bold text-primary border border-border shadow-[var(--shadow-inset)]">
           Question {currentIndex + 1} of {questions.length}
         </div>
       </header>
 
-      <div className="flex-1 space-y-8">
+      {/* Main Question Card */}
+      <div className="neu-float rounded-3xl p-6 sm:p-8 border border-border">
         <div>
-          <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary">
-            {currentQ.topic} â€¢ {currentQ.subtopic}
-          </h2>
-          <h1 className="text-xl md:text-2xl font-bold leading-relaxed text-text-primary">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="rounded-md border border-primary/25 bg-primary-muted px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
+              {currentQ.topic || "Algorithm Theory"}
+            </span>
+            {currentQ.subtopic && (
+              <span className="text-xs text-text-muted font-medium">
+                • {currentQ.subtopic}
+              </span>
+            )}
+          </div>
+          <h1 className="text-xl sm:text-2xl font-bold font-display leading-snug text-text-primary">
             {currentQ.q}
           </h1>
         </div>
 
-        <div className="grid gap-3">
+        {/* Options List */}
+        <div className="grid gap-3 mt-6">
           {currentQ.options.map((opt, i) => {
             const isSelected = selectedOption === i;
             const isCorrect = i === correctOptionIndex;
@@ -145,26 +174,27 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
             return (
               <button
                 key={i}
+                type="button"
                 onClick={() => handleSelect(i)}
                 disabled={isAnswered}
                 className={cn(
-                  "relative flex items-start gap-4 rounded-xl border p-4 text-left transition-[transform,box-shadow,border-color,background-color,color]",
+                  "relative flex items-start gap-4 rounded-2xl border p-4 text-left transition-all duration-150 cursor-pointer select-none",
                   !isAnswered &&
                     !isSelected &&
-                    "border-border bg-bg-surface hover:border-primary/50 hover:bg-bg-surface-hover",
-                  !isAnswered && isSelected && "border-primary bg-primary/10 ring-1 ring-primary",
-                  showCorrect && "border-success bg-success/10",
-                  showIncorrect && "border-error bg-error/10",
+                    "border-border bg-surface shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:bg-surface-hover",
+                  !isAnswered && isSelected && "border-primary bg-primary-muted shadow-[var(--shadow-inset)] text-primary",
+                  showCorrect && "border-success bg-success-muted shadow-[var(--shadow-inset)] text-success font-bold",
+                  showIncorrect && "border-error bg-error-muted shadow-[var(--shadow-inset)] text-error font-bold",
                   isAnswered &&
                     !isSelected &&
                     !isCorrect &&
-                    "border-border bg-bg-surface opacity-50"
+                    "border-border bg-surface opacity-40"
                 )}
               >
                 <div
                   className={cn(
-                    "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-bold",
-                    !isAnswered && !isSelected && "border-border text-text-muted",
+                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border text-xs font-mono font-bold shadow-[var(--shadow-raised-sm)]",
+                    !isAnswered && !isSelected && "border-border bg-surface text-text-muted",
                     !isAnswered && isSelected && "border-primary bg-primary text-white",
                     showCorrect && "border-success bg-success text-white",
                     showIncorrect && "border-error bg-error text-white"
@@ -174,9 +204,9 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
                 </div>
                 <span
                   className={cn(
-                    "flex-1 text-sm md:text-base",
+                    "flex-1 text-sm leading-relaxed mt-0.5",
                     showCorrect || (isSelected && !isAnswered)
-                      ? "text-text-primary font-medium"
+                      ? "text-text-primary font-semibold"
                       : "text-text-secondary"
                   )}
                 >
@@ -184,39 +214,43 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
                 </span>
 
                 {showCorrect && (
-                  <CheckCircle2 className="absolute right-4 top-4 h-5 w-5 text-success" />
+                  <CheckCircle2 className="h-5 w-5 text-success shrink-0 mt-0.5" />
                 )}
-                {showIncorrect && <XCircle className="absolute right-4 top-4 h-5 w-5 text-error" />}
+                {showIncorrect && <XCircle className="h-5 w-5 text-error shrink-0 mt-0.5" />}
               </button>
             );
           })}
         </div>
 
+        {/* Explanation Callout */}
         {isAnswered && (
-          <div className="rounded-xl bg-bg-surface-light p-6 border border-border mt-8 animate-in slide-in-from-bottom-2 fade-in">
-            <h3 className="mb-2 font-bold text-text-primary">Explanation</h3>
-            <p className="text-sm text-text-secondary leading-relaxed">{currentQ.explanation}</p>
+          <div className="rounded-2xl bg-bg-surface-inset p-5 border border-border mt-6 shadow-[var(--shadow-inset)] animate-in slide-in-from-bottom-2 duration-200">
+            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary mb-1.5">
+              Explanation
+            </h2>
+            <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">{currentQ.explanation}</p>
           </div>
         )}
-      </div>
 
-      <footer className="mt-8 flex justify-end">
-        {!isAnswered ? (
-          <Button onClick={handleCheck} disabled={selectedOption === null} size="lg">
-            Check Answer
-          </Button>
-        ) : (
-          <Button
-            onClick={handleNext}
-            disabled={isSubmitting}
-            size="lg"
-            className="w-full sm:w-auto"
-          >
-            {currentIndex < questions.length - 1 ? "Next Question" : "Finish Quiz"}{" "}
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        )}
-      </footer>
+        {/* Action Button Footer */}
+        <footer className="mt-8 flex justify-end border-t border-border pt-4">
+          {!isAnswered ? (
+            <Button onClick={handleCheck} disabled={selectedOption === null} size="lg">
+              Check Answer
+            </Button>
+          ) : (
+            <Button
+              onClick={handleNext}
+              disabled={isSubmitting}
+              size="lg"
+              className="w-full sm:w-auto"
+            >
+              {currentIndex < questions.length - 1 ? "Next Question" : "Finish Quiz"}
+              <ArrowRight className="ml-1.5 h-4 w-4" />
+            </Button>
+          )}
+        </footer>
+      </div>
     </div>
   );
 }

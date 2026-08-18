@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertCircle, ArrowLeft } from "lucide-react";
+import { AlertCircle, ChevronRight, Home } from "lucide-react";
 import { dataStructures } from "@/data/seed/data-structures";
 import { algorithms } from "@/data/seed/algorithms";
 import { operations } from "@/data/seed/operations";
@@ -26,7 +26,7 @@ export async function generateMetadata({
   const structure = dataStructures.find((item) => item.slug === category && item.isPublished);
   if (!structure) return {};
 
-  const title = `${structure.name} Visualizers | Algo Flow`;
+  const title = `${structure.name} Algorithms & Visualizers | Algo Flow`;
   const description = `${structure.description} Explore interactive step-by-step traces and visualizers for ${structure.name} algorithms.`;
   return {
     title,
@@ -63,14 +63,16 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           id="main-content"
           className="flex flex-1 items-center justify-center px-4 pb-20 pt-32"
         >
-          <div className="neu-raised max-w-lg rounded-3xl p-8 text-center">
+          <div className="neu-float max-w-lg rounded-3xl p-8 sm:p-10 text-center border border-border">
             <AlertCircle className="mx-auto h-12 w-12 text-error" aria-hidden="true" />
-            <h1 className="mt-5 text-3xl font-extrabold">Category not found</h1>
-            <p className="mt-3 text-text-secondary">
-              The requested data structure is not in the published library.
+            <h1 className="mt-5 text-2xl sm:text-3xl font-extrabold font-display text-text-primary">
+              Structure Not Found
+            </h1>
+            <p className="mt-3 text-sm text-text-secondary">
+              The requested data structure category is not in the published library.
             </p>
-            <Link href="/visualizers" className={buttonVariants({ className: "mt-7" })}>
-              Return to the library
+            <Link href="/visualizers" className={buttonVariants({ className: "mt-6" })}>
+              Return to Visualizer Library
             </Link>
           </div>
         </main>
@@ -148,24 +150,32 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
       />
       <Navbar />
-      <main id="main-content" className="flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8 lg:pt-40">
+      <main id="main-content" className="flex-1 px-4 pb-24 pt-28 sm:px-6 lg:px-8 lg:pt-36">
         <div className="mx-auto max-w-7xl">
-          <Link
-            href="/visualizers"
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl text-sm font-bold text-muted-foreground hover:text-primary-active"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Visualizer library
-          </Link>
+          {/* Breadcrumb Bar */}
+          <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs font-semibold text-text-muted">
+            <Link href="/" className="hover:text-primary transition-colors flex items-center gap-1">
+              <Home className="h-3.5 w-3.5" />
+              Home
+            </Link>
+            <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            <Link href="/visualizers" className="hover:text-primary transition-colors">
+              Library
+            </Link>
+            <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            <span className="text-text-primary">{structure.name}</span>
+          </nav>
 
-          <div className="mt-5 max-w-3xl">
-            <p className="section-kicker">{structure.category.replace("-", " ")} structure</p>
-            <h1 className="mt-3 text-4xl font-extrabold sm:text-5xl">
-              {structure.name} <span className="text-gradient-primary">algorithms</span>
+          {/* Header */}
+          <div className="max-w-3xl">
+            <div className="inline-flex min-h-8 items-center gap-2 rounded-full border border-border bg-surface px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-primary shadow-[var(--shadow-raised-sm)]">
+              {structure.category.replace("-", " ")} Structure
+            </div>
+            <h1 className="mt-4 text-3xl font-extrabold font-display sm:text-4xl lg:text-5xl text-text-primary">
+              {structure.name} <span className="text-gradient-primary">Algorithms</span>
             </h1>
-            <p className="mt-5 text-lg leading-8 text-text-secondary">
-              {structure.description} Choose a trace, set its input, and step through the state
-              changes.
+            <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
+              {structure.description} Choose an algorithm below to launch its interactive simulation workstation.
             </p>
           </div>
 

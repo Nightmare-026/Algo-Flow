@@ -1,48 +1,48 @@
-﻿"use client";
+"use client";
 
 import { useRef } from "react";
 import { Code2, PanelsTopLeft, PlayCircle, SlidersHorizontal } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { cardReveal, glowStyle, sectionReveal } from "./landing-effects";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 
 const previewLayers = [
   {
-    title: "Build the input",
-    description: "Use random, sorted, reverse, or custom values before the animation starts.",
-    detail: "Array: 15, 23, 4, 8, 42",
+    title: "1. Configure the Inputs",
+    description: "Generate random, sorted, or inverted collections, or enter custom arrays, graphs, and matrices.",
+    detail: "Array: [15, 23, 4, 8, 42]",
     Icon: SlidersHorizontal,
   },
   {
-    title: "Control every step",
-    description: "Play, pause, move one step at a time, change speed, or jump to the end.",
+    title: "2. Control the Timeline",
+    description: "Play, pause, inspect one step at a time, adjust speed scaling (0.25x - 4x), or scrub freely.",
     detail: "Step 07 / 18",
     Icon: PlayCircle,
   },
   {
-    title: "Watch the state change",
+    title: "3. Observe State Mutation",
     description:
-      "The active index, comparisons, swaps, found values, and errors are highlighted on the canvas.",
-    detail: "compare i=2, j=3",
+      "Active indices, swaps, comparisons, pointer traversals, and found targets illuminate on canvas.",
+    detail: "comparing [2] and [3]",
     Icon: PanelsTopLeft,
   },
   {
-    title: "Read the logic beside it",
+    title: "4. Read Synchronized Code",
     description:
-      "Pseudocode, code, explanations, variables, and step logs stay close to the animation.",
-    detail: "line 4 highlighted",
+      "Pseudocode and production language source code highlight the exact line causing the state change.",
+    detail: "line 3 active",
     Icon: Code2,
   },
 ];
 
 export function DSAWorldPreview() {
   const sectionRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   });
 
-  const ribbonY = useTransform(scrollYProgress, [0, 1], ["-12%", "14%"]);
-  const ribbonOpacity = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.15, 0.55, 0.55, 0.15]);
+  const ribbonY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+  const ribbonOpacity = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.1, 0.4, 0.4, 0.1]);
 
   return (
     <section
@@ -53,56 +53,47 @@ export function DSAWorldPreview() {
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-20 mx-auto h-72 max-w-5xl rounded-full bg-primary/10 blur-3xl"
-        style={{ y: ribbonY, opacity: ribbonOpacity }}
+        style={{ y: reduceMotion ? 0 : ribbonY, opacity: ribbonOpacity }}
       />
 
       <div className="relative mx-auto max-w-7xl">
-        <motion.div
-          initial="visible"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-90px" }}
-          variants={sectionReveal}
-          className="mb-12 max-w-3xl text-left"
-        >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">
-            Visual Learning
-          </p>
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-            One workspace. Every clue in reach.
+        <div className="mb-14 max-w-3xl">
+          <p className="section-kicker">Unified Architecture</p>
+          <h2 className="mt-3 text-3xl font-extrabold font-display tracking-tight text-text-primary sm:text-4xl md:text-5xl">
+            One Integrated Workstation. Complete Clarity.
           </h2>
-          <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            Keep the changing data, playback controls, code, and explanation in view while the
-            algorithm runs.
+          <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
+            Keep visual representations, playback controls, variable inspection, and code execution visible simultaneously.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial="visible"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
-        >
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {previewLayers.map(({ title, description, detail, Icon }, index) => (
             <motion.div
               key={title}
-              custom={index}
-              variants={cardReveal}
-              style={glowStyle(index)}
-              className="landing-glow-card rounded-lg border border-white/75 bg-surface/60 p-5 backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color,color] duration-500 hover:-translate-y-1"
+              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.4, delay: index * 0.08 }}
+              className="neu-raised group flex flex-col justify-between rounded-2xl border border-border p-6 hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
             >
-              <div className="mb-5 flex items-center justify-between gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/75 bg-surface-light text-[var(--landing-card-tone)]">
-                  <Icon className="h-5 w-5" />
+              <div>
+                <div className="mb-5 flex items-center justify-between gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-[var(--shadow-inset)] group-hover:scale-105 transition-transform">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <span className="rounded-lg border border-border bg-bg-surface-inset px-2.5 py-1 font-mono text-[11px] font-bold text-text-muted shadow-[var(--shadow-inset)]">
+                    {detail}
+                  </span>
                 </div>
-                <span className="rounded-md border border-white/75 bg-background px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
-                  {detail}
-                </span>
+                <h3 className="mb-2 text-lg font-bold font-display text-text-primary group-hover:text-primary transition-colors">
+                  {title}
+                </h3>
+                <p className="text-sm leading-relaxed text-text-secondary">{description}</p>
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-foreground">{title}</h3>
-              <p className="text-sm leading-6 text-muted-foreground">{description}</p>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

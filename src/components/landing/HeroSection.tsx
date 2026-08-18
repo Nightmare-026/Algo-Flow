@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, ChevronLeft, ChevronRight, Pause, Play, RotateCcw } from "lucide-react";
+import { ArrowRight, Check, ChevronLeft, ChevronRight, Compass, Pause, Play, RotateCcw, Sparkles } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -15,10 +15,10 @@ const fullPreviewTrace = generateBubbleSortSteps(PREVIEW_INPUT);
 const firstPassEnd = fullPreviewTrace.findIndex((step) => step.title === "Element Sorted");
 const traceSteps = fullPreviewTrace.slice(0, firstPassEnd + 1);
 const previewPseudocode = [
-  "for each pass through the unsorted region",
-  "  compare adjacent values",
-  "  if left > right, swap them",
-  "mark the pass's final value as sorted",
+  "for each pass through the unsorted region:",
+  "  compare adjacent elements (arr[j], arr[j+1])",
+  "  if left > right: swap(arr[j], arr[j+1])",
+  "mark the highest element as sorted",
 ] as const;
 
 function getPreviewLine(step: VisualStep) {
@@ -37,16 +37,16 @@ function WorkbenchPreview() {
   const [stepIndex, setStepIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const reduceMotion = useReducedMotion();
-  const step = traceSteps[stepIndex];
+  const step = traceSteps[stepIndex] || traceSteps[0];
   const state = step.dataState as ArrayVisualState;
   const activeIds = new Set([
-    ...(step.highlights.current ?? []),
-    ...(step.highlights.compared ?? []),
-    ...(step.highlights.swapped ?? []),
+    ...(step.highlights?.current ?? []),
+    ...(step.highlights?.compared ?? []),
+    ...(step.highlights?.swapped ?? []),
   ]);
-  const settledIds = new Set(step.highlights.sorted ?? []);
-  const comparedIndexes = (step.highlights.compared ?? [])
-    .map((id) => state.elements.findIndex((element) => element.id === id))
+  const settledIds = new Set(step.highlights?.sorted ?? []);
+  const comparedIndexes = (step.highlights?.compared ?? [])
+    .map((id) => state?.elements?.findIndex((element) => element.id === id) ?? -1)
     .filter((index) => index >= 0);
   const isPlaying = playing && !reduceMotion;
 
@@ -73,52 +73,64 @@ function WorkbenchPreview() {
 
   return (
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 28, scale: 0.98 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.72, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-      className="neu-float relative overflow-hidden rounded-[1.75rem] p-4 sm:p-5"
+      transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+      className="neu-float relative overflow-hidden rounded-3xl p-5 sm:p-6 border border-border"
     >
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-emerald-300 to-secondary" />
+      {/* Top Accent Strip */}
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-emerald-400 to-secondary" />
+
+      {/* Header Bar */}
       <div className="flex items-center justify-between gap-4 border-b border-border pb-4">
-        <div>
-          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-primary-active">
-            Generator-backed trace
-          </p>
-          <h2 className="mt-1 text-base font-bold">Bubble Sort: first pass</h2>
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
+          <div>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
+              Live Simulation Sandbox
+            </span>
+            <h2 className="text-base font-bold font-display text-text-primary">
+              Bubble Sort: Pass 1
+            </h2>
+          </div>
         </div>
-        <span className="rounded-full bg-primary-muted px-3 py-1 font-mono text-xs font-semibold text-primary-active">
+        <span className="neu-inset rounded-full px-3 py-1 font-mono text-xs font-bold text-primary">
           Step {stepIndex + 1}/{traceSteps.length}
         </span>
       </div>
 
-      <div className="mt-4 rounded-2xl border border-border/80 bg-background p-4 shadow-[var(--shadow-inset)]">
+      {/* Array Canvas Well */}
+      <div className="mt-4 rounded-2xl border border-border bg-bg-surface-inset p-5 shadow-[var(--shadow-inset)]">
         <div className="mb-4 flex items-center justify-between gap-3 text-xs">
-          <span className="font-semibold text-text-secondary">
+          <span className="font-semibold text-text-secondary font-mono">
             Input: [{PREVIEW_INPUT.join(", ")}]
           </span>
-          <span className="font-mono text-text-muted">O(n^2)</span>
+          <span className="font-mono font-bold text-text-muted bg-surface px-2 py-0.5 rounded border border-border">
+            Avg Time: O(n²)
+          </span>
         </div>
+
         <div
-          className="flex min-h-44 items-end justify-center gap-2 sm:gap-3"
+          className="flex min-h-40 items-end justify-center gap-3 sm:gap-4 pt-4"
           role="img"
-          aria-label={`Array values ${state.elements.map((element) => element.value).join(", ")}. ${step.title}. ${step.description}`}
+          aria-label={`Array values ${state?.elements?.map((e) => e.value).join(", ")}. ${step.title}. ${step.description}`}
         >
-          {state.elements.map((element, index) => {
+          {state?.elements?.map((element, index) => {
             const isActive = activeIds.has(element.id);
             const isSettled = settledIds.has(element.id);
             return (
               <div key={index} className="flex w-full max-w-14 flex-col items-center gap-2">
                 <motion.div
                   layout
-                  animate={{ height: element.value * 6.8 }}
-                  transition={{ duration: reduceMotion ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] }}
+                  animate={{ height: element.value * 7 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
                   className={cn(
-                    "relative w-full rounded-t-xl border",
+                    "relative w-full rounded-t-xl border transition-colors duration-200",
                     isActive
-                      ? "border-primary-active bg-primary shadow-[0_8px_24px_rgba(34,197,94,0.24)]"
+                      ? "border-primary bg-primary text-white shadow-[var(--shadow-glow-primary)]"
                       : isSettled
-                        ? "border-secondary/30 bg-secondary-muted"
-                        : "border-border bg-surface-light"
+                        ? "border-secondary/40 bg-secondary-muted"
+                        : "border-border bg-surface shadow-[var(--shadow-raised-sm)]"
                   )}
                 >
                   {isSettled ? (
@@ -128,7 +140,10 @@ function WorkbenchPreview() {
                     />
                   ) : null}
                 </motion.div>
-                <span className="font-mono text-xs font-bold text-text-secondary">
+                <span className={cn(
+                  "font-mono text-xs font-bold",
+                  isActive ? "text-primary" : "text-text-secondary"
+                )}>
                   {element.value}
                 </span>
               </div>
@@ -137,55 +152,65 @@ function WorkbenchPreview() {
         </div>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1.12fr]">
-        <div className="rounded-2xl border border-white/70 bg-surface-light p-3 shadow-[var(--shadow-raised-sm)]">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-bold text-foreground">{step.title}</p>
-            <span className="font-mono text-[10px] text-muted-foreground">Pass 1</span>
+      {/* Dual Panel: Step Explanation & Synchronized Pseudocode */}
+      <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1.15fr]">
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-[var(--shadow-raised-sm)] flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-xs font-bold text-text-primary uppercase tracking-wide">{step.title}</p>
+              <span className="font-mono text-[10px] font-bold text-text-muted">Pass 1</span>
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-text-secondary" aria-live="polite">
+              {step.description}
+            </p>
           </div>
-          <p className="mt-1.5 text-xs leading-5 text-muted-foreground" aria-live="polite">
-            {step.description}
-          </p>
           {comparedIndexes.length === 2 ? (
-            <p className="mt-1 font-mono text-[10px] text-primary-active">
-              Comparing indexes {comparedIndexes[0]} and {comparedIndexes[1]}
+            <p className="mt-2 font-mono text-[11px] font-bold text-primary">
+              Comparing indices [{comparedIndexes[0]}] and [{comparedIndexes[1]}]
             </p>
           ) : null}
         </div>
-        <div className="overflow-hidden rounded-2xl bg-pseudocode-panel-bg p-3 font-mono text-[11px] leading-5 text-emerald-50 shadow-inner">
-          {previewPseudocode.map((line, index) => (
-            <div
-              key={line}
-              className={cn(
-                "rounded px-2",
-                getPreviewLine(step) === index + 1
-                  ? "bg-emerald-300/18 text-emerald-100"
-                  : "text-emerald-50/62"
-              )}
-            >
-              <span className="mr-2 text-emerald-300/55">{index + 1}</span>
-              {line}
-            </div>
-          ))}
+
+        <div className="overflow-hidden rounded-2xl bg-pseudocode-panel-bg p-3.5 font-mono text-[11px] leading-6 text-emerald-100 shadow-[var(--shadow-inset)] border border-emerald-900/30">
+          {previewPseudocode.map((line, index) => {
+            const isHighlight = getPreviewLine(step) === index + 1;
+            return (
+              <div
+                key={line}
+                className={cn(
+                  "rounded px-2 transition-colors duration-150",
+                  isHighlight
+                    ? "bg-emerald-500/25 text-emerald-300 font-bold border-l-2 border-primary"
+                    : "text-emerald-300/50"
+                )}
+              >
+                <span className="mr-2 text-emerald-500/40 text-[10px]">{index + 1}</span>
+                {line}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3">
+      {/* Playback Controls Footer */}
+      <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
         <button
           type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground hover:bg-primary-muted hover:text-primary-active disabled:opacity-35"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 disabled:opacity-30 active:scale-95"
           onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
           disabled={stepIndex === 0}
           aria-label="Previous preview step"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-4 w-4" />
         </button>
+
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={reset}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground hover:bg-primary-muted hover:text-primary-active"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 active:scale-95"
             aria-label="Restart preview"
+            title="Restart simulation"
           >
             <RotateCcw className="h-4 w-4" />
           </button>
@@ -197,27 +222,21 @@ function WorkbenchPreview() {
             }}
             disabled={Boolean(reduceMotion)}
             aria-pressed={isPlaying}
-            aria-label={
-              reduceMotion
-                ? "Autoplay is disabled because reduced motion is enabled"
-                : isPlaying
-                  ? "Pause Bubble Sort preview"
-                  : "Play Bubble Sort preview"
-            }
-            className="inline-flex h-11 min-w-28 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white shadow-[var(--shadow-glow-primary)] hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex h-10 min-w-32 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95"
           >
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-current" />}
-            {reduceMotion ? "Use arrows" : isPlaying ? "Pause" : "Play trace"}
+            {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 fill-current" />}
+            {reduceMotion ? "Manual Mode" : isPlaying ? "Pause" : "Play Trace"}
           </button>
         </div>
+
         <button
           type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground hover:bg-primary-muted hover:text-primary-active disabled:opacity-35"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 disabled:opacity-30 active:scale-95"
           onClick={() => setStepIndex((current) => Math.min(traceSteps.length - 1, current + 1))}
           disabled={stepIndex === traceSteps.length - 1}
           aria-label="Next preview step"
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
     </motion.div>
@@ -228,67 +247,75 @@ export function HeroSection({ visualizerCount, structureCount }: HeroSectionProp
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden px-4 pb-20 pt-32 sm:px-6 lg:px-8 lg:pb-28 lg:pt-40">
+    <section className="relative overflow-hidden px-4 pb-20 pt-32 sm:px-6 lg:px-8 lg:pb-28 lg:pt-36">
+      {/* Background Ambient Glows */}
       <div
-        className="pointer-events-none absolute left-[7%] top-32 h-56 w-56 rounded-full bg-primary/10 blur-3xl"
+        className="pointer-events-none absolute left-[5%] top-28 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute right-[6%] top-20 h-72 w-72 rounded-full bg-secondary/8 blur-3xl"
+        className="pointer-events-none absolute right-[5%] top-20 h-80 w-80 rounded-full bg-secondary/8 blur-3xl"
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[0.92fr_1.08fr]">
+      <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.95fr_1.05fr]">
         <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 26 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.68, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/75 bg-surface-light/90 px-4 text-sm font-semibold text-primary-active shadow-[var(--shadow-raised-sm)]">
-            <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-            Learn by tracing what changes
+          {/* Eyebrow Badge */}
+          <div className="inline-flex min-h-9 items-center gap-2 rounded-full border border-border bg-surface px-3.5 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)]">
+            <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+            Interactive CS Visualizer & Learning Workstation
           </div>
-          <h1 className="mt-7 max-w-3xl text-5xl font-extrabold leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-[4.45rem]">
-            See the logic.
-            <span className="block text-gradient-primary">Then make it stick.</span>
+
+          {/* Main Headline */}
+          <h1 className="mt-6 max-w-3xl text-4xl font-extrabold font-display leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl text-text-primary">
+            Master Data Structures &amp; Algorithms <span className="text-gradient-primary">Step by Step.</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-8 text-text-secondary">
-            Build an input, run the algorithm, and connect every state change to the code that
-            caused it without losing your place.
+
+          {/* Subtitle */}
+          <p className="mt-5 max-w-xl text-base sm:text-lg leading-relaxed text-text-secondary">
+            Execute algorithms visually, step through state transitions in real time, and connect every pointer change to synchronized multi-language source code.
           </p>
 
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+          {/* CTA Buttons */}
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/visualizers"
-              className={buttonVariants({ size: "lg", className: "group" })}
+              className={buttonVariants({ size: "lg", className: "group shadow-[var(--shadow-raised)]" })}
             >
-              Start visualizing
+              <Compass className="h-4 w-4" />
+              Explore All {visualizerCount} Visualizers
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               href="/visualizers/array"
-              className={buttonVariants({ variant: "outline", size: "lg" })}
+              className={buttonVariants({ variant: "secondary", size: "lg" })}
             >
-              Explore array algorithms
+              Start with Arrays
             </Link>
           </div>
 
-          <dl className="mt-10 grid max-w-xl grid-cols-3 divide-x divide-border">
+          {/* Metrics Row */}
+          <dl className="mt-10 grid max-w-xl grid-cols-3 gap-4 border-t border-border pt-6">
             {[
-              { value: visualizerCount, label: "published pages" },
-              { value: structureCount, label: "data structures" },
-              { value: 4, label: "code languages" },
+              { value: `${visualizerCount}`, label: "Interactive Visualizers" },
+              { value: `${structureCount}`, label: "Data Structures" },
+              { value: "5", label: "Languages (Py, C++, Java, JS, TS)" },
             ].map((stat) => (
-              <div key={stat.label} className="px-3 first:pl-0 sm:px-5">
-                <dt className="text-xs leading-4 text-muted-foreground">{stat.label}</dt>
-                <dd className="mt-1 font-display text-2xl font-extrabold text-primary-active">
+              <div key={stat.label} className="flex flex-col">
+                <dd className="font-display text-2xl sm:text-3xl font-extrabold text-primary">
                   {stat.value}
                 </dd>
+                <dt className="text-xs font-medium text-text-muted mt-0.5 leading-snug">{stat.label}</dt>
               </div>
             ))}
           </dl>
         </motion.div>
 
+        {/* Interactive Workbench Preview */}
         <WorkbenchPreview />
       </div>
     </section>

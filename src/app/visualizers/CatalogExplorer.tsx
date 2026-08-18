@@ -38,10 +38,10 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 const categories = [
-  { id: "all", label: "All structures" },
-  { id: "linear", label: "Linear" },
-  { id: "non-linear", label: "Non-linear" },
-  { id: "hash-based", label: "Hash-based" },
+  { id: "all", label: "All Structures" },
+  { id: "linear", label: "Linear Structures" },
+  { id: "non-linear", label: "Non-Linear (Trees & Graphs)" },
+  { id: "hash-based", label: "Hash-Based" },
 ] as const;
 
 type CatalogExplorerProps = {
@@ -78,27 +78,28 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
   }, [dataStructures, activeCategory, searchQuery]);
 
   return (
-    <>
-      <div className="neu-raised mt-10 flex flex-col gap-4 rounded-2xl p-4 lg:flex-row lg:items-center lg:justify-between">
+    <div className="mt-10">
+      {/* Search & Filter Bar */}
+      <div className="neu-raised flex flex-col gap-4 rounded-2xl p-4 lg:flex-row lg:items-center lg:justify-between border border-border">
         <div className="relative w-full lg:max-w-md">
           <label htmlFor="structure-search" className="sr-only">
             Search data structures
           </label>
           <Search
-            className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-text-muted"
             aria-hidden="true"
           />
           <input
             id="structure-search"
             type="search"
-            placeholder="Search structures"
+            placeholder="Search data structures (e.g., Array, Tree, Graph)..."
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
-            className="h-12 w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-sm text-foreground shadow-[var(--shadow-inset)] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="h-11 w-full rounded-xl border border-border bg-bg-surface-inset py-2.5 pl-11 pr-4 text-sm text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           />
         </div>
 
-        <div className="flex flex-wrap gap-2" aria-label="Filter by structure type">
+        <div className="flex flex-wrap gap-2" aria-label="Filter by structure category">
           {categories.map((category) => {
             const selected = activeCategory === category.id;
             return (
@@ -108,10 +109,10 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
                 aria-pressed={selected}
                 onClick={() => setActiveCategory(category.id)}
                 className={cn(
-                  "min-h-11 rounded-xl border px-4 text-sm font-semibold transition-colors",
+                  "min-h-10 rounded-xl px-4 text-xs font-bold transition-all duration-200 cursor-pointer select-none",
                   selected
-                    ? "border-primary/20 bg-primary-muted text-primary-active shadow-[var(--shadow-inset)]"
-                    : "border-white/70 bg-surface-light text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary-active"
+                    ? "border border-primary/30 bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                    : "border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-text-primary hover:border-border-hover hover:bg-surface-hover"
                 )}
               >
                 {category.label}
@@ -121,16 +122,23 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
         </div>
       </div>
 
-      <p className="mt-8 text-sm font-semibold text-text-secondary" aria-live="polite">
-        {filteredStructures.length} {filteredStructures.length === 1 ? "structure" : "structures"}
-      </p>
+      {/* Result Counter & State */}
+      <div className="mt-8 flex items-center justify-between">
+        <p className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted" aria-live="polite">
+          Showing {filteredStructures.length} of {dataStructures.filter(s => s.isPublished).length} structures
+        </p>
+        <span className="text-xs font-medium text-text-secondary">
+          {publishedAlgorithms.length} Total Algorithms
+        </span>
+      </div>
 
+      {/* Structure Cards Grid */}
       {filteredStructures.length > 0 ? (
         <motion.div
           initial={reduceMotion ? false : "hidden"}
           animate="visible"
-          variants={{ visible: { transition: { staggerChildren: 0.045 } } }}
-          className="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+          variants={{ visible: { transition: { staggerChildren: 0.04 } } }}
+          className="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
         >
           {filteredStructures.map((structure) => {
             const Icon =
@@ -143,35 +151,35 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
                   hidden: { opacity: 0, y: 16 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                transition={{ duration: 0.36 }}
+                transition={{ duration: 0.35 }}
               >
                 <Link
                   href={`/visualizers/${structure.slug}`}
-                  className="group flex h-full flex-col rounded-2xl border border-white/75 bg-surface/90 p-6 shadow-[var(--shadow-raised-sm)] transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 hover:ring-1 hover:ring-primary/20"
+                  className="neu-raised group flex h-full flex-col justify-between rounded-2xl border border-border p-6 shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:-translate-y-1 hover:shadow-[var(--shadow-raised)] transition-all duration-200"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-muted text-primary-active shadow-[var(--shadow-inset)] transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
-                      <Icon className="h-6 w-6" aria-hidden="true" />
-                    </span>
-                    <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold capitalize text-text-secondary transition-colors group-hover:border-primary/30">
-                      {structure.difficulty}
-                    </span>
+                  <div>
+                    <div className="flex items-start justify-between gap-4">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-[var(--shadow-inset)] group-hover:scale-105 transition-transform duration-200">
+                        <Icon className="h-6 w-6" aria-hidden="true" />
+                      </span>
+                      <span className="rounded-lg border border-border bg-surface px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-text-muted">
+                        {structure.category}
+                      </span>
+                    </div>
+                    <h2 className="mt-5 text-xl font-bold font-display text-text-primary group-hover:text-primary transition-colors">
+                      {structure.name}
+                    </h2>
+                    <p className="mt-2 text-sm leading-relaxed text-text-secondary line-clamp-2">
+                      {structure.description}
+                    </p>
                   </div>
-                  <h2 className="mt-6 text-xl font-extrabold transition-colors group-hover:text-primary-active">
-                    {structure.name}
-                  </h2>
-                  <p className="mt-2 flex-1 text-sm leading-6 text-text-secondary">
-                    {structure.description}
-                  </p>
+
                   <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
-                    <span className="text-sm font-semibold text-muted-foreground">
-                      {count} {count === 1 ? "algorithm" : "algorithms"}
+                    <span className="text-xs font-mono font-bold text-primary">
+                      {count} {count === 1 ? "Visualizer" : "Visualizers"}
                     </span>
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-background text-primary-active shadow-[var(--shadow-inset)] transition-all duration-300 group-hover:bg-primary group-hover:text-white">
-                      <ChevronRight
-                        className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
-                        aria-hidden="true"
-                      />
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-text-muted group-hover:border-primary/30 group-hover:text-primary transition-colors">
+                      <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
                     </span>
                   </div>
                 </Link>
@@ -180,11 +188,11 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
           })}
         </motion.div>
       ) : (
-        <div className="neu-inset mt-6 rounded-2xl px-5 py-16 text-center">
-          <Search className="mx-auto h-10 w-10 text-muted-foreground" aria-hidden="true" />
-          <h2 className="mt-4 text-xl font-extrabold">No matching structures</h2>
+        <div className="neu-inset mt-6 rounded-2xl p-12 text-center border border-border">
+          <Search className="mx-auto h-10 w-10 text-text-muted" aria-hidden="true" />
+          <h2 className="mt-4 text-lg font-bold font-display text-text-primary">No matching structures</h2>
           <p className="mt-2 text-sm text-text-secondary">
-            Change the search term or choose a different category.
+            Adjust your search query or reset the category filter.
           </p>
           <button
             type="button"
@@ -192,12 +200,12 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
               setSearchQuery("");
               setActiveCategory("all");
             }}
-            className="mt-6 min-h-11 rounded-xl bg-primary px-5 text-sm font-bold text-white hover:bg-primary-hover"
+            className="mt-6 min-h-10 rounded-xl bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-[var(--shadow-raised-sm)]"
           >
-            Clear filters
+            Reset Filters
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 }

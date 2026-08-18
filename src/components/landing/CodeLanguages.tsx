@@ -2,39 +2,39 @@
 
 import { useState, type KeyboardEvent } from "react";
 import { Check, Copy } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { CodeLanguage } from "@/types";
 import { getArrayCodeExamples } from "@/visualizers/array/code-examples";
-import { glowStyle, sectionReveal } from "./landing-effects";
+import { cn } from "@/lib/utils";
 
 const languagePresentation: Record<
   CodeLanguage,
-  { name: string; color: string; description: string }
+  { name: string; tag: string; description: string }
 > = {
-  cpp: {
-    name: "C++",
-    color: "#BAE6FD",
-    description: "A reference implementation using std::vector and std::swap.",
-  },
-  java: {
-    name: "Java",
-    color: "#FDE68A",
-    description: "An explicit array implementation with a temporary swap value.",
-  },
   python: {
     name: "Python",
-    color: "#DDD6FE",
-    description: "The same trace expressed with Python tuple assignment.",
+    tag: "py",
+    description: "Idiomatic Python 3 implementation with tuple unpacking and clean slicing.",
   },
   javascript: {
     name: "JavaScript",
-    color: "#BBF7D0",
-    description: "The primary authored implementation for this visualizer.",
+    tag: "js",
+    description: "Standard modern ECMAScript implementation with mutable in-place swaps.",
   },
   typescript: {
     name: "TypeScript",
-    color: "#BFDBFE",
-    description: "A typed JavaScript implementation.",
+    tag: "ts",
+    description: "Strictly typed TypeScript implementation with number[] constraints.",
+  },
+  cpp: {
+    name: "C++",
+    tag: "cpp",
+    description: "High-performance C++ implementation using std::vector and std::swap.",
+  },
+  java: {
+    name: "Java",
+    tag: "java",
+    description: "Production Java class implementation with explicit temporary swaps.",
   },
 };
 
@@ -44,8 +44,9 @@ const languages = getArrayCodeExamples("bubble-sort", "landing-bubble-sort").map
 }));
 
 export function CodeLanguages() {
-  const [activeTab, setActiveTab] = useState<CodeLanguage>("javascript");
+  const [activeTab, setActiveTab] = useState<CodeLanguage>("python");
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">("idle");
+  const reduceMotion = useReducedMotion();
   const activeLanguage =
     languages.find((language) => language.language === activeTab) ?? languages[0];
 
@@ -72,37 +73,28 @@ export function CodeLanguages() {
   return (
     <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="code-languages">
       <div className="mx-auto max-w-7xl">
-        <motion.div
-          initial="visible"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-90px" }}
-          variants={sectionReveal}
-          className="mb-12 max-w-3xl text-left"
-        >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">
-            Code Translations
-          </p>
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-            Keep the implementation beside the animation.
+        <div className="mb-14 max-w-3xl">
+          <p className="section-kicker">Multi-Language Code Tracing</p>
+          <h2 className="mt-3 text-3xl font-extrabold font-display tracking-tight text-text-primary sm:text-4xl md:text-5xl">
+            Learn in the Language of Your Choice.
           </h2>
-          <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            These tabs read the same Bubble Sort code examples as the visualizer, so the landing
-            preview cannot drift into a separate implementation.
+          <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
+            Every algorithm in the library includes verified reference implementations across 5 major languages with synchronized step pointers.
           </p>
-        </motion.div>
+        </div>
 
         <motion.div
-          initial={{ opacity: 1, y: 0 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-90px" }}
-          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
-          style={glowStyle(5)}
-          className="landing-glow-card rounded-lg border border-white/75 bg-surface/70 shadow-xl"
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5 }}
+          className="neu-float overflow-hidden rounded-3xl border border-border bg-surface shadow-[var(--shadow-float)]"
         >
+          {/* Language Selector Tabs */}
           <div
-            className="flex items-center overflow-x-auto border-b border-white/75 bg-background px-2"
+            className="flex items-center gap-1.5 overflow-x-auto border-b border-border bg-surface-inset p-2.5 sm:px-4"
             role="tablist"
-            aria-label="Bubble Sort code languages"
+            aria-label="Algorithm code languages"
           >
             {languages.map((language, index) => {
               const isActive = activeTab === language.language;
@@ -117,64 +109,51 @@ export function CodeLanguages() {
                   tabIndex={isActive ? 0 : -1}
                   onClick={() => setActiveTab(language.language)}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
-                  className={`relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors ${
+                  className={cn(
+                    "flex min-h-10 items-center gap-2 rounded-xl px-4 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer select-none",
                     isActive
-                      ? "text-foreground"
-                      : "text-muted-foreground hover:text-secondary-foreground"
-                  }`}
+                      ? "border border-primary/30 bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                      : "text-text-secondary hover:bg-surface hover:text-text-primary"
+                  )}
                 >
-                  <span
-                    className="h-2.5 w-2.5 rounded-full"
-                    style={{ backgroundColor: language.color }}
-                    aria-hidden="true"
-                  />
+                  <span className="font-mono text-[11px] uppercase tracking-wider opacity-80">{language.tag}</span>
                   <span>{language.name}</span>
-                  {isActive ? (
-                    <motion.span
-                      layoutId="code-tab-indicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--landing-card-tone)]"
-                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      aria-hidden="true"
-                    />
-                  ) : null}
                 </button>
               );
             })}
           </div>
 
-          <div className="flex items-center justify-between gap-4 border-b border-white/75 px-5 py-3">
-            <span className="text-xs leading-5 text-muted-foreground">
-              Bubble Sort: {activeLanguage.description}
+          {/* Description & Copy Action Header */}
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface px-6 py-3.5">
+            <span className="text-xs sm:text-sm font-medium text-text-secondary">
+              {activeLanguage.description}
             </span>
             <button
               type="button"
-              className="inline-flex h-8 items-center gap-2 rounded-md border border-white/75 px-3 text-xs font-medium text-muted-foreground transition-colors hover:text-[var(--landing-card-tone)]"
+              className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3.5 text-xs font-bold text-text-primary shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:text-primary active:scale-95 transition-all"
               onClick={handleCopy}
-              aria-label={`Copy ${activeLanguage.name} Bubble Sort code`}
+              aria-label={`Copy ${activeLanguage.name} code`}
             >
               {copyStatus === "copied" ? (
-                <Check className="h-3.5 w-3.5" />
+                <Check className="h-3.5 w-3.5 text-success" />
               ) : (
                 <Copy className="h-3.5 w-3.5" />
               )}
               <span aria-live="polite">
-                {copyStatus === "copied"
-                  ? "Copied"
-                  : copyStatus === "failed"
-                    ? "Copy failed"
-                    : "Copy"}
+                {copyStatus === "copied" ? "Copied!" : copyStatus === "failed" ? "Failed" : "Copy Code"}
               </span>
             </button>
           </div>
 
+          {/* Code Viewer Panel */}
           <pre
             id="bubble-sort-code-panel"
             role="tabpanel"
             aria-labelledby={`code-tab-${activeLanguage.language}`}
             tabIndex={0}
-            className="overflow-x-auto p-5 text-sm leading-relaxed"
+            className="overflow-x-auto bg-code-panel-bg p-6 text-xs sm:text-sm font-mono leading-7 text-emerald-100/90"
           >
-            <code className="font-mono text-secondary-foreground">{activeLanguage.code}</code>
+            <code>{activeLanguage.code}</code>
           </pre>
         </motion.div>
       </div>

@@ -66,12 +66,12 @@ export default async function SignupPage({
     <AuthShell
       user={user}
       activeTab="signup"
-      eyebrow={params.success ? "One more step" : "CREATE YOUR ACCOUNT"}
+      eyebrow={params.success ? "Verification Required" : "Create Account"}
       title={params.success ? "Check your inbox" : "Create your Algo Flow account"}
       description={
         params.success
           ? "Use the verification link we sent, then return to log in."
-          : "Save useful visualizers, resume sessions, and build a real record of what you have practised."
+          : "Save useful visualizers, resume sessions, and build a permanent record of what you have practiced."
       }
     >
       {!ACCOUNT_REGISTRATION_AVAILABLE ? (
@@ -81,13 +81,13 @@ export default async function SignupPage({
           </span>
           <div
             role="status"
-            className="mt-6 rounded-xl border border-warning/25 bg-warning-muted px-4 py-3 text-sm leading-6 text-text-secondary"
+            className="mt-6 rounded-2xl border border-warning/30 bg-warning-muted p-4 text-xs font-semibold leading-relaxed text-text-secondary"
           >
             {REGISTRATION_BLOCK_REASON}
           </div>
           <Link
             href="/visualizers"
-            className={buttonVariants({ size: "lg", className: "mt-7 w-full" })}
+            className={buttonVariants({ size: "lg", className: "mt-6 w-full" })}
           >
             Explore visualizers
           </Link>
@@ -97,11 +97,11 @@ export default async function SignupPage({
           <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success-muted text-success shadow-[var(--shadow-inset)]">
             <MailCheck className="h-8 w-8" aria-hidden="true" />
           </span>
-          <p aria-live="polite" className="mt-6 text-sm leading-6 text-text-secondary">
+          <p aria-live="polite" className="mt-6 text-xs sm:text-sm leading-relaxed text-text-secondary">
             {params.success}
           </p>
-          <Link href="/login" className={buttonVariants({ size: "lg", className: "mt-7 w-full" })}>
-            Return to log in
+          <Link href="/login" className={buttonVariants({ size: "lg", className: "mt-6 w-full" })}>
+            Return to sign in
           </Link>
         </div>
       ) : (
@@ -109,7 +109,7 @@ export default async function SignupPage({
           {params.error ? (
             <div
               role="alert"
-              className="mb-6 rounded-xl border border-error/20 bg-error-muted px-4 py-3 text-sm font-medium text-error"
+              className="mb-6 rounded-2xl border border-error/30 bg-error-muted p-4 text-xs font-bold text-error"
             >
               {params.error}
             </div>
@@ -120,7 +120,7 @@ export default async function SignupPage({
             <input type="hidden" name="terms_version" value={TERMS_VERSION} />
             <input type="hidden" name="privacy_version" value={PRIVACY_VERSION} />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
                 <label htmlFor="signup-first-name" className="sr-only">
                   First Name
@@ -131,7 +131,6 @@ export default async function SignupPage({
                   placeholder="First name"
                   autoComplete="given-name"
                   required
-                  className="bg-surface-light h-12"
                 />
               </div>
               <div>
@@ -144,7 +143,6 @@ export default async function SignupPage({
                   placeholder="Last name"
                   autoComplete="family-name"
                   required
-                  className="bg-surface-light h-12"
                 />
               </div>
             </div>
@@ -157,10 +155,11 @@ export default async function SignupPage({
                 id="signup-gender"
                 name="gender"
                 required
-                className="flex h-12 w-full rounded-xl border border-border bg-surface-light px-3 text-sm text-foreground shadow-[var(--shadow-inset)] transition-[border-color,box-shadow] duration-200 focus-visible:border-primary focus-visible:outline-none focus-visible:shadow-[var(--shadow-inset),0_0_0_3px_rgba(34,197,94,0.14)] disabled:cursor-not-allowed disabled:opacity-50"
+                defaultValue=""
+                className="flex h-11 w-full rounded-xl border border-border bg-bg-surface-inset px-3.5 text-xs sm:text-sm text-text-primary shadow-[var(--shadow-inset)] transition-all focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 cursor-pointer"
               >
-                <option value="" disabled selected hidden>
-                  Gender
+                <option value="" disabled hidden>
+                  Select Gender
                 </option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
@@ -181,19 +180,17 @@ export default async function SignupPage({
                 autoComplete="email"
                 spellCheck={false}
                 required
-                className="bg-surface-light h-12"
               />
             </div>
 
             <PasswordField
               id="signup-password"
               label="Password"
-              hint="Use at least 8 characters. A longer, unique passphrase is safer."
+              hint="Use at least 8 characters. A longer passphrase is safer."
               name="password"
               autoComplete="new-password"
               minLength={8}
               required
-              className="bg-surface-light"
             />
 
             <PasswordField
@@ -203,24 +200,23 @@ export default async function SignupPage({
               autoComplete="new-password"
               minLength={8}
               required
-              className="bg-surface-light"
             />
 
-            <label className="flex items-start gap-3 rounded-xl border border-border bg-surface-light px-4 py-3 text-sm leading-6 text-text-secondary">
+            <label className="flex items-start gap-3 rounded-xl border border-border bg-surface p-3.5 text-xs leading-relaxed text-text-secondary cursor-pointer">
               <input
                 type="checkbox"
                 name="legal_accepted"
                 value="yes"
                 required
-                className="mt-1 h-4 w-4 shrink-0 rounded border-border text-primary focus:ring-primary"
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-border text-primary focus:ring-primary"
               />
               <span>
                 I am 18 years of age or older and agree to the{" "}
-                <Link href="/terms" className="font-semibold text-primary-active hover:underline">
+                <Link href="/terms" className="font-bold text-primary hover:underline">
                   Terms
                 </Link>{" "}
                 and{" "}
-                <Link href="/privacy" className="font-semibold text-primary-active hover:underline">
+                <Link href="/privacy" className="font-bold text-primary hover:underline">
                   Privacy Policy
                 </Link>
                 .
@@ -232,38 +228,38 @@ export default async function SignupPage({
             </SubmitButton>
           </form>
 
-          <div className="relative mt-6">
+          <div className="relative my-6">
             <div className="absolute inset-0 flex items-center" aria-hidden="true">
               <div className="w-full border-t border-border" />
             </div>
-            <div className="relative flex justify-center text-sm font-medium leading-6">
-              <span className="bg-white/78 px-4 text-text-muted">or continue with</span>
+            <div className="relative flex justify-center text-xs font-mono font-bold uppercase tracking-wider">
+              <span className="bg-surface px-4 text-text-muted">or continue with</span>
             </div>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <form action={loginWithOAuth.bind(null, "google")}>
-              <SubmitButton variant="outline" className="w-full bg-surface-light">
-                <GoogleIcon className="mr-2 h-5 w-5" aria-hidden="true" />
-                <span className="text-sm font-semibold text-foreground">Google</span>
+              <SubmitButton variant="outline" className="w-full">
+                <GoogleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                <span className="text-xs font-bold text-text-primary">Google</span>
               </SubmitButton>
             </form>
 
             <form action={loginWithOAuth.bind(null, "github")}>
-              <SubmitButton variant="outline" className="w-full bg-surface-light">
-                <GithubIcon className="mr-2 h-5 w-5" aria-hidden="true" />
-                <span className="text-sm font-semibold text-foreground">GitHub</span>
+              <SubmitButton variant="outline" className="w-full">
+                <GithubIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                <span className="text-xs font-bold text-text-primary">GitHub</span>
               </SubmitButton>
             </form>
           </div>
 
-          <p className="mt-6 text-center text-sm text-text-secondary">
+          <p className="mt-6 text-center text-xs text-text-secondary">
             Already have an account?{" "}
             <Link
               href={params.next ? `/login?next=${encodeURIComponent(params.next)}` : "/login"}
-              className="font-bold text-primary-active hover:underline"
+              className="font-bold text-primary hover:underline"
             >
-              Log in
+              Sign in
             </Link>
           </p>
         </>

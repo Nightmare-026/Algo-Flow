@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { usePlaybackStore, getActiveSpeedMs } from "@/stores/playback-store";
 
 const controlClass =
-  "inline-flex h-11 w-11 items-center justify-center rounded-xl bg-surface neu-btn text-text-secondary transition-colors hover:text-primary-active focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35";
+  "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35";
 
 export function PlaybackControls() {
   const {
@@ -36,7 +36,6 @@ export function PlaybackControls() {
   useEffect(() => {
     if (!isPlaying) return;
 
-    // If speed is set to exactly 0, play through immediately (instant playback mode)
     if (activeSpeedMs === 0) {
       skipToEnd();
       return;
@@ -98,7 +97,7 @@ export function PlaybackControls() {
   }, [isPlaying, nextStep, pause, play, previousStep, totalSteps]);
 
   return (
-    <div className="flex items-center gap-1" aria-label="Playback controls">
+    <div className="flex items-center gap-1.5" aria-label="Playback controls">
       <button
         type="button"
         onClick={restart}
@@ -107,7 +106,7 @@ export function PlaybackControls() {
         title="Restart"
         aria-label="Restart from the first step"
       >
-        <RotateCcw className="h-5 w-5" />
+        <RotateCcw className="h-4 w-4" />
       </button>
 
       <button
@@ -118,21 +117,21 @@ export function PlaybackControls() {
         title="Previous step"
         aria-label="Previous step"
       >
-        <SkipBack className="h-5 w-5" />
+        <SkipBack className="h-4 w-4" />
       </button>
 
       <button
         type="button"
         onClick={isPlaying ? pause : play}
         disabled={totalSteps === 0}
-        className="mx-1 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary neu-btn text-white transition-transform hover:bg-primary-hover hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-45"
+        className="mx-0.5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-white shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary-hover active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
         title={isPlaying ? "Pause" : "Play"}
         aria-label={isPlaying ? "Pause playback" : "Play visualization"}
       >
         {isPlaying ? (
-          <Pause className="h-5 w-5 fill-current" />
+          <Pause className="h-4.5 w-4.5 fill-current" />
         ) : (
-          <Play className="ml-0.5 h-5 w-5 fill-current" />
+          <Play className="ml-0.5 h-4.5 w-4.5 fill-current" />
         )}
       </button>
 
@@ -144,7 +143,7 @@ export function PlaybackControls() {
         title="Next step"
         aria-label="Next step"
       >
-        <SkipForward className="h-5 w-5" />
+        <SkipForward className="h-4 w-4" />
       </button>
 
       <button
@@ -155,7 +154,7 @@ export function PlaybackControls() {
         title="Jump to end"
         aria-label="Jump to final step"
       >
-        <FastForward className="h-5 w-5" />
+        <FastForward className="h-4 w-4" />
       </button>
 
       <Popover>
@@ -166,17 +165,19 @@ export function PlaybackControls() {
             title="Playback settings"
             aria-label="Playback settings"
           >
-            <Settings className="h-5 w-5" />
+            <Settings className="h-4 w-4" />
           </button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-64 border-white/75 bg-surface-light p-4 text-text-primary shadow-[var(--shadow-float)]"
+          className="w-64 rounded-2xl border border-border bg-surface p-4 text-text-primary shadow-[var(--shadow-float)]"
           align="end"
         >
           <div className="space-y-4">
-            <h2 className="text-sm font-bold">Playback settings</h2>
+            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
+              Playback settings
+            </h2>
             <div className="flex items-center justify-between gap-4">
-              <Label htmlFor="reduced-motion" className="cursor-pointer text-sm">
+              <Label htmlFor="reduced-motion" className="cursor-pointer text-xs font-semibold text-text-primary">
                 Reduced motion
               </Label>
               <Switch

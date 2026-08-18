@@ -13,20 +13,20 @@ export function StepTimeline() {
     <section className="min-w-0 w-full" aria-label="Execution progress">
       <div className="mb-2 flex min-w-0 items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="shrink-0 font-mono text-[11px] font-bold tabular-nums text-primary-active">
+          <span className="shrink-0 font-mono text-xs font-bold tabular-nums text-primary bg-primary-muted px-2 py-0.5 rounded-md border border-primary/20">
             {currentStepIndex + 1}/{totalSteps}
           </span>
           <span className="truncate text-xs font-semibold text-text-primary">
             {currentStep.title}
           </span>
         </div>
-        <span className="shrink-0 rounded-full border border-primary/20 bg-primary-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-primary-active">
+        <span className="shrink-0 rounded-md border border-border bg-surface px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
           {currentStep.actionType}
         </span>
       </div>
 
       <div
-        className="neu-inset flex h-4 w-full items-stretch gap-0.5 overflow-hidden rounded-full p-1"
+        className="flex h-3 w-full items-stretch gap-1 overflow-hidden rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-[var(--shadow-inset)]"
         role="group"
         aria-label="Select execution step"
       >
@@ -43,11 +43,11 @@ export function StepTimeline() {
               aria-label={`Step ${index + 1}: ${step.title}. ${step.operation}`}
               title={`Step ${index + 1}: ${step.title}`}
               className={cn(
-                "relative min-w-1 flex-1 rounded-full transition-[background-color,box-shadow,transform] focus-visible:z-10 focus-visible:outline-none",
+                "relative min-w-1 flex-1 rounded-full transition-all duration-150 cursor-pointer focus-visible:outline-none",
                 isCurrent
-                  ? "bg-primary shadow-[0_0_0_2px_rgba(255,255,255,0.95),0_0_0_4px_rgba(34,197,94,0.30)]"
+                  ? "bg-primary shadow-[0_0_0_2px_var(--color-primary)]"
                   : isPassed
-                    ? "bg-primary/45 hover:bg-primary/65"
+                    ? "bg-primary/50 hover:bg-primary/70"
                     : "bg-border hover:bg-border-hover"
               )}
             >

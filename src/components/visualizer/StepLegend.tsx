@@ -12,12 +12,12 @@ export type StepLegendItem = {
 };
 
 const toneClasses: Record<StepLegendItem["tone"], string> = {
-  primary: "border-primary/35 bg-primary-muted text-primary-active",
-  info: "border-secondary/30 bg-secondary-muted text-secondary",
-  warning: "border-warning/30 bg-warning-muted text-warning",
-  success: "border-success/30 bg-success-muted text-success",
-  error: "border-error/30 bg-error-muted text-error",
-  muted: "border-border bg-bg-surface text-text-secondary",
+  primary: "border-primary/40 bg-primary-muted text-primary",
+  info: "border-secondary/40 bg-secondary-muted text-secondary",
+  warning: "border-warning/40 bg-warning-muted text-warning",
+  success: "border-success/40 bg-success-muted text-success",
+  error: "border-error/40 bg-error-muted text-error",
+  muted: "border-border bg-surface text-text-secondary",
 };
 
 export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) {
@@ -32,15 +32,15 @@ export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) 
   return (
     <section
       aria-label="Step highlight legend"
-      className="border-b border-border bg-bg-surface/70 px-3 py-2"
+      className="border-b border-border bg-surface/80 px-4 py-2.5 backdrop-blur-sm"
     >
       <div
         className="hide-scrollbar flex items-center gap-2 overflow-x-auto"
         role="list"
         tabIndex={0}
       >
-        <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.14em] text-text-muted">
-          Visual state
+        <span className="shrink-0 text-[10px] font-mono font-bold uppercase tracking-widest text-text-muted">
+          State Signals:
         </span>
         {items.map((item) => {
           const active = activeBuckets.has(item.bucketKey);
@@ -52,17 +52,17 @@ export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) 
               data-active={active}
               title={item.description}
               className={cn(
-                "inline-flex min-h-8 shrink-0 items-center gap-2 rounded-full border px-3 text-xs font-semibold transition-[background-color,border-color,box-shadow,color,opacity]",
+                "inline-flex min-h-7 shrink-0 items-center gap-2 rounded-full border px-3 text-xs font-semibold transition-all duration-200",
                 active
-                  ? cn(toneClasses[item.tone], "shadow-[var(--shadow-raised-sm)] opacity-100")
-                  : "border-border/75 bg-bg-surface-light text-text-muted opacity-55"
+                  ? cn(toneClasses[item.tone], "shadow-[var(--shadow-raised-sm)] opacity-100 font-bold")
+                  : "border-border/60 bg-surface/50 text-text-muted opacity-40"
               )}
             >
               <span
                 aria-hidden="true"
                 className={cn(
-                  "h-2 w-2 rounded-full",
-                  active ? "bg-current shadow-[0_0_0_3px_currentColor]" : "bg-text-muted/40"
+                  "h-1.5 w-1.5 rounded-full",
+                  active ? "bg-current shadow-[0_0_6px_currentColor]" : "bg-text-muted/40"
                 )}
               />
               {item.label}

@@ -26,56 +26,60 @@ export function AuthShell({
   return (
     <main
       id="main-content"
-      className="page-shell relative flex min-h-screen items-center overflow-hidden px-4 py-10 sm:px-6 lg:px-8 lg:py-16"
+      className="page-shell relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12 sm:px-6 lg:px-8"
     >
-      <div className="pointer-events-none absolute left-[4%] top-[7%] h-72 w-72 rounded-full bg-primary/8 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-[3%] right-[4%] h-80 w-80 rounded-full bg-secondary/7 blur-3xl" />
+      {/* Background Ambience */}
+      <div className="pointer-events-none absolute left-[5%] top-[8%] h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-[5%] right-[5%] h-80 w-80 rounded-full bg-secondary/8 blur-3xl" />
 
-      <div className="neu-float mx-auto grid w-full max-w-6xl overflow-hidden rounded-[2rem] border-white/90 lg:grid-cols-2">
-        <section className="bg-white/78 p-6 sm:p-10 lg:p-12 xl:p-14">
+      <div className="neu-float mx-auto grid w-full max-w-5xl overflow-hidden rounded-3xl border border-border lg:grid-cols-2">
+        {/* Left Form Section */}
+        <section className="bg-surface p-6 sm:p-10 lg:p-12">
           <div className="mx-auto max-w-md">
+            {/* Header Brand */}
             <div className="flex items-center justify-between gap-4">
               <Link
                 href="/"
-                className="group flex min-h-11 items-center gap-2.5 rounded-xl pr-2"
+                className="group flex min-h-10 items-center gap-2.5 rounded-xl pr-2"
                 aria-label="Algo Flow home"
               >
-                <span className="relative h-9 w-9 rounded-xl bg-primary-muted shadow-[var(--shadow-raised-sm)]">
+                <span className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
                   <Image
                     src="/logo.png"
-                    alt=""
-                    fill
-                    sizes="36px"
-                    className="object-contain p-1"
+                    alt="Algo Flow"
+                    width={22}
+                    height={22}
+                    className="object-contain"
                     priority
                   />
                 </span>
-                <span className="font-display text-lg font-extrabold tracking-tight text-foreground">
-                  Algo Flow
+                <span className="font-display text-lg font-extrabold tracking-tight text-text-primary">
+                  Algo<span className="text-primary">Flow</span>
                 </span>
               </Link>
               {user ? (
                 <Link
                   href="/dashboard"
-                  className="text-xs font-semibold text-primary-active hover:underline"
+                  className="text-xs font-bold text-primary hover:underline"
                 >
-                  Dashboard
+                  Dashboard →
                 </Link>
               ) : null}
             </div>
 
+            {/* Auth Tab Switcher */}
             {activeTab ? (
               <nav
-                aria-label="Authentication"
-                className="neu-inset mt-7 grid grid-cols-2 rounded-xl p-1"
+                aria-label="Authentication switcher"
+                className="neu-inset mt-8 grid grid-cols-2 rounded-xl p-1 border border-border"
               >
                 <Link
                   href="/login"
                   aria-current={activeTab === "login" ? "page" : undefined}
                   className={cn(
-                    "flex min-h-10 items-center justify-center rounded-lg text-sm font-semibold transition-[background-color,color,box-shadow]",
+                    "flex min-h-9 items-center justify-center rounded-lg text-xs font-bold transition-all",
                     activeTab === "login"
-                      ? "bg-white text-primary-active shadow-[var(--shadow-raised-sm)]"
+                      ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
                       : "text-text-muted hover:text-text-primary"
                   )}
                 >
@@ -85,43 +89,43 @@ export function AuthShell({
                   href="/signup"
                   aria-current={activeTab === "signup" ? "page" : undefined}
                   className={cn(
-                    "flex min-h-10 items-center justify-center rounded-lg text-sm font-semibold transition-[background-color,color,box-shadow]",
+                    "flex min-h-9 items-center justify-center rounded-lg text-xs font-bold transition-all",
                     activeTab === "signup"
-                      ? "bg-white text-primary-active shadow-[var(--shadow-raised-sm)]"
+                      ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
                       : "text-text-muted hover:text-text-primary"
                   )}
                 >
-                  Sign up
+                  Create account
                 </Link>
               </nav>
             ) : null}
 
             <p className="section-kicker mt-8">{eyebrow}</p>
-            <h1 className="mt-2 text-pretty text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-text-primary">
               {title}
             </h1>
-            <p className="mt-3 text-pretty text-sm leading-6 text-text-secondary">{description}</p>
-            <div className="mt-7">{children}</div>
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-text-secondary">{description}</p>
+            <div className="mt-6">{children}</div>
           </div>
         </section>
 
-        <aside className="relative flex flex-col justify-center overflow-hidden border-t border-white/85 bg-primary-muted/38 p-7 sm:p-10 lg:border-l lg:border-t-0 lg:p-12">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.92),transparent_38%),radial-gradient(circle_at_85%_85%,rgba(34,197,94,0.10),transparent_35%)]" />
+        {/* Right Feature Panel */}
+        <aside className="relative hidden lg:flex flex-col justify-center overflow-hidden border-l border-border bg-surface-hover/50 p-10 xl:p-12">
           <div className="relative">
             <AuthVisual />
-            <div className="mx-auto mt-7 max-w-md text-center">
-              <h2 className="text-2xl font-extrabold">Master your algorithms</h2>
-              <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-text-secondary">
-                Your progress, saved sessions, and interactive traces stay organized in one focused
-                workspace.
+            <div className="mx-auto mt-8 max-w-sm text-center">
+              <h2 className="text-xl font-bold font-display text-text-primary">Master Algorithms Visually</h2>
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-text-secondary">
+                Your study streak, quizzes, bookmarked visualizers, and saved state traces stay preserved across sessions.
               </p>
-              <ul className="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs font-semibold text-text-secondary">
-                <li className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-primary-active" />
-                  Saved progress
+              <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold text-text-secondary">
+                <li className="flex items-center gap-1.5 text-primary">
+                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                  133 Interactive Visualizers
                 </li>
-                <li className="flex items-center gap-1.5">
-                  <Braces className="h-4 w-4 text-secondary" />4 languages
+                <li className="flex items-center gap-1.5 text-secondary">
+                  <Braces className="h-4 w-4 text-secondary" />
+                  5 Production Languages
                 </li>
               </ul>
             </div>

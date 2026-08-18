@@ -42,7 +42,7 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
       const saved = localStorage.getItem("algo-flow-lang") as CodeLanguage | null;
       if (saved && examples.some((example) => example.language === saved)) return saved;
     }
-    return examples[0]?.language ?? "javascript";
+    return examples[0]?.language ?? "python";
   });
 
   const setActiveLang = (lang: CodeLanguage) => {
@@ -148,10 +148,6 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
     };
   }, [activeLineNum, codeString, htmlContent, reducedMotion, pathname]);
 
-  const handleLangChange = (language: CodeLanguage) => {
-    setActiveLang(language);
-  };
-
   const handleCopy = async () => {
     if (!codeString) return;
     await navigator.clipboard.writeText(codeString);
@@ -161,12 +157,12 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
 
   return (
     <section
-      className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-bg-surface-light"
+      className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]"
       aria-label="Source code"
     >
-      <div className="flex min-h-[46px] shrink-0 items-center justify-between border-b border-border bg-bg-surface px-2">
+      <div className="flex min-h-[44px] shrink-0 items-center justify-between border-b border-border bg-surface px-2">
         <div
-          className="hide-scrollbar flex overflow-x-auto"
+          className="hide-scrollbar flex items-center gap-1 overflow-x-auto"
           role="tablist"
           aria-label="Code languages"
         >
@@ -180,12 +176,12 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
                 type="button"
                 aria-selected={isActive}
                 aria-controls="code-language-panel"
-                onClick={() => handleLangChange(example.language)}
+                onClick={() => setActiveLang(example.language)}
                 className={cn(
-                  "min-h-11 whitespace-nowrap border-b-2 px-4 text-sm font-medium transition-[border-color,background-color,color]",
+                  "min-h-8 rounded-lg px-2.5 text-xs font-semibold transition-all cursor-pointer select-none",
                   isActive
-                    ? "border-primary text-primary-active"
-                    : "border-transparent text-text-muted hover:bg-bg-surface-light hover:text-text-primary"
+                    ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                    : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
                 )}
               >
                 {languageLabel(example.language)}
@@ -193,15 +189,23 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
             );
           })}
         </div>
-        <button
-          type="button"
-          onClick={handleCopy}
-          disabled={!codeString}
-          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-text-muted transition-colors hover:bg-primary-muted hover:text-primary-active disabled:cursor-not-allowed disabled:opacity-40"
-          aria-label={copied ? "Code copied" : "Copy code"}
-        >
-          {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
-        </button>
+        <div className="flex items-center gap-2">
+          {activeLineNum ? (
+            <span className="font-mono text-[10px] font-bold text-primary bg-primary-muted px-2 py-0.5 rounded border border-primary/20">
+              Line {activeLineNum}
+            </span>
+          ) : null}
+          <button
+            type="button"
+            onClick={handleCopy}
+            disabled={!codeString}
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-all hover:border-primary/40 hover:text-primary disabled:opacity-40"
+            aria-label={copied ? "Code copied" : "Copy code"}
+            title="Copy code"
+          >
+            {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+          </button>
+        </div>
       </div>
 
       <div
@@ -210,17 +214,17 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
         role="tabpanel"
         aria-labelledby={`code-tab-${activeLang}`}
         aria-busy={!isDocumentReady && Boolean(codeString)}
-        className="group relative flex-1 overflow-auto bg-code-panel-bg"
+        className="group relative flex-1 overflow-auto bg-code-panel-bg shadow-[var(--shadow-inset)]"
       >
         {isDocumentReady && htmlContent && codeString ? (
           <div
             ref={codeContainerRef}
-            className="code-lines p-4 font-mono text-sm [&_.line]:-mx-2 [&_.line]:px-2 [&_.line]:py-0.5 [&_.line]:transition-[background-color,border-color,box-shadow] [&_pre]:!m-0 [&_pre]:!bg-transparent"
+            className="code-lines p-4 font-mono text-xs leading-6 [&_.line]:-mx-2 [&_.line]:px-2 [&_.line]:py-0.5 [&_.line]:transition-all [&_pre]:!m-0 [&_pre]:!bg-transparent"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
         ) : (
-          <div className="flex h-full items-center justify-center p-5 text-center text-sm text-emerald-50/70">
-            {codeString ? "Loading code…" : "Code example unavailable for this visualizer."}
+          <div className="flex h-full items-center justify-center p-5 text-center text-xs text-emerald-100/50">
+            {codeString ? "Loading syntax highlighter…" : "Code example unavailable."}
           </div>
         )}
       </div>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LogOut, Menu, X } from "lucide-react";
+import { LogOut, Menu, X, LayoutDashboard, Compass } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
@@ -13,8 +13,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 
 const navLinks = [
-  { label: "Visualizers", href: "/visualizers" },
-  { label: "Dashboard", href: "/dashboard" },
+  { label: "Visualizers", href: "/visualizers", icon: Compass },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
 ];
 
 export function Navbar({ initialUser }: { initialUser?: User | null }) {
@@ -46,64 +46,82 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
       : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/70 bg-background/88 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur-xl transition-colors duration-200">
       <nav aria-label="Primary navigation" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-18 items-center justify-between">
+        <div className="flex h-18 items-center justify-between gap-4">
+          {/* Brand Logo */}
           <Link
             href="/"
-            className="group flex min-h-11 items-center gap-2.5 rounded-xl pr-2"
+            className="group flex min-h-11 items-center gap-3 rounded-xl pr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="Algo Flow home"
           >
-            <span className="relative h-9 w-9 rounded-xl bg-primary-muted shadow-[var(--shadow-raised-sm)]">
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)] transition-transform duration-200 group-hover:scale-105">
               <Image
                 src="/logo.png"
-                alt=""
-                fill
-                sizes="36px"
-                className="object-contain p-1"
+                alt="Algo Flow"
+                width={26}
+                height={26}
+                className="object-contain"
                 priority
               />
             </span>
-            <span className="font-display text-lg font-extrabold tracking-tight text-foreground">
-              Algo<span className="text-primary-active">Flow</span>
-            </span>
+            <div className="flex flex-col">
+              <span className="font-display text-xl font-extrabold tracking-tight text-text-primary">
+                Algo<span className="text-primary">Flow</span>
+              </span>
+              <span className="text-[10px] font-mono font-semibold uppercase tracking-widest text-text-muted -mt-1">
+                Visualizer Studio
+              </span>
+            </div>
           </Link>
 
-          <div className="hidden items-center gap-1 md:flex">
+          {/* Desktop Navigation Links */}
+          <div className="hidden items-center gap-2 md:flex">
             {navLinks.map((link) => {
               const active = isActive(link.href);
+              const Icon = link.icon;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "inline-flex min-h-11 items-center rounded-xl px-4 text-sm font-semibold transition-colors",
+                    "inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-all duration-200",
                     active
-                      ? "bg-primary-muted text-primary-active shadow-[var(--shadow-inset)]"
-                      : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+                      ? "border border-primary/20 bg-primary-muted font-bold text-primary shadow-[var(--shadow-inset)]"
+                      : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:shadow-[var(--shadow-raised-sm)]"
                   )}
                 >
+                  <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-text-muted")} />
                   {link.label}
                 </Link>
               );
             })}
           </div>
 
+          {/* Right Action Suite */}
           <div className="flex items-center gap-2.5">
             <ThemeToggle />
+
             {user ? (
               <div className="hidden items-center gap-2 sm:flex">
-                <span className="max-w-40 truncate px-2 text-sm font-medium text-text-secondary">
-                  {user.user_metadata?.first_name || user.email?.split("@")[0]}
-                </span>
+                <Link
+                  href="/dashboard"
+                  className="neu-inset flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors"
+                >
+                  <span className="h-2 w-2 rounded-full bg-primary" />
+                  <span className="max-w-32 truncate">
+                    {user.user_metadata?.first_name || user.email?.split("@")[0]}
+                  </span>
+                </Link>
                 <form action={signout}>
                   <button
                     className={buttonVariants({ variant: "ghost", size: "sm" })}
                     type="submit"
+                    aria-label="Sign out"
                   >
                     <LogOut className="h-4 w-4" aria-hidden="true" />
-                    Log out
+                    <span className="sr-only sm:not-sr-only">Log out</span>
                   </button>
                 </form>
               </div>
@@ -118,10 +136,11 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
               </div>
             )}
 
+            {/* Mobile Hamburger Toggle */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground hover:bg-primary-muted hover:text-primary-active md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary active:scale-95 md:hidden"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation"
@@ -131,11 +150,13 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
           </div>
         </div>
 
+        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen ? (
-          <div id="mobile-navigation" className="border-t border-border py-3 md:hidden">
-            <div className="grid gap-1">
+          <div id="mobile-navigation" className="border-t border-border py-4 md:hidden animate-in slide-in-from-top-2 duration-200">
+            <div className="grid gap-2">
               {navLinks.map((link) => {
                 const active = isActive(link.href);
+                const Icon = link.icon;
                 return (
                   <Link
                     key={link.href}
@@ -143,27 +164,34 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                     onClick={() => setMobileMenuOpen(false)}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex min-h-11 items-center rounded-xl px-4 text-sm font-semibold",
+                      "flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition-colors",
                       active
-                        ? "bg-primary-muted text-primary-active"
-                        : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+                        ? "border border-primary/20 bg-primary-muted font-bold text-primary shadow-[var(--shadow-inset)]"
+                        : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
                     )}
                   >
+                    <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-text-muted")} />
                     {link.label}
                   </Link>
                 );
               })}
+
               {user ? (
-                <form action={signout}>
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex min-h-11 w-full items-center gap-2 rounded-xl px-4 text-left text-sm font-semibold text-muted-foreground hover:bg-surface-hover hover:text-foreground"
-                    type="submit"
-                  >
-                    <LogOut className="h-4 w-4" aria-hidden="true" />
-                    Log out
-                  </button>
-                </form>
+                <div className="mt-2 border-t border-border pt-3">
+                  <div className="mb-3 px-4 text-xs text-text-muted">
+                    Signed in as <span className="font-semibold text-text-primary">{user.email}</span>
+                  </div>
+                  <form action={signout}>
+                    <button
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex min-h-11 w-full items-center gap-2 rounded-xl px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error"
+                      type="submit"
+                    >
+                      <LogOut className="h-4 w-4" aria-hidden="true" />
+                      Sign out
+                    </button>
+                  </form>
+                </div>
               ) : (
                 <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
                   <Link

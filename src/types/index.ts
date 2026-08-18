@@ -184,7 +184,7 @@ export interface PlaybackState {
 // User & Auth Types
 // ----------------------------------------------------------------
 export type UserRole = "student" | "admin";
-export type ThemePreference = "dark-neon" | "light-edu" | "nature-cinematic" | "system";
+export type ThemePreference = "light" | "dark" | "dark-neon" | "light-edu" | "nature-cinematic" | "system";
 
 export interface UserProfile {
   id: string;

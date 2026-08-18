@@ -1,70 +1,77 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import Image from "next/image";
 
 const footerSections = [
   {
-    title: "Product",
+    title: "Platform",
     links: [
-      { label: "Visualizers", href: "/visualizers" },
-      { label: "Dashboard", href: "/dashboard" },
+      { label: "Visualizer Library", href: "/visualizers" },
+      { label: "User Dashboard", href: "/dashboard" },
+      { label: "Interactive Quizzes", href: "/visualizers" },
     ],
   },
   {
-    title: "DSA topics",
+    title: "Structures",
     links: [
-      { label: "Array", href: "/visualizers/array" },
-      { label: "Linked list", href: "/visualizers/linked-list" },
-      { label: "Stack", href: "/visualizers/stack" },
-      { label: "Tree", href: "/visualizers/tree" },
-      { label: "Graph", href: "/visualizers/graph" },
-      { label: "Hash table", href: "/visualizers/hash-table" },
+      { label: "Array Algorithms", href: "/visualizers/array" },
+      { label: "Linked Lists", href: "/visualizers/linked-list" },
+      { label: "Stacks & Queues", href: "/visualizers/stack" },
+      { label: "Trees & Traversals", href: "/visualizers/tree" },
+      { label: "Graph Algorithms", href: "/visualizers/graph" },
+      { label: "Hash Tables & Sets", href: "/visualizers/hash-table" },
     ],
   },
   {
-    title: "Learn",
+    title: "Learning",
     links: [
       { label: "How it works", href: "/#how-it-works" },
-      { label: "Code examples", href: "/#code-languages" },
-      { label: "Study tools", href: "/#features" },
+      { label: "Multi-Language Code", href: "/#code-languages" },
+      { label: "Study Features", href: "/#features" },
     ],
   },
   {
-    title: "Legal",
+    title: "Transparency",
     links: [
-      { label: "Privacy policy", href: "/privacy" },
-      { label: "Terms & conditions", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms & Conditions", href: "/terms" },
     ],
   },
 ];
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-white/80 bg-surface/72">
+    <footer className="mt-auto border-t border-border bg-surface/50 transition-colors duration-200">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_repeat(4,1fr)]">
-          <div>
-            <Link href="/" className="inline-flex min-h-11 items-center gap-2.5 rounded-xl pr-2">
-              <span className="relative h-9 w-9 rounded-xl bg-primary-muted shadow-[var(--shadow-raised-sm)]">
-                <Image src="/logo.png" alt="" fill sizes="36px" className="object-contain p-1" />
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
+          {/* Brand Column */}
+          <div className="flex flex-col gap-4">
+            <Link href="/" className="inline-flex min-h-11 items-center gap-3 rounded-xl pr-2">
+              <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
+                <Image src="/logo.png" alt="Algo Flow" width={26} height={26} className="object-contain" />
               </span>
-              <span className="font-display text-lg font-extrabold text-foreground">
-                Algo<span className="text-primary-active">Flow</span>
+              <span className="font-display text-xl font-extrabold text-text-primary">
+                Algo<span className="text-primary">Flow</span>
               </span>
             </Link>
-            <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">
-              Trace data, code, and decisions together—one algorithm step at a time.
+            <p className="max-w-sm text-sm leading-relaxed text-text-secondary">
+              An advanced algorithm visualization workstation and CS learning platform. Trace logic, inspect state, and master code in 5 languages.
             </p>
+            <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
+              <span className="inline-block h-2 w-2 rounded-full bg-primary" />
+              <span>133 Published Algorithms • 12 Data Structures</span>
+            </div>
           </div>
 
+          {/* Directory Columns */}
           {footerSections.map((section) => (
-            <div key={section.title}>
-              <h2 className="text-sm font-bold text-foreground">{section.title}</h2>
-              <ul className="mt-4 space-y-2.5">
+            <div key={section.title} className="flex flex-col gap-3">
+              <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary">{section.title}</h2>
+              <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="animated-underline inline-flex min-h-8 items-center text-sm text-muted-foreground"
+                      className="inline-flex text-sm text-text-secondary hover:text-primary transition-colors duration-150"
                     >
                       {link.label}
                     </Link>
@@ -74,9 +81,11 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="mt-12 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Algo Flow. All rights reserved.</p>
-          <p>Built for careful, visual learning.</p>
+
+        {/* Bottom Bar */}
+        <div className="mt-12 flex flex-col gap-4 border-t border-border pt-8 text-xs text-text-muted sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Algo Flow. Engineered for intentional, tactile CS mastery.</p>
+          <p className="font-mono">WCAG 2.2 AA Compliant • Light & Dark Themes</p>
         </div>
       </div>
     </footer>

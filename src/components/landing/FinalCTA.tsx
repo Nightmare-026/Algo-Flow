@@ -1,47 +1,56 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
-import { ArrowRight, UserPlus } from "lucide-react";
-import { motion } from "framer-motion";
-import { glowStyle } from "./landing-effects";
+import { ArrowRight, Compass, Sparkles } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { buttonVariants } from "@/components/ui/button";
 
 export function FinalCTA() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
-      <div className="mx-auto max-w-7xl text-left">
+      <div className="mx-auto max-w-7xl">
         <motion.div
-          initial={{ opacity: 1, y: 0, scale: 1 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: "-90px" }}
-          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
-          style={glowStyle(7)}
-          className="landing-glow-card max-w-4xl rounded-lg border border-white/75 bg-surface/70 p-8 backdrop-blur-sm sm:p-12 md:p-16"
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="neu-float relative overflow-hidden rounded-3xl border border-border p-8 sm:p-12 md:p-16 text-center"
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--landing-card-tone)]">
-            Start with a working page
-          </p>
-          <h2 className="mb-5 text-3xl font-bold leading-tight text-foreground sm:text-4xl md:text-5xl">
-            Open the catalog and run your first trace.
-          </h2>
-          <p className="mb-9 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-            Pick a core algorithm, set the input, and move through the execution one step at a time.
-          </p>
+          {/* Background Ambient Glow */}
+          <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-96 rounded-full bg-primary/10 blur-3xl" />
 
-          <div className="flex flex-col items-start justify-start gap-3 sm:flex-row sm:items-center">
-            <Link
-              href="/visualizers"
-              className="group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground transition-[transform,box-shadow,border-color,background-color,color,opacity] duration-300 hover:bg-primary/90 hover:shadow-[var(--shadow-glow-primary)] hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto"
-            >
-              Browse visualizers
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link
-              href="/signup"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-white/75 px-7 py-3.5 text-sm font-semibold text-foreground transition-[transform,box-shadow,border-color,background-color,color,opacity] duration-300 hover:border-[var(--landing-card-tone)] hover:bg-surface-light hover:-translate-y-0.5 sm:w-auto"
-            >
-              <UserPlus className="h-4 w-4" />
-              Save progress
-            </Link>
+          <div className="relative mx-auto max-w-2xl">
+            <div className="inline-flex min-h-9 items-center gap-2 rounded-full border border-border bg-surface px-3.5 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)] mb-6">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              133 Interactive Algorithms Ready to Explore
+            </div>
+
+            <h2 className="text-3xl font-extrabold font-display leading-tight text-text-primary sm:text-4xl md:text-5xl">
+              Ready to Master Algorithms <span className="text-gradient-primary">Visually?</span>
+            </h2>
+
+            <p className="mt-5 text-base sm:text-lg leading-relaxed text-text-secondary">
+              Open the catalog, pick your topic, configure inputs, and step through state changes. No installation required.
+            </p>
+
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href="/visualizers"
+                className={buttonVariants({ size: "lg", className: "w-full sm:w-auto shadow-[var(--shadow-raised)]" })}
+              >
+                <Compass className="h-4 w-4" />
+                Browse Visualizer Library
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/signup"
+                className={buttonVariants({ variant: "secondary", size: "lg", className: "w-full sm:w-auto" })}
+              >
+                Create Free Account
+              </Link>
+            </div>
           </div>
         </motion.div>
       </div>
