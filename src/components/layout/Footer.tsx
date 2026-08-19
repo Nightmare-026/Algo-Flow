@@ -96,7 +96,6 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} Algo Flow. Engineered for intentional, tactile CS mastery.
           </p>
-          <p className="font-mono">WCAG 2.2 AA Compliant • Light & Dark Themes</p>
         </div>
       </div>
     </footer>
