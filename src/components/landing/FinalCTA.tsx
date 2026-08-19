@@ -5,7 +5,7 @@ import { ArrowRight, Compass } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 
-export function FinalCTA({ visualizerCount = 133 }: { visualizerCount?: number }) {
+export function FinalCTA() {
   const reduceMotion = useReducedMotion();
 
   return (
@@ -22,10 +22,6 @@ export function FinalCTA({ visualizerCount = 133 }: { visualizerCount?: number }
           <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-96 rounded-full bg-primary/10 blur-3xl" />
 
           <div className="relative mx-auto max-w-2xl">
-            <div className="inline-flex min-h-9 items-center gap-2 rounded-full border border-border bg-surface px-3.5 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)] mb-6">
-              {visualizerCount} Interactive Algorithms Ready to Explore
-            </div>
-
             <h2 className="text-3xl font-extrabold font-display leading-tight text-text-primary sm:text-4xl md:text-5xl">
               Ready to Master Algorithms <span className="text-gradient-primary">Visually?</span>
             </h2>

@@ -85,7 +85,7 @@ export default async function HomePage() {
         <HowItWorks />
         <LearningFeatures />
         <CodeLanguages />
-        <FinalCTA visualizerCount={publishedAlgorithms.length} />
+        <FinalCTA />
       </main>
       <Footer />
     </div>
