@@ -19,12 +19,19 @@ type PlaybackStore = PlaybackState & { reducedMotion: boolean } & PlaybackAction
 
 export const getActiveSpeedMs = (speed: PlaybackSpeed, customMs: number) => {
   switch (speed) {
+    case "0.25x":
+      return 2400;
+    case "0.5x":
+    case "slow":
+      return 1200;
+    case "0.75x":
+      return 800;
+    case "2x":
     case "fast":
       return 300;
-    case "slow":
-      return 1000;
     case "custom":
       return customMs;
+    case "1x":
     case "normal":
     default:
       return 600;
@@ -37,7 +44,7 @@ const initialState: PlaybackState & { reducedMotion: boolean } = {
   committedStepId: null,
   phase: "idle",
   isPlaying: false,
-  speed: "normal",
+  speed: "1x",
   customSpeedMs: 600,
   isComplete: false,
   totalSteps: 0,

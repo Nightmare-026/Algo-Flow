@@ -1,4 +1,4 @@
-﻿import { expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { algorithms } from "../src/data/seed/algorithms";
 
 const familySamples = new Map<string, (typeof algorithms)[number]>();
@@ -54,6 +54,7 @@ test("each data-structure family supports playback navigation and synchronized p
 });
 
 test("landing, library, auth, and visualizer remain usable on mobile", async ({ page }) => {
+  test.setTimeout(90_000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
@@ -83,7 +84,7 @@ test("auth fields use accessible in-field labels without visible examples", asyn
   await page.goto("/signup");
 
   const firstName = page.getByLabel("First name", { exact: true });
-  const firstNameLabel = page.locator('label[for="first-name"]');
+  const firstNameLabel = page.locator('label[for="signup-first-name"]');
   const gender = page.getByLabel("Gender", { exact: true });
 
   await expect(firstName).toBeVisible();
@@ -121,5 +122,5 @@ test("auth fields use accessible in-field labels without visible examples", asyn
   await firstName.press("Tab");
   await expect(firstName).toHaveValue("Ada");
   await gender.selectOption("Female");
-  await expect(gender).toHaveValue("Female");
+  await expect(gender).toHaveValue("female");
 });

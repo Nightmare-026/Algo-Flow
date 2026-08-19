@@ -79,7 +79,8 @@ export function CodeLanguages() {
             Learn in the Language of Your Choice.
           </h2>
           <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
-            Every algorithm in the library includes verified reference implementations across 5 major languages with synchronized step pointers.
+            Every algorithm in the library includes verified reference implementations across 5
+            major languages with synchronized step pointers.
           </p>
         </div>
 
@@ -116,7 +117,9 @@ export function CodeLanguages() {
                       : "text-text-secondary hover:bg-surface hover:text-text-primary"
                   )}
                 >
-                  <span className="font-mono text-[11px] uppercase tracking-wider opacity-80">{language.tag}</span>
+                  <span className="font-mono text-[11px] uppercase tracking-wider opacity-80">
+                    {language.tag}
+                  </span>
                   <span>{language.name}</span>
                 </button>
               );
@@ -140,7 +143,11 @@ export function CodeLanguages() {
                 <Copy className="h-3.5 w-3.5" />
               )}
               <span aria-live="polite">
-                {copyStatus === "copied" ? "Copied!" : copyStatus === "failed" ? "Failed" : "Copy Code"}
+                {copyStatus === "copied"
+                  ? "Copied!"
+                  : copyStatus === "failed"
+                    ? "Failed"
+                    : "Copy Code"}
               </span>
             </button>
           </div>

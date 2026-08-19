@@ -153,7 +153,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       <main id="main-content" className="flex-1 px-4 pb-24 pt-28 sm:px-6 lg:px-8 lg:pt-36">
         <div className="mx-auto max-w-7xl">
           {/* Breadcrumb Bar */}
-          <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs font-semibold text-text-muted">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-6 flex items-center gap-2 text-xs font-semibold text-text-muted"
+          >
             <Link href="/" className="hover:text-primary transition-colors flex items-center gap-1">
               <Home className="h-3.5 w-3.5" />
               Home
@@ -175,7 +178,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
               {structure.name} <span className="text-gradient-primary">Algorithms</span>
             </h1>
             <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
-              {structure.description} Choose an algorithm below to launch its interactive simulation workstation.
+              {structure.description} Choose an algorithm below to launch its interactive simulation
+              workstation.
             </p>
           </div>
 

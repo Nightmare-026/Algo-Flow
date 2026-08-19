@@ -47,14 +47,21 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <Link href="/" className="inline-flex min-h-11 items-center gap-3 rounded-xl pr-2">
               <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
-                <Image src="/logo.png" alt="Algo Flow" width={26} height={26} className="object-contain" />
+                <Image
+                  src="/logo.png"
+                  alt="Algo Flow"
+                  width={26}
+                  height={26}
+                  className="object-contain"
+                />
               </span>
               <span className="font-display text-xl font-extrabold text-text-primary">
                 Algo<span className="text-primary">Flow</span>
               </span>
             </Link>
             <p className="max-w-sm text-sm leading-relaxed text-text-secondary">
-              An advanced algorithm visualization workstation and CS learning platform. Trace logic, inspect state, and master code in 5 languages.
+              An advanced algorithm visualization workstation and CS learning platform. Trace logic,
+              inspect state, and master code in 5 languages.
             </p>
             <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <span className="inline-block h-2 w-2 rounded-full bg-primary" />
@@ -65,7 +72,9 @@ export function Footer() {
           {/* Directory Columns */}
           {footerSections.map((section) => (
             <div key={section.title} className="flex flex-col gap-3">
-              <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary">{section.title}</h2>
+              <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary">
+                {section.title}
+              </h2>
               <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.label}>
@@ -84,7 +93,9 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col gap-4 border-t border-border pt-8 text-xs text-text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Algo Flow. Engineered for intentional, tactile CS mastery.</p>
+          <p>
+            © {new Date().getFullYear()} Algo Flow. Engineered for intentional, tactile CS mastery.
+          </p>
           <p className="font-mono">WCAG 2.2 AA Compliant • Light & Dark Themes</p>
         </div>
       </div>

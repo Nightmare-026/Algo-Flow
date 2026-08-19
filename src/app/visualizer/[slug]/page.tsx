@@ -107,10 +107,7 @@ export default async function VisualizerPage({ params }: { params: Promise<{ slu
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
       <VisualizerClient algorithm={algorithm} legend={legend} />
     </>
   );

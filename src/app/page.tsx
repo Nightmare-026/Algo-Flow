@@ -79,12 +79,13 @@ export default async function HomePage() {
         <HeroSection
           visualizerCount={publishedAlgorithms.length}
           structureCount={publishedDataStructures.length}
+          languageCount={catalogStats.languageCount}
         />
         <DSAWorldPreview />
         <HowItWorks />
         <LearningFeatures />
         <CodeLanguages />
-        <FinalCTA />
+        <FinalCTA visualizerCount={publishedAlgorithms.length} />
       </main>
       <Footer />
     </div>

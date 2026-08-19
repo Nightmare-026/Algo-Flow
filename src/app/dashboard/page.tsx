@@ -139,7 +139,8 @@ export default async function DashboardPage() {
                 Active Streak
               </p>
               <p className="text-lg font-extrabold font-display text-text-primary">
-                {streak?.current_streak || 0} <span className="text-xs font-normal text-text-secondary">Days</span>
+                {streak?.current_streak || 0}{" "}
+                <span className="text-xs font-normal text-text-secondary">Days</span>
               </p>
             </div>
           </div>
@@ -150,7 +151,9 @@ export default async function DashboardPage() {
           {/* XP Card */}
           <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">Experience</span>
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
+                Experience
+              </span>
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-muted text-primary border border-primary/20">
                 <Star className="w-4 h-4 fill-current" />
               </span>
@@ -159,14 +162,18 @@ export default async function DashboardPage() {
               <div className="text-3xl font-extrabold font-display text-text-primary">
                 {totalXP.toLocaleString()}
               </div>
-              <p className="text-xs font-semibold text-primary mt-1">+150 XP per completed algorithm</p>
+              <p className="text-xs font-semibold text-primary mt-1">
+                +150 XP per completed algorithm
+              </p>
             </div>
           </div>
 
           {/* Max Streak Card */}
           <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">Max Streak</span>
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
+                Max Streak
+              </span>
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-warning-muted text-warning border border-warning/20">
                 <Flame className="w-4 h-4 fill-current" />
               </span>
@@ -175,14 +182,18 @@ export default async function DashboardPage() {
               <div className="text-3xl font-extrabold font-display text-text-primary">
                 {streak?.max_streak || 0}
               </div>
-              <p className="text-xs font-medium text-text-muted mt-1">Best consistent study streak</p>
+              <p className="text-xs font-medium text-text-muted mt-1">
+                Best consistent study streak
+              </p>
             </div>
           </div>
 
           {/* Topics Completed Card */}
           <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">Mastered</span>
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
+                Mastered
+              </span>
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-muted text-primary border border-primary/20">
                 <ListChecks className="w-4 h-4" />
               </span>
@@ -204,7 +215,9 @@ export default async function DashboardPage() {
           {/* Saved Visualizers Card */}
           <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">Bookmarks</span>
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
+                Bookmarks
+              </span>
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary-muted text-secondary border border-secondary/20">
                 <Bookmark className="w-4 h-4 fill-current" />
               </span>
@@ -213,7 +226,9 @@ export default async function DashboardPage() {
               <div className="text-3xl font-extrabold font-display text-text-primary">
                 {bookmarkIds.length}
               </div>
-              <p className="text-xs font-medium text-text-muted mt-1">Saved algorithms for quick study</p>
+              <p className="text-xs font-medium text-text-muted mt-1">
+                Saved algorithms for quick study
+              </p>
             </div>
           </div>
         </section>
@@ -250,7 +265,8 @@ export default async function DashboardPage() {
                     <p className="text-sm leading-relaxed text-text-secondary max-w-xl">
                       {challengeCompleted
                         ? "You have completed today's challenge. Re-test your knowledge anytime with the interactive quiz."
-                        : challengeAlgorithm.shortDescription || "Trace this algorithm and complete the interactive simulation to build your streak."}
+                        : challengeAlgorithm.shortDescription ||
+                          "Trace this algorithm and complete the interactive simulation to build your streak."}
                     </p>
                   </div>
                   <div className="flex items-center gap-3 mt-2">
@@ -282,7 +298,9 @@ export default async function DashboardPage() {
 
             {/* Recent Activity Timeline */}
             <section className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4">
-              <h2 className="text-lg font-bold font-display text-text-primary">Recent Learning Activity</h2>
+              <h2 className="text-lg font-bold font-display text-text-primary">
+                Recent Learning Activity
+              </h2>
               {activities.length > 0 ? (
                 <div className="flex flex-col gap-2">
                   {activities.slice(0, 5).map((act) => {
@@ -295,7 +313,9 @@ export default async function DashboardPage() {
                       >
                         <div className="flex h-10 w-10 rounded-xl bg-bg-surface-inset border border-border shadow-[var(--shadow-inset)] items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
                           {act.action_type === "completed" && <ListChecks className="w-4 h-4" />}
-                          {act.action_type === "bookmarked" && <Bookmark className="w-4 h-4 fill-current" />}
+                          {act.action_type === "bookmarked" && (
+                            <Bookmark className="w-4 h-4 fill-current" />
+                          )}
                           {act.action_type === "saved_session" && <Save className="w-4 h-4" />}
                           {act.action_type === "quiz_completed" && <Trophy className="w-4 h-4" />}
                         </div>
@@ -423,9 +443,7 @@ export default async function DashboardPage() {
 
         {/* Curated Study Tracks */}
         <section className="flex flex-col gap-4 mt-2">
-          <h2 className="text-lg font-bold font-display text-text-primary">
-            Curated Study Tracks
-          </h2>
+          <h2 className="text-lg font-bold font-display text-text-primary">Curated Study Tracks</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <Link
               href="/visualizers/tree"
@@ -466,7 +484,8 @@ export default async function DashboardPage() {
                   Sorting Algorithms
                 </h3>
                 <p className="text-xs text-text-secondary mt-1.5 leading-relaxed">
-                  Compare in-place Quick Sort, Divide-and-Conquer Merge Sort, and O(n²) Bubble/Insertion.
+                  Compare in-place Quick Sort, Divide-and-Conquer Merge Sort, and O(n²)
+                  Bubble/Insertion.
                 </p>
               </div>
             </Link>

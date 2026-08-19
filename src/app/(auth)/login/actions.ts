@@ -23,7 +23,9 @@ async function getClientIdentifier(action: string, fallbackKey: string = "anon")
   try {
     const headerStore = await headers();
     const forwarded = headerStore.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0].trim() : headerStore.get("x-real-ip") ?? "local";
+    const ip = forwarded
+      ? forwarded.split(",")[0].trim()
+      : (headerStore.get("x-real-ip") ?? "local");
     return `auth:${action}:${ip}`;
   } catch {
     return `auth:${action}:${fallbackKey}`;
@@ -229,7 +231,9 @@ export async function sendPasswordReset(formData: FormData) {
   if (error) {
     redirect(
       "/forgot-password?error=" +
-        encodeURIComponent("Unable to send reset email. Please verify your address or try again later.")
+        encodeURIComponent(
+          "Unable to send reset email. Please verify your address or try again later."
+        )
     );
   }
 
@@ -268,7 +272,9 @@ export async function updatePassword(formData: FormData) {
   if (error) {
     redirect(
       "/reset-password?error=" +
-        encodeURIComponent("Unable to update password. Please try again or request a new reset link.")
+        encodeURIComponent(
+          "Unable to update password. Please try again or request a new reset link."
+        )
     );
   }
 

@@ -166,7 +166,8 @@ export interface AlgorithmStep {
 // ----------------------------------------------------------------
 // Playback State
 // ----------------------------------------------------------------
-export type PlaybackSpeed = "slow" | "normal" | "fast" | "custom";
+export type PlaybackSpeed =
+  "0.25x" | "0.5x" | "0.75x" | "1x" | "2x" | "slow" | "normal" | "fast" | "custom";
 
 export interface PlaybackState {
   steps: VisualStep[];
@@ -184,7 +185,8 @@ export interface PlaybackState {
 // User & Auth Types
 // ----------------------------------------------------------------
 export type UserRole = "student" | "admin";
-export type ThemePreference = "light" | "dark" | "dark-neon" | "light-edu" | "nature-cinematic" | "system";
+export type ThemePreference =
+  "light" | "dark" | "dark-neon" | "light-edu" | "nature-cinematic" | "system";
 
 export interface UserProfile {
   id: string;

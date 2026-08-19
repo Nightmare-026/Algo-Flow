@@ -7,13 +7,15 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 const previewLayers = [
   {
     title: "1. Configure the Inputs",
-    description: "Generate random, sorted, or inverted collections, or enter custom arrays, graphs, and matrices.",
+    description:
+      "Generate random, sorted, or inverted collections, or enter custom arrays, graphs, and matrices.",
     detail: "Array: [15, 23, 4, 8, 42]",
     Icon: SlidersHorizontal,
   },
   {
     title: "2. Control the Timeline",
-    description: "Play, pause, inspect one step at a time, adjust speed scaling (0.25x - 4x), or scrub freely.",
+    description:
+      "Play, pause, inspect one step at a time, adjust speed scaling (0.25x - 4x), or scrub freely.",
     detail: "Step 07 / 18",
     Icon: PlayCircle,
   },
@@ -63,7 +65,8 @@ export function DSAWorldPreview() {
             One Integrated Workstation. Complete Clarity.
           </h2>
           <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
-            Keep visual representations, playback controls, variable inspection, and code execution visible simultaneously.
+            Keep visual representations, playback controls, variable inspection, and code execution
+            visible simultaneously.
           </p>
         </div>
 

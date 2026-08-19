@@ -40,14 +40,20 @@ export function StepExplanation() {
         data-reduced-motion={reducedMotion ? "true" : "false"}
       >
         <div>
-          <h3 className="text-base font-bold font-display text-text-primary">{currentStep.title}</h3>
-          <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">{currentStep.description}</p>
+          <h3 className="text-base font-bold font-display text-text-primary">
+            {currentStep.title}
+          </h3>
+          <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">
+            {currentStep.description}
+          </p>
         </div>
 
         {currentStep.complexityNote && (
           <div className="flex items-start gap-2.5 rounded-xl border border-secondary/20 bg-secondary-muted p-3">
             <Info className="mt-0.5 h-4 w-4 shrink-0 text-secondary" />
-            <p className="text-xs leading-relaxed text-text-secondary">{currentStep.complexityNote}</p>
+            <p className="text-xs leading-relaxed text-text-secondary">
+              {currentStep.complexityNote}
+            </p>
           </div>
         )}
 

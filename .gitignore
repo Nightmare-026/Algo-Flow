@@ -48,4 +48,6 @@ next-env.d.ts
 # temp & audit
 /.tmp/
 /audit-ui/
+/visualizer-master-audit.json
+/scripts/audit-all-133-visualizers.ts
 

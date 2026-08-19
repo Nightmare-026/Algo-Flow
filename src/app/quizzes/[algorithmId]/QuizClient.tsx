@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, CheckCircle2, Trophy, XCircle, RotateCcw, Compass } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Trophy,
+  XCircle,
+  RotateCcw,
+  Compass,
+} from "lucide-react";
 import { Algorithm } from "@/types";
 import { QuestionData } from "@/data/seed/questions";
 import { submitQuizAttempt } from "@/lib/api/quizzes";
@@ -64,11 +72,7 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
     } else {
       setIsSubmitting(true);
       const finalScore = score + (selectedOption === correctOptionIndex ? 1 : 0);
-      await submitQuizAttempt(
-        algorithm.id,
-        finalScore,
-        questions.length
-      );
+      await submitQuizAttempt(algorithm.id, finalScore, questions.length);
       setIsFinished(true);
       setIsSubmitting(false);
     }
@@ -91,10 +95,14 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
           </h1>
 
           <div className="my-8 flex items-center justify-center">
-            <div className={cn(
-              "flex h-32 w-32 flex-col items-center justify-center rounded-full border-4 shadow-[var(--shadow-raised-sm)]",
-              passed ? "border-primary bg-primary-muted text-primary" : "border-warning bg-warning-muted text-warning"
-            )}>
+            <div
+              className={cn(
+                "flex h-32 w-32 flex-col items-center justify-center rounded-full border-4 shadow-[var(--shadow-raised-sm)]",
+                passed
+                  ? "border-primary bg-primary-muted text-primary"
+                  : "border-warning bg-warning-muted text-warning"
+              )}
+            >
               <span className="text-3xl font-extrabold font-display">{percentage}%</span>
               <span className="text-xs font-mono font-bold text-text-muted mt-0.5">
                 {score} / {questions.length} Correct
@@ -153,9 +161,7 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
               {currentQ.topic || "Algorithm Theory"}
             </span>
             {currentQ.subtopic && (
-              <span className="text-xs text-text-muted font-medium">
-                • {currentQ.subtopic}
-              </span>
+              <span className="text-xs text-text-muted font-medium">• {currentQ.subtopic}</span>
             )}
           </div>
           <h1 className="text-xl sm:text-2xl font-bold font-display leading-snug text-text-primary">
@@ -182,13 +188,14 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
                   !isAnswered &&
                     !isSelected &&
                     "border-border bg-surface shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:bg-surface-hover",
-                  !isAnswered && isSelected && "border-primary bg-primary-muted shadow-[var(--shadow-inset)] text-primary",
-                  showCorrect && "border-success bg-success-muted shadow-[var(--shadow-inset)] text-success font-bold",
-                  showIncorrect && "border-error bg-error-muted shadow-[var(--shadow-inset)] text-error font-bold",
-                  isAnswered &&
-                    !isSelected &&
-                    !isCorrect &&
-                    "border-border bg-surface opacity-40"
+                  !isAnswered &&
+                    isSelected &&
+                    "border-primary bg-primary-muted shadow-[var(--shadow-inset)] text-primary",
+                  showCorrect &&
+                    "border-success bg-success-muted shadow-[var(--shadow-inset)] text-success font-bold",
+                  showIncorrect &&
+                    "border-error bg-error-muted shadow-[var(--shadow-inset)] text-error font-bold",
+                  isAnswered && !isSelected && !isCorrect && "border-border bg-surface opacity-40"
                 )}
               >
                 <div
@@ -213,9 +220,7 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
                   {opt}
                 </span>
 
-                {showCorrect && (
-                  <CheckCircle2 className="h-5 w-5 text-success shrink-0 mt-0.5" />
-                )}
+                {showCorrect && <CheckCircle2 className="h-5 w-5 text-success shrink-0 mt-0.5" />}
                 {showIncorrect && <XCircle className="h-5 w-5 text-error shrink-0 mt-0.5" />}
               </button>
             );
@@ -228,7 +233,9 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary mb-1.5">
               Explanation
             </h2>
-            <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">{currentQ.explanation}</p>
+            <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+              {currentQ.explanation}
+            </p>
           </div>
         )}
 

@@ -124,8 +124,12 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
 
       {/* Result Counter & State */}
       <div className="mt-8 flex items-center justify-between">
-        <p className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted" aria-live="polite">
-          Showing {filteredStructures.length} of {dataStructures.filter(s => s.isPublished).length} structures
+        <p
+          className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted"
+          aria-live="polite"
+        >
+          Showing {filteredStructures.length} of{" "}
+          {dataStructures.filter((s) => s.isPublished).length} structures
         </p>
         <span className="text-xs font-medium text-text-secondary">
           {publishedAlgorithms.length} Total Algorithms
@@ -179,7 +183,10 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
                       {count} {count === 1 ? "Visualizer" : "Visualizers"}
                     </span>
                     <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-text-muted group-hover:border-primary/30 group-hover:text-primary transition-colors">
-                      <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+                      <ChevronRight
+                        className="h-4 w-4 group-hover:translate-x-0.5 transition-transform"
+                        aria-hidden="true"
+                      />
                     </span>
                   </div>
                 </Link>
@@ -190,7 +197,9 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
       ) : (
         <div className="neu-inset mt-6 rounded-2xl p-12 text-center border border-border">
           <Search className="mx-auto h-10 w-10 text-text-muted" aria-hidden="true" />
-          <h2 className="mt-4 text-lg font-bold font-display text-text-primary">No matching structures</h2>
+          <h2 className="mt-4 text-lg font-bold font-display text-text-primary">
+            No matching structures
+          </h2>
           <p className="mt-2 text-sm text-text-secondary">
             Adjust your search query or reset the category filter.
           </p>

@@ -152,7 +152,10 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen ? (
-          <div id="mobile-navigation" className="border-t border-border py-4 md:hidden animate-in slide-in-from-top-2 duration-200">
+          <div
+            id="mobile-navigation"
+            className="border-t border-border py-4 md:hidden animate-in slide-in-from-top-2 duration-200"
+          >
             <div className="grid gap-2">
               {navLinks.map((link) => {
                 const active = isActive(link.href);
@@ -179,7 +182,8 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
               {user ? (
                 <div className="mt-2 border-t border-border pt-3">
                   <div className="mb-3 px-4 text-xs text-text-muted">
-                    Signed in as <span className="font-semibold text-text-primary">{user.email}</span>
+                    Signed in as{" "}
+                    <span className="font-semibold text-text-primary">{user.email}</span>
                   </div>
                   <form action={signout}>
                     <button

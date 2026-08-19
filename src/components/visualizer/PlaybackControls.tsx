@@ -41,12 +41,12 @@ export function PlaybackControls() {
       return;
     }
 
-    const interval = window.setInterval(() => {
+    const timer = window.setTimeout(() => {
       nextStep();
     }, activeSpeedMs);
 
-    return () => window.clearInterval(interval);
-  }, [activeSpeedMs, isPlaying, nextStep, skipToEnd]);
+    return () => window.clearTimeout(timer);
+  }, [activeSpeedMs, isPlaying, nextStep, skipToEnd, currentStepIndex]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -77,24 +77,27 @@ export function PlaybackControls() {
         return;
       }
 
-      if (event.key === " " || event.key === "k") {
+      if (event.key === " " || event.key === "k" || event.key === "K") {
         event.preventDefault();
         if (totalSteps > 0) {
           if (isPlaying) pause();
           else play();
         }
-      } else if (event.key === "ArrowLeft" || event.key === "j") {
+      } else if (event.key === "ArrowLeft" || event.key === "j" || event.key === "J") {
         event.preventDefault();
         previousStep();
-      } else if (event.key === "ArrowRight" || event.key === "l") {
+      } else if (event.key === "ArrowRight" || event.key === "l" || event.key === "L") {
         event.preventDefault();
         nextStep();
+      } else if (event.key === "r" || event.key === "R") {
+        event.preventDefault();
+        restart();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPlaying, nextStep, pause, play, previousStep, totalSteps]);
+  }, [isPlaying, nextStep, pause, play, previousStep, restart, totalSteps]);
 
   return (
     <div className="flex items-center gap-1.5" aria-label="Playback controls">
@@ -105,6 +108,7 @@ export function PlaybackControls() {
         className={controlClass}
         title="Restart"
         aria-label="Restart from the first step"
+        aria-keyshortcuts="r"
       >
         <RotateCcw className="h-4 w-4" />
       </button>
@@ -116,6 +120,7 @@ export function PlaybackControls() {
         className={controlClass}
         title="Previous step"
         aria-label="Previous step"
+        aria-keyshortcuts="ArrowLeft j"
       >
         <SkipBack className="h-4 w-4" />
       </button>
@@ -127,6 +132,7 @@ export function PlaybackControls() {
         className="mx-0.5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-white shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary-hover active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
         title={isPlaying ? "Pause" : "Play"}
         aria-label={isPlaying ? "Pause playback" : "Play visualization"}
+        aria-keyshortcuts="Space k"
       >
         {isPlaying ? (
           <Pause className="h-4.5 w-4.5 fill-current" />
@@ -142,6 +148,7 @@ export function PlaybackControls() {
         className={controlClass}
         title="Next step"
         aria-label="Next step"
+        aria-keyshortcuts="ArrowRight l"
       >
         <SkipForward className="h-4 w-4" />
       </button>
@@ -177,7 +184,10 @@ export function PlaybackControls() {
               Playback settings
             </h2>
             <div className="flex items-center justify-between gap-4">
-              <Label htmlFor="reduced-motion" className="cursor-pointer text-xs font-semibold text-text-primary">
+              <Label
+                htmlFor="reduced-motion"
+                className="cursor-pointer text-xs font-semibold text-text-primary"
+              >
                 Reduced motion
               </Label>
               <Switch

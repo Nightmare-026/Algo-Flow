@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { MailCheck, ShieldAlert } from "lucide-react";
 import { AuthShell } from "@/components/auth/AuthShell";
-import { Input } from "@/components/ui/input";
+import { FloatingField } from "@/components/auth/FloatingField";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { buttonVariants } from "@/components/ui/button";
@@ -97,7 +97,10 @@ export default async function SignupPage({
           <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success-muted text-success shadow-[var(--shadow-inset)]">
             <MailCheck className="h-8 w-8" aria-hidden="true" />
           </span>
-          <p aria-live="polite" className="mt-6 text-xs sm:text-sm leading-relaxed text-text-secondary">
+          <p
+            aria-live="polite"
+            className="mt-6 text-xs sm:text-sm leading-relaxed text-text-secondary"
+          >
             {params.success}
           </p>
           <Link href="/login" className={buttonVariants({ size: "lg", className: "mt-6 w-full" })}>
@@ -121,67 +124,57 @@ export default async function SignupPage({
             <input type="hidden" name="privacy_version" value={PRIVACY_VERSION} />
 
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label htmlFor="signup-first-name" className="sr-only">
-                  First Name
-                </label>
-                <Input
-                  id="signup-first-name"
-                  name="first_name"
-                  placeholder="First name"
-                  autoComplete="given-name"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="signup-last-name" className="sr-only">
-                  Last Name
-                </label>
-                <Input
-                  id="signup-last-name"
-                  name="last_name"
-                  placeholder="Last name"
-                  autoComplete="family-name"
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="signup-gender" className="sr-only">
-                Gender
-              </label>
-              <select
-                id="signup-gender"
-                name="gender"
+              <FloatingField
+                id="signup-first-name"
+                label="First name"
+                name="first_name"
+                autoComplete="given-name"
                 required
-                defaultValue=""
-                className="flex h-11 w-full rounded-xl border border-border bg-bg-surface-inset px-3.5 text-xs sm:text-sm text-text-primary shadow-[var(--shadow-inset)] transition-all focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 cursor-pointer"
-              >
-                <option value="" disabled hidden>
-                  Select Gender
-                </option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="non-binary">Non-binary</option>
-                <option value="prefer-not-to-say">Prefer not to say</option>
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="signup-email" className="sr-only">
-                Email address
-              </label>
-              <Input
-                id="signup-email"
-                name="email"
-                type="email"
-                placeholder="Email address"
-                autoComplete="email"
-                spellCheck={false}
+              />
+              <FloatingField
+                id="signup-last-name"
+                label="Last name"
+                name="last_name"
+                autoComplete="family-name"
                 required
               />
             </div>
+
+            <div className="auth-field">
+              <div className="relative">
+                <label
+                  htmlFor="signup-gender"
+                  className="pointer-events-none absolute left-4 top-2.5 z-10 text-[11px] font-semibold text-text-muted"
+                >
+                Gender
+                </label>
+                <select
+                  id="signup-gender"
+                  name="gender"
+                  required
+                  defaultValue=""
+                  className="flex h-14 w-full cursor-pointer rounded-xl border border-border bg-bg-surface-inset px-4 pb-1 pt-5 text-sm text-text-primary shadow-[var(--shadow-inset)] transition-all focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                >
+                  <option value="" disabled hidden>
+                    Select a gender
+                  </option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="non-binary">Non-binary</option>
+                  <option value="prefer-not-to-say">Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+
+            <FloatingField
+              id="signup-email"
+              label="Email address"
+              name="email"
+              type="email"
+              autoComplete="email"
+              spellCheck={false}
+              required
+            />
 
             <PasswordField
               id="signup-password"

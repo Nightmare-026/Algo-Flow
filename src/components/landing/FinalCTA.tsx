@@ -5,7 +5,7 @@ import { ArrowRight, Compass, Sparkles } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 
-export function FinalCTA() {
+export function FinalCTA({ visualizerCount = 133 }: { visualizerCount?: number }) {
   const reduceMotion = useReducedMotion();
 
   return (
@@ -24,7 +24,7 @@ export function FinalCTA() {
           <div className="relative mx-auto max-w-2xl">
             <div className="inline-flex min-h-9 items-center gap-2 rounded-full border border-border bg-surface px-3.5 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)] mb-6">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
-              133 Interactive Algorithms Ready to Explore
+              {visualizerCount} Interactive Algorithms Ready to Explore
             </div>
 
             <h2 className="text-3xl font-extrabold font-display leading-tight text-text-primary sm:text-4xl md:text-5xl">
@@ -32,13 +32,17 @@ export function FinalCTA() {
             </h2>
 
             <p className="mt-5 text-base sm:text-lg leading-relaxed text-text-secondary">
-              Open the catalog, pick your topic, configure inputs, and step through state changes. No installation required.
+              Open the catalog, pick your topic, configure inputs, and step through state changes.
+              No installation required.
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="/visualizers"
-                className={buttonVariants({ size: "lg", className: "w-full sm:w-auto shadow-[var(--shadow-raised)]" })}
+                className={buttonVariants({
+                  size: "lg",
+                  className: "w-full sm:w-auto shadow-[var(--shadow-raised)]",
+                })}
               >
                 <Compass className="h-4 w-4" />
                 Browse Visualizer Library
@@ -46,7 +50,11 @@ export function FinalCTA() {
               </Link>
               <Link
                 href="/signup"
-                className={buttonVariants({ variant: "secondary", size: "lg", className: "w-full sm:w-auto" })}
+                className={buttonVariants({
+                  variant: "secondary",
+                  size: "lg",
+                  className: "w-full sm:w-auto",
+                })}
               >
                 Create Free Account
               </Link>

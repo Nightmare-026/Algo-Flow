@@ -3,7 +3,16 @@
 import { ReactNode, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowLeft, BookmarkPlus, Maximize2, Share2, Bookmark, Save, Trophy, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  BookmarkPlus,
+  Maximize2,
+  Share2,
+  Bookmark,
+  Save,
+  Trophy,
+  Sparkles,
+} from "lucide-react";
 import { Algorithm, CodeExample } from "@/types";
 import { cn } from "@/lib/utils";
 import { PlaybackControls } from "./PlaybackControls";
@@ -330,7 +339,7 @@ export function VisualizerLayout({
                           const { play } = usePlaybackStore.getState();
                           play();
                         }}
-                        className="text-xs font-bold text-text-muted hover:text-text-primary"
+                        className="text-xs font-bold text-text-muted hover:text-text-primary cursor-pointer"
                       >
                         Skip
                       </button>
@@ -349,9 +358,7 @@ export function VisualizerLayout({
               {/* Floating Step Badge */}
               <div className="neu-inset absolute right-4 top-4 rounded-xl px-3 py-1.5 text-xs font-mono font-bold text-text-primary border border-border shadow-[var(--shadow-inset)] backdrop-blur-md">
                 {totalSteps > 0 ? (
-                  <>
-                    Step {currentStepIndex + 1} / {totalSteps}
-                  </>
+                  `Step ${currentStepIndex + 1} / ${totalSteps}`
                 ) : (
                   <span className="inline-block h-4 w-16 animate-pulse rounded bg-muted" />
                 )}
@@ -360,7 +367,7 @@ export function VisualizerLayout({
               {/* Fullscreen Button */}
               <button
                 onClick={handleFullscreen}
-                className="absolute bottom-4 right-4 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95"
+                className="absolute bottom-4 right-4 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
                 title="Toggle Fullscreen Canvas"
                 aria-label="Fullscreen Canvas"
               >
@@ -422,7 +429,7 @@ export function VisualizerLayout({
                     : "text-text-muted hover:bg-surface hover:text-text-primary"
                 )}
               >
-                Code (5 Langs)
+                Code
               </button>
             </div>
             <div
@@ -480,7 +487,7 @@ export function VisualizerLayout({
                     : "text-text-muted hover:bg-surface hover:text-text-primary"
                 )}
               >
-                Execution Log
+                Step Log
               </button>
             </div>
             <div

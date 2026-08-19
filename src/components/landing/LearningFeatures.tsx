@@ -7,7 +7,7 @@ const features = [
   {
     title: "Granular Playback Controls",
     description:
-      "Full VCR-style transport: play, pause, step forward/backward, jump to start/end, and scrub with 0.25x - 4x speed scaling.",
+      "Full VCR-style transport: play, pause, step forward/backward, jump to start/end, and scrub with 0.25x – 2.0x speed scaling.",
     Icon: Gauge,
   },
   {
@@ -46,7 +46,10 @@ export function LearningFeatures() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28 bg-surface/30 border-y border-border" id="features">
+    <section
+      className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28 bg-surface/30 border-y border-border"
+      id="features"
+    >
       <div className="mx-auto max-w-7xl">
         <div className="mb-14 max-w-3xl">
           <p className="section-kicker">Engineered For Mastery</p>
@@ -54,7 +57,8 @@ export function LearningFeatures() {
             Everything You Need to Understand What Happens Inside Code.
           </h2>
           <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
-            Built from first principles to provide complete transparency into computational states, memory representations, and algorithmic invariants.
+            Built from first principles to provide complete transparency into computational states,
+            memory representations, and algorithmic invariants.
           </p>
         </div>
 

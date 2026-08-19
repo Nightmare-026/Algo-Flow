@@ -1,5 +1,7 @@
 import { algorithms } from "@/data/seed/algorithms";
 import { dataStructures } from "@/data/seed/data-structures";
+import { operations } from "@/data/seed/operations";
+import { REQUIRED_CODE_LANGUAGES } from "@/visualizers/registry/types";
 
 /**
  * Canonical published catalog projections.
@@ -9,8 +11,11 @@ import { dataStructures } from "@/data/seed/data-structures";
  */
 export const publishedAlgorithms = algorithms.filter((algorithm) => algorithm.isPublished);
 export const publishedDataStructures = dataStructures.filter((structure) => structure.isPublished);
+export const publishedOperations = operations.filter((operation) => operation.isPublished);
 
 export const catalogStats = {
   visualizerCount: publishedAlgorithms.length,
   structureCount: publishedDataStructures.length,
+  operationCount: publishedOperations.length,
+  languageCount: REQUIRED_CODE_LANGUAGES.length,
 } as const;

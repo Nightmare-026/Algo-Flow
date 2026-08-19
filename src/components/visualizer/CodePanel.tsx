@@ -203,7 +203,11 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
             aria-label={copied ? "Code copied" : "Copy code"}
             title="Copy code"
           >
-            {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? (
+              <Check className="h-3.5 w-3.5 text-success" />
+            ) : (
+              <Copy className="h-3.5 w-3.5" />
+            )}
           </button>
         </div>
       </div>

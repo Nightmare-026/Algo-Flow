@@ -58,10 +58,7 @@ export function AuthShell({
                 </span>
               </Link>
               {user ? (
-                <Link
-                  href="/dashboard"
-                  className="text-xs font-bold text-primary hover:underline"
-                >
+                <Link href="/dashboard" className="text-xs font-bold text-primary hover:underline">
                   Dashboard →
                 </Link>
               ) : null}
@@ -104,7 +101,9 @@ export function AuthShell({
             <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-text-primary">
               {title}
             </h1>
-            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-text-secondary">{description}</p>
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-text-secondary">
+              {description}
+            </p>
             <div className="mt-6">{children}</div>
           </div>
         </section>
@@ -114,9 +113,12 @@ export function AuthShell({
           <div className="relative">
             <AuthVisual />
             <div className="mx-auto mt-8 max-w-sm text-center">
-              <h2 className="text-xl font-bold font-display text-text-primary">Master Algorithms Visually</h2>
+              <h2 className="text-xl font-bold font-display text-text-primary">
+                Master Algorithms Visually
+              </h2>
               <p className="mt-2 text-xs sm:text-sm leading-relaxed text-text-secondary">
-                Your study streak, quizzes, bookmarked visualizers, and saved state traces stay preserved across sessions.
+                Your study streak, quizzes, bookmarked visualizers, and saved state traces stay
+                preserved across sessions.
               </p>
               <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold text-text-secondary">
                 <li className="flex items-center gap-1.5 text-primary">
@@ -124,8 +126,7 @@ export function AuthShell({
                   133 Interactive Visualizers
                 </li>
                 <li className="flex items-center gap-1.5 text-secondary">
-                  <Braces className="h-4 w-4 text-secondary" />
-                  5 Production Languages
+                  <Braces className="h-4 w-4 text-secondary" />5 Production Languages
                 </li>
               </ul>
             </div>

@@ -116,7 +116,10 @@ export function CategoryExplorer({
 
       {/* Counter */}
       <div className="mt-8 flex items-center justify-between">
-        <p className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted" aria-live="polite">
+        <p
+          className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted"
+          aria-live="polite"
+        >
           Showing {filteredAlgorithms.length} of {structureAlgorithms.length} algorithms
         </p>
       </div>
@@ -160,7 +163,10 @@ export function CategoryExplorer({
                       </Link>
                     </div>
 
-                    <Link href={`/visualizer/${algorithm.slug}`} className="block focus:outline-none">
+                    <Link
+                      href={`/visualizer/${algorithm.slug}`}
+                      className="block focus:outline-none"
+                    >
                       <h2 className="mt-4 text-lg font-bold font-display text-text-primary group-hover:text-primary transition-colors">
                         {algorithm.name}
                       </h2>
@@ -217,7 +223,9 @@ export function CategoryExplorer({
       ) : (
         <div className="neu-inset mt-6 rounded-2xl p-12 text-center border border-border">
           <Search className="mx-auto h-10 w-10 text-text-muted" aria-hidden="true" />
-          <h2 className="mt-4 text-lg font-bold font-display text-text-primary">No matching algorithms</h2>
+          <h2 className="mt-4 text-lg font-bold font-display text-text-primary">
+            No matching algorithms
+          </h2>
           <p className="mt-2 text-sm text-text-secondary">
             Change your search query or reset the operation and difficulty filters.
           </p>
