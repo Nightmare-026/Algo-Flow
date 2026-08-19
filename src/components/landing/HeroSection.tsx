@@ -306,7 +306,7 @@ function WorkbenchPreview() {
 export function HeroSection({
   visualizerCount,
   structureCount,
-  languageCount = 5,
+  languageCount = 4,
 }: HeroSectionProps) {
   const reduceMotion = useReducedMotion();
 
@@ -372,7 +372,7 @@ export function HeroSection({
             {[
               { value: `${visualizerCount}`, label: "Interactive Visualizers" },
               { value: `${structureCount}`, label: "Data Structures" },
-              { value: `${languageCount}`, label: "Languages (Python, C++, Java, JS, TS)" },
+              { value: `${languageCount}`, label: "Languages (Python, C++, Java, JS)" },
             ].map((stat) => (
               <div key={stat.label} className="flex flex-col-reverse">
                 <dt className="text-xs font-medium text-text-muted mt-0.5 leading-snug">

@@ -61,7 +61,7 @@ export function Footer() {
             </Link>
             <p className="max-w-sm text-sm leading-relaxed text-text-secondary">
               An advanced algorithm visualization workstation and CS learning platform. Trace logic,
-              inspect state, and master code in 5 languages.
+              inspect state, and master code in 4 languages.
             </p>
             <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <span className="inline-block h-2 w-2 rounded-full bg-primary" />

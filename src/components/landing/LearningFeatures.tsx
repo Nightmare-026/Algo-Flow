@@ -19,7 +19,7 @@ const features = [
   {
     title: "Synchronized Code & Pseudocode",
     description:
-      "Dual code inspection tabs with syntax highlighting in Python, C++, Java, JS, and TS, featuring active line glow and auto-scrolling.",
+      "Dual code inspection tabs with syntax highlighting in Python, C++, Java, and JS, featuring active line glow and auto-scrolling.",
     Icon: Code2,
   },
   {

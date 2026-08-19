@@ -29,7 +29,7 @@ const steps = [
     step: "04",
     title: "Master Multi-Language Code",
     description:
-      "Synchronize visual state transitions with line-by-line code in Python, C++, Java, JavaScript, and TypeScript.",
+      "Synchronize visual state transitions with line-by-line code in Python, C++, Java, and JavaScript.",
     Icon: BookOpenCheck,
   },
 ];

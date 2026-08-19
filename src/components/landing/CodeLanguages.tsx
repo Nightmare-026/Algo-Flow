@@ -79,7 +79,7 @@ export function CodeLanguages() {
             Learn in the Language of Your Choice.
           </h2>
           <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
-            Every algorithm in the library includes verified reference implementations across 5
+            Every algorithm in the library includes verified reference implementations across 4
             major languages with synchronized step pointers.
           </p>
         </div>
