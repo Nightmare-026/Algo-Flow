@@ -61,7 +61,7 @@ function decorateTraversalSteps(
     return {
       ...step,
       description: isComplete
-        ? `${traversalName} traversal is complete: ${committedOutput.join(" ? ") || "empty"}.`
+        ? `${traversalName} traversal is complete: ${committedOutput.join(" → ") || "empty"}.`
         : step.description,
       dataState: {
         root: structuredClone(root),
@@ -77,7 +77,7 @@ function decorateTraversalSteps(
       variables: {
         ...step.variables,
         output: committedOutput.join(", ") || "empty",
-        ...(traversalMode === "recursive" ? { callStack: callStack.join(" ? ") || "empty" } : {}),
+        ...(traversalMode === "recursive" ? { callStack: callStack.join(" → ") || "empty" } : {}),
       },
       output: committedOutput,
       pseudocodeLine: isComplete ? completeLine : step.pseudocodeLine,

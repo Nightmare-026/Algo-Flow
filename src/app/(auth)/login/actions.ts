@@ -76,7 +76,7 @@ export async function login(formData: FormData) {
   redirect(nextUrl);
 }
 
-export async function loginWithOAuth(provider: "google" | "github") {
+export async function loginWithOAuth(provider: "google" | "github", nextUrl?: string) {
   if (!ACCOUNT_REGISTRATION_AVAILABLE) {
     redirect(`/login?error=${encodeURIComponent("Social sign-in is temporarily unavailable.")}`);
   }
@@ -92,10 +92,16 @@ export async function loginWithOAuth(provider: "google" | "github") {
     );
   }
 
+  const nextPath = nextUrl ? safeInternalPath(nextUrl) : undefined;
+  const callbackUrl =
+    nextPath && nextPath !== "/dashboard"
+      ? `${origin}/auth/callback?next=${encodeURIComponent(nextPath)}`
+      : `${origin}/auth/callback`;
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${origin}/auth/callback`,
+      redirectTo: callbackUrl,
     },
   });
 

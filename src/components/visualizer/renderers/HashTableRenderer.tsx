@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { usePlaybackStore } from "@/stores/playback-store";
 import { HashTableVisualState, HashEntry } from "@/visualizers/hash-table/types";
@@ -71,7 +71,7 @@ export function HashTableRenderer() {
           aria-label={`Old hash table with ${dataState.rehash.oldTableSize} buckets`}
         >
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
-            Old table ? scan one bucket at a time
+            Old table → scan one bucket at a time
           </h2>
           <div className="flex min-w-max gap-2">
             {dataState.rehash.oldBuckets.map((entry, index) => (
@@ -84,7 +84,7 @@ export function HashTableRenderer() {
               >
                 <span className="block text-[10px] text-text-muted">{index}</span>
                 <span className="block min-w-6 font-bold text-text-primary">
-                  {entry ? entry.key : "?"}
+                  {entry ? entry.key : "—"}
                 </span>
               </div>
             ))}

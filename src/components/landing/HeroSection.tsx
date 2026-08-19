@@ -67,7 +67,11 @@ const emptySubscribe = () => () => {};
 function WorkbenchPreview() {
   const [stepIndex, setStepIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const isMounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const isMounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
   const motionPreference = useReducedMotion();
   const reduceMotion = isMounted ? Boolean(motionPreference) : false;
 

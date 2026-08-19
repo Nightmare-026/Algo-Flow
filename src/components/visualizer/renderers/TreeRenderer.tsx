@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { usePlaybackStore } from "@/stores/playback-store";
 import { TreeVisualState, TreeNodeData } from "@/visualizers/tree/types";
@@ -124,14 +124,14 @@ export function TreeRenderer() {
         <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm">
           <span className="font-semibold text-text-secondary">Output: </span>
           <span className="font-mono text-primary">
-            {traversalOutput.length > 0 ? traversalOutput.join(" ? ") : "Waiting for visits"}
+            {traversalOutput.length > 0 ? traversalOutput.join(" → ") : "Waiting for visits"}
           </span>
         </div>
         {dataState.traversalMode === "recursive" && (
           <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm">
             <span className="font-semibold text-text-secondary">Call stack: </span>
             <span className="font-mono text-secondary">
-              {callStack.length > 0 ? callStack.join(" ? ") : "empty"}
+              {callStack.length > 0 ? callStack.join(" → ") : "empty"}
             </span>
           </div>
         )}

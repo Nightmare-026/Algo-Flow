@@ -92,7 +92,7 @@ export function AuthShell({
                       : "text-text-muted hover:text-text-primary"
                   )}
                 >
-                  Create account
+                  Sign up
                 </Link>
               </nav>
             ) : null}

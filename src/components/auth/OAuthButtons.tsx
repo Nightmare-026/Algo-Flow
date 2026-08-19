@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { loginWithOAuth } from "@/app/(auth)/login/actions";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -37,39 +38,53 @@ function GitHubIcon({ className }: { className?: string }) {
 
 type OAuthProvider = "google" | "github";
 
-export function OAuthButtons() {
+interface OAuthButtonsProps {
+  next?: string;
+  dividerLabel?: string;
+  className?: string;
+}
+
+export function OAuthButtons({
+  next,
+  dividerLabel = "or continue with",
+  className,
+}: OAuthButtonsProps) {
   const [isPending, startTransition] = useTransition();
   const [activeProvider, setActiveProvider] = useState<OAuthProvider | null>(null);
 
   function handleOAuth(provider: OAuthProvider) {
     setActiveProvider(provider);
     startTransition(async () => {
-      await loginWithOAuth(provider);
+      await loginWithOAuth(provider, next);
     });
   }
 
   return (
-    <div className="space-y-4">
-      {/* Divider */}
-      <div className="relative flex items-center gap-4">
+    <div className={cn("space-y-4", className)}>
+      {/* Visual Divider */}
+      <div className="relative flex items-center gap-4" aria-hidden="true">
         <div className="h-px flex-1 bg-border" />
-        <span className="text-xs font-medium text-text-muted select-none">or continue with</span>
+        <span className="text-xs font-semibold uppercase tracking-wider text-text-muted select-none">
+          {dividerLabel}
+        </span>
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      {/* OAuth Buttons */}
+      {/* Social Buttons */}
       <div className="grid grid-cols-2 gap-3">
         <button
           id="oauth-google"
           type="button"
           disabled={isPending}
+          aria-busy={isPending && activeProvider === "google"}
+          aria-label="Continue with Google"
           onClick={() => handleOAuth("google")}
-          className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-white/80 bg-white/90 px-4 text-sm font-semibold text-text-primary shadow-[var(--shadow-raised-sm)] transition-[transform,box-shadow,background-color,border-color,opacity] duration-200 hover:-translate-y-0.5 hover:border-border-hover hover:bg-white active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-text-primary shadow-[var(--shadow-raised-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-surface-hover hover:text-primary active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
         >
           {isPending && activeProvider === "google" ? (
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden="true" />
           ) : (
-            <GoogleIcon className="h-5 w-5" />
+            <GoogleIcon className="h-4.5 w-4.5 shrink-0" />
           )}
           <span>Google</span>
         </button>
@@ -78,13 +93,15 @@ export function OAuthButtons() {
           id="oauth-github"
           type="button"
           disabled={isPending}
+          aria-busy={isPending && activeProvider === "github"}
+          aria-label="Continue with GitHub"
           onClick={() => handleOAuth("github")}
-          className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-white/80 bg-white/90 px-4 text-sm font-semibold text-text-primary shadow-[var(--shadow-raised-sm)] transition-[transform,box-shadow,background-color,border-color,opacity] duration-200 hover:-translate-y-0.5 hover:border-border-hover hover:bg-white active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-text-primary shadow-[var(--shadow-raised-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-surface-hover hover:text-primary active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
         >
           {isPending && activeProvider === "github" ? (
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden="true" />
           ) : (
-            <GitHubIcon className="h-5 w-5" />
+            <GitHubIcon className="h-4.5 w-4.5 shrink-0" />
           )}
           <span>GitHub</span>
         </button>

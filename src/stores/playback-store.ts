@@ -86,14 +86,16 @@ export const usePlaybackStore = create<PlaybackStore>((set, get) => ({
   pause: () => set({ phase: "paused", isPlaying: false }),
 
   nextStep: () => {
-    const { currentStepIndex, totalSteps } = get();
+    const { currentStepIndex, totalSteps, isPlaying } = get();
     if (currentStepIndex < totalSteps - 1) {
       const nextIndex = currentStepIndex + 1;
+      const willBeComplete = nextIndex === totalSteps - 1;
       set({
         currentStepIndex: nextIndex,
         committedStepId: get().steps[nextIndex]?.id ?? null,
-        phase: get().isPlaying ? "playing" : "committed",
-        isComplete: nextIndex === totalSteps - 1,
+        phase: willBeComplete ? "committed" : isPlaying ? "playing" : "committed",
+        isPlaying: willBeComplete ? false : isPlaying,
+        isComplete: willBeComplete,
       });
     } else {
       set({ phase: "committed", isComplete: true, isPlaying: false });

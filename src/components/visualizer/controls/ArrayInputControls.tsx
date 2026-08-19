@@ -1,7 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AlertCircle, FileEdit, Search, Shuffle, SortAsc, SortDesc, Target } from "lucide-react";
+import {
+  AlertCircle,
+  FileEdit,
+  Hash,
+  Layers,
+  Search,
+  Shuffle,
+  SortAsc,
+  SortDesc,
+  Target,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -85,118 +95,165 @@ export function ArrayInputControls({
   };
 
   const errorMessage = error || fieldError;
+  const hasContextParams =
+    needsValue(slug) || needsTarget(slug) || needsIndex(slug) || needsCapacity(slug);
 
   return (
-    <div className="flex flex-col gap-3 text-sm lg:flex-row lg:items-start">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-text-muted">Size:</span>
-          <input
-            type="range"
-            min="1"
-            max="20"
-            value={size}
-            onChange={(event) => setSize(Number(event.target.value))}
-            className="w-24 accent-primary"
-            aria-label="Generated data size"
-          />
-          <span className="w-5 text-text-primary">{size}</span>
+    <div className="flex flex-col gap-2.5 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-2.5">
+        {/* Left Section: Generators & Custom Input */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Pod 1: Data Size & Presets */}
+          <div className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-2.5 py-1 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex items-center gap-2 pr-1">
+              <span className="font-mono text-[11px] font-semibold text-text-muted">Size</span>
+              <input
+                type="range"
+                min="1"
+                max="20"
+                value={size}
+                onChange={(event) => setSize(Number(event.target.value))}
+                className="h-1.5 w-16 sm:w-20 cursor-pointer accent-primary"
+                aria-label="Generated array size"
+              />
+              <span className="min-w-4 text-center font-mono text-xs font-bold text-primary">
+                {size}
+              </span>
+            </div>
+
+            <div className="h-4 w-px bg-border mx-0.5" aria-hidden="true" />
+
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={generateRandom}
+                className="h-7 px-2 text-xs font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+                title="Generate random array"
+              >
+                <Shuffle className="h-3.5 w-3.5 text-primary mr-1" />
+                Random
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={generateSorted}
+                className="h-7 px-2 text-xs font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+                title="Generate sorted array"
+              >
+                <SortAsc className="h-3.5 w-3.5 text-primary mr-1" />
+                Sorted
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={generateReverseSorted}
+                className="h-7 px-2 text-xs font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+                title="Generate reverse sorted array"
+              >
+                <SortDesc className="h-3.5 w-3.5 text-primary mr-1" />
+                Reverse
+              </Button>
+            </div>
+          </div>
+
+          {/* Pod 2: Custom Number List Form */}
+          <form
+            onSubmit={handleCustomSubmit}
+            className="flex items-center gap-1.5 rounded-xl border border-border bg-surface px-2.5 py-1 shadow-[var(--shadow-raised-sm)]"
+          >
+            <FileEdit className="h-3.5 w-3.5 text-text-muted shrink-0" aria-hidden="true" />
+            <Input
+              value={customInput}
+              onChange={(event) => setCustomInput(event.target.value)}
+              placeholder="e.g. 5, 2, 9, 1, 8"
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? "array-input-error" : undefined}
+              className="h-7 w-36 sm:w-44 border-none bg-transparent px-1.5 py-0 font-mono text-xs shadow-none focus-visible:ring-0"
+              aria-label="Custom comma-separated numbers"
+            />
+            <Button
+              type="submit"
+              size="sm"
+              className="h-7 rounded-lg bg-primary px-3 text-xs font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95"
+            >
+              Build
+            </Button>
+          </form>
         </div>
 
-        <div className="flex items-center gap-1">
-          <Button variant="outline" size="sm" onClick={generateRandom}>
-            <Shuffle className="h-4 w-4 text-primary" />
-            Random
-          </Button>
-          <Button variant="outline" size="sm" onClick={generateSorted}>
-            <SortAsc className="h-4 w-4 text-primary" />
-            Sorted
-          </Button>
-          <Button variant="outline" size="sm" onClick={generateReverseSorted}>
-            <SortDesc className="h-4 w-4 text-primary" />
-            Reverse
-          </Button>
-        </div>
+        {/* Right Section: Context Parameters Pod (if applicable) */}
+        {hasContextParams && (
+          <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-surface px-2.5 py-1 shadow-[var(--shadow-raised-sm)] lg:ml-auto">
+            {needsTarget(slug) && (
+              <label className="flex items-center gap-1.5 font-mono text-xs font-semibold text-text-secondary">
+                <Search className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                <span>Target:</span>
+                <Input
+                  type="number"
+                  value={options.target}
+                  onChange={(event) => updateOption("target", Number(event.target.value))}
+                  className="h-7 w-16 rounded-lg font-mono text-xs font-bold text-text-primary px-2"
+                />
+              </label>
+            )}
 
-        <form onSubmit={handleCustomSubmit} className="flex flex-wrap items-center gap-2">
-          <FileEdit className="h-4 w-4 text-text-muted" />
-          <Input
-            value={customInput}
-            onChange={(event) => setCustomInput(event.target.value)}
-            placeholder="e.g. 5, 2, 9, 1…"
-            aria-invalid={Boolean(error)}
-            aria-describedby={error ? "array-input-error" : undefined}
-            className="h-8 w-44"
-            aria-label="Custom numeric input"
-          />
-          <Button type="submit" size="sm">
-            Build
-          </Button>
-        </form>
-      </div>
+            {needsValue(slug) && (
+              <label className="flex items-center gap-1.5 font-mono text-xs font-semibold text-text-secondary">
+                <Target className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                <span>Value:</span>
+                <Input
+                  type="number"
+                  value={options.value}
+                  onChange={(event) => updateOption("value", Number(event.target.value))}
+                  className="h-7 w-16 rounded-lg font-mono text-xs font-bold text-text-primary px-2"
+                />
+              </label>
+            )}
 
-      <div className="flex flex-wrap items-center gap-2 lg:ml-auto">
-        {needsValue(slug) && (
-          <label className="flex items-center gap-2 text-text-muted">
-            <Target className="h-4 w-4" />
-            Value
-            <Input
-              type="number"
-              value={options.value}
-              onChange={(event) => updateOption("value", Number(event.target.value))}
-              className="h-8 w-20"
-            />
-          </label>
-        )}
-        {needsTarget(slug) && (
-          <label className="flex items-center gap-2 text-text-muted">
-            <Search className="h-4 w-4" />
-            Target
-            <Input
-              type="number"
-              value={options.target}
-              onChange={(event) => updateOption("target", Number(event.target.value))}
-              className="h-8 w-20"
-            />
-          </label>
-        )}
-        {needsIndex(slug) && (
-          <label className="flex items-center gap-2 text-text-muted">
-            Index
-            <Input
-              type="number"
-              value={options.index}
-              aria-invalid={Boolean(fieldError)}
-              aria-describedby={fieldError ? "array-input-error" : undefined}
-              onChange={(event) => updateOption("index", Number(event.target.value))}
-              className="h-8 w-20"
-            />
-          </label>
-        )}
-        {needsCapacity(slug) && (
-          <label className="flex items-center gap-2 text-text-muted">
-            Capacity
-            <Input
-              type="number"
-              value={options.capacity}
-              aria-invalid={Boolean(fieldError)}
-              aria-describedby={fieldError ? "array-input-error" : undefined}
-              onChange={(event) => updateOption("capacity", Number(event.target.value))}
-              className="h-8 w-20"
-            />
-          </label>
+            {needsIndex(slug) && (
+              <label className="flex items-center gap-1.5 font-mono text-xs font-semibold text-text-secondary">
+                <Hash className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                <span>Index:</span>
+                <Input
+                  type="number"
+                  value={options.index}
+                  aria-invalid={Boolean(fieldError)}
+                  aria-describedby={fieldError ? "array-input-error" : undefined}
+                  onChange={(event) => updateOption("index", Number(event.target.value))}
+                  className="h-7 w-16 rounded-lg font-mono text-xs font-bold text-text-primary px-2"
+                />
+              </label>
+            )}
+
+            {needsCapacity(slug) && (
+              <label className="flex items-center gap-1.5 font-mono text-xs font-semibold text-text-secondary">
+                <Layers className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                <span>Capacity:</span>
+                <Input
+                  type="number"
+                  value={options.capacity}
+                  aria-invalid={Boolean(fieldError)}
+                  aria-describedby={fieldError ? "array-input-error" : undefined}
+                  onChange={(event) => updateOption("capacity", Number(event.target.value))}
+                  className="h-7 w-16 rounded-lg font-mono text-xs font-bold text-text-primary px-2"
+                />
+              </label>
+            )}
+          </div>
         )}
       </div>
 
+      {/* Non-Disruptive Error Alert Pill */}
       {errorMessage && (
         <div
           id="array-input-error"
           role="alert"
           aria-live="polite"
-          className="flex items-center gap-2 rounded-lg border border-error/25 bg-error-muted px-3 py-2 text-xs text-error"
+          className="inline-flex items-center gap-2 rounded-xl border border-error/30 bg-error-muted px-3 py-1.5 text-xs font-semibold text-error animate-in fade-in slide-in-from-top-1"
         >
-          <AlertCircle className="h-4 w-4" />
-          {errorMessage}
+          <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          <span>{errorMessage}</span>
         </div>
       )}
     </div>
