@@ -11,7 +11,6 @@ import {
   Pause,
   Play,
   RotateCcw,
-  Sparkles,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
@@ -330,7 +329,6 @@ export function HeroSection({
         >
           {/* Eyebrow Badge */}
           <div className="inline-flex min-h-9 items-center gap-2 rounded-full border border-border bg-surface px-3.5 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)]">
-            <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
             Interactive CS Visualizer &amp; Learning Workstation
           </div>
 

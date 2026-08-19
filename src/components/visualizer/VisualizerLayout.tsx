@@ -11,7 +11,6 @@ import {
   Bookmark,
   Save,
   Trophy,
-  Sparkles,
 } from "lucide-react";
 import { Algorithm, CodeExample } from "@/types";
 import { cn } from "@/lib/utils";
@@ -219,7 +218,6 @@ export function VisualizerLayout({
             )}
             title="Toggle Interactive Practice Mode"
           >
-            <Sparkles className="inline-block mr-1 h-3 w-3" />
             Practice Mode
           </button>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Compass, Sparkles } from "lucide-react";
+import { ArrowRight, Compass } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -23,7 +23,6 @@ export function FinalCTA({ visualizerCount = 133 }: { visualizerCount?: number }
 
           <div className="relative mx-auto max-w-2xl">
             <div className="inline-flex min-h-9 items-center gap-2 rounded-full border border-border bg-surface px-3.5 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)] mb-6">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
               {visualizerCount} Interactive Algorithms Ready to Explore
             </div>
 

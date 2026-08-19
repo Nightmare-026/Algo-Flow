@@ -18,7 +18,6 @@ import {
   BrainCircuit,
   Code2,
   Workflow,
-  Sparkles,
   Trophy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -119,7 +118,6 @@ export default async function DashboardPage() {
         <section className="neu-float flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 sm:p-8 rounded-3xl border border-border">
           <div>
             <div className="inline-flex min-h-7 items-center gap-2 rounded-full border border-border bg-surface px-3 text-[11px] font-bold uppercase tracking-wider text-primary shadow-[var(--shadow-raised-sm)] mb-2">
-              <Sparkles className="h-3 w-3 text-primary" />
               Student Command Center
             </div>
             <h1 className="text-2xl md:text-3xl font-extrabold font-display text-text-primary tracking-tight">
