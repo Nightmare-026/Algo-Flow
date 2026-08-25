@@ -33,7 +33,11 @@ export function CircularLinkedListRenderer() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-8 relative overflow-hidden">
+    <div
+      className="flex flex-col items-center justify-center w-full h-full p-8 relative overflow-hidden"
+      role="img"
+      aria-label={`${currentStep.title}. Circular linked list values: ${orderedNodes.map((n) => n.value).join(" -> ")} (tail links to head)`}
+    >
       {/* Visual Indicator of Circular Nature */}
       <div className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-muted text-primary-active text-xs font-semibold border border-primary/20">
         <RotateCw className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: "8s" }} />

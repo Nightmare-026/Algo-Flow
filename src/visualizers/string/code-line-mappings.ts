@@ -7,8 +7,8 @@ const line = (
   java: number
 ): CodeLineMapping => ({ logicalLine, lines: { javascript, python, cpp, java } });
 export const stringCodeLineMappings = {
-  "string-forward-traversal": [line(1, 1, 1, 1, 1), line(3, 2, 2, 2, 2), line(4, 5, 3, 5, 5)],
-  "string-reverse-traversal": [line(1, 1, 1, 1, 1), line(3, 2, 2, 2, 2), line(4, 5, 3, 5, 5)],
+  "string-forward-traversal": [line(1, 1, 1, 1, 1), line(3, 2, 2, 2, 2), line(4, 3, 3, 3, 3)],
+  "string-reverse-traversal": [line(1, 1, 1, 1, 1), line(3, 2, 2, 2, 2), line(4, 3, 3, 3, 3)],
   "string-palindrome": [
     line(1, 2, 2, 2, 2),
     line(3, 3, 3, 3, 3),
@@ -32,7 +32,7 @@ export const stringCodeLineMappings = {
     line(6, 7, 9, 7, 7),
     line(7, 9, 12, 9, 9),
     line(8, 10, 14, 10, 10),
-    line(9, 12, 16, 12, 12),
+    line(9, 10, 15, 10, 10),
     line(10, 18, 22, 18, 18),
     line(11, 19, 24, 19, 19),
     line(12, 20, 25, 20, 20),
@@ -47,7 +47,7 @@ export const stringCodeLineMappings = {
   "string-rabin-karp": [
     line(1, 2, 2, 2, 2),
     line(2, 5, 5, 5, 5),
-    line(4, 8, 7, 8, 8),
+    line(4, 7, 7, 7, 7),
     line(6, 11, 9, 11, 11),
     line(8, 14, 11, 14, 14),
     line(10, 18, 13, 19, 19),
@@ -62,5 +62,5 @@ export const stringCodeLineMappings = {
   "string-insert": [line(1, 1, 1, 1, 1), line(2, 1, 1, 1, 1), line(3, 2, 2, 3, 2)],
   "string-delete": [line(1, 1, 1, 1, 1), line(2, 1, 1, 1, 1), line(3, 2, 2, 3, 2)],
   "string-replace": [line(1, 1, 1, 1, 1), line(2, 1, 1, 1, 1), line(3, 2, 2, 3, 3)],
-  "string-change-case": [line(1, 1, 1, 1, 1), line(3, 2, 2, 4, 5), line(4, 3, 2, 6, 8)],
+  "string-change-case": [line(1, 1, 1, 1, 1), line(3, 2, 2, 4, 5), line(4, 2, 2, 5, 7)],
 } as const satisfies Record<string, ReadonlyArray<CodeLineMapping>>;

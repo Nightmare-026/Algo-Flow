@@ -29,15 +29,15 @@ export function GraphInputControls({
   const traversalLabel = slug === "dfs" ? "DFS" : slug === "dijkstra" ? "Dijkstra" : "BFS";
 
   return (
-    <div className="flex flex-wrap items-end gap-3 text-sm">
-      <label className="flex min-w-36 flex-col gap-1.5">
+    <div className="flex flex-wrap items-center gap-2 text-sm">
+      <label className="flex min-w-28 flex-col gap-1">
         <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
           Start Node
         </span>
         <select
           value={selectedNode}
           onChange={(event) => onOptionsChange?.({ ...options, text: event.target.value })}
-          className="rounded-lg border border-border bg-bg-surface-light px-3 py-2 text-text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+          className="rounded-md border border-border bg-bg-surface-light px-2 py-1 text-text-primary text-xs focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
         >
           {graphNodes.map((node) => (
             <option key={node} value={node}>
@@ -51,13 +51,13 @@ export function GraphInputControls({
         ref={editGraphButtonRef}
         type="button"
         onClick={() => setIsEditorOpen(true)}
-        className="flex h-[38px] items-center justify-center gap-2 rounded-lg bg-primary/10 px-4 text-sm font-bold text-primary transition-colors hover:bg-primary/20"
+        className="flex h-7 items-center justify-center gap-1.5 rounded-md bg-primary/10 px-3 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
       >
-        <Edit3 className="h-4 w-4" /> Edit Custom Graph
+        <Edit3 className="h-3.5 w-3.5" /> Edit Graph
       </button>
 
-      <div className="rounded-lg border border-border bg-bg-surface-light px-3 py-2 text-text-secondary h-[38px] flex items-center">
-        {traversalLabel} starts from node {selectedNode}
+      <div className="rounded-md border border-border bg-bg-surface-light px-2 py-1 text-text-secondary text-xs h-7 flex items-center">
+        {traversalLabel} from {selectedNode}
       </div>
 
       <GraphEditorModal

@@ -39,7 +39,7 @@ describe("production audit accessibility contracts", () => {
     const matrix = source("src/components/visualizer/controls/MatrixInputControls.tsx");
     const linkedList = source("src/components/visualizer/controls/LinkedListInputControls.tsx");
 
-    expect(matrix).toContain("Custom matrix values");
+    expect(matrix).toContain("Matrix A (");
     expect(matrix).toContain("aria-invalid={Boolean(error)}");
     expect(matrix).toContain('role="alert"');
     expect(linkedList).toContain('htmlFor="linked-list-position"');

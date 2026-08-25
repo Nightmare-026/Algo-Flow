@@ -50,54 +50,53 @@ export function StackInputControls({
   };
 
   return (
-    <div className="flex flex-col gap-3 text-sm lg:flex-row lg:items-start">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-col gap-2.5 text-sm lg:flex-row lg:items-center lg:gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         {/* Capacity Input */}
-        <form onSubmit={handleCapacitySubmit} className="flex flex-wrap items-center gap-2">
-          <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
-            <span className="text-text-muted font-medium">Capacity:</span>
+        <form onSubmit={handleCapacitySubmit} className="flex items-center gap-1.5">
+          <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
+            <span className="text-text-muted font-medium text-xs">Capacity:</span>
             <Input
               type="number"
-              className="w-16 h-7 border-border bg-bg-base px-2 py-0"
+              className="w-14 h-7 border-border bg-bg-base px-2 py-0 text-xs"
               value={capInput}
               min={1}
               max={15}
               onChange={(e) => setCapInput(e.target.value)}
             />
           </label>
-          <Button type="submit" variant="secondary" size="sm">
-            Set Capacity
+          <Button type="submit" variant="secondary" size="sm" className="h-7 px-3 text-xs">
+            Set
           </Button>
         </form>
 
         {/* Value Input */}
-        <form onSubmit={handlePushSubmit} className="flex flex-wrap items-center gap-2 ml-4">
-          <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
-            <span className="text-text-muted font-medium">Value:</span>
+        <form onSubmit={handlePushSubmit} className="flex items-center gap-1.5">
+          <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
+            <span className="text-text-muted font-medium text-xs">Value:</span>
             <Input
               type="number"
-              className="w-16 h-7 border-border bg-bg-base px-2 py-0"
+              className="w-14 h-7 border-border bg-bg-base px-2 py-0 text-xs"
               value={valInput}
               onChange={(e) => setValInput(e.target.value)}
             />
           </label>
 
-          <div className="flex items-center gap-1">
-            <Button
-              type="submit"
-              variant="secondary"
-              size="sm"
-              onClick={() => updateOption("value", parseInt(valInput))}
-            >
-              <HardDriveDownload className="h-4 w-4 mr-1" /> Set Push Value
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            variant="secondary"
+            size="sm"
+            className="h-7 px-3 text-xs"
+            onClick={() => updateOption("value", parseInt(valInput))}
+          >
+            <HardDriveDownload className="h-3.5 w-3.5 mr-1" /> Push
+          </Button>
         </form>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-error text-sm font-medium animate-in fade-in slide-in-from-top-1 ml-auto">
-          <AlertCircle className="h-4 w-4" />
+        <div className="flex items-center gap-1.5 text-error text-xs font-medium animate-in fade-in slide-in-from-top-1 lg:ml-auto">
+          <AlertCircle className="h-3.5 w-3.5" />
           {error}
         </div>
       )}

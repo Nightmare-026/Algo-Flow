@@ -34,5 +34,5 @@ export const hashSetCodeLineMappings = {
     line(10, 14, 14, 23, 17),
   ],
   "set-union": [line(1, 2, 1, 3, 1), line(3, 4, 2, 8, 3)],
-  "set-intersection": [line(1, 2, 1, 3, 1), line(3, 5, 2, 10, 3)],
+  "set-intersection": [line(1, 2, 1, 3, 1), line(3, 5, 2, 8, 3)],
 } as const satisfies Record<string, ReadonlyArray<CodeLineMapping>>;

@@ -21,6 +21,10 @@ import {
   Trophy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  DashboardHeaderAnimation,
+  DashboardStatCardsAnimation,
+} from "@/components/dashboard/DashboardAnimations";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -115,7 +119,7 @@ export default async function DashboardPage() {
     <div className="flex w-full flex-col px-4 pb-20 pt-8 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-7xl flex flex-col gap-8">
         {/* Welcome Header Bar */}
-        <section className="neu-float flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 sm:p-8 rounded-3xl border border-border">
+        <DashboardHeaderAnimation>
           <div>
             <div className="inline-flex min-h-7 items-center gap-2 rounded-full border border-border bg-surface px-3 text-[11px] font-bold uppercase tracking-wider text-primary shadow-[var(--shadow-raised-sm)] mb-2">
               Student Command Center
@@ -142,12 +146,12 @@ export default async function DashboardPage() {
               </p>
             </div>
           </div>
-        </section>
+        </DashboardHeaderAnimation>
 
         {/* 4 Quick Stat Cards */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <DashboardStatCardsAnimation>
           {/* XP Card */}
-          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between">
+          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-primary/30 transition-colors">
             <div className="flex justify-between items-center">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
                 Experience
@@ -167,7 +171,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Max Streak Card */}
-          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between">
+          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-warning/30 transition-colors">
             <div className="flex justify-between items-center">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
                 Max Streak
@@ -187,7 +191,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Topics Completed Card */}
-          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between">
+          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-primary/30 transition-colors">
             <div className="flex justify-between items-center">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
                 Mastered
@@ -211,7 +215,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Saved Visualizers Card */}
-          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between">
+          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-secondary/30 transition-colors">
             <div className="flex justify-between items-center">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
                 Bookmarks
@@ -229,7 +233,7 @@ export default async function DashboardPage() {
               </p>
             </div>
           </div>
-        </section>
+        </DashboardStatCardsAnimation>
 
         {/* Bento Grid: Daily Challenge, Activity Feed, and Category Progress */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -438,6 +442,44 @@ export default async function DashboardPage() {
             </section>
           </div>
         </div>
+
+        {/* Mental Math Precision Training Card */}
+        <section className="neu-float rounded-3xl p-6 sm:p-8 border border-primary/30 bg-primary-muted/15 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex flex-col gap-2 max-w-2xl">
+            <div className="flex items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white text-xs font-bold shadow-sm">
+                <BrainCircuit className="w-4 h-4" />
+              </span>
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
+                Arithmetic Fluency Engine
+              </span>
+            </div>
+            <h2 className="text-2xl font-extrabold font-display text-text-primary tracking-tight">
+              Mental Math Training Studio
+            </h2>
+            <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+              Train mental calculation speed, arithmetic accuracy, and cognitive intuition. Compete
+              in daily challenges, timed tests, and 60-second speed sprints.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <Link
+              href="/mental-math/practice"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Practice Now</span>
+            </Link>
+            <Link
+              href="/mental-math/daily"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-5 text-xs font-bold font-display text-text-primary hover:text-primary hover:bg-surface-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all"
+            >
+              <Trophy className="w-3.5 h-3.5 text-warning" />
+              <span>Daily Challenge</span>
+            </Link>
+          </div>
+        </section>
 
         {/* Curated Study Tracks */}
         <section className="flex flex-col gap-4 mt-2">

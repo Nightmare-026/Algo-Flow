@@ -32,15 +32,15 @@ export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) 
   return (
     <section
       aria-label="Step highlight legend"
-      className="border-b border-border bg-surface/80 px-4 py-2.5 backdrop-blur-sm"
+      className="border-b border-border bg-surface/60 px-2.5 py-1 backdrop-blur-sm"
     >
       <div
-        className="hide-scrollbar flex items-center gap-2 overflow-x-auto"
+        className="hide-scrollbar flex items-center gap-1 overflow-x-auto"
         role="list"
         tabIndex={0}
       >
-        <span className="shrink-0 text-[10px] font-mono font-bold uppercase tracking-widest text-text-muted">
-          State Signals:
+        <span className="shrink-0 text-[9px] font-mono font-bold uppercase tracking-widest text-text-muted">
+          State:
         </span>
         {items.map((item) => {
           const active = activeBuckets.has(item.bucketKey);
@@ -52,20 +52,20 @@ export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) 
               data-active={active}
               title={item.description}
               className={cn(
-                "inline-flex min-h-7 shrink-0 items-center gap-2 rounded-full border px-3 text-xs font-semibold transition-all duration-200",
+                "inline-flex min-h-5 shrink-0 items-center gap-1 rounded-full border px-2 text-[10px] font-semibold transition-all duration-200",
                 active
                   ? cn(
                       toneClasses[item.tone],
                       "shadow-[var(--shadow-raised-sm)] opacity-100 font-bold"
                     )
-                  : "border-border/60 bg-surface/50 text-text-muted opacity-40"
+                  : "border-border/50 bg-surface/50 text-text-muted opacity-45"
               )}
             >
               <span
                 aria-hidden="true"
                 className={cn(
-                  "h-1.5 w-1.5 rounded-full",
-                  active ? "bg-current shadow-[0_0_6px_currentColor]" : "bg-text-muted/40"
+                  "h-1.25 w-1.25 rounded-full",
+                  active ? "bg-current shadow-[0_0_5px_currentColor]" : "bg-text-muted/40"
                 )}
               />
               {item.label}

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { FloatingField } from "@/components/auth/FloatingField";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { Callout } from "@/components/ui/callout";
 import { createClient } from "@/lib/supabase/server";
 import { login } from "./actions";
 
@@ -34,30 +34,18 @@ export default async function LoginPage({
       description="Log in to return to saved algorithms, sessions, and learning progress."
     >
       {params.error ? (
-        <div
-          role="alert"
-          className="mb-6 flex items-start gap-3 rounded-2xl border border-error/30 bg-error-muted p-4 text-xs font-semibold leading-relaxed text-error shadow-[var(--shadow-inset)]"
-        >
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          <div>
-            <p className="font-bold text-error">{params.error}</p>
-            <p className="mt-0.5 text-[11px] text-error/80">
-              Check your credentials and try again, or reset your password if you forgot it.
-            </p>
-          </div>
-        </div>
+        <Callout variant="error" title="Sign in failed" dismissible className="mb-6">
+          <p>{params.error}</p>
+          <p className="mt-0.5 text-[11px] text-error/80">
+            Check your credentials and try again, or reset your password if you forgot it.
+          </p>
+        </Callout>
       ) : null}
 
       {params.success ? (
-        <div
-          aria-live="polite"
-          className="mb-6 flex items-start gap-3 rounded-2xl border border-success/30 bg-success-muted p-4 text-xs font-semibold leading-relaxed text-success shadow-[var(--shadow-inset)]"
-        >
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          <div>
-            <p className="font-bold text-success">{params.success}</p>
-          </div>
-        </div>
+        <Callout variant="success" title="Success" dismissible className="mb-6">
+          <p>{params.success}</p>
+        </Callout>
       ) : null}
 
       {/* Primary Email/Password Form */}

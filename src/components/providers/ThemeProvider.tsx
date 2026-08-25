@@ -23,13 +23,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined") return "light";
     const saved = localStorage.getItem(STORAGE_KEY) as ThemePreference | null;
     return saved &&
-      ["light", "dark", "dark-neon", "light-edu", "nature-cinematic", "system"].includes(saved)
+      ["light", "dark", "dark-neon", "light-edu", "system"].includes(saved)
       ? saved
       : "light";
   });
 
   const resolveTheme = useCallback((preference: ThemePreference): "light" | "dark" => {
-    if (preference === "dark" || preference === "dark-neon" || preference === "nature-cinematic")
+    if (preference === "dark" || preference === "dark-neon")
       return "dark";
     if (preference === "light" || preference === "light-edu") return "light";
     return typeof window !== "undefined" &&

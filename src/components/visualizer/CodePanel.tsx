@@ -13,6 +13,7 @@ interface CodePanelProps {
   examples: CodeExample[];
   codeLineMapping?: ReadonlyArray<CodeLineMapping>;
   onLanguageChange?: (language: CodeLanguage) => void;
+  isVisible?: boolean;
 }
 
 function escapeHtml(value: string) {
@@ -24,6 +25,14 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
+function renderFallbackHtml(code: string) {
+  const lineSpans = code
+    .split("\n")
+    .map((l) => `<span class="line">${escapeHtml(l) || "&nbsp;"}</span>`)
+    .join("\n");
+  return `<pre class="shiki" tabindex="0"><code>${lineSpans}</code></pre>`;
+}
+
 function languageLabel(language: CodeLanguage) {
   if (language === "javascript") return "JavaScript";
   if (language === "typescript") return "TypeScript";
@@ -33,7 +42,12 @@ function languageLabel(language: CodeLanguage) {
   return language;
 }
 
-export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodePanelProps) {
+export function CodePanel({
+  examples,
+  codeLineMapping,
+  onLanguageChange,
+  isVisible = true,
+}: CodePanelProps) {
   const { steps, currentStepIndex, reducedMotion } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
   const pathname = usePathname();
@@ -64,7 +78,11 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
   const codeString = activeExample?.code ?? "";
   const documentKey = `${activeLang}:${codeString}`;
   const isDocumentReady = highlightedDocument?.key === documentKey;
-  const htmlContent = isDocumentReady ? highlightedDocument.html : "";
+  const htmlContent = isDocumentReady
+    ? highlightedDocument.html
+    : codeString
+      ? renderFallbackHtml(codeString)
+      : "";
   const activeLineNum = resolvePhysicalCodeLine(codeLineMapping, currentStep?.codeLine, activeLang);
 
   useEffect(() => {
@@ -85,7 +103,7 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
         if (isMounted) {
           setHighlightedDocument({
             key: documentKey,
-            html: `<pre><code>${escapeHtml(codeString)}</code></pre>`,
+            html: renderFallbackHtml(codeString),
           });
         }
       }
@@ -103,10 +121,7 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
     if (!container) return;
 
     const applyHighlight = () => {
-      if (typeof container.checkVisibility === "function" && !container.checkVisibility()) {
-        return;
-      }
-      const lines = codeContainerRef.current?.querySelectorAll<HTMLElement>(".shiki .line");
+      const lines = codeContainerRef.current?.querySelectorAll<HTMLElement>(".shiki .line, .line");
       lines?.forEach((line, index) => {
         const isActive = Boolean(activeLineNum && index + 1 === activeLineNum);
         line.classList.toggle("is-active-code-line", isActive);
@@ -118,9 +133,8 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
         line.dataset.line = String(index + 1);
       });
 
-      const activeLine = codeContainerRef.current?.querySelector<HTMLElement>(
-        ".shiki .is-active-code-line"
-      );
+      const activeLine =
+        codeContainerRef.current?.querySelector<HTMLElement>(".is-active-code-line");
       if (!activeLine) return;
       const top =
         container.scrollTop +
@@ -146,7 +160,7 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
       window.cancelAnimationFrame(frame);
       resizeObserver?.disconnect();
     };
-  }, [activeLineNum, codeString, htmlContent, reducedMotion, pathname]);
+  }, [activeLineNum, codeString, htmlContent, isVisible, reducedMotion, pathname]);
 
   const handleCopy = async () => {
     if (!codeString) return;
@@ -157,10 +171,10 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
 
   return (
     <section
-      className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]"
+      className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]"
       aria-label="Source code"
     >
-      <div className="flex min-h-[44px] shrink-0 items-center justify-between border-b border-border bg-surface px-2">
+      <div className="flex min-h-[38px] shrink-0 items-center justify-between border-b border-border bg-surface px-2">
         <div
           className="hide-scrollbar flex items-center gap-1 overflow-x-auto"
           role="tablist"
@@ -178,7 +192,7 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
                 aria-controls="code-language-panel"
                 onClick={() => setActiveLang(example.language)}
                 className={cn(
-                  "min-h-8 rounded-lg px-2.5 text-xs font-semibold transition-all cursor-pointer select-none",
+                  "min-h-7 rounded px-2 text-[11px] font-semibold transition-all cursor-pointer select-none",
                   isActive
                     ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
                     : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
@@ -189,9 +203,9 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
             );
           })}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {activeLineNum ? (
-            <span className="font-mono text-[10px] font-bold text-primary bg-primary-muted px-2 py-0.5 rounded border border-primary/20">
+            <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-1.5 py-0.5 rounded border border-primary/20">
               Line {activeLineNum}
             </span>
           ) : null}
@@ -199,15 +213,11 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
             type="button"
             onClick={handleCopy}
             disabled={!codeString}
-            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-all hover:border-primary/40 hover:text-primary disabled:opacity-40"
+            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-all hover:border-primary/40 hover:text-primary disabled:opacity-40"
             aria-label={copied ? "Code copied" : "Copy code"}
             title="Copy code"
           >
-            {copied ? (
-              <Check className="h-3.5 w-3.5 text-success" />
-            ) : (
-              <Copy className="h-3.5 w-3.5" />
-            )}
+            {copied ? <Check className="h-3 w-3 text-success" /> : <Copy className="h-3 w-3" />}
           </button>
         </div>
       </div>
@@ -223,11 +233,11 @@ export function CodePanel({ examples, codeLineMapping, onLanguageChange }: CodeP
         {isDocumentReady && htmlContent && codeString ? (
           <div
             ref={codeContainerRef}
-            className="code-lines p-4 font-mono text-xs leading-6 [&_.line]:-mx-2 [&_.line]:px-2 [&_.line]:py-0.5 [&_.line]:transition-all [&_pre]:!m-0 [&_pre]:!bg-transparent"
+            className="code-lines p-3 font-mono text-[11px] leading-5 [&_.line]:-mx-1.5 [&_.line]:px-1.5 [&_.line]:py-0.5 [&_.line]:transition-all [&_pre]:!m-0 [&_pre]:!bg-transparent"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
         ) : (
-          <div className="flex h-full items-center justify-center p-5 text-center text-xs text-emerald-100/50">
+          <div className="flex h-full items-center justify-center p-4 text-center text-xs text-emerald-100/50">
             {codeString ? "Loading syntax highlighter…" : "Code example unavailable."}
           </div>
         )}

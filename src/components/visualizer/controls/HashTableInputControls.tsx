@@ -54,86 +54,91 @@ export function HashTableInputControls({
   };
 
   return (
-    <div className="flex flex-col gap-3 text-sm lg:flex-row lg:items-start">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-text-muted">Elements:</span>
+    <div className="flex flex-col gap-2.5 text-sm lg:flex-row lg:items-center lg:gap-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          <span className="font-medium text-text-muted text-xs">Elements:</span>
           <input
             type="range"
             min="1"
             max="15"
             value={size}
             onChange={(event) => setSize(Number(event.target.value))}
-            className="w-24 accent-primary"
+            className="w-20 accent-primary"
             aria-label="Generated elements count"
           />
-          <span className="w-5 text-text-primary">{size}</span>
+          <span className="w-4 text-text-primary text-xs">{size}</span>
         </div>
 
         <div className="flex items-center gap-1">
-          <Button variant="outline" size="sm" onClick={generateRandom}>
-            <Shuffle className="h-4 w-4 text-primary" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 px-2.5 text-xs"
+            onClick={generateRandom}
+          >
+            <Shuffle className="h-3.5 w-3.5 text-primary" />
             Random
           </Button>
         </div>
 
-        <form onSubmit={handleCustomSubmit} className="flex flex-wrap items-center gap-2">
-          <FileEdit className="h-4 w-4 text-text-muted" />
+        <form onSubmit={handleCustomSubmit} className="flex flex-wrap items-center gap-1.5">
+          <FileEdit className="h-3.5 w-3.5 text-text-muted" />
           <Input
             value={customInput}
             onChange={(event) => setCustomInput(event.target.value)}
             placeholder="e.g. 5, 2, 9, 1"
-            className="h-8 w-44"
+            className="h-7 w-36 text-xs"
             aria-label="Custom numeric input"
           />
-          <Button type="submit" size="sm">
+          <Button type="submit" size="sm" className="h-7 px-2.5 text-xs">
             Build
           </Button>
         </form>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 lg:ml-auto">
-        <label className="flex items-center gap-2 text-text-muted border-r border-border pr-3 mr-1">
-          <Database className="h-4 w-4" />
-          Table Size
+      <div className="flex flex-wrap items-center gap-1.5 lg:ml-auto">
+        <label className="flex items-center gap-1.5 text-text-muted text-xs border-r border-border pr-2 mr-0.5">
+          <Database className="h-3.5 w-3.5" />
+          Size
           <Input
             type="number"
             value={options.capacity}
             onChange={(event) => updateOption("capacity", Number(event.target.value))}
-            className="h-8 w-20"
+            className="h-7 w-16 text-xs"
             min={1}
           />
         </label>
 
         {needsValue(slug) && (
-          <label className="flex items-center gap-2 text-text-muted">
-            <Target className="h-4 w-4" />
+          <label className="flex items-center gap-1.5 text-text-muted text-xs">
+            <Target className="h-3.5 w-3.5" />
             Value
             <Input
               type="number"
               value={options.value}
               onChange={(event) => updateOption("value", Number(event.target.value))}
-              className="h-8 w-20"
+              className="h-7 w-16 text-xs"
             />
           </label>
         )}
         {needsTarget(slug) && (
-          <label className="flex items-center gap-2 text-text-muted">
-            <Search className="h-4 w-4" />
+          <label className="flex items-center gap-1.5 text-text-muted text-xs">
+            <Search className="h-3.5 w-3.5" />
             Target
             <Input
               type="number"
               value={options.target}
               onChange={(event) => updateOption("target", Number(event.target.value))}
-              className="h-8 w-20"
+              className="h-7 w-16 text-xs"
             />
           </label>
         )}
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-error/25 bg-error-muted px-3 py-2 text-xs text-error">
-          <AlertCircle className="h-4 w-4" />
+        <div className="flex items-center gap-1.5 rounded-md border border-error/25 bg-error-muted px-2.5 py-1.5 text-xs text-error">
+          <AlertCircle className="h-3.5 w-3.5" />
           {error}
         </div>
       )}

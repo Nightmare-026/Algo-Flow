@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { usePlaybackStore } from "@/stores/playback-store";
 import { GraphVisualState } from "@/visualizers/graph/types";
@@ -112,7 +112,11 @@ export function GraphRenderer() {
   });
 
   return (
-    <div className="flex items-center justify-center w-full h-full relative overflow-hidden bg-bg-surface-light/30 rounded-xl">
+    <div
+      className="flex items-center justify-center w-full h-full relative overflow-hidden bg-bg-surface-light/30 rounded-xl"
+      role="img"
+      aria-label={`${currentStep.title}. Graph simulation with ${dataState.nodes.length} nodes and ${dataState.edges.length} edges`}
+    >
       <ReactFlow
         nodes={reactFlowNodes}
         edges={reactFlowEdges}

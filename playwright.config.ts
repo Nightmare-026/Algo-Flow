@@ -11,6 +11,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: "list",
+  globalSetup: require.resolve("./e2e/global-setup"),
   use: {
     baseURL,
     trace: "retain-on-failure",

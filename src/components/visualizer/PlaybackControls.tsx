@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { usePlaybackStore, getActiveSpeedMs } from "@/stores/playback-store";
 
 const controlClass =
-  "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35";
+  "inline-flex min-h-7 min-w-7 items-center justify-center rounded-md border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35";
 
 export function PlaybackControls() {
   const {
@@ -46,7 +46,7 @@ export function PlaybackControls() {
     }, activeSpeedMs);
 
     return () => window.clearTimeout(timer);
-  }, [activeSpeedMs, isPlaying, nextStep, skipToEnd, currentStepIndex]);
+  }, [activeSpeedMs, isPlaying, nextStep, skipToEnd]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -92,12 +92,40 @@ export function PlaybackControls() {
       } else if (event.key === "r" || event.key === "R") {
         event.preventDefault();
         restart();
+      } else if (event.shiftKey && event.key === "ArrowRight") {
+        event.preventDefault();
+        skipToEnd();
+      } else if (event.key === "p" || event.key === "P") {
+        event.preventDefault();
+        // Practice Mode toggle is handled in VisualizerLayout
+        window.dispatchEvent(new CustomEvent("toggle-practice-mode"));
+      } else if (event.key === "f" || event.key === "F") {
+        event.preventDefault();
+        window.dispatchEvent(new CustomEvent("toggle-fullscreen"));
+      } else if (event.key === "b" || event.key === "B") {
+        event.preventDefault();
+        window.dispatchEvent(new CustomEvent("toggle-bookmark"));
+      } else if (event.key === "s" || event.key === "S") {
+        event.preventDefault();
+        window.dispatchEvent(new CustomEvent("save-session"));
+      } else if (event.key === "1") {
+        event.preventDefault();
+        window.dispatchEvent(new CustomEvent("tab-pseudocode"));
+      } else if (event.key === "2") {
+        event.preventDefault();
+        window.dispatchEvent(new CustomEvent("tab-code"));
+      } else if (event.key === "e" || event.key === "E") {
+        event.preventDefault();
+        window.dispatchEvent(new CustomEvent("tab-explanation"));
+      } else if (event.key === "l" || event.key === "L") {
+        event.preventDefault();
+        window.dispatchEvent(new CustomEvent("tab-log"));
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPlaying, nextStep, pause, play, previousStep, restart, totalSteps]);
+  }, [isPlaying, nextStep, pause, play, previousStep, restart, totalSteps, skipToEnd]);
 
   return (
     <div className="flex items-center gap-1.5" aria-label="Playback controls">
@@ -129,15 +157,16 @@ export function PlaybackControls() {
         type="button"
         onClick={isPlaying ? pause : play}
         disabled={totalSteps === 0}
-        className="mx-0.5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-white shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary-hover active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+        aria-pressed={isPlaying}
+        className="mx-0.5 inline-flex min-h-8 min-w-8 items-center justify-center rounded-lg bg-primary text-white shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary-hover active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
         title={isPlaying ? "Pause" : "Play"}
         aria-label={isPlaying ? "Pause playback" : "Play visualization"}
         aria-keyshortcuts="Space k"
       >
         {isPlaying ? (
-          <Pause className="h-4.5 w-4.5 fill-current" />
+          <Pause className="h-4 w-4 fill-current" />
         ) : (
-          <Play className="ml-0.5 h-4.5 w-4.5 fill-current" />
+          <Play className="ml-0.5 h-4 w-4 fill-current" />
         )}
       </button>
 

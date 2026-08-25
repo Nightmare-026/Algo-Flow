@@ -1,5 +1,10 @@
 import { VisualStep } from "@/types";
-import { createMatrixElements, MatrixElement, MatrixVisualState } from "./types";
+import {
+  createMatrixElements,
+  generateDefaultMatrixB,
+  MatrixElement,
+  MatrixVisualState,
+} from "./types";
 
 // 1. Transpose Matrix
 export function generateTransposeMatrixSteps(
@@ -195,93 +200,132 @@ export function generateRotateMatrixSteps(arr: number[], rows: number, cols: num
   return steps;
 }
 
-// 3. Matrix Multiplication
+// 3. Matrix Multiplication (A × B = C)
 export function generateMatrixMultiplicationSteps(
   arr: number[],
   rows: number,
-  cols: number
+  cols: number,
+  arrB?: number[]
 ): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
-  const elements = createMatrixElements(arr, rows, cols);
+
+  const rowsA = rows;
+  const colsA = cols;
+  const rowsB = cols;
+  const colsB = cols; // Square or rectangular multiplication where result is rowsA x colsB
+
+  const elementsA = createMatrixElements(arr, rowsA, colsA);
+  const dataB =
+    arrB && arrB.length >= rowsB * colsB
+      ? arrB
+      : generateDefaultMatrixB(arr, rowsB, colsB, "matrix-multiplication");
+  const elementsB = createMatrixElements(dataB, rowsB, colsB);
+
+  const resultElements: MatrixElement[] = [];
+  for (let i = 0; i < rowsA; i++) {
+    for (let j = 0; j < colsB; j++) {
+      resultElements.push({
+        id: `res-${i}-${j}`,
+        value: 0,
+        originalRow: i,
+        originalCol: j,
+      });
+    }
+  }
 
   const baseState: MatrixVisualState = {
-    rows,
-    cols,
-    elements: structuredClone(elements),
+    rows: rowsA,
+    cols: colsB,
+    elements: structuredClone(resultElements),
+    matrixA: {
+      label: "Matrix A",
+      rows: rowsA,
+      cols: colsA,
+      elements: structuredClone(elementsA),
+    },
+    matrixB: {
+      label: "Matrix B",
+      rows: rowsB,
+      cols: colsB,
+      elements: structuredClone(elementsB),
+    },
+    resultLabel: "Result (A × B)",
+    operationSymbol: "×",
   };
 
   steps.push({
     id: `step-${stepNumber}`,
     stepNumber,
     title: "Start Multiplication",
-    description: `In a real scenario, this involves two matrices. For demonstration on a single matrix grid, we square this matrix (A * A).`,
+    description: `Multiplying Matrix A (${rowsA}×${colsA}) by Matrix B (${rowsB}×${colsB}). Result Matrix C will have dimensions ${rowsA}×${colsB}.`,
     operation: "Multiplication",
     actionType: "initialize",
     dataState: structuredClone(baseState),
     highlights: {},
-    variables: { r: "-", c: "-" },
+    codeLine: 1,
+    pseudocodeLine: 1,
+    variables: { i: "-", j: "-", k: "-" },
   });
 
-  if (rows !== cols) {
-    stepNumber++;
-    steps.push({
-      id: `step-${stepNumber}`,
-      stepNumber,
-      title: "Error",
-      description: `Can only square a matrix if it's a square matrix (rows == cols). Dimensions: ${rows}x${cols}.`,
-      operation: "Multiplication",
-      actionType: "error",
-      dataState: structuredClone(baseState),
-      highlights: { error: [] },
-      variables: {},
-    });
-    return steps;
-  }
+  const computedResultIds: string[] = [];
 
-  const n = rows;
-  const resultElements: MatrixElement[] = new Array(n * n);
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
-      resultElements[i * n + j] = { id: `res-${i}-${j}`, value: 0, originalRow: i, originalCol: j };
-    }
-  }
-
-  stepNumber++;
-  steps.push({
-    id: `step-${stepNumber}`,
-    stepNumber,
-    title: "Result Matrix Initialized",
-    description: `A new ${n}x${n} result matrix is created (initialized with 0s).`,
-    operation: "Multiplication",
-    actionType: "initialize",
-    dataState: { rows: n, cols: n, elements: structuredClone(resultElements) },
-    highlights: {},
-    variables: { r: "-", c: "-" },
-  });
-
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n; j++) {
+  for (let i = 0; i < rowsA; i++) {
+    for (let j = 0; j < colsB; j++) {
       let sum = 0;
-      for (let k = 0; k < n; k++) {
-        const idxA = i * n + k;
-        const idxB = k * n + j;
+      const terms: string[] = [];
+      const activeAIds: string[] = [];
+      const activeBIds: string[] = [];
 
-        sum += elements[idxA].value * elements[idxB].value;
+      for (let k = 0; k < colsA; k++) {
+        const idxA = i * colsA + k;
+        const idxB = k * colsB + j;
+        const valA = elementsA[idxA].value;
+        const valB = elementsB[idxB].value;
+        sum += valA * valB;
+        terms.push(`(${valA} × ${valB})`);
+        activeAIds.push(elementsA[idxA].id);
+        activeBIds.push(elementsB[idxB].id);
       }
-      const resIdx = i * n + j;
+
+      const resIdx = i * colsB + j;
       resultElements[resIdx].value = sum;
+      computedResultIds.push(resultElements[resIdx].id);
 
       stepNumber++;
       steps.push({
         id: `step-${stepNumber}`,
         stepNumber,
         title: `Compute Result[${i}][${j}]`,
-        description: `Dot product of row ${i} and col ${j} is ${sum}.`,
+        description: `Row ${i} of Matrix A · Column ${j} of Matrix B = ${terms.join(" + ")} = ${sum}. Stored in Result[${i}][${j}].`,
         operation: "Multiplication",
         actionType: "update",
-        dataState: { rows: n, cols: n, elements: structuredClone(resultElements) },
-        highlights: { active: [resultElements[resIdx].id] },
+        dataState: {
+          rows: rowsA,
+          cols: colsB,
+          elements: structuredClone(resultElements),
+          matrixA: {
+            label: "Matrix A",
+            rows: rowsA,
+            cols: colsA,
+            elements: structuredClone(elementsA),
+          },
+          matrixB: {
+            label: "Matrix B",
+            rows: rowsB,
+            cols: colsB,
+            elements: structuredClone(elementsB),
+          },
+          resultLabel: "Result (A × B)",
+          operationSymbol: "×",
+        },
+        highlights: {
+          active: [...activeAIds, ...activeBIds, resultElements[resIdx].id, resIdx.toString()],
+          pointer: [resultElements[resIdx].id],
+          visited: [...computedResultIds],
+        },
+        codeLine: 4,
+        pseudocodeLine: 4,
         variables: { i, j, sum },
       });
     }
@@ -292,87 +336,148 @@ export function generateMatrixMultiplicationSteps(
     id: `step-${stepNumber}`,
     stepNumber,
     title: "Multiplication Complete",
-    description: `Matrix squared successfully.`,
+    description: `Matrix A and Matrix B multiplied successfully into Result Matrix.`,
     operation: "Multiplication",
     actionType: "success",
-    dataState: { rows: n, cols: n, elements: structuredClone(resultElements) },
-    highlights: {},
+    dataState: {
+      rows: rowsA,
+      cols: colsB,
+      elements: structuredClone(resultElements),
+      matrixA: {
+        label: "Matrix A",
+        rows: rowsA,
+        cols: colsA,
+        elements: structuredClone(elementsA),
+      },
+      matrixB: {
+        label: "Matrix B",
+        rows: rowsB,
+        cols: colsB,
+        elements: structuredClone(elementsB),
+      },
+      resultLabel: "Result (A × B)",
+      operationSymbol: "×",
+    },
+    highlights: {
+      success: resultElements.map((e) => e.id),
+    },
+    codeLine: 6,
+    pseudocodeLine: 4,
     variables: { i: "-", j: "-" },
   });
 
   return steps;
 }
 
-// 4. Matrix Addition
+// 4. Matrix Addition (A + B = C)
 export function generateMatrixAdditionSteps(
   arr: number[],
   rows: number,
-  cols: number
+  cols: number,
+  arrB?: number[]
 ): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
-  const elements = createMatrixElements(arr, rows, cols);
+
+  const elementsA = createMatrixElements(arr, rows, cols);
+  const dataB =
+    arrB && arrB.length >= rows * cols
+      ? arrB
+      : generateDefaultMatrixB(arr, rows, cols, "matrix-addition");
+  const elementsB = createMatrixElements(dataB, rows, cols);
+
+  const resultElements: MatrixElement[] = [];
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      resultElements.push({
+        id: `res-${i}-${j}`,
+        value: 0,
+        originalRow: i,
+        originalCol: j,
+      });
+    }
+  }
 
   const baseState: MatrixVisualState = {
     rows,
     cols,
-    elements: structuredClone(elements),
+    elements: structuredClone(resultElements),
+    matrixA: {
+      label: "Matrix A",
+      rows,
+      cols,
+      elements: structuredClone(elementsA),
+    },
+    matrixB: {
+      label: "Matrix B",
+      rows,
+      cols,
+      elements: structuredClone(elementsB),
+    },
+    resultLabel: "Result (A + B)",
+    operationSymbol: "+",
   };
 
   steps.push({
     id: `step-${stepNumber}`,
     stepNumber,
-    title: "Start Addition",
-    description: `In a real scenario, this involves two matrices. For demonstration, we add this matrix to itself (A + A).`,
-    operation: "Addition",
+    title: "Start Matrix Addition",
+    description: `Adding two ${rows}×${cols} matrices: Matrix A and Matrix B. Corresponding elements at (r, c) are added into Result Matrix.`,
+    operation: "Matrix Addition",
     actionType: "initialize",
     dataState: structuredClone(baseState),
     highlights: {},
+    codeLine: 1,
+    pseudocodeLine: 1,
     variables: { r: "-", c: "-" },
   });
 
-  const resultElements: MatrixElement[] = new Array(rows * cols);
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      resultElements[i * cols + j] = {
-        id: `res-${i}-${j}`,
-        value: 0,
-        originalRow: i,
-        originalCol: j,
-      };
-    }
-  }
-
-  stepNumber++;
-  steps.push({
-    id: `step-${stepNumber}`,
-    stepNumber,
-    title: "Result Matrix Initialized",
-    description: `A new ${rows}x${cols} result matrix is created.`,
-    operation: "Addition",
-    actionType: "initialize",
-    dataState: { rows, cols, elements: structuredClone(resultElements) },
-    highlights: {},
-    variables: { r: "-", c: "-" },
-  });
+  const computedResultIds: string[] = [];
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const idx = i * cols + j;
-      const sum = elements[idx].value + elements[idx].value;
+      const valA = elementsA[idx].value;
+      const valB = elementsB[idx].value;
+      const sum = valA + valB;
       resultElements[idx].value = sum;
+      computedResultIds.push(resultElements[idx].id);
 
       stepNumber++;
       steps.push({
         id: `step-${stepNumber}`,
         stepNumber,
         title: `Compute Result[${i}][${j}]`,
-        description: `${elements[idx].value} + ${elements[idx].value} = ${sum}.`,
-        operation: "Addition",
+        description: `Matrix A[${i}][${j}] (${valA}) + Matrix B[${i}][${j}] (${valB}) = ${sum}. Storing in Result[${i}][${j}].`,
+        operation: "Matrix Addition",
         actionType: "update",
-        dataState: { rows, cols, elements: structuredClone(resultElements) },
-        highlights: { active: [resultElements[idx].id] },
-        variables: { i, j, sum },
+        dataState: {
+          rows,
+          cols,
+          elements: structuredClone(resultElements),
+          matrixA: {
+            label: "Matrix A",
+            rows,
+            cols,
+            elements: structuredClone(elementsA),
+          },
+          matrixB: {
+            label: "Matrix B",
+            rows,
+            cols,
+            elements: structuredClone(elementsB),
+          },
+          resultLabel: "Result (A + B)",
+          operationSymbol: "+",
+        },
+        highlights: {
+          active: [elementsA[idx].id, elementsB[idx].id, resultElements[idx].id, idx.toString()],
+          pointer: [elementsA[idx].id, elementsB[idx].id, resultElements[idx].id],
+          visited: [...computedResultIds],
+        },
+        codeLine: 4,
+        pseudocodeLine: 4,
+        variables: { r: i, c: j, "A[r][c]": valA, "B[r][c]": valB, sum },
       });
     }
   }
@@ -382,87 +487,148 @@ export function generateMatrixAdditionSteps(
     id: `step-${stepNumber}`,
     stepNumber,
     title: "Addition Complete",
-    description: `Matrix doubled successfully.`,
-    operation: "Addition",
+    description: `Matrix A and Matrix B added successfully into Result Matrix.`,
+    operation: "Matrix Addition",
     actionType: "success",
-    dataState: { rows, cols, elements: structuredClone(resultElements) },
-    highlights: {},
-    variables: { i: "-", j: "-" },
+    dataState: {
+      rows,
+      cols,
+      elements: structuredClone(resultElements),
+      matrixA: {
+        label: "Matrix A",
+        rows,
+        cols,
+        elements: structuredClone(elementsA),
+      },
+      matrixB: {
+        label: "Matrix B",
+        rows,
+        cols,
+        elements: structuredClone(elementsB),
+      },
+      resultLabel: "Result (A + B)",
+      operationSymbol: "+",
+    },
+    highlights: {
+      success: resultElements.map((e) => e.id),
+    },
+    codeLine: 6,
+    pseudocodeLine: 4,
+    variables: { r: "-", c: "-" },
   });
 
   return steps;
 }
 
-// 5. Matrix Subtraction
+// 5. Matrix Subtraction (A − B = C)
 export function generateMatrixSubtractionSteps(
   arr: number[],
   rows: number,
-  cols: number
+  cols: number,
+  arrB?: number[]
 ): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
-  const elements = createMatrixElements(arr, rows, cols);
+
+  const elementsA = createMatrixElements(arr, rows, cols);
+  const dataB =
+    arrB && arrB.length >= rows * cols
+      ? arrB
+      : generateDefaultMatrixB(arr, rows, cols, "matrix-subtraction");
+  const elementsB = createMatrixElements(dataB, rows, cols);
+
+  const resultElements: MatrixElement[] = [];
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      resultElements.push({
+        id: `res-${i}-${j}`,
+        value: 0,
+        originalRow: i,
+        originalCol: j,
+      });
+    }
+  }
 
   const baseState: MatrixVisualState = {
     rows,
     cols,
-    elements: structuredClone(elements),
+    elements: structuredClone(resultElements),
+    matrixA: {
+      label: "Matrix A",
+      rows,
+      cols,
+      elements: structuredClone(elementsA),
+    },
+    matrixB: {
+      label: "Matrix B",
+      rows,
+      cols,
+      elements: structuredClone(elementsB),
+    },
+    resultLabel: "Result (A − B)",
+    operationSymbol: "−",
   };
 
   steps.push({
     id: `step-${stepNumber}`,
     stepNumber,
-    title: "Start Subtraction",
-    description: `In a real scenario, this involves two matrices. For demonstration, we subtract this matrix from itself (A - A), resulting in a zero matrix.`,
-    operation: "Subtraction",
+    title: "Start Matrix Subtraction",
+    description: `Subtracting Matrix B (${rows}×${cols}) from Matrix A (${rows}×${cols}). Elements at (r, c) are subtracted into Result Matrix.`,
+    operation: "Matrix Subtraction",
     actionType: "initialize",
     dataState: structuredClone(baseState),
     highlights: {},
+    codeLine: 1,
+    pseudocodeLine: 1,
     variables: { r: "-", c: "-" },
   });
 
-  const resultElements: MatrixElement[] = new Array(rows * cols);
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      resultElements[i * cols + j] = {
-        id: `res-${i}-${j}`,
-        value: 0,
-        originalRow: i,
-        originalCol: j,
-      };
-    }
-  }
-
-  stepNumber++;
-  steps.push({
-    id: `step-${stepNumber}`,
-    stepNumber,
-    title: "Result Matrix Initialized",
-    description: `A new ${rows}x${cols} result matrix is created.`,
-    operation: "Subtraction",
-    actionType: "initialize",
-    dataState: { rows, cols, elements: structuredClone(resultElements) },
-    highlights: {},
-    variables: { r: "-", c: "-" },
-  });
+  const computedResultIds: string[] = [];
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const idx = i * cols + j;
-      const diff = elements[idx].value - elements[idx].value;
+      const valA = elementsA[idx].value;
+      const valB = elementsB[idx].value;
+      const diff = valA - valB;
       resultElements[idx].value = diff;
+      computedResultIds.push(resultElements[idx].id);
 
       stepNumber++;
       steps.push({
         id: `step-${stepNumber}`,
         stepNumber,
         title: `Compute Result[${i}][${j}]`,
-        description: `${elements[idx].value} - ${elements[idx].value} = ${diff}.`,
-        operation: "Subtraction",
+        description: `Matrix A[${i}][${j}] (${valA}) − Matrix B[${i}][${j}] (${valB}) = ${diff}. Storing in Result[${i}][${j}].`,
+        operation: "Matrix Subtraction",
         actionType: "update",
-        dataState: { rows, cols, elements: structuredClone(resultElements) },
-        highlights: { active: [resultElements[idx].id] },
-        variables: { i, j, diff },
+        dataState: {
+          rows,
+          cols,
+          elements: structuredClone(resultElements),
+          matrixA: {
+            label: "Matrix A",
+            rows,
+            cols,
+            elements: structuredClone(elementsA),
+          },
+          matrixB: {
+            label: "Matrix B",
+            rows,
+            cols,
+            elements: structuredClone(elementsB),
+          },
+          resultLabel: "Result (A − B)",
+          operationSymbol: "−",
+        },
+        highlights: {
+          active: [elementsA[idx].id, elementsB[idx].id, resultElements[idx].id, idx.toString()],
+          pointer: [elementsA[idx].id, elementsB[idx].id, resultElements[idx].id],
+          visited: [...computedResultIds],
+        },
+        codeLine: 4,
+        pseudocodeLine: 4,
+        variables: { r: i, c: j, "A[r][c]": valA, "B[r][c]": valB, diff },
       });
     }
   }
@@ -472,12 +638,34 @@ export function generateMatrixSubtractionSteps(
     id: `step-${stepNumber}`,
     stepNumber,
     title: "Subtraction Complete",
-    description: `Matrix subtracted successfully.`,
-    operation: "Subtraction",
+    description: `Matrix B subtracted from Matrix A successfully into Result Matrix.`,
+    operation: "Matrix Subtraction",
     actionType: "success",
-    dataState: { rows, cols, elements: structuredClone(resultElements) },
-    highlights: {},
-    variables: { i: "-", j: "-" },
+    dataState: {
+      rows,
+      cols,
+      elements: structuredClone(resultElements),
+      matrixA: {
+        label: "Matrix A",
+        rows,
+        cols,
+        elements: structuredClone(elementsA),
+      },
+      matrixB: {
+        label: "Matrix B",
+        rows,
+        cols,
+        elements: structuredClone(elementsB),
+      },
+      resultLabel: "Result (A − B)",
+      operationSymbol: "−",
+    },
+    highlights: {
+      success: resultElements.map((e) => e.id),
+    },
+    codeLine: 6,
+    pseudocodeLine: 4,
+    variables: { r: "-", c: "-" },
   });
 
   return steps;

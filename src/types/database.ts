@@ -1,4 +1,4 @@
-﻿export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 type TableDefinition<Row, Insert, Update = Partial<Insert>, Relationships = []> = {
   Row: Row;
@@ -100,6 +100,46 @@ type UserStreakRow = {
   last_activity_date: string | null;
   max_streak: number | null;
   user_id: string;
+};
+
+type MentalMathSessionRow = {
+  id: string;
+  user_id: string;
+  mode: string;
+  operation: string;
+  difficulty: string;
+  total_questions: number;
+  correct_count: number;
+  accuracy_percentage: number;
+  total_time_ms: number;
+  average_solve_time_ms: number;
+  final_score: number;
+  max_combo: number;
+  hints_used: number;
+  score_version: string;
+  generator_version: string;
+  created_at: string | null;
+};
+
+type MentalMathDailyAttemptRow = {
+  id: string;
+  user_id: string;
+  challenge_date: string;
+  score: number;
+  accuracy: number;
+  solve_time_ms: number;
+  verified: boolean | null;
+  created_at: string | null;
+};
+
+type MentalMathMasteryRow = {
+  user_id: string;
+  operation: string;
+  mastery_level: number;
+  total_attempts: number;
+  total_correct: number;
+  accuracy: number;
+  updated_at: string | null;
 };
 
 export type Database = {
@@ -240,6 +280,52 @@ export type Database = {
           current_streak?: number | null;
           last_activity_date?: string | null;
           max_streak?: number | null;
+          user_id: string;
+        }
+      >;
+      mental_math_sessions: TableDefinition<
+        MentalMathSessionRow,
+        {
+          accuracy_percentage: number;
+          average_solve_time_ms: number;
+          correct_count: number;
+          created_at?: string | null;
+          difficulty: string;
+          final_score: number;
+          generator_version?: string;
+          hints_used?: number;
+          id?: string;
+          max_combo?: number;
+          mode: string;
+          operation: string;
+          score_version?: string;
+          total_questions: number;
+          total_time_ms: number;
+          user_id: string;
+        }
+      >;
+      mental_math_daily_attempts: TableDefinition<
+        MentalMathDailyAttemptRow,
+        {
+          accuracy: number;
+          challenge_date: string;
+          created_at?: string | null;
+          id?: string;
+          score: number;
+          solve_time_ms: number;
+          user_id: string;
+          verified?: boolean | null;
+        }
+      >;
+      mental_math_mastery: TableDefinition<
+        MentalMathMasteryRow,
+        {
+          accuracy?: number;
+          mastery_level?: number;
+          operation: string;
+          total_attempts?: number;
+          total_correct?: number;
+          updated_at?: string | null;
           user_id: string;
         }
       >;

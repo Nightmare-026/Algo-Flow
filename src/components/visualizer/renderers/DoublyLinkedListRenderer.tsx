@@ -36,7 +36,11 @@ export function DoublyLinkedListRenderer() {
   const unlinkedNodes = dataState.nodes.filter((node) => !visited.has(node.id));
 
   return (
-    <div className="flex items-center justify-center w-full h-full p-8 relative overflow-hidden">
+    <div
+      className="flex items-center justify-center w-full h-full p-8 relative overflow-hidden"
+      role="img"
+      aria-label={`${currentStep.title}. Doubly linked list values: ${orderedNodes.map((n) => n.value).join(" <-> ")}`}
+    >
       <div className="flex flex-wrap items-center justify-center gap-y-16 gap-x-2 max-w-full">
         <AnimatePresence mode="popLayout">
           {/* Leading null indicator for head.prev */}

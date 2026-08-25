@@ -58,56 +58,56 @@ export function TreeInputControls({
   const showValue = slug.includes("insert");
 
   return (
-    <div className="flex flex-col gap-3 text-sm lg:flex-row lg:items-start">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-col gap-2.5 text-sm lg:flex-row lg:items-center lg:gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         <Button
           onClick={() => setIsEditorOpen(true)}
           variant="outline"
           size="sm"
-          className="border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary"
+          className="h-7 px-3 text-xs border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary"
         >
-          <Network className="h-4 w-4 mr-2" /> Edit Custom Tree
+          <Network className="h-3.5 w-3.5 mr-1.5" /> Edit Tree
         </Button>
 
         {showTarget && (
-          <form onSubmit={handleTargetSubmit} className="flex flex-wrap items-center gap-2">
-            <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
-              <span className="text-text-muted font-medium">Target:</span>
+          <form onSubmit={handleTargetSubmit} className="flex items-center gap-1.5">
+            <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
+              <span className="text-text-muted font-medium text-xs">Target:</span>
               <Input
                 type="number"
-                className="w-16 h-7 border-border bg-bg-base px-2 py-0"
+                className="w-14 h-7 border-border bg-bg-base px-2 py-0 text-xs"
                 value={targetInput}
                 onChange={(e) => setTargetInput(e.target.value)}
               />
             </label>
-            <Button type="submit" variant="secondary" size="sm">
-              <Target className="h-4 w-4 mr-1" /> Set Target
+            <Button type="submit" variant="secondary" size="sm" className="h-7 px-3 text-xs">
+              <Target className="h-3.5 w-3.5 mr-1" /> Set
             </Button>
           </form>
         )}
 
         {showValue && (
-          <form onSubmit={handleValueSubmit} className="flex flex-wrap items-center gap-2">
-            <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
-              <span className="text-text-muted font-medium">Value:</span>
+          <form onSubmit={handleValueSubmit} className="flex items-center gap-1.5">
+            <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
+              <span className="text-text-muted font-medium text-xs">Value:</span>
               <Input
                 type="number"
-                className="w-16 h-7 border-border bg-bg-base px-2 py-0"
+                className="w-14 h-7 border-border bg-bg-base px-2 py-0 text-xs"
                 value={valInput}
                 onChange={(e) => setValInput(e.target.value)}
               />
             </label>
 
-            <Button type="submit" variant="secondary" size="sm">
-              <HardDriveDownload className="h-4 w-4 mr-1" /> Set Value
+            <Button type="submit" variant="secondary" size="sm" className="h-7 px-3 text-xs">
+              <HardDriveDownload className="h-3.5 w-3.5 mr-1" /> Set
             </Button>
           </form>
         )}
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-error text-sm font-medium animate-in fade-in slide-in-from-top-1 ml-auto">
-          <AlertCircle className="h-4 w-4" />
+        <div className="flex items-center gap-1.5 text-error text-xs font-medium animate-in fade-in slide-in-from-top-1 lg:ml-auto">
+          <AlertCircle className="h-3.5 w-3.5" />
           {error}
         </div>
       )}

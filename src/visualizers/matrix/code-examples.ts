@@ -654,7 +654,12 @@ export function getMatrixCodeExamples(slug: string, algorithmId: string): CodeEx
           language: "python",
           isPrimary: false,
           code: `def matrix_addition(A, B):
-    return [[A[r][c] + B[r][c] for c in range(len(A[0]))] for r in range(len(A))]`,
+    rows, cols = len(A), len(A[0])
+    result = [[0] * cols for _ in range(rows)]
+    for r in range(rows):
+        for c in range(cols):
+            result[r][c] = A[r][c] + B[r][c]
+    return result`,
           explanation: "Adds corresponding elements of two matrices.",
         },
         {
@@ -718,7 +723,12 @@ export function getMatrixCodeExamples(slug: string, algorithmId: string): CodeEx
           language: "python",
           isPrimary: false,
           code: `def matrix_subtraction(A, B):
-    return [[A[r][c] - B[r][c] for c in range(len(A[0]))] for r in range(len(A))]`,
+    rows, cols = len(A), len(A[0])
+    result = [[0] * cols for _ in range(rows)]
+    for r in range(rows):
+        for c in range(cols):
+            result[r][c] = A[r][c] - B[r][c]
+    return result`,
           explanation: "Subtracts corresponding elements of two matrices.",
         },
         {

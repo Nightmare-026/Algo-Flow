@@ -75,15 +75,15 @@ export function StringInputControls({
   };
 
   return (
-    <div className="flex flex-col gap-3 text-sm lg:flex-row lg:items-start">
-      <div className="flex flex-wrap items-center gap-3">
-        <form onSubmit={handleCustomSubmit} className="flex flex-wrap items-center gap-2">
-          <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
-            <Type className="h-4 w-4 text-primary" />
-            <span className="text-text-muted font-medium">Text:</span>
+    <div className="flex flex-col gap-2.5 text-sm lg:flex-row lg:items-center lg:gap-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <form onSubmit={handleCustomSubmit} className="flex flex-wrap items-center gap-1.5">
+          <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
+            <Type className="h-3.5 w-3.5 text-primary" />
+            <span className="text-text-muted font-medium text-xs">Text:</span>
             <Input
               type="text"
-              className="w-32 h-7 border-border bg-bg-base px-2 py-0 font-mono"
+              className="w-28 h-7 border-border bg-bg-base px-2 py-0 font-mono text-xs"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
               placeholder="Text…"
@@ -93,12 +93,12 @@ export function StringInputControls({
           </label>
 
           {needsPattern(slug) && (
-            <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1 bg-bg-surface/50">
-              <Target className="h-4 w-4 text-primary" />
-              <span className="text-text-muted font-medium">Pattern:</span>
+            <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
+              <Target className="h-3.5 w-3.5 text-primary" />
+              <span className="text-text-muted font-medium text-xs">Pattern:</span>
               <Input
                 type="text"
-                className="w-20 h-7 border-border bg-bg-base px-2 py-0 font-mono"
+                className="w-18 h-7 border-border bg-bg-base px-2 py-0 font-mono text-xs"
                 value={patternInput}
                 onChange={(e) => setPatternInput(e.target.value)}
                 placeholder="Pattern…"
@@ -108,18 +108,28 @@ export function StringInputControls({
             </label>
           )}
 
-          <Button type="submit" variant="secondary" size="sm">
-            <FileEdit className="h-4 w-4" />
+          <Button type="submit" variant="secondary" size="sm" className="h-7 px-3 text-xs">
+            <FileEdit className="h-3.5 w-3.5" />
             Set
           </Button>
         </form>
 
         <div className="flex items-center gap-1">
-          <Button variant="outline" size="sm" onClick={generateRandom}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 px-2.5 text-xs"
+            onClick={generateRandom}
+          >
             Random
           </Button>
           {!needsPattern(slug) && (
-            <Button variant="outline" size="sm" onClick={generatePalindrome}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 px-2.5 text-xs"
+              onClick={generatePalindrome}
+            >
               Palindrome
             </Button>
           )}
@@ -131,9 +141,9 @@ export function StringInputControls({
           id="string-input-error"
           role="alert"
           aria-live="polite"
-          className="ml-auto flex items-center gap-2 text-sm font-medium text-error animate-in fade-in slide-in-from-top-1"
+          className="flex items-center gap-1.5 text-xs font-medium text-error animate-in fade-in slide-in-from-top-1 lg:ml-auto"
         >
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="h-3.5 w-3.5" />
           {error}
         </div>
       )}

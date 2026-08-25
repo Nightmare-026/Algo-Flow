@@ -5,11 +5,11 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
-  CheckCircle2,
   Trophy,
-  XCircle,
   RotateCcw,
   Compass,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import { Algorithm } from "@/types";
 import { QuestionData } from "@/data/seed/questions";
@@ -54,12 +54,8 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
   const handleSelect = (index: number) => {
     if (isAnswered) return;
     setSelectedOption(index);
-  };
-
-  const handleCheck = () => {
-    if (selectedOption === null) return;
     setIsAnswered(true);
-    if (selectedOption === correctOptionIndex) {
+    if (index === correctOptionIndex) {
       setScore((s) => s + 1);
     }
   };
@@ -71,8 +67,7 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
       setIsAnswered(false);
     } else {
       setIsSubmitting(true);
-      const finalScore = score + (selectedOption === correctOptionIndex ? 1 : 0);
-      await submitQuizAttempt(algorithm.id, finalScore, questions.length);
+      await submitQuizAttempt(algorithm.id, score, questions.length);
       setIsFinished(true);
       setIsSubmitting(false);
     }
@@ -241,21 +236,15 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
 
         {/* Action Button Footer */}
         <footer className="mt-8 flex justify-end border-t border-border pt-4">
-          {!isAnswered ? (
-            <Button onClick={handleCheck} disabled={selectedOption === null} size="lg">
-              Check Answer
-            </Button>
-          ) : (
-            <Button
-              onClick={handleNext}
-              disabled={isSubmitting}
-              size="lg"
-              className="w-full sm:w-auto"
-            >
-              {currentIndex < questions.length - 1 ? "Next Question" : "Finish Quiz"}
-              <ArrowRight className="ml-1.5 h-4 w-4" />
-            </Button>
-          )}
+          <Button
+            onClick={handleNext}
+            disabled={isSubmitting || !isAnswered}
+            size="lg"
+            className="w-full sm:w-auto"
+          >
+            {currentIndex < questions.length - 1 ? "Next Question" : "Finish Quiz"}
+            <ArrowRight className="ml-1.5 h-4 w-4" />
+          </Button>
         </footer>
       </div>
     </div>

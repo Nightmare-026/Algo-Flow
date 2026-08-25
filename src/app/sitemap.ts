@@ -7,7 +7,21 @@ const lastModified = new Date();
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const staticRoutes = ["", "/visualizers", "/privacy", "/terms", "/login", "/signup"];
+  const staticRoutes = [
+    "",
+    "/visualizers",
+    "/privacy",
+    "/terms",
+    "/login",
+    "/signup",
+    "/mental-math",
+    "/mental-math/practice",
+    "/mental-math/speed",
+    "/mental-math/test",
+    "/mental-math/daily",
+    "/mental-math/leaderboard",
+    "/mental-math/progress",
+  ];
   const structureRoutes = dataStructures
     .filter((structure) => structure.isPublished)
     .map((structure) => `/visualizers/${structure.slug}`);

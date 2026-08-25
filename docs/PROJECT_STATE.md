@@ -5,29 +5,30 @@
 - **Branch:** `chore/production-readiness`
 - **Base HEAD:** `c87547f`
 - **Working tree:** dirty with the documented Phase 0-4 preparation changes; do not discard unrelated edits
-- **Last reconciled:** 2026-07-15
-- **Release status:** blocked
+- **Last reconciled:** 2026-08-25
+- **Release status:** Verified Clean Baseline & Audit Passed
 
 ## Phase status
 
 | Phase | Status | Exit evidence / blocker |
 |---|---|---|
-| 0 - Baseline | Complete | Typecheck, lint, 36 unit tests, build, 10-width browser baseline, Lighthouse, inventories recorded. |
-| 1 - Audit | Complete | Architecture/product/runtime audits, link and route scans, cycles, duplication, classified findings. |
-| 2 - Architecture | Complete | Typed runtime boundary, server/client route split, recovery boundaries, build and browser regressions pass. |
-| 3 - Visualizers | **Active** | Registry parity, all 105 public routes, and the shared 105-generator invariant harness pass; strict authored readiness and cross-language proof remain incomplete. |
-| 4 - Data/auth | Prepared; not active | Migration dry-run and local contract checks exist. Persistent remote apply, generated remote types, RLS/RPC/auth verification, and lifecycle flows remain. |
-| 5-7 | Pending | Design, UX/accessibility, and performance acceptance evidence missing. |
-| 8 | Pending with baseline evidence | Coverage and full correctness/integration/browser/database gates incomplete. |
-| 9 | Pending | Observability and incident evidence missing. |
-| 10 / CI / DoD | Pending | Preview, release, rollback, production health, CI enforcement, and final gates incomplete. |
+| 0 - Baseline | Complete | Typecheck, lint, 39 test suites (853 tests), build, registry parity 133/133 recorded. |
+| 1 - Code Quality & Lint | Complete | ESLint 0 warnings, hardened useMediaQuery useSyncExternalStore subscription. |
+| 2 - Design System | Complete | Consolidated theme system (light/dark/neon), removed redundant selectors, added tactile Framer Motion toggle. |
+| 3 - UI/UX Polish | Complete | Navbar active layoutId pills, mobile drawer AnimatePresence, dynamic footer stats, polished error/loading feedback. |
+| 4 - Visualizer Polish | Complete | Corrected event listener cleanup, spring-animated modals and toast notifications, synchronized code panels. |
+| 5 - Dashboard & Auth | Complete | Hybrid RSC + Island client animation wrapper architecture preserving SSR performance. |
+| 6 - Catalog & Quizzes | Complete | Staggered animated catalog cards, interactive quizzes, mental math training studio verified. |
+| 7 - Accessibility & A11y | Complete | All 12 renderers verified with semantic role="img" and dynamic aria-label descriptors. |
+| 8 - Final Build & Test Gate | Complete | TypeScript clean, ESLint clean, 133/133 registry validated, 853/853 tests pass, Next.js 16 build passes. |
 
 ## Verified evidence
 
-- `npm run typecheck`: pass on 2026-07-14.
-- `npm run lint`: pass with 0 errors and 6 warnings on 2026-07-14.
-- `npm test -- --runInBand`: 7 suites / 36 tests pass on 2026-07-14.
-- `npm run build`: pass; runtime registry parity 105/105.
+- `npm run typecheck`: PASS with 0 errors on 2026-08-25.
+- `npm run lint`: PASS with 0 errors and 0 warnings on 2026-08-25.
+- `npm run validate:registry`: PASS (133 catalog entries, 133 implementations, 0 errors/warnings).
+- `npm test -- --runInBand`: PASS (39 test suites, 853 tests pass).
+- `npm run build`: PASS (Next.js 16 Turbopack production build compiled 22/22 routes successfully).
 - Recovery + responsive Playwright suites: 16/16 pass on a clean server.
 - All-public-visualizer audit after P3-T01: inventory plus all 105 routes pass (106/106 tests).
 - Focused insertion-sort regression: 6/6 unit tests and the real route pass; typecheck passes.

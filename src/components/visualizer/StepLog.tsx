@@ -20,8 +20,8 @@ export function StepLog() {
 
   if (steps.length === 0) {
     return (
-      <div className="flex h-full items-center justify-center rounded-2xl border border-border bg-surface p-6 text-sm text-text-muted">
-        <ListChecks className="mr-2 h-4 w-4" />
+      <div className="flex h-full items-center justify-center rounded-xl border border-border bg-surface p-4 text-sm text-text-muted">
+        <ListChecks className="mr-2 h-3.5 w-3.5" />
         Generate steps to inspect the execution log.
       </div>
     );
@@ -30,9 +30,9 @@ export function StepLog() {
   return (
     <div
       ref={containerRef}
-      className="h-full overflow-auto rounded-2xl border border-border bg-surface p-3"
+      className="h-full overflow-auto rounded-xl border border-border bg-surface p-2"
     >
-      <ol className="space-y-2">
+      <ol className="space-y-1">
         {steps.map((step, index) => {
           const isCurrent = index === currentStepIndex;
           return (
@@ -43,21 +43,23 @@ export function StepLog() {
                 onClick={() => goToStep(index)}
                 aria-current={isCurrent ? "step" : undefined}
                 className={cn(
-                  "w-full rounded-xl border p-3 text-left transition-all duration-150 cursor-pointer select-none",
+                  "w-full rounded-lg border p-2 text-left transition-all duration-150 cursor-pointer select-none",
                   isCurrent
                     ? "border-primary/40 bg-primary-muted text-primary shadow-[var(--shadow-inset)]"
                     : "border-border bg-surface text-text-secondary hover:border-border-hover hover:text-text-primary"
                 )}
               >
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
                     Step {step.stepNumber}
                   </span>
-                  <span className="rounded-md border border-border bg-surface px-2 py-0.5 text-[10px] font-mono font-bold uppercase text-text-muted">
+                  <span className="rounded border border-border bg-surface px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase text-text-muted">
                     {step.actionType}
                   </span>
                 </div>
-                <p className="mt-1 text-xs font-semibold leading-snug line-clamp-1">{step.title}</p>
+                <p className="mt-0.5 text-xs font-semibold leading-snug line-clamp-1">
+                  {step.title}
+                </p>
               </button>
             </li>
           );

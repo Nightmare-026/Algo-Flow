@@ -30,7 +30,7 @@ export const arrayTraversalCodeLineMappings = {
     },
     {
       logicalLine: 6,
-      lines: { javascript: 3, python: 2, cpp: 3, java: 3 },
+      lines: { javascript: 2, python: 2, cpp: 2, java: 2 },
     },
   ],
   "reverse-traversal": [
@@ -44,7 +44,7 @@ export const arrayTraversalCodeLineMappings = {
     },
     {
       logicalLine: 6,
-      lines: { javascript: 3, python: 2, cpp: 3, java: 3 },
+      lines: { javascript: 2, python: 2, cpp: 2, java: 2 },
     },
   ],
   "range-traversal": [
@@ -66,7 +66,7 @@ export const arrayTraversalCodeLineMappings = {
     },
     {
       logicalLine: 8,
-      lines: { javascript: 3, python: 2, cpp: 3, java: 3 },
+      lines: { javascript: 2, python: 2, cpp: 2, java: 2 },
     },
   ],
 } as const satisfies Record<string, ReadonlyArray<CodeLineMapping>>;
@@ -75,7 +75,7 @@ export const arraySearchCodeLineMappings = {
   "linear-search": [
     { logicalLine: 2, lines: { javascript: 1, python: 1, cpp: 1, java: 1 } },
     { logicalLine: 4, lines: { javascript: 2, python: 2, cpp: 2, java: 2 } },
-    { logicalLine: 5, lines: { javascript: 3, python: 4, cpp: 3, java: 3 } },
+    { logicalLine: 5, lines: { javascript: 3, python: 3, cpp: 3, java: 3 } },
     { logicalLine: 8, lines: { javascript: 5, python: 5, cpp: 5, java: 5 } },
   ],
   "binary-search": [
@@ -117,20 +117,20 @@ function line(
 
 export const arraySortCodeLineMappings = {
   "bubble-sort": [
-    line(2, 2, 2, 2, 2),
-    line(6, 6, 6, 6, 6),
-    line(8, 7, 7, 7, 8),
-    line(13, 11, 9, 11, 13),
-    line(16, 13, 10, 14, 16),
+    line(2, 3, 3, 4, 4),
+    line(6, 6, 6, 7, 7),
+    line(8, 7, 7, 8, 9),
+    line(13, 11, 9, 12, 14),
+    line(16, 13, 10, 1, 1),
   ],
   "selection-sort": [
     line(2, 2, 2, 3, 3),
     line(4, 3, 3, 4, 4),
     line(6, 4, 4, 5, 5),
     line(7, 5, 5, 6, 6),
-    line(10, 7, 7, 8, 8),
-    line(12, 8, 8, 9, 13),
-    line(14, 9, 9, 10, 14),
+    line(10, 7, 8, 8, 8),
+    line(12, 7, 8, 8, 8),
+    line(14, 9, 9, 1, 1),
   ],
   "insertion-sort": [
     line(2, 2, 2, 3, 3),
@@ -138,7 +138,7 @@ export const arraySortCodeLineMappings = {
     line(6, 5, 5, 6, 6),
     line(8, 6, 6, 7, 7),
     line(10, 9, 8, 10, 10),
-    line(14, 11, 9, 12, 12),
+    line(14, 11, 9, 1, 1),
   ],
   "merge-sort": [
     line(2, 1, 1, 1, 1),
@@ -150,7 +150,7 @@ export const arraySortCodeLineMappings = {
     line(25, 9, 10, 10, 10),
     line(29, 10, 13, 11, 11),
     line(31, 12, 18, 15, 15),
-    line(35, 13, 18, 16, 16),
+    line(35, 12, 18, 1, 1),
   ],
   "quick-sort": [
     line(2, 1, 1, 1, 1),
@@ -158,7 +158,7 @@ export const arraySortCodeLineMappings = {
     line(11, 5, 5, 5, 5),
     line(13, 6, 6, 6, 6),
     line(18, 8, 8, 8, 9),
-    line(25, 16, 12, 16, 20),
+    line(25, 15, 12, 1, 1),
   ],
   "heap-sort": [
     line(2, 10, 9, 10, 10),
@@ -167,22 +167,22 @@ export const arraySortCodeLineMappings = {
     line(13, 7, 7, 7, 7),
     line(18, 14, 13, 14, 14),
     line(20, 15, 14, 15, 15),
-    line(23, 17, 15, 17, 17),
-    line(25, 18, 15, 17, 17),
+    line(23, 16, 14, 16, 16),
+    line(25, 16, 14, 1, 1),
   ],
   "counting-sort": [
     line(2, 1, 1, 1, 1),
     line(5, 2, 2, 2, 2),
     line(7, 4, 4, 4, 4),
     line(12, 8, 8, 8, 8),
-    line(15, 12, 11, 12, 12),
+    line(15, 11, 10, 1, 1),
   ],
   "radix-sort": [
     line(2, 11, 11, 11, 11),
     line(5, 12, 11, 11, 11),
     line(8, 13, 12, 12, 12),
     line(12, 14, 13, 13, 13),
-    line(18, 16, 16, 16, 16),
+    line(18, 15, 15, 1, 1),
   ],
 } as const satisfies Record<string, ReadonlyArray<CodeLineMapping>>;
 export const arrayInsertionCodeLineMappings = {
@@ -252,7 +252,7 @@ export const arrayOperationCodeLineMappings = {
     line(1, 2, 2, 2, 2),
     line(4, 3, 3, 3, 3),
     line(5, 4, 4, 4, 4),
-    line(8, 6, 5, 5, 6),
+    line(8, 7, 5, 6, 7),
   ],
   "left-rotation": [
     line(1, 2, 2, 2, 2),

@@ -15,16 +15,16 @@ export const treeCodeLineMappings = {
     line(3, 3, 3, 3, 3),
     line(5, 4, 3, 4, 4),
     line(6, 5, 4, 5, 5),
-    line(8, 7, 5, 7, 7),
+    line(8, 1, 1, 1, 1),
   ],
-  "preorder-traversal": [line(1, 1, 1, 1, 1), line(2, 2, 2, 2, 2), line(8, 7, 5, 7, 7)],
+  "preorder-traversal": [line(1, 1, 1, 1, 1), line(2, 2, 2, 2, 2), line(8, 1, 1, 1, 1)],
   "postorder-traversal": [
     line(1, 1, 1, 1, 1),
     line(2, 2, 2, 2, 2),
     line(6, 5, 4, 5, 5),
-    line(8, 7, 5, 7, 7),
+    line(8, 1, 1, 1, 1),
   ],
-  "level-order-traversal": [line(1, 2, 2, 2, 2), line(4, 5, 4, 5, 5), line(8, 9, 7, 10, 10)],
+  "level-order-traversal": [line(1, 2, 2, 2, 2), line(4, 5, 4, 5, 5), line(8, 2, 2, 2, 2)],
   "bst-insertion": [
     line(1, 1, 1, 1, 1),
     line(4, 4, 4, 4, 4),
@@ -36,7 +36,7 @@ export const treeCodeLineMappings = {
     line(3, 3, 3, 3, 3),
     line(4, 4, 4, 4, 4),
     line(6, 5, 5, 5, 5),
-    line(8, 6, 5, 6, 6),
+    line(8, 5, 5, 5, 5),
     line(11, 8, 6, 8, 8),
   ],
   "heap-insert": [
@@ -44,7 +44,7 @@ export const treeCodeLineMappings = {
     line(2, 3, 3, 3, 3),
     line(4, 5, 5, 5, 5),
     line(5, 6, 6, 6, 6),
-    line(6, 9, 7, 9, 11),
+    line(6, 6, 6, 6, 6),
   ],
   "trie-insert-word": [line(3, 4, 4, 4, 4), line(5, 7, 6, 7, 7)],
   "build-segment-tree": [line(1, 2, 2, 2, 2), line(4, 6, 5, 6, 6)],
@@ -59,7 +59,7 @@ export const treeCodeLineMappings = {
     line(8, 8, 8, 8, 8),
     line(10, 10, 10, 10, 10),
     line(11, 11, 11, 11, 11),
-    line(13, 12, 12, 12, 12),
+    line(13, 11, 11, 11, 11),
   ],
   "avl-rotations": [
     line(1, 1, 1, 1, 1),
@@ -73,7 +73,7 @@ export const treeCodeLineMappings = {
     line(4, 4, 4, 4, 4),
     line(6, 8, 8, 8, 8),
     line(8, 11, 11, 11, 11),
-    line(10, 13, 13, 13, 13),
+    line(10, 12, 12, 12, 12),
   ],
   heapify: [
     line(1, 2, 2, 2, 2),
@@ -82,5 +82,5 @@ export const treeCodeLineMappings = {
     line(7, 12, 10, 10, 10),
     line(9, 3, 2, 11, 11),
   ],
-  "trie-search": [line(1, 1, 1, 1, 1), line(3, 4, 4, 4, 4), line(5, 6, 6, 6, 6)],
+  "trie-search": [line(1, 1, 1, 1, 1), line(3, 4, 4, 4, 4), line(5, 5, 5, 5, 5)],
 } as const satisfies Record<string, ReadonlyArray<CodeLineMapping>>;

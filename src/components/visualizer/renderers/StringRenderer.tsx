@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { usePlaybackStore } from "@/stores/playback-store";
 import { StringVisualState } from "@/visualizers/string/types";
@@ -19,7 +19,11 @@ export function StringRenderer() {
   const highlights: VisualStepHighlights = currentStep.highlights || {};
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-8 relative gap-12 overflow-auto">
+    <div
+      className="flex flex-col items-center justify-center w-full h-full p-8 relative gap-12 overflow-auto"
+      role="img"
+      aria-label={`${currentStep.title}. String visualizer state with text length ${dataState.elements?.length ?? 0}`}
+    >
       {dataState.lps && (
         <section className="w-full max-w-3xl" aria-label="KMP LPS table">
           <div className="mb-2 flex items-center justify-between gap-3">

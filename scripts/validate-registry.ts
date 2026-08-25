@@ -10,6 +10,7 @@
 
 import { algorithms } from "../src/data/seed/algorithms";
 import { algorithmRegistry } from "../src/visualizers/registry/algorithm-registry";
+import { publicationRegistry } from "../src/visualizers/registry/publication-registry";
 import {
   DATA_STRUCTURE_IDS,
   REQUIRED_CODE_LANGUAGES,
@@ -127,6 +128,35 @@ for (const algorithm of algorithms) {
   for (const language of REQUIRED_CODE_LANGUAGES) {
     if (!examplesByLanguage.has(language)) {
       report("error", where, `missing required ${language} code example`);
+    }
+  }
+
+  // Validate legend exists for published algorithms
+  if (algorithm.isPublished) {
+    const publication = publicationRegistry[algorithm.slug];
+    if (!publication) {
+      report("error", where, "published algorithm missing from publication registry");
+    } else {
+      const legend = publication.authoredArtifacts?.legend;
+      if (!legend || !Array.isArray(legend) || legend.length === 0) {
+        report("error", where, "published algorithm must have a non-empty legend");
+      } else {
+        // Validate each legend item has required properties
+        for (const item of legend) {
+          if (!item.bucketKey) {
+            report("error", where, "legend item missing bucketKey");
+          }
+          if (!item.label) {
+            report("error", where, "legend item missing label");
+          }
+          if (!item.description) {
+            report("error", where, "legend item missing description");
+          }
+          if (!item.tone) {
+            report("error", where, "legend item missing tone");
+          }
+        }
+      }
     }
   }
 }

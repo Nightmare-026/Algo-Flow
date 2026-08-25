@@ -12,7 +12,7 @@ const probingInsert = [
   line(4, 14, 12, 18, 19),
   line(7, 15, 13, 19, 20),
   line(8, 17, 15, 21, 22),
-  line(10, 19, 16, 23, 24),
+  line(10, 19, 16, 22, 24),
 ];
 const probingSearch = [
   line(1, 24, 20, 29, 30),
@@ -47,7 +47,7 @@ export const hashTableCodeLineMappings = {
     line(6, 7, 7, 8, 8),
     line(7, 7, 7, 8, 8),
     line(8, 6, 6, 7, 7),
-    line(9, 9, 7, 10, 10),
+    line(9, 7, 7, 8, 8),
   ],
   "chaining-insert": [
     line(1, 11, 9, 15, 18),

@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Code2, Gauge, ListChecks, Network, Trophy } from "lucide-react";
+import { Bookmark, Code2, Gauge, Network, Trophy, BrainCircuit } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 const features = [
@@ -23,16 +23,16 @@ const features = [
     Icon: Code2,
   },
   {
-    title: "Interactive Practice Mode",
+    title: "Mental Math Arithmetic Trainer",
+    description:
+      "Train calculation speed, multi-digit arithmetic, and operator fluency with 60s sprints, timed tests, and official daily challenges.",
+    Icon: BrainCircuit,
+  },
+  {
+    title: "Interactive Step Predictor",
     description:
       "Predict next steps during live simulation to test algorithmic intuition and reinforce pattern recognition in real time.",
     Icon: Trophy,
-  },
-  {
-    title: "Chronological Step Log",
-    description:
-      "Every calculation, pointer shift, and swap is recorded with human-readable explanations and complexity telemetry.",
-    Icon: ListChecks,
   },
   {
     title: "Personal Learning Dashboard",

@@ -11,22 +11,22 @@ export function StepTimeline() {
 
   return (
     <section className="min-w-0 w-full" aria-label="Execution progress">
-      <div className="mb-2 flex min-w-0 items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2">
-          <span className="shrink-0 font-mono text-xs font-bold tabular-nums text-primary bg-primary-muted px-2 py-0.5 rounded-md border border-primary/20">
+      <div className="mb-1.5 flex min-w-0 items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-1.5">
+          <span className="shrink-0 font-mono text-[10px] font-bold tabular-nums text-primary bg-primary-muted px-1.5 py-0.5 rounded border border-primary/20">
             {currentStepIndex + 1}/{totalSteps}
           </span>
-          <span className="truncate text-xs font-semibold text-text-primary">
+          <span className="truncate text-[11px] font-semibold text-text-primary">
             {currentStep.title}
           </span>
         </div>
-        <span className="shrink-0 rounded-md border border-border bg-surface px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
+        <span className="shrink-0 rounded border border-border bg-surface px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider text-text-muted">
           {currentStep.actionType}
         </span>
       </div>
 
       <div
-        className="flex h-3 w-full items-stretch gap-1 overflow-hidden rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-[var(--shadow-inset)]"
+        className="flex h-2.5 w-full items-stretch gap-0.5 overflow-hidden rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-[var(--shadow-inset)]"
         role="group"
         aria-label="Select execution step"
       >

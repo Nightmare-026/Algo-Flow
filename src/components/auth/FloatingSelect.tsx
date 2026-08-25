@@ -33,6 +33,7 @@ export function FloatingSelect({
   const [selectedValue, setSelectedValue] = useState(defaultValue);
 
   const selectedOption = options.find((opt) => opt.value === selectedValue);
+  const hiddenInputId = `${id}-hidden`;
 
   const handleSelect = (value: string) => {
     setSelectedValue(value);
@@ -42,7 +43,7 @@ export function FloatingSelect({
   return (
     <div className="auth-field">
       {/* Hidden input for standard form submission */}
-      <input type="hidden" name={name} value={selectedValue} required={required} />
+      <input type="hidden" id={hiddenInputId} name={name} value={selectedValue} required={required} />
 
       <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
         <PopoverPrimitive.Trigger asChild>
@@ -51,6 +52,7 @@ export function FloatingSelect({
             id={id}
             aria-expanded={open}
             aria-haspopup="listbox"
+            aria-label={label}
             className="group relative flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border border-border bg-bg-surface-inset px-4 pb-1 pt-5 text-left text-sm text-text-primary shadow-[var(--shadow-inset)] transition-all duration-200 hover:border-border-hover focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           >
             {/* Floating Label */}

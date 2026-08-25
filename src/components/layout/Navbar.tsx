@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LogOut, Menu, X, LayoutDashboard, Compass } from "lucide-react";
+import { LogOut, Menu, X, LayoutDashboard, Compass, BrainCircuit } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
@@ -11,9 +11,11 @@ import { signout } from "@/app/(auth)/login/actions";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
+import { AnimatePresence, motion } from "framer-motion";
 
 const navLinks = [
   { label: "Visualizers", href: "/visualizers", icon: Compass },
+  { label: "Mental Math", href: "/mental-math", icon: BrainCircuit },
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
 ];
 
@@ -76,7 +78,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="hidden items-center gap-1.5 md:flex">
             {navLinks.map((link) => {
               const active = isActive(link.href);
               const Icon = link.icon;
@@ -86,13 +88,20 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   href={link.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-all duration-200",
+                    "relative inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors duration-200 z-10",
                     active
-                      ? "border border-primary/20 bg-primary-muted font-bold text-primary shadow-[var(--shadow-inset)]"
-                      : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:shadow-[var(--shadow-raised-sm)]"
+                      ? "font-bold text-primary"
+                      : "text-text-secondary hover:text-text-primary hover:bg-surface-hover/60"
                   )}
                 >
-                  <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-text-muted")} />
+                  {active && (
+                    <motion.div
+                      layoutId="activeNavPill"
+                      className="absolute inset-0 rounded-xl border border-primary/25 bg-primary-muted shadow-[var(--shadow-inset)] -z-10"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  <Icon className={cn("h-4 w-4 transition-colors", active ? "text-primary" : "text-text-muted")} />
                   {link.label}
                 </Link>
               );
@@ -151,72 +160,78 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
         </div>
 
         {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen ? (
-          <div
-            id="mobile-navigation"
-            className="border-t border-border py-4 md:hidden animate-in slide-in-from-top-2 duration-200"
-          >
-            <div className="grid gap-2">
-              {navLinks.map((link) => {
-                const active = isActive(link.href);
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition-colors",
-                      active
-                        ? "border border-primary/20 bg-primary-muted font-bold text-primary shadow-[var(--shadow-inset)]"
-                        : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
-                    )}
-                  >
-                    <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-text-muted")} />
-                    {link.label}
-                  </Link>
-                );
-              })}
-
-              {user ? (
-                <div className="mt-2 border-t border-border pt-3">
-                  <div className="mb-3 px-4 text-xs text-text-muted">
-                    Signed in as{" "}
-                    <span className="font-semibold text-text-primary">{user.email}</span>
-                  </div>
-                  <form action={signout}>
-                    <button
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              id="mobile-navigation"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              className="overflow-hidden border-t border-border md:hidden"
+            >
+              <div className="grid gap-2 py-4">
+                {navLinks.map((link) => {
+                  const active = isActive(link.href);
+                  const Icon = link.icon;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex min-h-11 w-full items-center gap-2 rounded-xl px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error"
-                      type="submit"
+                      aria-current={active ? "page" : undefined}
+                      className={cn(
+                        "flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition-colors",
+                        active
+                          ? "border border-primary/20 bg-primary-muted font-bold text-primary shadow-[var(--shadow-inset)]"
+                          : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                      )}
                     >
-                      <LogOut className="h-4 w-4" aria-hidden="true" />
-                      Sign out
-                    </button>
-                  </form>
-                </div>
-              ) : (
-                <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={buttonVariants({ variant: "outline" })}
-                  >
-                    Log in
-                  </Link>
-                  <Link
-                    href="/signup"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={buttonVariants()}
-                  >
-                    Sign up
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : null}
+                      <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-text-muted")} />
+                      {link.label}
+                    </Link>
+                  );
+                })}
+
+                {user ? (
+                  <div className="mt-2 border-t border-border pt-3">
+                    <div className="mb-3 px-4 text-xs text-text-muted">
+                      Signed in as{" "}
+                      <span className="font-semibold text-text-primary">{user.email}</span>
+                    </div>
+                    <form action={signout}>
+                      <button
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex min-h-11 w-full items-center gap-2 rounded-xl px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error cursor-pointer"
+                        type="submit"
+                      >
+                        <LogOut className="h-4 w-4" aria-hidden="true" />
+                        Sign out
+                      </button>
+                    </form>
+                  </div>
+                ) : (
+                  <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={buttonVariants({ variant: "outline" })}
+                    >
+                      Log in
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={buttonVariants()}
+                    >
+                      Sign up
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
     </header>
   );

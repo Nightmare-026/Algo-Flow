@@ -57,35 +57,33 @@ export function CircularLinkedListInputControls({
   const errorId = "cll-control-error";
 
   return (
-    <div className="flex flex-col gap-3 text-sm lg:flex-row lg:items-start">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-col gap-2.5 text-sm lg:flex-row lg:items-center lg:gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         {showTarget && (
-          <form onSubmit={handleTargetSubmit} className="flex flex-wrap items-end gap-2">
-            <div className="grid gap-1">
-              <Label htmlFor="cll-target" className="text-text-muted">
-                Target Value
-              </Label>
+          <form onSubmit={handleTargetSubmit} className="flex items-center gap-1.5">
+            <label className="flex flex-col gap-0.5" htmlFor="cll-target">
+              <span className="text-text-muted text-xs">Target Value</span>
               <Input
                 id="cll-target"
                 name="target"
                 type="number"
                 inputMode="numeric"
-                className="h-11 w-24 border-border bg-bg-surface-light px-3"
+                className="h-7 w-20 border-border bg-bg-base px-2 text-xs"
                 value={targetInput}
                 onChange={(event) => setTargetInput(event.target.value)}
               />
-            </div>
-            <Button type="submit" className="h-11" variant="secondary" size="sm">
-              <Target className="mr-1 h-4 w-4" />
-              Set Target
+            </label>
+            <Button type="submit" className="h-7 px-3 text-xs" variant="secondary" size="sm">
+              <Target className="mr-1 h-3.5 w-3.5" />
+              Set
             </Button>
           </form>
         )}
 
         {showValue && (
-          <form onSubmit={handleValueSubmit} className="flex flex-wrap items-end gap-2">
-            <div className="grid gap-1">
-              <Label htmlFor="cll-value" className="text-text-muted">
+          <form onSubmit={handleValueSubmit} className="flex items-center gap-1.5">
+            <div className="grid gap-0.5">
+              <Label htmlFor="cll-value" className="text-text-muted text-xs">
                 Value
               </Label>
               <Input
@@ -94,7 +92,7 @@ export function CircularLinkedListInputControls({
                 type="number"
                 step={1}
                 inputMode="numeric"
-                className="h-11 w-24 border-border bg-bg-surface-light px-3"
+                className="h-7 w-20 border-border bg-bg-base px-2 text-xs"
                 value={valInput}
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? errorId : undefined}
@@ -102,9 +100,9 @@ export function CircularLinkedListInputControls({
               />
             </div>
 
-            <Button type="submit" className="h-11" variant="secondary" size="sm">
-              <HardDriveDownload className="mr-1 h-4 w-4" />
-              Set Value
+            <Button type="submit" className="h-7 px-3 text-xs" variant="secondary" size="sm">
+              <HardDriveDownload className="mr-1 h-3.5 w-3.5" />
+              Set
             </Button>
           </form>
         )}
@@ -114,9 +112,9 @@ export function CircularLinkedListInputControls({
         <div
           id={errorId}
           role="alert"
-          className="ml-auto flex animate-in items-center gap-2 text-sm font-medium text-error fade-in slide-in-from-top-1"
+          className="flex animate-in items-center gap-1.5 text-xs font-medium text-error fade-in slide-in-from-top-1 lg:ml-auto"
         >
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="h-3.5 w-3.5" />
           {error}
         </div>
       )}

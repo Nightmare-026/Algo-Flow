@@ -1,0 +1,287 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { Trophy, Crown, Sparkles } from "lucide-react";
+import { getMentalMathLeaderboard } from "@/features/mental-math/api/actions";
+import { GameMode, LeaderboardEntry, MathOperation } from "@/features/mental-math/core/types";
+import { cn } from "@/lib/utils";
+
+export default function LeaderboardPage() {
+  const [activeTab, setActiveTab] = useState<GameMode>("daily");
+  const [selectedOp, setSelectedOp] = useState<MathOperation | "all">("all");
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    getMentalMathLeaderboard(activeTab).then((data) => {
+      if (isMounted) {
+        setEntries(data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [activeTab]);
+
+  const filteredEntries =
+    selectedOp === "all" ? entries : entries.filter((e) => e.operation === selectedOp);
+
+  const top1 = filteredEntries.find((e) => e.rank === 1);
+  const top2 = filteredEntries.find((e) => e.rank === 2);
+  const top3 = filteredEntries.find((e) => e.rank === 3);
+
+  const operations: Array<{ id: MathOperation | "all"; label: string }> = [
+    { id: "all", label: "All Operations" },
+    { id: "addition", label: "Addition (+)" },
+    { id: "subtraction", label: "Subtraction (−)" },
+    { id: "multiplication", label: "Multiplication (×)" },
+    { id: "division", label: "Division (÷)" },
+    { id: "squares", label: "Squares (x²)" },
+    { id: "roots", label: "Square Roots (√x)" },
+    { id: "percentages", label: "Percentages (%)" },
+    { id: "mixed", label: "Mixed Operations" },
+  ];
+
+  return (
+    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <div className="inline-flex min-h-7 items-center gap-2 rounded-full border border-border bg-surface px-3 text-[11px] font-bold font-display uppercase tracking-wider text-primary shadow-[var(--shadow-raised-sm)] mb-2">
+            <Trophy className="w-3.5 h-3.5" />
+            <span>Global Rankings</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-text-primary tracking-tight">
+            Mental Math <span className="text-primary">Leaderboards</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-text-secondary mt-1">
+            Top mathematical calculation speed, accuracy, and score benchmarks worldwide.
+          </p>
+        </div>
+
+        <Link
+          href="/mental-math/daily"
+          className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-6 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all"
+        >
+          <Trophy className="w-3.5 h-3.5" />
+          <span>Play Today&apos;s Challenge</span>
+        </Link>
+      </div>
+
+      {/* Mode Tabs */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-border/80 pb-3">
+        <button
+          onClick={() => setActiveTab("daily")}
+          className={cn(
+            "px-4 py-2 rounded-xl text-xs font-bold font-display transition-all cursor-pointer",
+            activeTab === "daily"
+              ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+              : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+          )}
+        >
+          Daily Challenge
+        </button>
+        <button
+          onClick={() => setActiveTab("speed")}
+          className={cn(
+            "px-4 py-2 rounded-xl text-xs font-bold font-display transition-all cursor-pointer",
+            activeTab === "speed"
+              ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+              : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+          )}
+        >
+          60s Speed Sprint
+        </button>
+        <button
+          onClick={() => setActiveTab("test")}
+          className={cn(
+            "px-4 py-2 rounded-xl text-xs font-bold font-display transition-all cursor-pointer",
+            activeTab === "test"
+              ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+              : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+          )}
+        >
+          Timed Assessment
+        </button>
+      </div>
+
+      {/* Podium Showcase (Top 3) */}
+      {(top1 || top2 || top3) && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end pt-2">
+          {/* #2 Rank */}
+          {top2 ? (
+            <div className="neu-raised order-2 md:order-1 p-5 rounded-3xl border border-slate-400/40 bg-surface/90 flex flex-col items-center text-center shadow-md">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-200 text-slate-800 font-extrabold text-sm mb-2 shadow-inner">
+                #2
+              </span>
+              <h2 className="text-base font-bold font-display text-text-primary">
+                {top2.displayName}
+              </h2>
+              <span className="text-xs font-mono font-bold text-slate-500 uppercase mt-0.5">
+                {top2.operation}
+              </span>
+              <div className="mt-3 pt-3 border-t border-border w-full flex justify-around text-xs font-mono">
+                <div>
+                  <p className="text-text-muted text-[10px]">Score</p>
+                  <p className="font-extrabold text-primary">{top2.score.toLocaleString()}</p>
+                </div>
+                <div>
+                  <p className="text-text-muted text-[10px]">Acc</p>
+                  <p className="font-extrabold text-text-primary">{top2.accuracy}%</p>
+                </div>
+                <div>
+                  <p className="text-text-muted text-[10px]">Speed</p>
+                  <p className="font-extrabold text-text-primary">{top2.speedQPM} QPM</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="order-2 md:order-1" />
+          )}
+
+          {/* #1 Rank (Champion) */}
+          {top1 ? (
+            <div className="neu-float order-1 md:order-2 p-6 sm:p-7 rounded-3xl border-2 border-amber-500/50 bg-amber-500/5 flex flex-col items-center text-center shadow-xl md:-translate-y-2">
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500 text-white font-extrabold text-base mb-2 shadow-lg ring-4 ring-amber-500/20">
+                <Crown className="w-7 h-7 fill-current" />
+              </span>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 text-[10px] font-mono font-bold uppercase mb-1">
+                <Sparkles className="w-3 h-3" />
+                <span>Champion</span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-extrabold font-display text-text-primary tracking-tight">
+                {top1.displayName}
+              </h2>
+              <span className="text-xs font-mono font-bold text-primary uppercase mt-0.5">
+                {top1.operation}
+              </span>
+              <div className="mt-4 pt-3 border-t border-border w-full flex justify-around text-xs font-mono">
+                <div>
+                  <p className="text-text-muted text-[10px]">Score</p>
+                  <p className="font-extrabold text-primary text-sm">
+                    {top1.score.toLocaleString()}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-text-muted text-[10px]">Acc</p>
+                  <p className="font-extrabold text-text-primary text-sm">{top1.accuracy}%</p>
+                </div>
+                <div>
+                  <p className="text-text-muted text-[10px]">Speed</p>
+                  <p className="font-extrabold text-text-primary text-sm">{top1.speedQPM} QPM</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="order-1 md:order-2" />
+          )}
+
+          {/* #3 Rank */}
+          {top3 ? (
+            <div className="neu-raised order-3 p-5 rounded-3xl border border-amber-700/30 bg-surface/90 flex flex-col items-center text-center shadow-md">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-700 text-white font-extrabold text-sm mb-2 shadow-inner">
+                #3
+              </span>
+              <h2 className="text-base font-bold font-display text-text-primary">
+                {top3.displayName}
+              </h2>
+              <span className="text-xs font-mono font-bold text-amber-700 uppercase mt-0.5">
+                {top3.operation}
+              </span>
+              <div className="mt-3 pt-3 border-t border-border w-full flex justify-around text-xs font-mono">
+                <div>
+                  <p className="text-text-muted text-[10px]">Score</p>
+                  <p className="font-extrabold text-primary">{top3.score.toLocaleString()}</p>
+                </div>
+                <div>
+                  <p className="text-text-muted text-[10px]">Acc</p>
+                  <p className="font-extrabold text-text-primary">{top3.accuracy}%</p>
+                </div>
+                <div>
+                  <p className="text-text-muted text-[10px]">Speed</p>
+                  <p className="font-extrabold text-text-primary">{top3.speedQPM} QPM</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="order-3" />
+          )}
+        </div>
+      )}
+
+      {/* Operation Filter Chips */}
+      <div className="flex flex-wrap items-center gap-1.5 pt-2">
+        {operations.map((op) => (
+          <button
+            key={op.id}
+            onClick={() => setSelectedOp(op.id)}
+            className={cn(
+              "px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer",
+              selectedOp === op.id
+                ? "bg-primary-muted text-primary border border-primary/30"
+                : "text-text-secondary hover:text-text-primary bg-surface border border-border hover:bg-surface-hover"
+            )}
+          >
+            {op.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Leaderboard Table Container */}
+      <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr className="border-b border-border/80 text-text-muted font-mono uppercase tracking-wider text-[11px]">
+                <th className="py-3 px-3.5 w-16">Rank</th>
+                <th className="py-3 px-3.5">Learner</th>
+                <th className="py-3 px-3.5">Operation</th>
+                <th className="py-3 px-3.5">Accuracy</th>
+                <th className="py-3 px-3.5">Cadence (QPM)</th>
+                <th className="py-3 px-3.5 text-right">Verified Score</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/40 font-mono">
+              {filteredEntries.map((entry) => (
+                <tr key={entry.id} className="hover:bg-surface-hover/50 transition-colors">
+                  <td className="py-3.5 px-3.5">
+                    <span
+                      className={cn(
+                        "inline-flex h-7 w-7 items-center justify-center rounded-xl font-extrabold text-xs shadow-sm",
+                        entry.rank === 1
+                          ? "bg-amber-500 text-white"
+                          : entry.rank === 2
+                            ? "bg-slate-300 text-slate-900"
+                            : entry.rank === 3
+                              ? "bg-amber-700 text-white"
+                              : "bg-surface-inset border border-border text-text-secondary"
+                      )}
+                    >
+                      #{entry.rank}
+                    </span>
+                  </td>
+                  <td className="py-3.5 px-3.5 font-sans font-bold text-text-primary text-sm">
+                    {entry.displayName}
+                  </td>
+                  <td className="py-3.5 px-3.5 font-sans capitalize text-primary font-bold">
+                    {entry.operation}
+                  </td>
+                  <td className="py-3.5 px-3.5 font-bold text-text-primary tabular-nums">
+                    {entry.accuracy}%
+                  </td>
+                  <td className="py-3.5 px-3.5 text-text-secondary tabular-nums">
+                    {entry.speedQPM} QPM
+                  </td>
+                  <td className="py-3.5 px-3.5 text-right font-extrabold text-primary font-display text-sm tabular-nums">
+                    {entry.score.toLocaleString()} PTS
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -2,7 +2,7 @@
  * Phase 3 — Registry contract test.
  *
  * Failures indicate the registry contains entries that violate the lock-down
- * from `VisualizerDefinition`. Build-time check; run with `npx jest`.
+ * from `VisualizerDefinition`. Run with `npm test`.
  */
 
 import {
@@ -12,8 +12,11 @@ import {
 import { REQUIRED_LANGUAGES } from "@/visualizers/registry/VisualizerDefinition";
 import { algorithms } from "@/data/seed/algorithms";
 
-const registry: Record<string, ComposedPublicationDefinition> = publicationRegistry;
-const catalogSlugs = new Set(algorithms.filter((a) => a.isPublished).map((a) => a.slug));
+const registry: Record<string, ComposedPublicationDefinition> =
+  publicationRegistry;
+const catalogSlugs = new Set(
+  algorithms.filter((a) => a.isPublished).map((a) => a.slug)
+);
 
 describe("Phase 3 — VisualizerDefinition contract", () => {
   it("registry has at least one entry", () => {
@@ -45,8 +48,11 @@ describe("Phase 3 — VisualizerDefinition contract", () => {
 
   it("every entry has all five required language code-examples", () => {
     for (const [, entry] of Object.entries(registry)) {
-      const ce = (entry as { codeExamples?: Record<string, { code: string; language: string }> })
-        .codeExamples;
+      const ce = (
+        entry as {
+          codeExamples?: Record<string, { code: string; language: string }>;
+        }
+      ).codeExamples;
       for (const lang of REQUIRED_LANGUAGES) {
         expect(ce?.[lang]).toBeDefined();
         expect(typeof ce?.[lang].code).toBe("string");

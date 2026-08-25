@@ -4,6 +4,18 @@ import { usePlaybackStore } from "@/stores/playback-store";
 import { PlaybackSpeed } from "@/types";
 import { cn } from "@/lib/utils";
 
+const speedLabels: Record<PlaybackSpeed, string> = {
+  "0.25x": "0.25x",
+  "0.5x": "0.5x",
+  "0.75x": "0.75x",
+  "1x": "1.0x",
+  "2x": "2.0x",
+  slow: "0.5x",
+  normal: "1.0x",
+  fast: "2.0x",
+  custom: "Custom",
+};
+
 export function SpeedSlider() {
   const speed = usePlaybackStore((state) => state.speed);
   const setSpeed = usePlaybackStore((state) => state.setSpeed);
@@ -26,7 +38,7 @@ export function SpeedSlider() {
 
   return (
     <div
-      className="flex items-center gap-0.5 sm:gap-1 rounded-xl bg-bg-surface-inset p-1 border border-border shadow-[var(--shadow-inset)]"
+      className="flex items-center gap-0.5 rounded-lg bg-bg-surface-inset p-0.5 border border-border shadow-[var(--shadow-inset)]"
       role="group"
       aria-label="Playback speed"
     >
@@ -40,7 +52,7 @@ export function SpeedSlider() {
             aria-pressed={active}
             aria-label={`Set speed to ${s.label}`}
             className={cn(
-              "min-h-8 px-2 sm:px-2.5 text-xs font-mono font-bold rounded-lg transition-all cursor-pointer select-none",
+              "min-h-7 px-1.5 text-[10px] font-mono font-bold rounded transition-all cursor-pointer select-none",
               active
                 ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
                 : "text-text-muted hover:text-text-primary"
@@ -51,5 +63,22 @@ export function SpeedSlider() {
         );
       })}
     </div>
+  );
+}
+
+export function SpeedDisplay() {
+  const speed = usePlaybackStore((state) => state.speed);
+  const customSpeedMs = usePlaybackStore((state) => state.customSpeedMs);
+
+  const displayLabel = speed === "custom" ? `${customSpeedMs}ms` : speedLabels[speed] || "1.0x";
+
+  return (
+    <span
+      id="speed-display"
+      className="font-mono text-[10px] font-bold text-text-muted"
+      aria-live="polite"
+    >
+      {displayLabel}
+    </span>
   );
 }

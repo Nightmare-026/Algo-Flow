@@ -19,6 +19,7 @@ export interface VisualizerInputOptions {
   treeState?: TreeVisualState;
   isDirected?: boolean;
   isWeighted?: boolean;
+  matrixB?: number[];
 }
 
 export const defaultVisualizerInputOptions: VisualizerInputOptions = {
@@ -99,5 +100,6 @@ export function clampOperationOptions(
     treeState: options.treeState || createDefaultTree(),
     isDirected: options.isDirected ?? false,
     isWeighted: options.isWeighted ?? false,
+    matrixB: options.matrixB,
   };
 }

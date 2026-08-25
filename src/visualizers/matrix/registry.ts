@@ -105,33 +105,42 @@ const rawMatrixRegistry: AlgorithmVisualizerDefinition[] = [
   {
     slug: "matrix-multiplication",
     generateSteps: (data, opts) =>
-      withLogicalLines(generateMatrixMultiplicationSteps(data, opts.rows || 3, opts.cols || 3), {
-        initialize: 1,
-        update: 4,
-        success: 6,
-      }),
+      withLogicalLines(
+        generateMatrixMultiplicationSteps(data, opts.rows || 3, opts.cols || 3, opts.matrixB),
+        {
+          initialize: 1,
+          update: 4,
+          success: 6,
+        }
+      ),
     getCodeExamples: getMatrixCodeExamples,
     codeLineMapping: matrixCodeLineMappings["matrix-multiplication"],
   },
   {
     slug: "matrix-addition",
     generateSteps: (data, opts) =>
-      withLogicalLines(generateMatrixAdditionSteps(data, opts.rows || 3, opts.cols || 3), {
-        initialize: 1,
-        update: 4,
-        success: 6,
-      }),
+      withLogicalLines(
+        generateMatrixAdditionSteps(data, opts.rows || 3, opts.cols || 3, opts.matrixB),
+        {
+          initialize: 1,
+          update: 4,
+          success: 6,
+        }
+      ),
     getCodeExamples: getMatrixCodeExamples,
     codeLineMapping: matrixCodeLineMappings["matrix-addition"],
   },
   {
     slug: "matrix-subtraction",
     generateSteps: (data, opts) =>
-      withLogicalLines(generateMatrixSubtractionSteps(data, opts.rows || 3, opts.cols || 3), {
-        initialize: 1,
-        update: 4,
-        success: 6,
-      }),
+      withLogicalLines(
+        generateMatrixSubtractionSteps(data, opts.rows || 3, opts.cols || 3, opts.matrixB),
+        {
+          initialize: 1,
+          update: 4,
+          success: 6,
+        }
+      ),
     getCodeExamples: getMatrixCodeExamples,
     codeLineMapping: matrixCodeLineMappings["matrix-subtraction"],
   },

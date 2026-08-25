@@ -6,10 +6,12 @@ import "./globals.css";
 
 export default function GlobalError({
   error,
+  reset,
   unstable_retry,
 }: {
   error: Error & { digest?: string };
-  unstable_retry: () => void;
+  reset?: () => void;
+  unstable_retry?: () => void;
 }) {
   useEffect(() => {
     console.error("[global-error]", error);
@@ -22,7 +24,7 @@ export default function GlobalError({
         <ErrorState
           title="Algo Flow could not load"
           reference={error.digest}
-          onRetry={unstable_retry}
+          onRetry={reset ?? unstable_retry}
         />
       </body>
     </html>

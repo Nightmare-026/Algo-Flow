@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { AlertCircle, MailCheck, ShieldAlert } from "lucide-react";
+import { MailCheck, ShieldAlert } from "lucide-react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { FloatingField } from "@/components/auth/FloatingField";
 import { FloatingSelect } from "@/components/auth/FloatingSelect";
@@ -8,6 +8,7 @@ import { PasswordField } from "@/components/auth/PasswordField";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { buttonVariants } from "@/components/ui/button";
+import { Callout } from "@/components/ui/callout";
 import {
   ACCOUNT_REGISTRATION_AVAILABLE,
   PRIVACY_VERSION,
@@ -75,12 +76,9 @@ export default async function SignupPage({
           <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success-muted text-success shadow-[var(--shadow-inset)]">
             <MailCheck className="h-8 w-8" aria-hidden="true" />
           </span>
-          <p
-            aria-live="polite"
-            className="mt-6 text-xs sm:text-sm leading-relaxed text-text-secondary"
-          >
-            {params.success}
-          </p>
+          <Callout variant="success" title="Verification email sent" dismissible className="mt-6">
+            <p>{params.success}</p>
+          </Callout>
           <Link href="/login" className={buttonVariants({ size: "lg", className: "mt-6 w-full" })}>
             Return to sign in
           </Link>
@@ -88,18 +86,12 @@ export default async function SignupPage({
       ) : (
         <>
           {params.error ? (
-            <div
-              role="alert"
-              className="mb-6 flex items-start gap-3 rounded-2xl border border-error/30 bg-error-muted p-4 text-xs font-semibold leading-relaxed text-error shadow-[var(--shadow-inset)]"
-            >
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-              <div>
-                <p className="font-bold text-error">{params.error}</p>
-                <p className="mt-0.5 text-[11px] text-error/80">
-                  Please review the fields below and correct any highlighted issues.
-                </p>
-              </div>
-            </div>
+            <Callout variant="error" title="Sign up failed" dismissible className="mb-6">
+              <p>{params.error}</p>
+              <p className="mt-0.5 text-[11px] text-error/80">
+                Please review the fields below and correct any highlighted issues.
+              </p>
+            </Callout>
           ) : null}
 
           {/* Registration Form */}

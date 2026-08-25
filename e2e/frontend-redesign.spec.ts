@@ -121,6 +121,8 @@ test("auth fields use accessible in-field labels without visible examples", asyn
   await firstName.fill("Ada");
   await firstName.press("Tab");
   await expect(firstName).toHaveValue("Ada");
-  await gender.selectOption("Female");
-  await expect(gender).toHaveValue("female");
+  // FloatingSelect is a custom popover, not a native <select>
+  await gender.click();
+  await page.getByRole("option", { name: "Female" }).click();
+  await expect(page.getByRole("button", { name: "Gender" })).toContainText("Female");
 });

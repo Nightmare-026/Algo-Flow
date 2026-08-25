@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { usePlaybackStore } from "@/stores/playback-store";
 import { HashSetVisualState, HashSetEntry } from "@/visualizers/hash-set/types";
@@ -35,7 +35,11 @@ export function HashSetRenderer() {
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-start p-4 sm:p-8 overflow-hidden">
+    <div
+      className="absolute inset-0 flex flex-col items-center justify-start p-4 sm:p-8 overflow-hidden"
+      role="img"
+      aria-label={`${currentStep.title}. Hash set state: ${dataState.elementCount} elements, load factor ${dataState.loadFactor.toFixed(2)}`}
+    >
       {/* Metrics Banner */}
       <div className="mb-8 flex gap-4 sm:gap-8 rounded-lg border border-border bg-bg-surface/50 p-4 shrink-0">
         <div className="flex flex-col items-center">

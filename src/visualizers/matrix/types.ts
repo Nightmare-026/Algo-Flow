@@ -7,10 +7,21 @@ export interface MatrixElement {
   originalCol: number;
 }
 
+export interface MatrixGridData {
+  label: string;
+  rows: number;
+  cols: number;
+  elements: MatrixElement[];
+}
+
 export interface MatrixVisualState {
   rows: number;
   cols: number;
   elements: MatrixElement[];
+  matrixA?: MatrixGridData;
+  matrixB?: MatrixGridData;
+  resultLabel?: string;
+  operationSymbol?: string;
 }
 
 export function createMatrixElements(arr: number[], rows: number, cols: number): MatrixElement[] {
@@ -23,4 +34,28 @@ export function createMatrixElements(arr: number[], rows: number, cols: number):
     }
   }
   return elements;
+}
+
+export function generateDefaultMatrixB(
+  arrA: number[],
+  rows: number,
+  cols: number,
+  _slug: string = ""
+): number[] {
+  void _slug;
+  const length = rows * cols;
+  const defaults: number[] = [3, 7, 2, 5, 8, 1, 9, 4, 6, 2, 8, 3, 5, 7, 1, 4];
+  const result: number[] = [];
+  for (let i = 0; i < length; i++) {
+    if (i < defaults.length) {
+      let val = defaults[i];
+      if (arrA[i] !== undefined && val === arrA[i]) {
+        val = (val % 9) + 1;
+      }
+      result.push(val);
+    } else {
+      result.push(((i * 3 + 5) % 19) + 1);
+    }
+  }
+  return result;
 }
