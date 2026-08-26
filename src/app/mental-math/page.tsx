@@ -184,7 +184,10 @@ export default function MentalMathHubPage() {
             <MasteryRadar masteryMap={stats.operationMastery} />
           </div>
           <div>
-            <WeaknessCard weaknesses={stats.identifiedWeaknesses} />
+            <WeaknessCard
+              weaknesses={stats.identifiedWeaknesses}
+              hasHistory={stats.totalQuestionsSolved > 0}
+            />
           </div>
         </section>
       )}

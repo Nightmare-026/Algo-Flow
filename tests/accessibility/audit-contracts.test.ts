@@ -53,8 +53,8 @@ describe("production audit accessibility contracts", () => {
     expect(policy).toContain("ACCOUNT_REGISTRATION_AVAILABLE = true");
     expect(signup).toContain('name="first_name"');
     expect(signup).toContain('name="last_name"');
-    expect(signup).toContain('name="gender"');
     expect(signup).toContain('name="legal_accepted"');
+    expect(signup).not.toContain('name="gender"');
     expect(signup).not.toContain('name="age_confirmed"');
     expect(signup).toContain("minLength={8}");
   });

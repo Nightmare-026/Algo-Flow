@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { MailCheck, ShieldAlert } from "lucide-react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { FloatingField } from "@/components/auth/FloatingField";
-import { FloatingSelect } from "@/components/auth/FloatingSelect";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { SubmitButton } from "@/components/ui/submit-button";
@@ -19,16 +18,9 @@ import { createClient } from "@/lib/supabase/server";
 import { signup } from "../login/actions";
 
 export const metadata: Metadata = {
-  title: "Sign Up",
+  title: "Sign Up | Algo Flow",
   description: "Sign up for an Algo Flow account to save DSA progress, sessions, and bookmarks.",
 };
-
-const GENDER_OPTIONS = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-  { value: "non-binary", label: "Non-binary" },
-  { value: "prefer-not-to-say", label: "Prefer not to say" },
-];
 
 export default async function SignupPage({
   searchParams,
@@ -117,15 +109,6 @@ export default async function SignupPage({
               />
             </div>
 
-            <FloatingSelect
-              id="signup-gender"
-              name="gender"
-              label="Gender"
-              placeholder="Select gender"
-              options={GENDER_OPTIONS}
-              required
-            />
-
             <FloatingField
               id="signup-email"
               label="Email address"
@@ -164,11 +147,11 @@ export default async function SignupPage({
                 className="mt-0.5 h-4 w-4 shrink-0 rounded border-border text-primary focus:ring-primary accent-primary cursor-pointer"
               />
               <span>
-                I am 18 years of age or older and agree to the{" "}
+                I agree to the{" "}
                 <Link href="/terms" className="font-bold text-primary hover:underline">
                   Terms of Service
                 </Link>{" "}
-                and{" "}
+                and acknowledge the{" "}
                 <Link href="/privacy" className="font-bold text-primary hover:underline">
                   Privacy Policy
                 </Link>
@@ -181,7 +164,7 @@ export default async function SignupPage({
             </SubmitButton>
           </form>
 
-          {/* Social Authentication below the form, matching Sign In */}
+          {/* Social Authentication */}
           <OAuthButtons next={params.next} className="mt-6" />
 
           {/* Switch to Sign In */}

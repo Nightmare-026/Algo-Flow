@@ -274,11 +274,11 @@ export function OperationsExplorer() {
                   </div>
 
                   <div className="mt-6 flex flex-col gap-3 border-t border-border/80 pt-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-mono font-bold text-primary">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-mono font-bold text-primary truncate">
                         {op.formulaSample}
                       </span>
-                      <span className="text-[10px] font-mono text-text-muted font-bold">
+                      <span className="shrink-0 px-2 py-0.5 rounded-md bg-surface-inset border border-border text-[10px] font-mono font-bold text-text-muted">
                         {op.complexityTiers}
                       </span>
                     </div>

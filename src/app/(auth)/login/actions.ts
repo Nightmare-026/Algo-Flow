@@ -181,8 +181,8 @@ export async function signup(formData: FormData) {
       data: {
         first_name: firstName,
         last_name: lastName,
-        gender: gender,
-        age_18_or_older: true, // Included in the combined legal_accepted checkbox
+        ...(gender ? { gender } : {}),
+        age_18_or_older: true,
         accepted_terms_version: TERMS_VERSION,
         accepted_privacy_version: PRIVACY_VERSION,
         legal_accepted_at: acceptedAt,

@@ -64,9 +64,14 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
     },
   };
 
+  const totalPracticed = operations.reduce(
+    (acc, op) => acc + (masteryMap[op]?.totalAttempts ?? 0),
+    0
+  );
+
   return (
     <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h2 className="text-lg font-bold font-display text-text-primary tracking-tight">
             Operation Mastery Breakdown
@@ -75,6 +80,11 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
             Real-time competency index calculated from verified accuracy and solve speed.
           </p>
         </div>
+        {totalPracticed === 0 && (
+          <span className="self-start sm:self-auto text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded-md bg-surface-inset border border-border text-text-muted">
+            Initial State (0 Drills)
+          </span>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -95,7 +105,8 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
           };
 
           const symbol = getOperatorSymbol(op);
-          const levelPercent = Math.min(100, Math.max(0, stat.level));
+          const hasAttempts = stat.totalAttempts > 0;
+          const levelPercent = hasAttempts ? Math.min(100, Math.max(0, stat.level)) : 0;
           const colors = opColors[op];
 
           return (
@@ -118,7 +129,7 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
                   </span>
                 </div>
                 <span className={cn("font-mono text-xs font-bold tabular-nums", colors.text)}>
-                  {levelPercent}% Mastery
+                  {hasAttempts ? `${levelPercent}% Mastery` : "Unpracticed"}
                 </span>
               </div>
 
@@ -128,16 +139,16 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
                     "bg-gradient-to-r h-full rounded-full transition-all duration-700 ease-out shadow-sm",
                     colors.bar
                   )}
-                  style={{ width: `${levelPercent}%` }}
+                  style={{ width: `${Math.max(hasAttempts ? levelPercent : 0, 0)}%` }}
                 />
               </div>
 
               <div className="flex justify-between text-[11px] font-mono text-text-muted mt-0.5">
                 <span>
-                  {stat.totalAttempts === 0 ? "0 drills" : `${stat.totalCorrect}/${stat.totalAttempts} correct`}
+                  {hasAttempts ? `${stat.totalCorrect}/${stat.totalAttempts} correct` : "0 drills"}
                 </span>
                 <span className="font-semibold text-text-secondary">
-                  {stat.totalAttempts === 0 ? "0% acc" : `${stat.accuracy}% acc`}
+                  {hasAttempts ? `${stat.accuracy}% acc` : "—"}
                 </span>
               </div>
             </div>

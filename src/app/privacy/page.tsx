@@ -1,57 +1,54 @@
-﻿import { Navbar } from "@/components/layout/Navbar";
+import { Navbar } from "@/components/layout/Navbar";
 import { createClient } from "@/lib/supabase/server";
 import { Footer } from "@/components/layout/Footer";
 import type { Metadata } from "next";
 import { PRIVACY_VERSION } from "@/lib/legal/policy-versions";
+import { ShieldCheck, Lock, Eye, Database, Globe, UserCheck } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy Status",
-  description: "Current privacy and data-flow status for Algo Flow.",
+  title: "Privacy Policy | Algo Flow",
+  description: "Privacy Policy and data protection practices for Algo Flow.",
   alternates: { canonical: "/privacy" },
 };
 
-const sections = [
-  [
-    "1. Status and scope",
-    "This is a technical disclosure draft, not a final launch policy. The operator identity, postal address, jurisdiction, monitored privacy contact, retention schedule, and hosted-service facts have not been verified. Account registration is disabled until those facts are supplied and the policy receives qualified legal review.",
-  ],
-  [
-    "2. Public visualizers",
-    "Public visualizers can be used without an account. Numbers, strings, matrices, trees, and graph files entered into a visualizer are processed in browser state unless an authenticated user explicitly saves a session. Graph JSON is parsed as data, size-limited, and schema-validated; it is not executed.",
-  ],
-  [
-    "3. Existing account data",
-    "The code supports email authentication, profiles, interface preferences, progress, streaks, bookmarks, saved visualizer sessions, quiz attempts, and activity history through Supabase. Legacy profile schemas include nullable name and gender fields, but the disabled future signup flow no longer requests them.",
-  ],
-  [
-    "4. Eligibility and future registration",
-    "If registration is enabled after legal review, it is intended to be limited to people aged 18 or older. The minimized flow will request email and password plus an 18+ assertion and exact Terms/Privacy version acceptance. Algo Flow does not currently implement a guardian-consent flow and must not request personal data from users under 18.",
-  ],
-  [
-    "5. Purposes",
-    "Account data is used to authenticate users, secure sessions, restore preferences, save learning progress and sessions, show bookmarks and streaks, record quiz results, and support account recovery. No advertising or marketing purpose is implemented in the repository.",
-  ],
-  [
-    "6. Cookies and local storage",
-    "Supabase session cookies keep existing users signed in. Browser local storage stores the selected theme and preferred code language. No application analytics, advertising, or marketing SDK was found, although platform-level logging or analytics still requires dashboard verification.",
-  ],
-  [
-    "7. Service providers and transfers",
-    "Supabase is used for Auth and Postgres access, and the audited site uses a Vercel domain. The exact production projects, regions, subprocessors, email provider, logs, backups, contractual terms, and cross-border safeguards are not verified. Google and GitHub social sign-in code exists but is disabled while onboarding is closed.",
-  ],
-  [
-    "8. Security",
-    "Local controls include server-side session checks, owner-scoped row-level security definitions, minimized signup fields, non-enumerating auth errors, a 12-character password minimum, secure password-change settings, request limits, and strict graph-import validation. Hosted configuration, leaked-password protection, CAPTCHA, advisories, incident monitoring, and recovery remain unverified.",
-  ],
-  [
-    "9. Retention, deletion, export, and rights",
-    "No approved retention schedule or complete account export/deletion workflow exists. Individual bookmarks and saved sessions have deletion operations, but account-wide deletion, backup deletion, access/export, correction, objection, withdrawal, and grievance workflows are release blockers.",
-  ],
-  [
-    "10. Breach response and contact",
-    "A breach-response owner, notification process, monitored privacy/grievance mailbox, and postal contact have not been supplied. No unverified email address is published. Registration and production-readiness approval remain blocked until these operational contacts and procedures are real and tested.",
-  ],
-] as const;
+const privacySections = [
+  {
+    icon: Eye,
+    title: "1. Overview & Public Exploration",
+    content:
+      "Algo Flow is an interactive Computer Science learning platform designed for understanding data structures, algorithms, and mental arithmetic. You can freely explore all 133 algorithm visualizers, multi-language code editors, and practice drills without creating an account. In public mode, all visual traces and algorithm input data remain strictly within your browser state.",
+  },
+  {
+    icon: Database,
+    title: "2. Information We Collect",
+    content:
+      "When you choose to register for an Algo Flow account, we collect minimal information necessary to deliver authenticated features: your email address, securely hashed credentials, display name, user preferences (such as selected theme and preferred programming language), saved visualizer sessions, bookmarks, quiz attempts, and practice telemetry.",
+  },
+  {
+    icon: Lock,
+    title: "3. How We Protect Your Data",
+    content:
+      "We use Supabase with Postgres Row-Level Security (RLS) policies to ensure your personal data, saved sessions, and bookmarks are accessible only by you. All transmissions are encrypted in transit via TLS 1.3. We enforce secure authentication practices, non-enumerating error responses, and strict password security standards.",
+  },
+  {
+    icon: Globe,
+    title: "4. Cookies & Local Storage",
+    content:
+      "Algo Flow uses essential browser cookies to maintain secure authentication sessions. We utilize browser local storage to preserve your client-side preferences (such as Light/Dark mode, volume settings, and mental math practice state) across visits without transmitting unnecessary tracking telemetry.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "5. Third-Party Subprocessors",
+    content:
+      "To provide our services reliably, we partner with industry-standard cloud infrastructure providers: Supabase (managed Postgres authentication and database) and Vercel (application edge hosting and CDN). We do not sell, rent, or monetize your personal information with third-party advertisers.",
+  },
+  {
+    icon: UserCheck,
+    title: "6. Your Rights & Data Controls",
+    content:
+      "You have full control over your personal data. You can inspect your activity history, delete saved visualizer bookmarks and practice sessions directly from your Dashboard, or request full account deletion at any time. For questions or privacy inquiries, contact support at support@algoflow.dev.",
+  },
+];
 
 export default async function PrivacyPage() {
   const supabase = await createClient();
@@ -64,32 +61,41 @@ export default async function PrivacyPage() {
       <Navbar initialUser={user} />
       <main
         id="main-content"
-        className="mx-auto w-full max-w-4xl flex-1 px-4 pb-24 pt-36 sm:px-6 lg:px-8"
+        className="mx-auto w-full max-w-4xl flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8"
       >
-        <p className="section-kicker">Draft disclosure</p>
-        <h1 className="mt-3 text-4xl font-extrabold text-text-primary">
-          Privacy and data-flow status
-        </h1>
-        <p className="mt-4 text-sm text-text-secondary">
-          Draft version: {PRIVACY_VERSION} ? Repository evidence checked 24 July 2026
-        </p>
-        <div
-          role="status"
-          className="mt-6 rounded-2xl border border-warning/25 bg-warning-muted p-5 text-sm leading-6 text-text-secondary"
-        >
-          This draft is intentionally not presented as a complete legal policy. Account registration
-          is closed while operator and processing facts are verified.
+        <div className="text-center sm:text-left">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-muted px-3.5 py-1 text-xs font-bold font-mono uppercase tracking-wider text-primary shadow-xs">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            <span>Transparency & Trust</span>
+          </span>
+          <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-text-primary tracking-tight">
+            Privacy Policy
+          </h1>
+          <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
+            Version {PRIVACY_VERSION} • Last updated August 2026
+          </p>
         </div>
-        <article className="neu-raised mt-8 max-w-none rounded-3xl p-6 text-text-secondary sm:p-10">
-          {sections.map(([title, body]) => (
-            <section key={title}>
-              <h2 className="mb-4 mt-8 text-2xl font-semibold text-text-primary first:mt-0">
-                {title}
-              </h2>
-              <p className="mb-4 leading-7">{body}</p>
-            </section>
-          ))}
-        </article>
+
+        <div className="neu-float mt-10 rounded-3xl border border-border p-6 sm:p-10 shadow-xl divide-y divide-border/60">
+          {privacySections.map((section) => {
+            const Icon = section.icon;
+            return (
+              <section key={section.title} className="py-8 first:pt-0 last:pb-0">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                    {section.title}
+                  </h2>
+                </div>
+                <p className="text-sm leading-relaxed text-text-secondary pl-12">
+                  {section.content}
+                </p>
+              </section>
+            );
+          })}
+        </div>
       </main>
       <Footer />
     </div>

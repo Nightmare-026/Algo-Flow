@@ -97,6 +97,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     );
   }
 
+  const seenOpNames = new Set<string>();
   const structureOperations = operations
     .filter(
       (operation) =>
@@ -104,7 +105,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         operation.isPublished &&
         (operationCounts.get(operation.id) ?? 0) > 0
     )
-    .sort((left, right) => left.displayOrder - right.displayOrder);
+    .sort((left, right) => left.displayOrder - right.displayOrder)
+    .filter((op) => {
+      if (seenOpNames.has(op.name)) return false;
+      seenOpNames.add(op.name);
+      return true;
+    });
 
   const siteUrl = getSiteUrl();
   const structuredData = {

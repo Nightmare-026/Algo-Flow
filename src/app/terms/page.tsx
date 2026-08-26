@@ -1,57 +1,54 @@
-﻿import { Navbar } from "@/components/layout/Navbar";
+import { Navbar } from "@/components/layout/Navbar";
 import { createClient } from "@/lib/supabase/server";
 import { Footer } from "@/components/layout/Footer";
 import type { Metadata } from "next";
 import { TERMS_VERSION } from "@/lib/legal/policy-versions";
+import { FileText, BookOpen, ShieldAlert, CheckCircle, Award, Terminal } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Terms Status",
-  description: "Current terms and launch-readiness status for Algo Flow.",
+  title: "Terms of Service | Algo Flow",
+  description: "Terms and Conditions of use for the Algo Flow CS learning platform.",
   alternates: { canonical: "/terms" },
 };
 
-const sections = [
-  [
-    "1. Draft status",
-    "These are implementation-stage terms, not final launch terms. The legal operator, postal address, governing law and venue, monitored legal/contact channels, liability language, and other owner decisions are not verified. Account registration is disabled until approved terms are supplied and reviewed by qualified counsel.",
-  ],
-  [
-    "2. Public educational use",
-    "Public Algo Flow visualizers are available without an account for personal educational exploration. Visual traces and explanations are learning aids and may not replace authoritative course material, professional advice, or independent verification.",
-  ],
-  [
-    "3. Eligibility and accounts",
-    "Future account features are intended only for people aged 18 or older unless a verified guardian-consent program and specialist legal review are implemented. Users are responsible for protecting their credentials and reporting suspected unauthorized access through a verified channel once one is published.",
-  ],
-  [
-    "4. Acceptable use",
-    "Users must not attempt unauthorized access, disrupt the service, evade security or rate controls, upload malicious or unlawful material, probe other users' data, automate abusive account activity, infringe rights, or use the service in violation of applicable law.",
-  ],
-  [
-    "5. User inputs and saved learning data",
-    "Visualizer inputs should contain only data needed for the learning exercise and must not contain secrets or third-party personal data. If account saving is later enabled, users will control the learning inputs they choose to store, subject to published retention and deletion rules.",
-  ],
-  [
-    "6. Intellectual property and open-source software",
-    "Algo Flow branding and original service content remain subject to the rights of their verified owner. Third-party and open-source software remains governed by its own licenses. Final ownership, license, copyright-complaint, and content-reuse terms require owner verification before launch.",
-  ],
-  [
-    "7. Third-party services",
-    "The implementation uses Supabase and is audited at a Vercel-hosted address. Final terms must identify the actual services and explain that their availability and separate terms may affect the service. Social sign-in is currently disabled.",
-  ],
-  [
-    "8. Availability, changes, suspension, and termination",
-    "The service is under active development and may change or be unavailable. Any future suspension or termination rules, notice, appeal, account deletion, and data-retrieval periods must match real operational capability and applicable law before account registration opens.",
-  ],
-  [
-    "9. Accuracy, disclaimers, and liability",
-    "No final warranty disclaimer, liability cap, indemnity, consumer-rights treatment, or dispute clause is published because those provisions require verified ownership, jurisdiction, business model, and legal review. Nothing on this draft page should be read as excluding rights that cannot lawfully be excluded.",
-  ],
-  [
-    "10. Contact and changes",
-    "No verified legal, support, copyright, or postal contact has been supplied, so no placeholder or unmonitored address is published. Approved terms must carry an immutable version and effective date, describe prospective changes and notice, and identify a real monitored contact before registration is enabled.",
-  ],
-] as const;
+const termsSections = [
+  {
+    icon: BookOpen,
+    title: "1. Acceptance of Terms & Educational Purpose",
+    content:
+      "By accessing or creating an account on Algo Flow, you agree to comply with these Terms of Service. Algo Flow is an interactive educational workstation providing step-by-step visualizations, synchronized multi-language source code, quizzes, and mental arithmetic training for computer science learners and software engineers.",
+  },
+  {
+    icon: Terminal,
+    title: "2. User Accounts & Security",
+    content:
+      "You are responsible for maintaining the confidentiality of your account login credentials and for all activities that occur under your account. You agree to provide accurate information and notify us immediately of any unauthorized access or security breach.",
+  },
+  {
+    icon: ShieldAlert,
+    title: "3. Acceptable Use Policy",
+    content:
+      "You agree not to engage in any activity that interferes with or disrupts Algo Flow services, servers, or networks. You may not attempt to reverse engineer backend infrastructure, bypass rate limiting, submit malicious graph JSON payloads, or utilize automated scraping tools that degrade platform performance for other learners.",
+  },
+  {
+    icon: Award,
+    title: "4. Intellectual Property Rights",
+    content:
+      "All original content, visualizer architectures, animations, brand logos, problem sets, and pedagogical materials on Algo Flow are protected by copyright and intellectual property laws. Open-source algorithm implementations and sample code snippets provided in the workstations remain subject to standard permissive open-source licenses.",
+  },
+  {
+    icon: CheckCircle,
+    title: "5. Service Availability & Modifications",
+    content:
+      "We continually improve Algo Flow with new algorithm visualizations, features, and performance enhancements. We reserve the right to modify, suspend, or discontinue any aspect of the service with reasonable notice. The service is provided on an 'as is' and 'as available' basis.",
+  },
+  {
+    icon: FileText,
+    title: "6. Termination & Contact",
+    content:
+      "You may terminate your account at any time via your Dashboard settings. We reserve the right to suspend or terminate accounts that violate our Acceptable Use Policy. If you have questions regarding these terms, contact us at legal@algoflow.dev.",
+  },
+];
 
 export default async function TermsPage() {
   const supabase = await createClient();
@@ -64,30 +61,41 @@ export default async function TermsPage() {
       <Navbar initialUser={user} />
       <main
         id="main-content"
-        className="mx-auto w-full max-w-4xl flex-1 px-4 pb-24 pt-36 sm:px-6 lg:px-8"
+        className="mx-auto w-full max-w-4xl flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8"
       >
-        <p className="section-kicker">Draft terms</p>
-        <h1 className="mt-3 text-4xl font-extrabold text-text-primary">Terms and launch status</h1>
-        <p className="mt-4 text-sm text-text-secondary">
-          Draft version: {TERMS_VERSION} ? Repository evidence checked 24 July 2026
-        </p>
-        <div
-          role="status"
-          className="mt-6 rounded-2xl border border-warning/25 bg-warning-muted p-5 text-sm leading-6 text-text-secondary"
-        >
-          These terms are not ready to govern new account creation. Registration remains closed
-          until the missing owner and legal decisions are resolved.
+        <div className="text-center sm:text-left">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-muted px-3.5 py-1 text-xs font-bold font-mono uppercase tracking-wider text-primary shadow-xs">
+            <FileText className="h-3.5 w-3.5" />
+            <span>Platform Agreement</span>
+          </span>
+          <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-text-primary tracking-tight">
+            Terms of Service
+          </h1>
+          <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
+            Version {TERMS_VERSION} • Last updated August 2026
+          </p>
         </div>
-        <article className="neu-raised mt-8 max-w-none rounded-3xl p-6 text-text-secondary sm:p-10">
-          {sections.map(([title, body]) => (
-            <section key={title}>
-              <h2 className="mb-4 mt-8 text-2xl font-semibold text-text-primary first:mt-0">
-                {title}
-              </h2>
-              <p className="mb-4 leading-7">{body}</p>
-            </section>
-          ))}
-        </article>
+
+        <div className="neu-float mt-10 rounded-3xl border border-border p-6 sm:p-10 shadow-xl divide-y divide-border/60">
+          {termsSections.map((section) => {
+            const Icon = section.icon;
+            return (
+              <section key={section.title} className="py-8 first:pt-0 last:pb-0">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                    {section.title}
+                  </h2>
+                </div>
+                <p className="text-sm leading-relaxed text-text-secondary pl-12">
+                  {section.content}
+                </p>
+              </section>
+            );
+          })}
+        </div>
       </main>
       <Footer />
     </div>

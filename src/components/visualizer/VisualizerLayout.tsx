@@ -704,7 +704,7 @@ export function VisualizerLayout({
                   {
                     title: "Inspector Panels",
                     description:
-                      "View synchronized pseudocode, source code (5 languages), step-by-step explanation, and execution log.",
+                      "View synchronized pseudocode, source code (4 languages), step-by-step explanation, and execution log.",
                   },
                   {
                     title: "Interactive Practice Mode",
