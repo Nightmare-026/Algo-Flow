@@ -25,9 +25,5 @@ export function useMediaQuery(query: string): boolean {
     (onStoreChange: () => void) => subscribe(query, onStoreChange),
     [query]
   );
-  return useSyncExternalStore(
-    subscribeToQuery,
-    () => getSnapshot(query),
-    getServerSnapshot
-  );
+  return useSyncExternalStore(subscribeToQuery, () => getSnapshot(query), getServerSnapshot);
 }

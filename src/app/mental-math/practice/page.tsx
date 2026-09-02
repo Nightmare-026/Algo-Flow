@@ -67,7 +67,11 @@ export default function PracticeGamePage() {
 
   // Persist session results on completion
   useEffect(() => {
-    if (status === "completed" && summary && (summary.mode === "practice" || summary.mode === "weakness")) {
+    if (
+      status === "completed" &&
+      summary &&
+      (summary.mode === "practice" || summary.mode === "weakness")
+    ) {
       saveLocalSessionSummary(summary);
       startTransition(async () => {
         await recordMentalMathSession(summary);
@@ -77,7 +81,11 @@ export default function PracticeGamePage() {
 
   const currentQ = questions[currentIndex];
 
-  if (status === "completed" && summary && (summary.mode === "practice" || summary.mode === "weakness")) {
+  if (
+    status === "completed" &&
+    summary &&
+    (summary.mode === "practice" || summary.mode === "weakness")
+  ) {
     return (
       <div className="flex w-full flex-col px-4 max-w-4xl mx-auto">
         <SessionResults

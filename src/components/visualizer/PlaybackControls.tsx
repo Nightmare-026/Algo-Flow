@@ -46,7 +46,7 @@ export function PlaybackControls() {
     }, activeSpeedMs);
 
     return () => window.clearTimeout(timer);
-  }, [activeSpeedMs, isPlaying, nextStep, skipToEnd]);
+  }, [activeSpeedMs, currentStepIndex, isPlaying, nextStep, skipToEnd]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {

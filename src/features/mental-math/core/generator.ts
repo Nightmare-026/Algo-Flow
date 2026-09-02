@@ -5,7 +5,11 @@ import {
   MathOperation,
   MentalMathQuestion,
 } from "./types";
-import { evaluateBinaryExpression, calculateAdditionCarries, calculateSubtractionBorrows } from "./evaluator";
+import {
+  evaluateBinaryExpression,
+  calculateAdditionCarries,
+  calculateSubtractionBorrows,
+} from "./evaluator";
 import { SessionUniquenessTracker } from "./canonical";
 import { analyzeComplexity } from "./difficulty";
 import { generateDistractors } from "./distractors";
@@ -158,7 +162,9 @@ export function generateSessionQuestions(config: GeneratorConfig): MentalMathQue
   };
 
   const percentageOptions = [5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 80];
-  const percentageBases = [20, 40, 50, 60, 80, 100, 120, 150, 160, 200, 240, 250, 300, 400, 500, 800];
+  const percentageBases = [
+    20, 40, 50, 60, 80, 100, 120, 150, 160, 200, 240, 250, 300, 400, 500, 800,
+  ];
   const mixedPool: MathOperation[] = ["addition", "subtraction", "multiplication", "division"];
 
   const maxTotalAttempts = config.questionCount * 120;
@@ -228,7 +234,10 @@ export function generateSessionQuestions(config: GeneratorConfig): MentalMathQue
           // friendly units
         }
       }
-    } else if ((config.difficulty === "hard" || config.difficulty === "expert") && attempts < maxTotalAttempts * 0.75) {
+    } else if (
+      (config.difficulty === "hard" || config.difficulty === "expert") &&
+      attempts < maxTotalAttempts * 0.75
+    ) {
       if (activeOp === "addition" && config.digitCountLeft >= 2) {
         const carries = calculateAdditionCarries(a, b);
         if (carries === 0) continue; // Require at least 1 carry in hard mode
@@ -249,13 +258,7 @@ export function generateSessionQuestions(config: GeneratorConfig): MentalMathQue
 
     const signature = tracker.register([a, b], activeOp);
     const complexity = analyzeComplexity([a, b], activeOp);
-    const distractorsResult = generateDistractors(
-      a,
-      b,
-      activeOp,
-      evaluation.value,
-      randomFn
-    );
+    const distractorsResult = generateDistractors(a, b, activeOp, evaluation.value, randomFn);
 
     let formattedInline = "";
     if (activeOp === "squares") {

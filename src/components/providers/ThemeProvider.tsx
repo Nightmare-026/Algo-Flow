@@ -22,15 +22,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemePreference>(() => {
     if (typeof window === "undefined") return "light";
     const saved = localStorage.getItem(STORAGE_KEY) as ThemePreference | null;
-    return saved &&
-      ["light", "dark", "dark-neon", "light-edu", "system"].includes(saved)
+    return saved && ["light", "dark", "dark-neon", "light-edu", "system"].includes(saved)
       ? saved
       : "light";
   });
 
   const resolveTheme = useCallback((preference: ThemePreference): "light" | "dark" => {
-    if (preference === "dark" || preference === "dark-neon")
-      return "dark";
+    if (preference === "dark" || preference === "dark-neon") return "dark";
     if (preference === "light" || preference === "light-edu") return "light";
     return typeof window !== "undefined" &&
       window.matchMedia("(prefers-color-scheme: dark)").matches

@@ -101,7 +101,12 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
-                  <Icon className={cn("h-4 w-4 transition-colors", active ? "text-primary" : "text-text-muted")} />
+                  <Icon
+                    className={cn(
+                      "h-4 w-4 transition-colors",
+                      active ? "text-primary" : "text-text-muted"
+                    )}
+                  />
                   {link.label}
                 </Link>
               );
@@ -187,7 +192,9 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                           : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
                       )}
                     >
-                      <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-text-muted")} />
+                      <Icon
+                        className={cn("h-4 w-4", active ? "text-primary" : "text-text-muted")}
+                      />
                       {link.label}
                     </Link>
                   );

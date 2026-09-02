@@ -92,9 +92,7 @@ export default function MentalMathHubPage() {
               </p>
               <p className="text-xl font-extrabold font-display text-text-primary tabular-nums">
                 {stats?.totalQuestionsSolved || 0}{" "}
-                <span className="text-xs font-normal font-sans text-text-secondary">
-                  Problems
-                </span>
+                <span className="text-xs font-normal font-sans text-text-secondary">Problems</span>
               </p>
             </div>
           </div>
@@ -127,7 +125,8 @@ export default function MentalMathHubPage() {
             Explore Arithmetic Operations
           </h2>
           <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
-            Search and filter by category. Click any operation card to configure digit counts and launch your drill.
+            Search and filter by category. Click any operation card to configure digit counts and
+            launch your drill.
           </p>
         </div>
 
@@ -170,7 +169,8 @@ export default function MentalMathHubPage() {
             Training Formats
           </h2>
           <p className="text-xs sm:text-sm text-text-secondary mt-1">
-            Choose your format: customizable studio, high-cadence 60s sprint, or standardized timed test.
+            Choose your format: customizable studio, high-cadence 60s sprint, or standardized timed
+            test.
           </p>
         </div>
 

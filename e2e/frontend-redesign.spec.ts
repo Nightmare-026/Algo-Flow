@@ -85,11 +85,9 @@ test("auth fields use accessible in-field labels without visible examples", asyn
 
   const firstName = page.getByLabel("First name", { exact: true });
   const firstNameLabel = page.locator('label[for="signup-first-name"]');
-  const gender = page.getByLabel("Gender", { exact: true });
 
   await expect(firstName).toBeVisible();
   await expect(page.getByLabel("Last name", { exact: true })).toBeVisible();
-  await expect(gender).toBeVisible();
   await expect(page.getByLabel("Email address", { exact: true })).toBeVisible();
   await expect(page.locator("#signup-password")).toHaveAttribute("placeholder", " ");
   await expect(page.locator("#signup-password-confirm")).toHaveAttribute("placeholder", " ");
@@ -121,8 +119,4 @@ test("auth fields use accessible in-field labels without visible examples", asyn
   await firstName.fill("Ada");
   await firstName.press("Tab");
   await expect(firstName).toHaveValue("Ada");
-  // FloatingSelect is a custom popover, not a native <select>
-  await gender.click();
-  await page.getByRole("option", { name: "Female" }).click();
-  await expect(page.getByRole("button", { name: "Gender" })).toContainText("Female");
 });

@@ -66,7 +66,10 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <span className="inline-block h-2 w-2 rounded-full bg-primary" />
-              <span>{catalogStats.visualizerCount} Published Algorithms • {catalogStats.structureCount} Data Structures</span>
+              <span>
+                {catalogStats.visualizerCount} Published Algorithms • {catalogStats.structureCount}{" "}
+                Data Structures
+              </span>
             </div>
           </div>
 

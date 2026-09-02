@@ -547,7 +547,9 @@ export function VisualizerLayout({
                       <dd className="text-text-secondary">Next Step</dd>
                       <dt className="font-mono font-bold text-text-secondary kbd-style">R</dt>
                       <dd className="text-text-secondary">Restart</dd>
-                      <dt className="font-mono font-bold text-text-secondary kbd-style">Shift + →</dt>
+                      <dt className="font-mono font-bold text-text-secondary kbd-style">
+                        Shift + →
+                      </dt>
                       <dd className="text-text-secondary">Jump to End</dd>
                     </dl>
                     <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary mt-4">

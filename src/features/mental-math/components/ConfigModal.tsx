@@ -190,8 +190,10 @@ export function ConfigModal({
 
   // Generate dynamic live math sample for preview
   const getLivePreview = () => {
-    let sampleLeft = digitCountLeft === 1 ? 8 : digitCountLeft === 2 ? 48 : digitCountLeft === 3 ? 348 : 2848;
-    let sampleRight = digitCountRight === 1 ? 6 : digitCountRight === 2 ? 37 : digitCountRight === 3 ? 245 : 1245;
+    let sampleLeft =
+      digitCountLeft === 1 ? 8 : digitCountLeft === 2 ? 48 : digitCountLeft === 3 ? 348 : 2848;
+    let sampleRight =
+      digitCountRight === 1 ? 6 : digitCountRight === 2 ? 37 : digitCountRight === 3 ? 245 : 1245;
 
     if (operation === "squares") {
       sampleLeft = digitCountLeft === 1 ? 7 : digitCountLeft === 2 ? 25 : 125;
@@ -243,7 +245,8 @@ export function ConfigModal({
   };
 
   const liveSample = getLivePreview();
-  const estimatedSeconds = questionCount * (difficulty === "easy" ? 3 : difficulty === "medium" ? 5 : 8);
+  const estimatedSeconds =
+    questionCount * (difficulty === "easy" ? 3 : difficulty === "medium" ? 5 : 8);
 
   return (
     <form
@@ -295,9 +298,7 @@ export function ConfigModal({
           <div className="font-mono text-2xl sm:text-3xl font-extrabold text-primary tracking-tight">
             {liveSample.formula}
           </div>
-          <p className="text-[11px] font-sans font-medium text-text-secondary">
-            {liveSample.desc}
-          </p>
+          <p className="text-[11px] font-sans font-medium text-text-secondary">{liveSample.desc}</p>
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-1.5 shrink-0">
@@ -401,10 +402,10 @@ export function ConfigModal({
                 {digitCountLeft === 1
                   ? "1 to 9 (1d)"
                   : digitCountLeft === 2
-                  ? "10 to 99 (2d)"
-                  : digitCountLeft === 3
-                  ? "100 to 999 (3d)"
-                  : "1,000 to 9,999 (4d)"}
+                    ? "10 to 99 (2d)"
+                    : digitCountLeft === 3
+                      ? "100 to 999 (3d)"
+                      : "1,000 to 9,999 (4d)"}
               </span>
             </div>
 
@@ -459,12 +460,12 @@ export function ConfigModal({
                 {isUnaryOp
                   ? "Single Operand"
                   : digitCountRight === 1
-                  ? "1 to 9 (1d)"
-                  : digitCountRight === 2
-                  ? "10 to 99 (2d)"
-                  : digitCountRight === 3
-                  ? "100 to 999 (3d)"
-                  : "1,000 to 9,999 (4d)"}
+                    ? "1 to 9 (1d)"
+                    : digitCountRight === 2
+                      ? "10 to 99 (2d)"
+                      : digitCountRight === 3
+                        ? "100 to 999 (3d)"
+                        : "1,000 to 9,999 (4d)"}
               </span>
             </div>
 
@@ -550,16 +551,21 @@ export function ConfigModal({
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-display text-text-primary">{diff.label}</span>
-                    {isSelected && (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
-                    )}
+                    <span className="text-xs font-bold font-display text-text-primary">
+                      {diff.label}
+                    </span>
+                    {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary" />}
                   </div>
                   <p className="text-[11px] font-sans text-text-secondary mt-1 leading-snug">
                     {diff.desc}
                   </p>
                 </div>
-                <span className={cn("text-[9px] font-mono font-bold px-2 py-0.5 rounded-md border text-center", diff.badgeColor)}>
+                <span
+                  className={cn(
+                    "text-[9px] font-mono font-bold px-2 py-0.5 rounded-md border text-center",
+                    diff.badgeColor
+                  )}
+                >
                   {diff.carriesDetail}
                 </span>
               </button>
@@ -666,9 +672,13 @@ export function ConfigModal({
       {/* 7. Action Footer */}
       <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-border/80">
         <div className="text-xs font-mono text-text-muted flex items-center gap-2">
-          <span>Est. Session Time: <strong className="text-text-primary">~{estimatedSeconds}s</strong></span>
+          <span>
+            Est. Session Time: <strong className="text-text-primary">~{estimatedSeconds}s</strong>
+          </span>
           <span>•</span>
-          <span>Press <strong className="text-text-primary">Enter ↵</strong> to launch</span>
+          <span>
+            Press <strong className="text-text-primary">Enter ↵</strong> to launch
+          </span>
         </div>
 
         <button

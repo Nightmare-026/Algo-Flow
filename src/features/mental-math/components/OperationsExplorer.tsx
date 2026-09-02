@@ -220,12 +220,13 @@ export function OperationsExplorer() {
 
       {/* Result Counter & Subtitle */}
       <div className="flex items-center justify-between px-1">
-        <p className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted" aria-live="polite">
+        <p
+          className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted"
+          aria-live="polite"
+        >
           Showing {filteredOperations.length} of {ALL_OPERATIONS.length} operations
         </p>
-        <span className="text-xs font-mono font-semibold text-primary">
-          1–4 Digit Configurable
-        </span>
+        <span className="text-xs font-mono font-semibold text-primary">1–4 Digit Configurable</span>
       </div>
 
       {/* Operation Cards Grid (Matching /visualizers Card Design) */}
@@ -247,9 +248,7 @@ export function OperationsExplorer() {
                 }}
                 transition={{ duration: 0.3 }}
               >
-                <div
-                  className="neu-raised group flex h-full flex-col justify-between rounded-3xl border border-border p-6 shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:-translate-y-1 hover:shadow-[var(--shadow-raised)] transition-all duration-200 relative overflow-hidden"
-                >
+                <div className="neu-raised group flex h-full flex-col justify-between rounded-3xl border border-border p-6 shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:-translate-y-1 hover:shadow-[var(--shadow-raised)] transition-all duration-200 relative overflow-hidden">
                   <div>
                     <div className="flex items-start justify-between gap-4">
                       <span

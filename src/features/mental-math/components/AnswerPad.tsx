@@ -176,8 +176,7 @@ export function AnswerPad({
                     "border-success bg-success text-white font-black shadow-[0_0_24px_rgba(34,197,94,0.3)] scale-[1.02]",
                   isWrongSelection &&
                     "border-error bg-error text-white shadow-[0_0_24px_rgba(239,68,68,0.3)]",
-                  !isAnswered &&
-                    "hover:border-primary/50 hover:bg-surface-hover text-text-primary"
+                  !isAnswered && "hover:border-primary/50 hover:bg-surface-hover text-text-primary"
                 )}
                 aria-label={`Option ${idx + 1}: ${option}`}
                 type="button"

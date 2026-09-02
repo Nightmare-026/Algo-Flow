@@ -43,7 +43,13 @@ export function FloatingSelect({
   return (
     <div className="auth-field">
       {/* Hidden input for standard form submission */}
-      <input type="hidden" id={hiddenInputId} name={name} value={selectedValue} required={required} />
+      <input
+        type="hidden"
+        id={hiddenInputId}
+        name={name}
+        value={selectedValue}
+        required={required}
+      />
 
       <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
         <PopoverPrimitive.Trigger asChild>

@@ -200,7 +200,9 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
                 onClick={() => setShowAllQuestions(!showAllQuestions)}
                 className="text-xs font-bold text-primary flex items-center gap-1 hover:underline cursor-pointer select-none"
               >
-                <span>{showAllQuestions ? "Show Fewer" : `View All (${summary.answers.length})`}</span>
+                <span>
+                  {showAllQuestions ? "Show Fewer" : `View All (${summary.answers.length})`}
+                </span>
                 {showAllQuestions ? (
                   <ChevronUp className="w-3.5 h-3.5" />
                 ) : (
@@ -233,16 +235,15 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
                       </span>
                       <div>
                         <p className="font-mono font-extrabold text-text-primary text-base">
-                          {ans.formattedExpression || ans.questionSignature.replace(/:/g, " • ")}{" "}
-                          = {ans.correctAnswer !== undefined ? ans.correctAnswer.toLocaleString() : ""}
+                          {ans.formattedExpression || ans.questionSignature.replace(/:/g, " • ")} ={" "}
+                          {ans.correctAnswer !== undefined
+                            ? ans.correctAnswer.toLocaleString()
+                            : ""}
                         </p>
                         <p className="text-[11px] font-mono text-text-secondary mt-0.5">
                           Your answer:{" "}
                           <strong
-                            className={cn(
-                              "font-bold",
-                              isCorrect ? "text-success" : "text-error"
-                            )}
+                            className={cn("font-bold", isCorrect ? "text-success" : "text-error")}
                           >
                             {ans.userAnswer !== null ? ans.userAnswer.toLocaleString() : "None"}
                           </strong>
