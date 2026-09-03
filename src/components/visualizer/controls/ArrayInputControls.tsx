@@ -215,9 +215,11 @@ export function ArrayInputControls({
               <label className="flex items-center gap-1 font-mono text-[10px] font-semibold text-text-secondary">
                 <Hash className="h-3 w-3 text-primary" aria-hidden="true" />
                 <span className="hidden sm:inline">Index:</span>
+                <span className="sm:hidden">Idx:</span>
                 <Input
                   type="number"
                   value={options.index}
+                  placeholder="0"
                   aria-invalid={Boolean(fieldError)}
                   aria-describedby={fieldError ? "array-input-error" : undefined}
                   onChange={(event) => updateOption("index", Number(event.target.value))}

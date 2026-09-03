@@ -66,6 +66,10 @@ export const treeCodeLineMappings = {
     line(3, 2, 2, 2, 2),
     line(5, 4, 4, 4, 4),
     line(7, 6, 6, 6, 6),
+    line(8, 8, 7, 8, 8),
+    line(9, 9, 8, 9, 9),
+    line(11, 11, 10, 11, 11),
+    line(13, 13, 12, 13, 13),
   ],
   "heap-extract-max": [
     line(1, 2, 2, 2, 2),

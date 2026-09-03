@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { Check, Copy } from "lucide-react";
 import { usePlaybackStore } from "@/stores/playback-store";
@@ -26,21 +26,26 @@ function escapeHtml(value: string) {
 }
 
 function renderFallbackHtml(code: string) {
-  const lineSpans = code
-    .split("\n")
-    .map((l) => `<span class="line">${escapeHtml(l) || "&nbsp;"}</span>`)
+  const lines = code.split("\n");
+  const lineSpans = lines
+    .map(
+      (line, index) =>
+        `<span class="line" data-line="${index + 1}">${escapeHtml(line) || "&nbsp;"}</span>`
+    )
     .join("\n");
-  return `<pre class="shiki" tabindex="0"><code>${lineSpans}</code></pre>`;
+  return `<pre class="shiki vitesse-dark"><code>${lineSpans}</code></pre>`;
 }
 
-function languageLabel(language: CodeLanguage) {
+const languageLabel = (language: CodeLanguage) => {
   if (language === "javascript") return "JavaScript";
   if (language === "typescript") return "TypeScript";
   if (language === "python") return "Python";
   if (language === "java") return "Java";
   if (language === "cpp") return "C++";
   return language;
-}
+};
+
+const emptySubscribe = () => () => {};
 
 export function CodePanel({
   examples,
@@ -51,16 +56,23 @@ export function CodePanel({
   const { steps, currentStepIndex, reducedMotion } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
   const pathname = usePathname();
-  const [activeLang, setActiveLangState] = useState<CodeLanguage>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("algo-flow-lang") as CodeLanguage | null;
-      if (saved && examples.some((example) => example.language === saved)) return saved;
-    }
-    return examples[0]?.language ?? "python";
-  });
+
+  const savedLang = useSyncExternalStore(
+    emptySubscribe,
+    () => (typeof window !== "undefined" ? (localStorage.getItem("algo-flow-lang") as CodeLanguage | null) : null),
+    () => null
+  );
+
+  const [selectedLang, setSelectedLang] = useState<CodeLanguage | null>(null);
+
+  const activeLang: CodeLanguage =
+    selectedLang ??
+    (savedLang && examples.some((example) => example.language === savedLang)
+      ? savedLang
+      : examples[0]?.language ?? "python");
 
   const setActiveLang = (lang: CodeLanguage) => {
-    setActiveLangState(lang);
+    setSelectedLang(lang);
     if (typeof window !== "undefined") {
       localStorage.setItem("algo-flow-lang", lang);
     }

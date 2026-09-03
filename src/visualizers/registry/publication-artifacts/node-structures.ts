@@ -126,8 +126,8 @@ const treeLegend = [
   },
   {
     bucketKey: "sorted",
-    label: "Visited tree node",
-    description: "A node completed in traversal order.",
+    label: "Rebalanced tree node",
+    description: "A node completed or balanced in the tree structure.",
     tone: "success",
   },
   {
@@ -138,8 +138,8 @@ const treeLegend = [
   },
   {
     bucketKey: "swapped",
-    label: "Swapped heap nodes",
-    description: "The child and parent exchanged during heap restoration.",
+    label: "Rewired / rotated node",
+    description: "Nodes exchanged or rewired during rotation or heap adjustment.",
     tone: "warning",
   },
   {

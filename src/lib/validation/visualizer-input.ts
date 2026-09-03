@@ -1,5 +1,5 @@
 import { GraphVisualState, createDefaultGraph } from "@/visualizers/graph/types";
-import { TreeVisualState, createDefaultTree } from "@/visualizers/tree/types";
+import { TreeVisualState } from "@/visualizers/tree/types";
 
 export interface ParseNumberListResult {
   values: number[];
@@ -32,7 +32,7 @@ export const defaultVisualizerInputOptions: VisualizerInputOptions = {
   text: "ALGO FLOW",
   pattern: "FLOW",
   graphState: createDefaultGraph(),
-  treeState: createDefaultTree(),
+  treeState: undefined,
   isDirected: false,
   isWeighted: false,
 };
@@ -86,9 +86,12 @@ export function clampOperationOptions(
   slug: string = ""
 ): VisualizerInputOptions {
   const allowEnd = slug.includes("insert");
+  const isAccess = slug.includes("access");
   const maxIndex = allowEnd ? length : length - 1;
   return {
-    index: Math.min(Math.max(0, options.index), Math.max(0, maxIndex)),
+    index: isAccess
+      ? Math.min(Math.max(-20, options.index), 50)
+      : Math.min(Math.max(0, options.index), Math.max(0, maxIndex)),
     target: options.target,
     value: options.value,
     capacity: Math.min(Math.max(length, options.capacity), 20),
@@ -97,7 +100,7 @@ export function clampOperationOptions(
     text: options.text || "ALGO FLOW",
     pattern: options.pattern || "",
     graphState: options.graphState || createDefaultGraph(),
-    treeState: options.treeState || createDefaultTree(),
+    treeState: options.treeState,
     isDirected: options.isDirected ?? false,
     isWeighted: options.isWeighted ?? false,
     matrixB: options.matrixB,

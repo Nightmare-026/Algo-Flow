@@ -18,7 +18,7 @@ import { Algorithm, CodeExample } from "@/types";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { PlaybackControls } from "./PlaybackControls";
-import { SpeedSlider, SpeedDisplay } from "./SpeedSlider";
+import { SpeedSlider } from "./SpeedSlider";
 import { StepTimeline } from "./StepTimeline";
 import { StepLegend, type StepLegendItem } from "./StepLegend";
 import { InspectorPanel } from "./InspectorPanel";
@@ -31,6 +31,7 @@ import {
 } from "./useVisualizerActions";
 import type { CodeLineMapping } from "@/visualizers/registry/types";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 interface VisualizerLayoutProps {
   algorithm: Algorithm;
@@ -349,6 +350,8 @@ export function VisualizerLayout({
             <Share2 className="h-4 w-4" />
           </button>
 
+          <ThemeToggle />
+
           {/* Inspector Toggle (Mobile) */}
           <button
             onClick={() => setShowInspector(!showInspector)}
@@ -596,7 +599,6 @@ export function VisualizerLayout({
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
               <SpeedSlider />
-              <SpeedDisplay />
             </div>
           </div>
         </div>

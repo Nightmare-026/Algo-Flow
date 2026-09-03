@@ -102,7 +102,9 @@ export function TreeRenderer() {
       }
     };
 
-    traverse(dataState.root, 0, 0, containerWidth);
+    const effectiveWidth = Math.min(containerWidth, 680);
+    const offsetX = (containerWidth - effectiveWidth) / 2;
+    traverse(dataState.root, 0, offsetX, offsetX + effectiveWidth);
     return nodes;
   }, [dataState.root, containerWidth]);
 
@@ -117,25 +119,27 @@ export function TreeRenderer() {
       aria-label={accessibleLabel}
       className="flex items-start justify-center w-full h-full relative overflow-visible bg-bg-surface-light/30 rounded-xl"
     >
-      <div
-        className="absolute bottom-4 left-4 right-4 z-30 flex flex-wrap gap-3 text-xs"
-        aria-hidden="true"
-      >
-        <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm">
-          <span className="font-semibold text-text-secondary">Output: </span>
-          <span className="font-mono text-primary">
-            {traversalOutput.length > 0 ? traversalOutput.join(" → ") : "Waiting for visits"}
-          </span>
-        </div>
-        {dataState.traversalMode === "recursive" && (
+      {(dataState.traversalOutput !== undefined || dataState.traversalMode !== undefined) && (
+        <div
+          className="absolute bottom-4 left-4 right-4 z-30 flex flex-wrap gap-3 text-xs"
+          aria-hidden="true"
+        >
           <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm">
-            <span className="font-semibold text-text-secondary">Call stack: </span>
-            <span className="font-mono text-secondary">
-              {callStack.length > 0 ? callStack.join(" → ") : "empty"}
+            <span className="font-semibold text-text-secondary">Output: </span>
+            <span className="font-mono text-primary">
+              {traversalOutput.length > 0 ? traversalOutput.join(" → ") : "Waiting for visits"}
             </span>
           </div>
-        )}
-      </div>
+          {dataState.traversalMode === "recursive" && (
+            <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm">
+              <span className="font-semibold text-text-secondary">Call stack: </span>
+              <span className="font-mono text-secondary">
+                {callStack.length > 0 ? callStack.join(" → ") : "empty"}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
       <div className="absolute inset-0 pointer-events-none">
         <svg className="w-full h-full overflow-visible">
           {layout.map((node) => {
