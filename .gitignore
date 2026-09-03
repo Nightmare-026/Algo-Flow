@@ -12,8 +12,6 @@
 
 # testing
 /coverage
-/test-results/
-/playwright-report/
 
 # next.js
 /.next/
@@ -45,10 +43,7 @@ docs/supabase_config.md
 *.tsbuildinfo
 next-env.d.ts
 
-# temp & audit
+# temp
 /.tmp/
-/audit-ui/
-/visualizer-master-audit.json
-/scripts/audit-all-133-visualizers.ts
 *.log
 
