@@ -32,6 +32,19 @@
       transition: all 0.2s;
       font-family: system-ui, -apple-system, sans-serif;
     }
+    @media (max-width: 640px) {
+      #agent-fab {
+        bottom: 12px;
+        right: 12px;
+        width: 38px;
+        height: 38px;
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+      }
+      #agent-fab svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
     #agent-fab:hover {
       transform: scale(1.05);
       background: #6d28d9;

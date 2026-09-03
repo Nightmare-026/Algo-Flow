@@ -24,7 +24,6 @@ export function StepExplanation() {
     >
       <div className="flex items-center justify-between border-b border-border pb-2">
         <div className="flex items-center gap-1.5">
-          <span className="flex h-1.5 w-1.5 rounded-full bg-primary" />
           <h2 className="text-xs font-bold font-mono text-text-primary uppercase tracking-wider">
             Step {currentStep.stepNumber}
           </h2>

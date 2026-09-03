@@ -88,26 +88,27 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   href={link.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors duration-200 z-10",
+                    "relative inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors duration-200 z-10 select-none",
                     active
-                      ? "font-bold text-primary"
+                      ? "font-bold text-white shadow-[var(--shadow-raised-sm)]"
                       : "text-text-secondary hover:text-text-primary hover:bg-surface-hover/60"
                   )}
                 >
                   {active && (
                     <motion.div
                       layoutId="activeNavPill"
-                      className="absolute inset-0 rounded-xl border border-primary/25 bg-primary-muted shadow-[var(--shadow-inset)] -z-10"
+                      className="absolute inset-0 rounded-xl border border-primary/30 bg-primary shadow-[var(--shadow-raised-sm)] -z-10"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
                   <Icon
                     className={cn(
                       "h-4 w-4 transition-colors",
-                      active ? "text-primary" : "text-text-muted"
+                      active ? "text-white" : "text-text-muted"
                     )}
+                    aria-hidden="true"
                   />
-                  {link.label}
+                  <span>{link.label}</span>
                 </Link>
               );
             })}
@@ -173,7 +174,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              className="overflow-hidden border-t border-border md:hidden"
+              className="overflow-hidden border-t border-border bg-surface/98 backdrop-blur-2xl shadow-2xl rounded-b-2xl md:hidden"
             >
               <div className="grid gap-2 py-4">
                 {navLinks.map((link) => {
@@ -188,12 +189,13 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                       className={cn(
                         "flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition-colors",
                         active
-                          ? "border border-primary/20 bg-primary-muted font-bold text-primary shadow-[var(--shadow-inset)]"
+                          ? "border border-primary/30 bg-primary font-bold text-white shadow-[var(--shadow-raised-sm)]"
                           : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
                       )}
                     >
                       <Icon
-                        className={cn("h-4 w-4", active ? "text-primary" : "text-text-muted")}
+                        className={cn("h-4 w-4", active ? "text-white" : "text-text-muted")}
+                        aria-hidden="true"
                       />
                       {link.label}
                     </Link>

@@ -153,15 +153,26 @@ export function CodeLanguages() {
           </div>
 
           {/* Code Viewer Panel */}
-          <pre
+          <div
             id="bubble-sort-code-panel"
             role="tabpanel"
             aria-labelledby={`code-tab-${activeLanguage.language}`}
             tabIndex={0}
-            className="overflow-x-auto bg-code-panel-bg p-6 text-xs sm:text-sm font-mono leading-7 text-emerald-100/90"
+            className="overflow-x-auto bg-code-panel-bg p-4 sm:p-6 text-xs sm:text-sm font-mono leading-7"
           >
-            <code>{activeLanguage.code}</code>
-          </pre>
+            <div className="table w-full border-collapse">
+              {activeLanguage.code.split("\n").map((line, idx) => (
+                <div key={idx} className="table-row hover:bg-emerald-500/5 transition-colors">
+                  <span className="table-cell select-none pr-4 sm:pr-6 text-right text-emerald-500/35 font-mono text-[11px] sm:text-xs w-8">
+                    {idx + 1}
+                  </span>
+                  <span className="table-cell text-emerald-100 font-mono whitespace-pre">
+                    {line}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>

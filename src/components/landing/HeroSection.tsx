@@ -127,19 +127,11 @@ function WorkbenchPreview() {
 
       {/* Header Bar */}
       <div className="flex items-center justify-between gap-4 border-b border-border pb-4">
-        <div className="flex items-center gap-2.5">
-          <span
-            className={cn(
-              "flex h-2.5 w-2.5 rounded-full transition-colors",
-              isPlaying ? "bg-primary animate-pulse" : "bg-emerald-400"
-            )}
-          />
-          <div>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
-              Live Simulation Sandbox
-            </span>
-            <h2 className="text-base font-bold font-display text-text-primary">{titleText}</h2>
-          </div>
+        <div>
+          <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
+            Live Simulation Sandbox
+          </span>
+          <h2 className="text-base font-bold font-display text-text-primary">{titleText}</h2>
         </div>
         <span className="neu-inset rounded-full px-3 py-1 font-mono text-xs font-bold text-primary">
           Step {stepIndex + 1}/{fullPreviewTrace.length}
@@ -152,7 +144,7 @@ function WorkbenchPreview() {
           <span className="font-semibold text-text-secondary font-mono">
             Input: [{PREVIEW_INPUT.join(", ")}]
           </span>
-          <span className="font-mono font-bold text-text-muted bg-surface px-2 py-0.5 rounded border border-border">
+          <span className="font-mono font-bold text-text-secondary bg-surface px-2 py-0.5 rounded border border-border">
             Avg Time: O(n²)
           </span>
         </div>
@@ -249,7 +241,7 @@ function WorkbenchPreview() {
       <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 disabled:opacity-30 active:scale-95 cursor-pointer"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 cursor-pointer"
           onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
           disabled={stepIndex === 0}
           aria-label="Previous preview step"
@@ -288,7 +280,7 @@ function WorkbenchPreview() {
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 disabled:opacity-30 active:scale-95 cursor-pointer"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 cursor-pointer"
           onClick={() =>
             setStepIndex((current) => Math.min(fullPreviewTrace.length - 1, current + 1))
           }
@@ -370,7 +362,7 @@ export function HeroSection({
             {[
               { value: `${visualizerCount}`, label: "Interactive Visualizers" },
               { value: `${structureCount}`, label: "Data Structures" },
-              { value: `${languageCount}`, label: "Languages (Python, C++, Java, JS)" },
+              { value: `${languageCount}`, label: "Code Languages" },
             ].map((stat) => (
               <div key={stat.label} className="flex flex-col-reverse">
                 <dt className="text-xs font-medium text-text-muted mt-0.5 leading-snug">

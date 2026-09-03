@@ -177,8 +177,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
 
           {/* Header */}
           <div className="max-w-3xl">
-            <div className="inline-flex min-h-8 items-center gap-2 rounded-full border border-border bg-surface px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-primary shadow-[var(--shadow-raised-sm)]">
-              {structure.category.replace("-", " ")} Structure
+            <div className="inline-flex min-h-8 items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1 text-xs font-bold tracking-wide text-primary shadow-[var(--shadow-raised-sm)] capitalize">
+              {structure.category.replace(/-/g, " ")} Structure
             </div>
             <h1 className="mt-4 text-3xl font-extrabold font-display sm:text-4xl lg:text-5xl text-text-primary">
               {structure.name} <span className="text-gradient-primary">Algorithms</span>

@@ -7,8 +7,9 @@ const footerSections = [
     title: "Platform",
     links: [
       { label: "Visualizer Library", href: "/visualizers" },
+      { label: "Mental Math Trainer", href: "/mental-math" },
       { label: "User Dashboard", href: "/dashboard" },
-      { label: "Interactive Quizzes", href: "/visualizers" },
+      { label: "Interactive Quizzes", href: "/quizzes/bubble-sort" },
     ],
   },
   {
@@ -41,8 +42,10 @@ const footerSections = [
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-border bg-surface/50 transition-colors duration-200">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <footer className="relative mt-auto bg-surface/50 transition-colors duration-200">
+      {/* Top divider with margin on both sides */}
+      <div className="absolute inset-x-4 sm:inset-x-8 lg:inset-x-16 top-0 h-px bg-border rounded-full" />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
           {/* Brand Column */}
           <div className="flex flex-col gap-4">
@@ -65,7 +68,6 @@ export function Footer() {
               inspect state, and master code in 4 languages.
             </p>
             <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
-              <span className="inline-block h-2 w-2 rounded-full bg-primary" />
               <span>
                 {catalogStats.visualizerCount} Published Algorithms • {catalogStats.structureCount}{" "}
                 Data Structures

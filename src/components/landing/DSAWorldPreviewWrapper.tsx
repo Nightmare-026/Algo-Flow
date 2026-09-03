@@ -1,11 +1,6 @@
 "use client";
 
-import dynamic from "next/dynamic";
-
-const DSAWorldPreview = dynamic(
-  () => import("./DSAWorldPreview").then((mod) => mod.DSAWorldPreview),
-  { ssr: false }
-);
+import { DSAWorldPreview } from "./DSAWorldPreview";
 
 export function DSAWorldPreviewWrapper() {
   return <DSAWorldPreview />;
