@@ -1,25 +1,54 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { BarChart3, Flame, Zap, Target, TrendingUp, Play } from "lucide-react";
 import { MasteryRadar } from "@/features/mental-math/components/MasteryRadar";
 import { WeaknessCard } from "@/features/mental-math/components/WeaknessCard";
 import { getLocalMentalMathStats } from "@/features/mental-math/storage/local-store";
+import { getMentalMathUserStats } from "@/features/mental-math/api/actions";
 import { UserMentalMathStats, SessionSummary } from "@/features/mental-math/core/types";
 
 export default function MentalMathProgressPage() {
-  const [stats] = useState<UserMentalMathStats>(() => getLocalMentalMathStats());
+  const [stats, setStats] = useState<UserMentalMathStats | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    Promise.resolve().then(() => {
+      if (active) {
+        setStats(getLocalMentalMathStats());
+        setIsHydrated(true);
+      }
+    });
+
+    getMentalMathUserStats()
+      .then((cloudStats) => {
+        if (active && cloudStats && cloudStats.totalQuestionsSolved > 0) {
+          setStats(cloudStats);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const totalSolved = stats?.totalQuestionsSolved ?? 0;
+  const accuracy = stats?.overallAccuracy ?? 0;
+  const streak = stats?.currentStreakDays ?? 0;
+  const maxStreak = stats?.maxStreakDays ?? 0;
+  const fastestSpeed = stats?.personalBests?.fastestSpeedQPM ?? 0;
+  const totalSessions = stats?.totalSessionsCompleted ?? 0;
+  const totalCorrect = stats?.totalCorrect ?? 0;
 
   return (
-    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-8">
+    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-8 pb-20">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <div className="inline-flex min-h-7 items-center gap-2 rounded-full border border-border bg-surface px-3 text-[11px] font-bold font-display uppercase tracking-wider text-primary shadow-[var(--shadow-raised-sm)] mb-2">
-            <BarChart3 className="w-3.5 h-3.5" />
-            <span>Calculation Telemetry</span>
-          </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-text-primary tracking-tight">
             Mental Math <span className="text-primary">Mastery & Analytics</span>
           </h1>
@@ -29,89 +58,99 @@ export default function MentalMathProgressPage() {
           </p>
         </div>
 
-        <Link
-          href="/mental-math/practice"
-          className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-6 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all"
-        >
-          <Play className="w-3.5 h-3.5 fill-current" />
-          <span>Launch Practice</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard"
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-border bg-surface px-4 text-xs font-bold font-display text-text-secondary hover:text-text-primary hover:bg-surface-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer"
+          >
+            <span>Student Dashboard</span>
+          </Link>
+          <Link
+            href="/mental-math/practice"
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-5 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+          >
+            <Play className="w-3.5 h-3.5 fill-current" />
+            <span>Launch Practice</span>
+          </Link>
+        </div>
       </div>
 
       {/* 4 Summary Stat Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="neu-raised p-6 rounded-3xl border border-border flex flex-col justify-between shadow-sm">
+        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-[var(--shadow-raised-sm)]">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Total Solved
             </span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-sm">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-inset text-primary border border-border shadow-inner">
               <Target className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {stats?.totalQuestionsSolved.toLocaleString() || 0}
+              {isHydrated ? totalSolved.toLocaleString() : "—"}
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1">
-              {stats?.totalSessionsCompleted || 0} completed sessions
+              {totalSolved === 0 ? "Awaiting first run" : `${totalSessions} completed sessions`}
             </p>
           </div>
         </div>
 
-        <div className="neu-raised p-6 rounded-3xl border border-border flex flex-col justify-between shadow-sm">
+        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-[var(--shadow-raised-sm)]">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Overall Accuracy
             </span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-sm">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-inset text-primary border border-border shadow-inner">
               <TrendingUp className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {stats?.overallAccuracy ?? 0}%
+              {isHydrated && totalSolved > 0 ? `${accuracy}%` : "—"}
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1 tabular-nums">
-              {stats?.totalCorrect || 0} of {stats?.totalQuestionsSolved || 0} correct
+              {totalSolved === 0 ? "Calibrating" : `${totalCorrect} of ${totalSolved} correct`}
             </p>
           </div>
         </div>
 
-        <div className="neu-raised p-6 rounded-3xl border border-border flex flex-col justify-between shadow-sm">
+        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-[var(--shadow-raised-sm)]">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Active Streak
             </span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shadow-sm">
-              <Flame className="w-4 h-4 fill-current" />
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-inset text-primary border border-border shadow-inner">
+              <Flame className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {stats?.currentStreakDays || 0}{" "}
+              {isHydrated ? streak : "—"}{" "}
               <span className="text-sm font-normal text-text-muted">Days</span>
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1">
-              Max streak: {stats?.maxStreakDays || 0} days
+              {streak === 0 ? "No active streak" : `Max streak: ${maxStreak} days`}
             </p>
           </div>
         </div>
 
-        <div className="neu-raised p-6 rounded-3xl border border-border flex flex-col justify-between shadow-sm">
+        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-[var(--shadow-raised-sm)]">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Fastest Pace
             </span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-teal-500/10 text-teal-500 border border-teal-500/20 shadow-sm">
-              <Zap className="w-4 h-4 fill-current" />
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-inset text-primary border border-border shadow-inner">
+              <Zap className="w-4 h-4" />
             </span>
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {stats?.personalBests.fastestSpeedQPM || 0}
+              {isHydrated && fastestSpeed > 0 ? fastestSpeed : "—"}
             </div>
-            <p className="text-xs font-medium text-text-secondary mt-1">Questions per minute</p>
+            <p className="text-xs font-medium text-text-secondary mt-1">
+              {fastestSpeed === 0 ? "Awaiting speed sprint" : "Questions per minute"}
+            </p>
           </div>
         </div>
       </section>
@@ -124,15 +163,15 @@ export default function MentalMathProgressPage() {
           </div>
           <div>
             <WeaknessCard
-              weaknesses={stats.identifiedWeaknesses}
-              hasHistory={stats.totalQuestionsSolved > 0}
+              weaknesses={stats.identifiedWeaknesses || []}
+              hasHistory={totalSolved > 0}
             />
           </div>
         </section>
       )}
 
       {/* Full History Log */}
-      <section className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-sm">
+      <section className="neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface flex flex-col gap-4 shadow-[var(--shadow-raised-sm)]">
         <div>
           <h2 className="text-lg font-bold font-display text-text-primary tracking-tight">
             Complete Practice Session History
@@ -142,7 +181,7 @@ export default function MentalMathProgressPage() {
           </p>
         </div>
 
-        {stats && stats.recentSessions.length > 0 ? (
+        {stats && stats.recentSessions && stats.recentSessions.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
@@ -190,8 +229,20 @@ export default function MentalMathProgressPage() {
             </table>
           </div>
         ) : (
-          <div className="neu-inset p-8 rounded-2xl border border-border text-center text-xs text-text-muted shadow-inner">
-            No completed sessions recorded yet. Start practicing to generate analytics.
+          <div className="neu-inset p-10 rounded-2xl border border-border text-center flex flex-col items-center justify-center gap-2.5 shadow-inner">
+            <BarChart3 className="w-10 h-10 text-primary/60 mb-1" />
+            <h3 className="text-base font-bold font-display text-text-primary tracking-tight">
+              No Completed Sessions Recorded Yet
+            </h3>
+            <p className="text-xs text-text-secondary max-w-sm">
+              Your historical log will populate as you solve calculation drills and tests.
+            </p>
+            <Link
+              href="/mental-math/practice"
+              className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            >
+              <span>Start Your First Drill</span>
+            </Link>
           </div>
         )}
       </section>

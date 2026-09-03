@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState, useRef, useTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useMentalMathStore } from "@/features/mental-math/engine/session-store";
 import { CalculationDisplay } from "@/features/mental-math/components/CalculationDisplay";
@@ -46,9 +46,21 @@ export default function PracticeGamePage() {
 
   const [showConfig, setShowConfig] = useState(false);
 
-  // Auto-start or mode reset on mount / param change
+  const hasAutoStartedRef = useRef(false);
+  const lastOpRef = useRef<string | null>(null);
+
+  // If the target operation changes via route param, allow auto-start to fire for the new operation
   useEffect(() => {
-    if (shouldAutoStart) {
+    if (lastOpRef.current !== targetOp) {
+      lastOpRef.current = targetOp;
+      hasAutoStartedRef.current = false;
+    }
+  }, [targetOp]);
+
+  // Auto-start once on mount / operation change (avoids infinite loop on status change)
+  useEffect(() => {
+    if (shouldAutoStart && !hasAutoStartedRef.current) {
+      hasAutoStartedRef.current = true;
       const initialConfig: SessionConfig = {
         mode: isWeakness ? "weakness" : "practice",
         operation: targetOp,
@@ -60,10 +72,8 @@ export default function PracticeGamePage() {
         soundEnabled: true,
       };
       startSession(initialConfig);
-    } else if (status === "completed" && config.mode !== "practice" && config.mode !== "weakness") {
-      abortSession();
     }
-  }, [targetOp, isWeakness, shouldAutoStart, startSession, abortSession, config.mode, status]);
+  }, [shouldAutoStart, isWeakness, targetOp, startSession]);
 
   // Persist session results on completion
   useEffect(() => {
@@ -106,7 +116,7 @@ export default function PracticeGamePage() {
   // Show Drill Setup Studio if status is idle or user explicitly opened config
   if (status === "idle" || showConfig) {
     return (
-      <div className="flex w-full flex-col px-4 max-w-3xl mx-auto pb-12">
+      <div className="flex w-full flex-col px-4 max-w-5xl mx-auto pb-12">
         <ConfigModal
           initialConfig={{
             ...config,

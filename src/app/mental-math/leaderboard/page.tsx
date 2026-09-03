@@ -48,10 +48,6 @@ export default function LeaderboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <div className="inline-flex min-h-7 items-center gap-2 rounded-full border border-border bg-surface px-3 text-[11px] font-bold font-display uppercase tracking-wider text-primary shadow-[var(--shadow-raised-sm)] mb-2">
-            <Trophy className="w-3.5 h-3.5" />
-            <span>Global Rankings</span>
-          </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-text-primary tracking-tight">
             Mental Math <span className="text-primary">Leaderboards</span>
           </h1>
@@ -211,16 +207,20 @@ export default function LeaderboardPage() {
       )}
 
       {/* Operation Filter Chips */}
-      <div className="flex flex-wrap items-center gap-1.5 pt-2">
+      <div
+        className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none"
+        role="tablist"
+        aria-label="Filter leaderboard by operation"
+      >
         {operations.map((op) => (
           <button
             key={op.id}
             onClick={() => setSelectedOp(op.id)}
             className={cn(
-              "px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer",
+              "h-10 shrink-0 rounded-xl px-4 text-xs font-bold font-display transition-all duration-200 cursor-pointer select-none flex items-center justify-center whitespace-nowrap",
               selectedOp === op.id
-                ? "bg-primary-muted text-primary border border-primary/30"
-                : "text-text-secondary hover:text-text-primary bg-surface border border-border hover:bg-surface-hover"
+                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                : "border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-text-primary hover:bg-surface-hover active:scale-95"
             )}
           >
             {op.label}
@@ -229,58 +229,89 @@ export default function LeaderboardPage() {
       </div>
 
       {/* Leaderboard Table Container */}
-      <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-border/80 text-text-muted font-mono uppercase tracking-wider text-[11px]">
-                <th className="py-3 px-3.5 w-16">Rank</th>
-                <th className="py-3 px-3.5">Learner</th>
-                <th className="py-3 px-3.5">Operation</th>
-                <th className="py-3 px-3.5">Accuracy</th>
-                <th className="py-3 px-3.5">Cadence (QPM)</th>
-                <th className="py-3 px-3.5 text-right">Verified Score</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/40 font-mono">
-              {filteredEntries.map((entry) => (
-                <tr key={entry.id} className="hover:bg-surface-hover/50 transition-colors">
-                  <td className="py-3.5 px-3.5">
-                    <span
-                      className={cn(
-                        "inline-flex h-7 w-7 items-center justify-center rounded-xl font-extrabold text-xs shadow-sm",
-                        entry.rank === 1
-                          ? "bg-amber-500 text-white"
-                          : entry.rank === 2
-                            ? "bg-slate-300 text-slate-900"
-                            : entry.rank === 3
-                              ? "bg-amber-700 text-white"
-                              : "bg-surface-inset border border-border text-text-secondary"
-                      )}
-                    >
-                      #{entry.rank}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-3.5 font-sans font-bold text-text-primary text-sm">
-                    {entry.displayName}
-                  </td>
-                  <td className="py-3.5 px-3.5 font-sans capitalize text-primary font-bold">
-                    {entry.operation}
-                  </td>
-                  <td className="py-3.5 px-3.5 font-bold text-text-primary tabular-nums">
-                    {entry.accuracy}%
-                  </td>
-                  <td className="py-3.5 px-3.5 text-text-secondary tabular-nums">
-                    {entry.speedQPM} QPM
-                  </td>
-                  <td className="py-3.5 px-3.5 text-right font-extrabold text-primary font-display text-sm tabular-nums">
-                    {entry.score.toLocaleString()} PTS
-                  </td>
+      <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-[var(--shadow-raised-sm)] bg-surface">
+        {filteredEntries.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-border/80 text-text-muted font-mono uppercase tracking-wider text-[11px]">
+                  <th className="py-3 px-3.5 w-16">Rank</th>
+                  <th className="py-3 px-3.5">Learner</th>
+                  <th className="py-3 px-3.5">Operation</th>
+                  <th className="py-3 px-3.5">Accuracy</th>
+                  <th className="py-3 px-3.5">Cadence (QPM)</th>
+                  <th className="py-3 px-3.5 text-right">Verified Score</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-border/40 font-mono">
+                {filteredEntries.map((entry) => (
+                  <tr key={entry.id} className="hover:bg-surface-hover/50 transition-colors">
+                    <td className="py-3.5 px-3.5">
+                      <span
+                        className={cn(
+                          "inline-flex h-7 w-7 items-center justify-center rounded-xl font-extrabold text-xs shadow-sm",
+                          entry.rank === 1
+                            ? "bg-amber-500 text-white"
+                            : entry.rank === 2
+                              ? "bg-slate-300 text-slate-900"
+                              : entry.rank === 3
+                                ? "bg-amber-700 text-white"
+                                : "bg-surface-inset border border-border text-text-secondary"
+                        )}
+                      >
+                        #{entry.rank}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-3.5 font-sans font-bold text-text-primary text-sm">
+                      {entry.displayName}
+                    </td>
+                    <td className="py-3.5 px-3.5 font-sans capitalize text-primary font-bold">
+                      {entry.operation}
+                    </td>
+                    <td className="py-3.5 px-3.5 font-bold text-text-primary tabular-nums">
+                      {entry.accuracy}%
+                    </td>
+                    <td className="py-3.5 px-3.5 text-text-secondary tabular-nums">
+                      {entry.speedQPM} QPM
+                    </td>
+                    <td className="py-3.5 px-3.5 text-right font-extrabold text-primary font-display text-sm tabular-nums">
+                      {entry.score.toLocaleString()} PTS
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="neu-inset p-10 rounded-2xl border border-border text-center flex flex-col items-center justify-center gap-2.5 shadow-inner">
+            <Trophy className="w-10 h-10 text-primary/60 mb-1" />
+            <h3 className="text-base font-bold font-display text-text-primary tracking-tight">
+              No Verified Records Yet
+            </h3>
+            <p className="text-xs text-text-secondary max-w-sm">
+              No learners have recorded runs for this mode and operation yet. Complete a session now to claim rank #1!
+            </p>
+            <Link
+              href={
+                activeTab === "daily"
+                  ? "/mental-math/daily"
+                  : activeTab === "speed"
+                    ? "/mental-math/speed"
+                    : "/mental-math/test"
+              }
+              className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            >
+              <span>
+                Launch{" "}
+                {activeTab === "daily"
+                  ? "Daily Challenge"
+                  : activeTab === "speed"
+                    ? "Speed Sprint"
+                    : "Assessment"}
+              </span>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

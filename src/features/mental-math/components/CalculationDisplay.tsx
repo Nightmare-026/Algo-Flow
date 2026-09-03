@@ -24,24 +24,7 @@ export function CalculationDisplay({
   const symbol = getOperatorSymbol(signature.operation);
 
   const getOpBadgeClass = () => {
-    switch (signature.operation) {
-      case "addition":
-        return "text-emerald-500 bg-emerald-500/10 border-emerald-500/20";
-      case "subtraction":
-        return "text-cyan-500 bg-cyan-500/10 border-cyan-500/20";
-      case "multiplication":
-        return "text-amber-500 bg-amber-500/10 border-amber-500/20";
-      case "division":
-        return "text-purple-500 bg-purple-500/10 border-purple-500/20";
-      case "squares":
-        return "text-rose-500 bg-rose-500/10 border-rose-500/20";
-      case "roots":
-        return "text-indigo-500 bg-indigo-500/10 border-indigo-500/20";
-      case "percentages":
-        return "text-blue-500 bg-blue-500/10 border-blue-500/20";
-      default:
-        return "text-primary bg-primary-muted/20 border-primary/20";
-    }
+    return "text-primary bg-surface-inset border-border shadow-inner";
   };
 
   const screenReaderText =
@@ -155,13 +138,13 @@ export function CalculationDisplay({
             <span className="font-mono tabular-nums text-3xl sm:text-5xl font-extrabold text-text-primary tracking-tight">
               {op1}
             </span>
-            <span className="font-mono text-xl sm:text-2xl font-bold text-rose-500 -mt-4 ml-0.5">
+            <span className="font-mono text-xl sm:text-2xl font-bold text-primary -mt-4 ml-0.5">
               ²
             </span>
           </div>
         ) : signature.operation === "roots" ? (
           <div className="flex items-center gap-1">
-            <span className="font-display text-2xl sm:text-4xl font-extrabold text-indigo-500">
+            <span className="font-display text-2xl sm:text-4xl font-extrabold text-primary">
               √
             </span>
             <span className="font-mono tabular-nums text-3xl sm:text-5xl font-extrabold text-text-primary tracking-tight">

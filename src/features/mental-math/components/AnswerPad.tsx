@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { Delete, CornerDownLeft } from "lucide-react";
+import { Delete, CornerDownLeft, Keyboard, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AnswerPadProps {
@@ -97,25 +97,27 @@ export function AnswerPad({
           type="button"
           onClick={() => hintsEnabled && onToggleHints()}
           className={cn(
-            "px-3.5 py-1 rounded-xl transition-all select-none cursor-pointer",
+            "px-3.5 py-1.5 rounded-xl transition-all select-none cursor-pointer flex items-center gap-1.5",
             !hintsEnabled
               ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
               : "text-text-secondary hover:text-text-primary"
           )}
         >
-          ⌨️ Direct Keypad
+          <Keyboard className="w-3.5 h-3.5" />
+          <span>Direct Keypad</span>
         </button>
         <button
           type="button"
           onClick={() => !hintsEnabled && onToggleHints()}
           className={cn(
-            "px-3.5 py-1 rounded-xl transition-all select-none cursor-pointer",
+            "px-3.5 py-1.5 rounded-xl transition-all select-none cursor-pointer flex items-center gap-1.5",
             hintsEnabled
               ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
               : "text-text-secondary hover:text-text-primary"
           )}
         >
-          🃏 4 Choices
+          <LayoutGrid className="w-3.5 h-3.5" />
+          <span>4 Choices</span>
         </button>
       </div>
     );

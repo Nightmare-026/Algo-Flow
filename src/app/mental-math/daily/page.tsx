@@ -133,22 +133,28 @@ export default function DailyChallengePage() {
             </Link>
           </div>
 
-          <div className="divide-y divide-border/60">
-            {leaderboard.slice(0, 5).map((entry) => (
-              <div key={entry.id} className="py-3 flex items-center justify-between gap-4 text-xs">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-inset border border-border font-mono font-bold text-primary">
-                    #{entry.rank}
-                  </span>
-                  <span className="font-bold text-text-primary">{entry.displayName}</span>
+          {leaderboard.length > 0 ? (
+            <div className="divide-y divide-border/60">
+              {leaderboard.slice(0, 5).map((entry) => (
+                <div key={entry.id} className="py-3 flex items-center justify-between gap-4 text-xs">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-inset border border-border font-mono font-bold text-primary">
+                      #{entry.rank}
+                    </span>
+                    <span className="font-bold text-text-primary">{entry.displayName}</span>
+                  </div>
+                  <div className="flex items-center gap-4 text-right font-mono">
+                    <span className="font-extrabold text-primary">{entry.score} PTS</span>
+                    <span className="text-text-muted">{entry.accuracy}% acc</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4 text-right font-mono">
-                  <span className="font-extrabold text-primary">{entry.score} PTS</span>
-                  <span className="text-text-muted">{entry.accuracy}% acc</span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="neu-inset p-6 rounded-2xl border border-border text-center text-xs text-text-muted shadow-inner">
+              No daily challenge runs recorded yet today. Complete the challenge to claim rank #1!
+            </div>
+          )}
         </section>
       </div>
     );
@@ -157,16 +163,12 @@ export default function DailyChallengePage() {
   if (status === "idle") {
     return (
       <div className="flex w-full flex-col px-4 max-w-3xl mx-auto gap-6">
-        <div className="neu-float rounded-3xl p-6 sm:p-10 border border-border text-center flex flex-col items-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-muted text-primary border border-primary/30 shadow-[var(--shadow-raised-sm)] mb-3">
+        <div className="neu-float rounded-3xl p-6 sm:p-10 border border-border text-center flex flex-col items-center shadow-[var(--shadow-raised)]">
+          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-inset text-primary border border-border shadow-inner mb-3">
             <Trophy className="w-8 h-8" />
           </span>
 
-          <span className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
-            Official Competition
-          </span>
-
-          <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-text-primary mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-text-primary mt-1 tracking-tight">
             Daily Mental Math Challenge
           </h1>
 
@@ -187,26 +189,38 @@ export default function DailyChallengePage() {
         </div>
 
         {/* Daily Standings */}
-        <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4">
-          <h2 className="text-lg font-bold font-display text-text-primary">
+        <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-[var(--shadow-raised-sm)]">
+          <h2 className="text-lg font-bold font-display text-text-primary tracking-tight">
             Today&apos;s Top Solvers
           </h2>
-          <div className="divide-y divide-border/60">
-            {leaderboard.map((entry) => (
-              <div key={entry.id} className="py-3 flex items-center justify-between gap-4 text-xs">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-inset border border-border font-mono font-bold text-primary">
-                    #{entry.rank}
-                  </span>
-                  <span className="font-bold text-text-primary">{entry.displayName}</span>
+          {leaderboard.length > 0 ? (
+            <div className="divide-y divide-border/60">
+              {leaderboard.map((entry) => (
+                <div key={entry.id} className="py-3 flex items-center justify-between gap-4 text-xs">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-inset border border-border font-mono font-bold text-primary">
+                      #{entry.rank}
+                    </span>
+                    <span className="font-bold text-text-primary">{entry.displayName}</span>
+                  </div>
+                  <div className="flex items-center gap-4 text-right font-mono">
+                    <span className="font-extrabold text-primary">{entry.score} PTS</span>
+                    <span className="text-text-muted">{entry.accuracy}% acc</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4 text-right font-mono">
-                  <span className="font-extrabold text-primary">{entry.score} PTS</span>
-                  <span className="text-text-muted">{entry.accuracy}% acc</span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="neu-inset p-8 rounded-2xl border border-border text-center flex flex-col items-center justify-center gap-2 shadow-inner">
+              <Trophy className="w-8 h-8 text-primary/60 mb-1" />
+              <p className="text-sm font-bold font-display text-text-primary">
+                No global runs recorded yet today
+              </p>
+              <p className="text-xs text-text-secondary max-w-sm">
+                Be the first learner worldwide to complete today&apos;s seeded arithmetic challenge and claim rank #1!
+              </p>
+            </div>
+          )}
         </div>
       </div>
     );

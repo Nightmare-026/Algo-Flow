@@ -3,52 +3,27 @@ import { createClient } from "@/lib/supabase/server";
 import { Footer } from "@/components/layout/Footer";
 import type { Metadata } from "next";
 import { PRIVACY_VERSION } from "@/lib/legal/policy-versions";
-import { ShieldCheck, Lock, Eye, Database, Globe, UserCheck } from "lucide-react";
+import {
+  ShieldCheck,
+  Lock,
+  Eye,
+  Database,
+  Globe,
+  UserCheck,
+  Server,
+  AlertCircle,
+  KeyRound,
+  Mail,
+  Scale,
+} from "lucide-react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Algo Flow",
-  description: "Privacy Policy and data protection practices for Algo Flow.",
+  description:
+    "Comprehensive Privacy Policy and data governance standards for Algo Flow. Learn how we collect, store, and protect your personal information, practice telemetry, and authentication data.",
   alternates: { canonical: "/privacy" },
 };
-
-const privacySections = [
-  {
-    icon: Eye,
-    title: "1. Overview & Public Exploration",
-    content:
-      "Algo Flow is an interactive Computer Science learning platform designed for understanding data structures, algorithms, and mental arithmetic. You can freely explore all 133 algorithm visualizers, multi-language code editors, and practice drills without creating an account. In public mode, all visual traces and algorithm input data remain strictly within your browser state.",
-  },
-  {
-    icon: Database,
-    title: "2. Information We Collect",
-    content:
-      "When you choose to register for an Algo Flow account, we collect minimal information necessary to deliver authenticated features: your email address, securely hashed credentials, display name, user preferences (such as selected theme and preferred programming language), saved visualizer sessions, bookmarks, quiz attempts, and practice telemetry.",
-  },
-  {
-    icon: Lock,
-    title: "3. How We Protect Your Data",
-    content:
-      "We use Supabase with Postgres Row-Level Security (RLS) policies to ensure your personal data, saved sessions, and bookmarks are accessible only by you. All transmissions are encrypted in transit via TLS 1.3. We enforce secure authentication practices, non-enumerating error responses, and strict password security standards.",
-  },
-  {
-    icon: Globe,
-    title: "4. Cookies & Local Storage",
-    content:
-      "Algo Flow uses essential browser cookies to maintain secure authentication sessions. We utilize browser local storage to preserve your client-side preferences (such as Light/Dark mode, volume settings, and mental math practice state) across visits without transmitting unnecessary tracking telemetry.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "5. Third-Party Subprocessors",
-    content:
-      "To provide our services reliably, we partner with industry-standard cloud infrastructure providers: Supabase (managed Postgres authentication and database) and Vercel (application edge hosting and CDN). We do not sell, rent, or monetize your personal information with third-party advertisers.",
-  },
-  {
-    icon: UserCheck,
-    title: "6. Your Rights & Data Controls",
-    content:
-      "You have full control over your personal data. You can inspect your activity history, delete saved visualizer bookmarks and practice sessions directly from your Dashboard, or request full account deletion at any time. For questions or privacy inquiries, contact support at support@algoflow.dev.",
-  },
-];
 
 export default async function PrivacyPage() {
   const supabase = await createClient();
@@ -63,38 +38,359 @@ export default async function PrivacyPage() {
         id="main-content"
         className="mx-auto w-full max-w-4xl flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8"
       >
+        {/* Header Section */}
         <div className="text-center sm:text-left">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-muted px-3.5 py-1 text-xs font-bold font-mono uppercase tracking-wider text-primary shadow-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary-muted px-3.5 py-1 text-xs font-bold font-mono uppercase tracking-wider text-primary shadow-xs">
             <ShieldCheck className="h-3.5 w-3.5" />
-            <span>Transparency & Trust</span>
+            <span>Data Protection & Privacy Standards</span>
           </span>
           <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-text-primary tracking-tight">
             Privacy Policy
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {PRIVACY_VERSION} • Last updated August 2026
+            Version {PRIVACY_VERSION} • Effective Date: September 4, 2026
+          </p>
+          <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
+            At Algo Flow (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), we believe that interactive education should be transparent, respectful of your privacy, and built on robust security foundations. This Privacy Policy details the exact types of information we collect, how your data is protected, and your statutory rights under global data protection frameworks including GDPR, CCPA/CPRA, and COPPA.
           </p>
         </div>
 
-        <div className="neu-float mt-10 rounded-3xl border border-border p-6 sm:p-10 shadow-xl divide-y divide-border/60">
-          {privacySections.map((section) => {
-            const Icon = section.icon;
-            return (
-              <section key={section.title} className="py-8 first:pt-0 last:pb-0">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
-                    {section.title}
-                  </h2>
-                </div>
-                <p className="text-sm leading-relaxed text-text-secondary pl-12">
-                  {section.content}
+        {/* Privacy at a Glance (Executive Summary) */}
+        <div className="mt-10 neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
+          <h2 className="text-base font-bold font-display text-text-primary uppercase tracking-wider text-xs font-mono text-primary flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-primary" />
+            <span>Privacy Principles at a Glance</span>
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+              <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-success" />
+                Zero Commercial Ad Monetization
+              </p>
+              <p className="text-xs text-text-secondary mt-1 leading-relaxed">
+                We never sell, rent, license, or monetize your personal data or activity telemetry with third-party advertising networks.
+              </p>
+            </div>
+
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+              <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-success" />
+                Anonymous Public Exploration
+              </p>
+              <p className="text-xs text-text-secondary mt-1 leading-relaxed">
+                All 133 algorithm visualizers, code execution workspaces, and training sandboxes can be explored anonymously without an account.
+              </p>
+            </div>
+
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+              <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-success" />
+                Minimalist Google OAuth
+              </p>
+              <p className="text-xs text-text-secondary mt-1 leading-relaxed">
+                When using Sign in with Google, we only request non-sensitive identity scopes (email and public profile). We never touch your private Google assets.
+              </p>
+            </div>
+
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+              <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-success" />
+                PostgreSQL Row-Level Security
+              </p>
+              <p className="text-xs text-text-secondary mt-1 leading-relaxed">
+                Your database records (streaks, session telemetry, bookmarks) are strictly isolated with cryptographic user ID policies in Supabase.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Detailed Legal Sections */}
+        <div className="neu-float mt-10 rounded-3xl border border-border bg-surface p-6 sm:p-10 shadow-xl divide-y divide-border/60">
+          {/* Section 1: Overview & Public Mode */}
+          <section className="py-8 first:pt-0">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <Eye className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                1. Scope & Public Exploration Mode
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>
+                Algo Flow operates as an interactive Computer Science laboratory and educational workstation dedicated to algorithm visualization, data structure modeling, and computational mental arithmetic.
+              </p>
+              <p>
+                <strong>Guest & Public Access:</strong> You can access all visualizer simulations, tree and graph canvases, code editors, and calculation sandboxes without providing any personal identifying information. In guest mode, all execution states, timeline steps, array inputs, and scratch data remain exclusively within your client browser memory and are never transmitted to our persistent database servers.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 2: Information We Collect */}
+          <section className="py-8">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <Database className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                2. Information We Collect
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>
+                When you create an account or authenticate on Algo Flow, we collect only the minimum information necessary to maintain your student identity and provide personalized educational progress tracking:
+              </p>
+              <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
+                <li>
+                  <strong>Account Credentials & Identity:</strong> Email address, hashed authentication credentials, chosen display username, and avatar URL if authenticated via third-party OAuth.
+                </li>
+                <li>
+                  <strong>Educational & Telemetry Records:</strong> Completed algorithm visualizers, topic mastery percentages, study habit streaks, experience points (XP), bookmarked algorithms, interactive quiz scores, and practice session completion timestamps.
+                </li>
+                <li>
+                  <strong>Mental Math Calculation Telemetry:</strong> Anonymized problem latency times (average solve time in milliseconds), accuracy percentages, calculation streaks, operation breakdown indices, and verified daily challenge scores.
+                </li>
+                <li>
+                  <strong>Client Preferences:</strong> Interface theme preference (Light / Dark), volume configurations, and code editor preferred programming language (Python, C++, Java, JavaScript).
+                </li>
+                <li>
+                  <strong>Technical & Security Metadata:</strong> Standard HTTP request headers, browser user-agent strings, and IP addresses utilized solely for security diagnostics, rate-limiting enforcement, and DDoS mitigation.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Section 3: Google OAuth Authentication */}
+          <section className="py-8">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <KeyRound className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                3. Third-Party Authentication (Sign in with Google)
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>
+                Algo Flow offers seamless, secure single sign-on authentication through Google OAuth 2.0 services. When you choose to authenticate via Google:
+              </p>
+              <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
+                <li>
+                  We request access strictly to <strong>non-sensitive standard identity scopes</strong>: <code className="font-mono text-xs bg-surface-inset px-1.5 py-0.5 rounded border border-border">email</code>, <code className="font-mono text-xs bg-surface-inset px-1.5 py-0.5 rounded border border-border">profile</code>, and <code className="font-mono text-xs bg-surface-inset px-1.5 py-0.5 rounded border border-border">openid</code>.
+                </li>
+                <li>
+                  We receive and store only your email address, full name, and avatar profile picture provided by Google to create your authenticated student profile.
+                </li>
+                <li>
+                  We <strong>never request, access, read, or store</strong> any sensitive Google account data, such as your Google Drive files, Gmail messages, contacts, or location history.
+                </li>
+                <li>
+                  Authentication tokens are securely exchanged directly via Supabase Auth and encrypted over HTTPS TLS 1.3.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Section 4: Purpose & Legal Bases for Processing */}
+          <section className="py-8">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <Scale className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                4. Legal Bases & How We Use Your Information
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>Under the EU General Data Protection Regulation (GDPR), we process your data on the following lawful grounds:</p>
+              <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
+                <li>
+                  <strong>Contractual Necessity:</strong> To deliver the core Algo Flow platform services you request, including maintaining your study account, authenticating your sessions, saving your bookmarks, and rendering your Student Dashboard.
+                </li>
+                <li>
+                  <strong>Legitimate Interests:</strong> To protect platform integrity, enforce rate limits against automated scraping, prevent cheating on public daily challenge leaderboards, and ensure high availability across global edge regions.
+                </li>
+                <li>
+                  <strong>User Consent:</strong> For client-side optional preferences, such as retaining customized visualizer layout settings in your browser storage.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Section 5: Data Security & Row-Level Security */}
+          <section className="py-8">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <Lock className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                5. Security Architecture & Row-Level Security (RLS)
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>
+                We implement industry-grade defense-in-depth security measures to protect your information from unauthorized access, alteration, or disclosure:
+              </p>
+              <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
+                <li>
+                  <strong>PostgreSQL Row-Level Security (RLS):</strong> Every database table storing personal data (<code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">profiles</code>, <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">bookmarks</code>, <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">mental_math_sessions</code>) is fortified with Postgres RLS policies. Your data is cryptographically tied to your authenticated user ID and cannot be accessed by other users.
+                </li>
+                <li>
+                  <strong>End-to-End Transport Encryption:</strong> All communications between your client device, Vercel edge servers, and Supabase database endpoints are strictly encrypted using TLS 1.3.
+                </li>
+                <li>
+                  <strong>Authentication Cookie Security:</strong> Authentication tokens are transmitted in strict HttpOnly, SameSite, Secure cookie payloads, protecting your active session from cross-site scripting (XSS) and CSRF vulnerabilities.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Section 6: Cookies & Local Storage */}
+          <section className="py-8">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <Globe className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                6. Cookies & Client-Side Local Storage
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>
+                Algo Flow maintains a strict <strong>Zero-Ad-Tracker</strong> policy. We do not use third-party advertising cookies or cross-site tracking beacons.
+              </p>
+              <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
+                <li>
+                  <strong>Essential Authentication Cookies:</strong> Used strictly to verify your logged-in state across Next.js server components and API routes.
+                </li>
+                <li>
+                  <strong>Browser Local Storage:</strong> Used to store your UI preferences (Light/Dark theme, sound toggle, practice session settings) directly on your device without sending unnecessary telemetry to external servers.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Section 7: Third-Party Subprocessors */}
+          <section className="py-8">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <Server className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                7. Trusted Infrastructure Subprocessors
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>
+                To provide high-performance, low-latency educational simulations globally, we partner with world-class cloud infrastructure providers:
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border border-border rounded-xl overflow-hidden mt-2">
+                  <thead className="bg-surface-inset border-b border-border text-text-primary font-mono uppercase">
+                    <tr>
+                      <th className="p-3">Subprocessor</th>
+                      <th className="p-3">Service Role</th>
+                      <th className="p-3">Security & Compliance</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/60 text-text-secondary">
+                    <tr>
+                      <td className="p-3 font-bold text-text-primary">Supabase Inc.</td>
+                      <td className="p-3">Postgres Database, Auth Engine, RLS Storage</td>
+                      <td className="p-3">SOC 2 Type II, ISO 27001, HIPAA compliant</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-bold text-text-primary">Vercel Inc.</td>
+                      <td className="p-3">Global Edge CDN, Application Serverless Hosting</td>
+                      <td className="p-3">SOC 2 Type II, ISO 27001, Edge SSL/TLS</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-bold text-text-primary">Google LLC</td>
+                      <td className="p-3">Google OAuth 2.0 Identity Provider (Optional)</td>
+                      <td className="p-3">SOC 2, ISO 27001, Privacy Shield / DPA</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 8: Your Data Rights (GDPR & CCPA) */}
+          <section className="py-8">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <UserCheck className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                8. Your Legal Rights & Data Portability
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>Regardless of your geographic jurisdiction, we grant all learners universal privacy controls:</p>
+              <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
+                <li>
+                  <strong>Right to Access & Inspect:</strong> You can view all saved sessions, bookmarks, and practice telemetry directly from your <Link href="/dashboard" className="text-primary hover:underline font-bold">Student Dashboard</Link> or request a full data export.
+                </li>
+                <li>
+                  <strong>Right to Rectification:</strong> You can update your display name, email, and preferences at any time.
+                </li>
+                <li>
+                  <strong>Right to Erasure (&quot;Right to be Forgotten&quot;):</strong> You have the absolute right to delete your account and all associated practice history permanently. Deletion removes your records from our live database immediately.
+                </li>
+                <li>
+                  <strong>Right to Restrict or Object:</strong> You can opt out of any non-essential processing by browsing in guest mode.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          {/* Section 9: Children's Privacy */}
+          <section className="py-8">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <AlertCircle className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                9. Protection of Children&apos;s Privacy (COPPA)
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>
+                Algo Flow is designed for computer science learners, students, and professionals. We do not knowingly collect or solicit personal information from children under the age of 13 (or under 16 in the European Economic Area) without parental or educational institution consent.
+              </p>
+              <p>
+                If we discover that personal data of a minor under 13 has been collected without verifiable parental consent, we will take immediate steps to delete that account and associated records from our database.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 10: Changes & Contact */}
+          <section className="py-8 last:pb-0">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
+                <Mail className="h-4 w-4" />
+              </span>
+              <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
+                10. Policy Amendments & Contact Information
+              </h2>
+            </div>
+            <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
+              <p>
+                We may periodically update this Privacy Policy to reflect platform improvements, new educational features, or evolving regulatory standards. When material modifications occur, we will update the version number and effective date at the top of this document.
+              </p>
+              <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] mt-4">
+                <p className="font-bold text-text-primary text-xs">Official Privacy & Legal Contact:</p>
+                <p className="text-xs text-text-secondary mt-1">
+                  For privacy inquiries, data subject requests, or security disclosures, please contact the Algo Flow team directly at:
                 </p>
-              </section>
-            );
-          })}
+                <p className="font-mono text-xs font-bold text-primary mt-2">
+                  <a href="mailto:ganeshsharma7114@gmail.com" className="hover:underline">
+                    ganeshsharma7114@gmail.com
+                  </a>
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
       <Footer />

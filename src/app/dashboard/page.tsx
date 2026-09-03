@@ -7,6 +7,7 @@ import { getBookmarks } from "@/features/bookmarks/api";
 import { getActivityTimeline } from "@/lib/api/activity";
 import { getDailyChallenge, isChallengeCompleted } from "@/lib/api/challenges";
 import { algorithms } from "@/data/seed/algorithms";
+import { getMentalMathUserStats } from "@/features/mental-math/api/actions";
 import {
   Flame,
   Play,
@@ -44,6 +45,7 @@ export default async function DashboardPage() {
     bookmarksResult,
     activitiesResult,
     dailyChallengeResult,
+    mentalMathResult,
   ] = await Promise.allSettled([
     updateStreakOnActivity().then(() => getStreak()),
     supabase.from("profiles").select("*").eq("id", user.id).single(),
@@ -51,6 +53,7 @@ export default async function DashboardPage() {
     getBookmarks(),
     getActivityTimeline(10),
     getDailyChallenge(),
+    getMentalMathUserStats(),
   ]);
 
   const streak = streakResult.status === "fulfilled" ? streakResult.value : null;
@@ -60,6 +63,8 @@ export default async function DashboardPage() {
   const activities = activitiesResult.status === "fulfilled" ? activitiesResult.value : [];
   const dailyChallenge =
     dailyChallengeResult.status === "fulfilled" ? dailyChallengeResult.value : null;
+  const mentalMathStats =
+    mentalMathResult.status === "fulfilled" ? mentalMathResult.value : null;
 
   let challengeCompleted = false;
   let challengeAlgorithm = null;
@@ -443,41 +448,113 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Mental Math Precision Training Card */}
-        <section className="neu-float rounded-3xl p-6 sm:p-8 border border-primary/30 bg-primary-muted/15 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="flex flex-col gap-2 max-w-2xl">
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white text-xs font-bold shadow-sm">
-                <BrainCircuit className="w-4 h-4" />
-              </span>
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
-                Arithmetic Fluency Engine
-              </span>
+        {/* Mental Math Precision Training & Telemetry Card */}
+        <section className="neu-float rounded-3xl p-6 sm:p-8 border border-primary/30 bg-primary-muted/15 flex flex-col gap-6 shadow-[var(--shadow-raised)]">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="flex flex-col gap-2 max-w-2xl">
+              <div className="flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-white text-xs font-bold shadow-sm">
+                  <BrainCircuit className="w-4 h-4" />
+                </span>
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
+                  Arithmetic Fluency & Mastery
+                </span>
+              </div>
+              <h2 className="text-2xl font-extrabold font-display text-text-primary tracking-tight">
+                Mental Math Calculation Studio
+              </h2>
+              <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+                Train arithmetic calculation speed, eliminate scratchpad reliance, and track your
+                carry/borrow precision alongside your algorithm visualizer milestones.
+              </p>
             </div>
-            <h2 className="text-2xl font-extrabold font-display text-text-primary tracking-tight">
-              Mental Math Training Studio
-            </h2>
-            <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-              Train mental calculation speed, arithmetic accuracy, and cognitive intuition. Compete
-              in daily challenges, timed tests, and 60-second speed sprints.
-            </p>
+
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <Link
+                href="/mental-math/practice"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Practice Studio</span>
+              </Link>
+              <Link
+                href="/mental-math/daily"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-5 text-xs font-bold font-display text-text-primary hover:text-primary hover:bg-surface-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer"
+              >
+                <Trophy className="w-3.5 h-3.5 text-warning" />
+                <span>Daily Challenge</span>
+              </Link>
+              <Link
+                href="/mental-math/progress"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-xs font-bold font-display text-text-secondary hover:text-text-primary hover:bg-surface-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Diagnostics</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <Link
-              href="/mental-math/practice"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all"
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Practice Now</span>
-            </Link>
-            <Link
-              href="/mental-math/daily"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-5 text-xs font-bold font-display text-text-primary hover:text-primary hover:bg-surface-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all"
-            >
-              <Trophy className="w-3.5 h-3.5 text-warning" />
-              <span>Daily Challenge</span>
-            </Link>
+          {/* Real Mental Math Telemetry KPI Chips */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-primary/20">
+            <div className="neu-inset p-3.5 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
+                Calculations Solved
+              </span>
+              <div className="mt-2">
+                <p className="text-xl font-extrabold font-display text-text-primary tabular-nums">
+                  {mentalMathStats?.totalQuestionsSolved
+                    ? mentalMathStats.totalQuestionsSolved.toLocaleString()
+                    : 0}
+                </p>
+                <p className="text-[10px] font-mono text-text-muted mt-0.5">
+                  {mentalMathStats?.totalSessionsCompleted
+                    ? `${mentalMathStats.totalSessionsCompleted} sessions`
+                    : "No sessions yet"}
+                </p>
+              </div>
+            </div>
+
+            <div className="neu-inset p-3.5 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
+                Accuracy Precision
+              </span>
+              <div className="mt-2">
+                <p className="text-xl font-extrabold font-display text-text-primary tabular-nums">
+                  {mentalMathStats && mentalMathStats.totalQuestionsSolved > 0
+                    ? `${mentalMathStats.overallAccuracy}%`
+                    : "—"}
+                </p>
+                <p className="text-[10px] font-mono text-text-muted mt-0.5">Overall correctness</p>
+              </div>
+            </div>
+
+            <div className="neu-inset p-3.5 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
+                Fastest Cadence
+              </span>
+              <div className="mt-2">
+                <p className="text-xl font-extrabold font-display text-text-primary tabular-nums">
+                  {mentalMathStats?.personalBests?.fastestSpeedQPM
+                    ? `${mentalMathStats.personalBests.fastestSpeedQPM} QPM`
+                    : "—"}
+                </p>
+                <p className="text-[10px] font-mono text-text-muted mt-0.5">Questions / min</p>
+              </div>
+            </div>
+
+            <div className="neu-inset p-3.5 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
+                Calculation Streak
+              </span>
+              <div className="mt-2">
+                <p className="text-xl font-extrabold font-display text-text-primary tabular-nums flex items-center gap-1">
+                  <Flame className="w-4 h-4 text-warning fill-current" />
+                  <span>{mentalMathStats?.currentStreakDays || 0}</span>
+                  <span className="text-xs font-normal text-text-secondary">Days</span>
+                </p>
+                <p className="text-[10px] font-mono text-text-muted mt-0.5">Active habit streak</p>
+              </div>
+            </div>
           </div>
         </section>
 
