@@ -67,14 +67,9 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                 priority
               />
             </span>
-            <div className="flex flex-col">
-              <span className="font-display text-xl font-extrabold tracking-tight text-text-primary">
-                Algo<span className="text-primary">Flow</span>
-              </span>
-              <span className="text-[10px] font-mono font-semibold uppercase tracking-widest text-text-muted -mt-1">
-                Visualizer Studio
-              </span>
-            </div>
+            <span className="font-display text-xl font-extrabold tracking-tight text-text-primary">
+              Algo<span className="text-primary">Flow</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}
