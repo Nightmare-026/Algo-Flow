@@ -25,21 +25,28 @@ Interactive Algorithm & Data Structure Visualizer Workstation with Synchronized 
 
 ## Product Preview
 
-<!-- Add representative product screenshot here -->
-```
-+----------------------------------------------------------------------------------------------------+
-|                                      Algo Flow Workstation                                         |
-|  +---------------------------------------+  +---------------------------------------------------+  |
-|  |           Visual Canvas               |  |              Inspector & Tracing Panels           |  |
-|  |   (Animated Nodes, Graph/Tree SVG,    |  |  - Synchronized Highlighting (Python/C++/Java/JS) |  |
-|  |     Array Memory Bounding Blocks)     |  |  - Active Memory & Variable State Tracking        |  |
-|  +---------------------------------------+  +---------------------------------------------------+  |
-|  | [|<] [<<] [ Play ] [>>] [>|]  Timeline: [============●========]  Speed: [0.25x 0.5x 1.0x 2.0x] | |
-+----------------------------------------------------------------------------------------------------+
-```
-
-Authorized evaluators may review the live deployment at:
+Authorized evaluators may review the live deployment at:  
 🔗 **Authorized Evaluation URL:** [https://algo-flow-night-sigma.vercel.app](https://algo-flow-night-sigma.vercel.app)
+
+### 1. Interactive Algorithm Workstation (Bubble Sort Tracing — Light Mode)
+*Deterministic, step-by-step element comparison, memory swapping, and synchronized pseudocode line mapping.*
+
+![Interactive Visualizer Workstation](./public/screenshots/workstation-bubble-sort-light.png)
+
+### 2. Commercial Landing Experience & Live Simulation Sandbox (Dark Mode)
+*Production-ready SaaS interface showcasing tactile neumorphic controls and an integrated interactive sandbox.*
+
+![Algo Flow Landing Page & Live Sandbox](./public/screenshots/landing-hero-dark.png)
+
+### 3. Comprehensive Data Structure Taxonomy & Catalog
+*Searchable index spanning 133+ algorithms grouped by data structure family with operational tags.*
+
+![Visualizer Catalog & Taxonomy](./public/screenshots/visualizers-catalog-light.png)
+
+### 4. Enterprise Identity & Progress Persistence Portal
+*Unified authentication system supporting email/password and OAuth providers with PostgreSQL Row Level Security.*
+
+![Authentication & Session Portal](./public/screenshots/auth-modal-light.png)
 
 ---
 
