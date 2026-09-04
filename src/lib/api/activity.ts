@@ -7,6 +7,7 @@ export type ActivityItem = {
   action_type: "completed" | "bookmarked" | "saved_session" | "quiz_completed";
   algorithm_id: string;
   created_at: string | null;
+  metadata?: Record<string, unknown> | null;
 };
 
 export async function getActivityTimeline(limit: number = 10): Promise<ActivityItem[]> {
@@ -21,7 +22,7 @@ export async function getActivityTimeline(limit: number = 10): Promise<ActivityI
 
   const { data, error } = await supabase
     .from("activity_timeline")
-    .select("id, action_type, algorithm_id, created_at")
+    .select("id, action_type, algorithm_id, created_at, metadata")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(safeLimit);

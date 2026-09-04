@@ -5,6 +5,7 @@ import Script from "next/script";
 import { getSiteUrl } from "@/lib/site";
 import { catalogStats } from "@/lib/catalog";
 import { safeJsonLd } from "@/lib/security/safe-json";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -119,6 +120,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
         {process.env.NODE_ENV === "development" && (
           <Script src="/agent-inspector.js" strategy="afterInteractive" />
         )}

@@ -203,66 +203,174 @@ export async function submitDailyChallenge(summary: SessionSummary): Promise<Sub
 }
 
 /**
- * Retrieves real daily or global leaderboards from Supabase.
+ * Retrieves real daily, speed sprint, or assessment leaderboards from Supabase.
  */
 export async function getMentalMathLeaderboard(
   mode: GameMode = "daily",
   dateStr?: string
 ): Promise<LeaderboardEntry[]> {
-  const targetDate = dateStr || new Date().toISOString().split("T")[0];
-
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("mental_math_daily_attempts")
-      .select(`
-        id,
-        user_id,
-        score,
-        accuracy,
-        solve_time_ms,
-        challenge_date,
-        profiles (
-          username
-        )
-      `)
-      .eq("challenge_date", targetDate)
-      .order("score", { ascending: false })
-      .limit(50);
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const adminClient = createAdminClient();
+    const queryClient = adminClient || supabase;
 
-    if (error || !data || data.length === 0) {
-      return [];
+    const {
+      data: { user: currentUser },
+    } = await supabase.auth.getUser();
+
+    interface RawAttempt {
+      id: string;
+      user_id: string;
+      score: number;
+      accuracy: number;
+      solve_time_ms: number;
+      challenge_date: string;
     }
 
-interface LeaderboardQueryRow {
-  id: string;
-  user_id: string;
-  score: number;
-  accuracy: number;
-  solve_time_ms: number;
-  challenge_date: string;
-  profiles?: {
-    username?: string | null;
-  } | null;
-}
+    interface RawSession {
+      id: string;
+      user_id: string;
+      final_score: number;
+      accuracy_percentage: number;
+      total_time_ms: number;
+      total_questions: number;
+      operation: string;
+      difficulty: string;
+      created_at: string;
+    }
 
-    return (data as unknown as LeaderboardQueryRow[]).map((row, index: number) => ({
-      id: row.id,
-      userId: row.user_id,
-      displayName: row.profiles?.username || `Learner ${row.user_id.slice(0, 6)}`,
-      score: row.score,
-      accuracy: Number(row.accuracy),
-      speedQPM:
-        row.solve_time_ms > 0
-          ? Number(((10 / (row.solve_time_ms / 60000))).toFixed(1))
-          : 0,
-      mode,
-      operation: "mixed",
-      difficulty: "medium",
-      date: row.challenge_date,
-      rank: index + 1,
-    }));
-  } catch {
+    let entries: LeaderboardEntry[] = [];
+
+    if (mode === "daily") {
+      const targetDate = dateStr || new Date().toISOString().split("T")[0];
+      const { data, error } = await queryClient
+        .from("mental_math_daily_attempts")
+        .select("id, user_id, score, accuracy, solve_time_ms, challenge_date")
+        .eq("challenge_date", targetDate)
+        .order("score", { ascending: false })
+        .order("accuracy", { ascending: false })
+        .order("solve_time_ms", { ascending: true })
+        .limit(50);
+
+      let attemptsData: RawAttempt[] = (data as unknown as RawAttempt[]) || [];
+
+      // If no attempts for today yet and no explicit date requested, fetch the latest challenge attempts
+      if (!error && attemptsData.length === 0 && !dateStr) {
+        const latestQuery = await queryClient
+          .from("mental_math_daily_attempts")
+          .select("id, user_id, score, accuracy, solve_time_ms, challenge_date")
+          .order("challenge_date", { ascending: false })
+          .order("score", { ascending: false })
+          .limit(50);
+        if (latestQuery.data && latestQuery.data.length > 0) {
+          attemptsData = latestQuery.data as unknown as RawAttempt[];
+        }
+      }
+
+      if (attemptsData.length > 0) {
+        const userIds = Array.from(new Set(attemptsData.map((d) => d.user_id)));
+        const { data: profiles } = await queryClient
+          .from("profiles")
+          .select("id, username, avatar_url")
+          .in("id", userIds);
+
+        const profileMap = new Map<
+          string,
+          { username?: string | null; avatar_url?: string | null }
+        >();
+        if (profiles) {
+          profiles.forEach((p) => {
+            profileMap.set(p.id, { username: p.username, avatar_url: p.avatar_url });
+          });
+        }
+
+        entries = attemptsData.map((row, index) => {
+          const profile = profileMap.get(row.user_id);
+          const displayName =
+            profile?.username || `Learner ${row.user_id.slice(0, 6)}`;
+          return {
+            id: row.id,
+            userId: row.user_id,
+            displayName,
+            avatarUrl: profile?.avatar_url,
+            score: row.score,
+            accuracy: Number(row.accuracy),
+            speedQPM:
+              row.solve_time_ms > 0
+                ? Number((10 / (row.solve_time_ms / 60000)).toFixed(1))
+                : 0,
+            mode: "daily" as GameMode,
+            operation: "mixed" as MathOperation,
+            difficulty: "medium" as DifficultyTier,
+            date: row.challenge_date,
+            rank: index + 1,
+            isCurrentUser: currentUser ? currentUser.id === row.user_id : false,
+          };
+        });
+      }
+    } else {
+      // Speed sprint or Timed Assessment mode
+      const { data, error } = await queryClient
+        .from("mental_math_sessions")
+        .select(
+          "id, user_id, final_score, accuracy_percentage, total_time_ms, total_questions, operation, difficulty, created_at"
+        )
+        .eq("mode", mode)
+        .order("final_score", { ascending: false })
+        .order("accuracy_percentage", { ascending: false })
+        .limit(50);
+
+      const sessionsData: RawSession[] = !error && data ? (data as unknown as RawSession[]) : [];
+
+      if (sessionsData.length > 0) {
+        const userIds = Array.from(new Set(sessionsData.map((d) => d.user_id)));
+        const { data: profiles } = await queryClient
+          .from("profiles")
+          .select("id, username, avatar_url")
+          .in("id", userIds);
+
+        const profileMap = new Map<
+          string,
+          { username?: string | null; avatar_url?: string | null }
+        >();
+        if (profiles) {
+          profiles.forEach((p) => {
+            profileMap.set(p.id, { username: p.username, avatar_url: p.avatar_url });
+          });
+        }
+
+        entries = sessionsData.map((row, index) => {
+          const profile = profileMap.get(row.user_id);
+          const displayName =
+            profile?.username || `Learner ${row.user_id.slice(0, 6)}`;
+          const speedQPM =
+            row.total_time_ms > 0
+              ? Number((row.total_questions / (row.total_time_ms / 60000)).toFixed(1))
+              : 0;
+
+          return {
+            id: row.id,
+            userId: row.user_id,
+            displayName,
+            avatarUrl: profile?.avatar_url,
+            score: row.final_score,
+            accuracy: Number(row.accuracy_percentage),
+            speedQPM,
+            mode,
+            operation: (row.operation as MathOperation) || "mixed",
+            difficulty: (row.difficulty as DifficultyTier) || "medium",
+            date: row.created_at ? row.created_at.split("T")[0] : new Date().toISOString().split("T")[0],
+            rank: index + 1,
+            isCurrentUser: currentUser ? currentUser.id === row.user_id : false,
+          };
+        });
+      }
+    }
+
+    return entries;
+  } catch (err) {
+    console.error("Error in getMentalMathLeaderboard:", err);
     return [];
   }
 }
