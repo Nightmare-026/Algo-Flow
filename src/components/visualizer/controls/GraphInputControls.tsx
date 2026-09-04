@@ -82,9 +82,10 @@ export function GraphInputControls({
             ref={editGraphButtonRef}
             type="button"
             onClick={() => setIsEditorOpen(true)}
-            className="flex h-8 items-center justify-center gap-1.5 rounded-lg border border-primary/20 bg-primary/5 px-2.5 text-[10px] font-bold font-mono text-primary shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary/10 active:scale-95 cursor-pointer shrink-0"
+            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary-muted px-2.5 text-[11px] font-bold font-mono text-primary shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary hover:text-white hover:border-primary active:scale-95 cursor-pointer shrink-0"
+            title="Open Graph Canvas Editor"
           >
-            <Edit3 className="h-3.5 w-3.5" />
+            <Edit3 className="h-3.5 w-3.5 shrink-0" />
             <span>Edit Graph Canvas</span>
           </button>
 
