@@ -67,6 +67,35 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
+    try {
+      const { createAdminClient } = await import("@/lib/supabase/admin");
+      const admin = createAdminClient();
+      if (admin) {
+        const { data: userList } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+        const matched = userList?.users.find(
+          (u) => u.email?.toLowerCase() === data.email.toLowerCase()
+        );
+        if (matched) {
+          const providers = (matched.app_metadata?.providers as string[]) || [];
+          if (providers.includes("google")) {
+            redirect(
+              `/login?oauth_hint=google&email=${encodeURIComponent(data.email)}&next=${encodeURIComponent(nextUrl)}`
+            );
+          }
+        }
+      }
+    } catch (checkErr) {
+      if (
+        checkErr &&
+        typeof checkErr === "object" &&
+        "digest" in checkErr &&
+        typeof (checkErr as { digest?: unknown }).digest === "string" &&
+        (checkErr as { digest: string }).digest.startsWith("NEXT_REDIRECT")
+      ) {
+        throw checkErr;
+      }
+    }
+
     redirect(
       `/login?error=${encodeURIComponent("Email or password is incorrect.")}&next=${encodeURIComponent(nextUrl)}`
     );
@@ -196,6 +225,12 @@ export async function signup(formData: FormData) {
     );
   }
   if (!data.session) {
+    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      redirect(
+        `/login?oauth_hint=google&email=${encodeURIComponent(email)}&error=${encodeURIComponent("An account with this email already exists via Google. Please sign in using 'Continue with Google'.")}&next=${encodeURIComponent(nextUrl)}`
+      );
+    }
+
     redirect(
       `/signup?success=${encodeURIComponent("Please check your email to verify your account.")}&next=${encodeURIComponent(nextUrl)}`
     );
@@ -293,4 +328,41 @@ export async function signout() {
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
   redirect("/");
+}
+
+export async function setAccountPassword(
+  _prevState: { ok?: boolean; error?: string; message?: string } | null,
+  formData: FormData
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "You must be signed in to set an account password." };
+  }
+
+  const password = textField(formData, "password", false);
+  const passwordConfirm = textField(formData, "password_confirm", false);
+
+  if (!password || password.length < 8) {
+    return { ok: false, error: "Password must be at least 8 characters long." };
+  }
+
+  if (password !== passwordConfirm) {
+    return { ok: false, error: "Passwords do not match." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    return { ok: false, error: error.message || "Failed to set password. Please try again." };
+  }
+
+  revalidatePath("/dashboard");
+  return {
+    ok: true,
+    message: "Password set successfully! You can now sign in with both Google and your email/password.",
+  };
 }

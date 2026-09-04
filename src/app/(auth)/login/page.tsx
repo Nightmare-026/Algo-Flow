@@ -17,7 +17,13 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; success?: string; next?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    success?: string;
+    next?: string;
+    oauth_hint?: string;
+    email?: string;
+  }>;
 }) {
   const params = await searchParams;
   const supabase = await createClient();
@@ -33,7 +39,17 @@ export default async function LoginPage({
       title="Sign in to Algo Flow"
       description="Log in to return to saved algorithms, sessions, and learning progress."
     >
-      {params.error ? (
+      {params.oauth_hint === "google" ? (
+        <Callout variant="info" title="Google Sign-In Detected" dismissible className="mb-6">
+          <p>
+            An account for <strong>{params.email || "this email"}</strong> was created using{" "}
+            <strong>Continue with Google</strong>.
+          </p>
+          <p className="mt-1 text-xs text-text-secondary">
+            Please click the highlighted <strong>Continue with Google</strong> button below to sign in instantly.
+          </p>
+        </Callout>
+      ) : params.error ? (
         <Callout variant="error" title="Sign in failed" dismissible className="mb-6">
           <p>{params.error}</p>
           <p className="mt-0.5 text-[11px] text-error/80">
@@ -86,7 +102,11 @@ export default async function LoginPage({
       </form>
 
       {/* Social Authentication */}
-      <OAuthButtons next={params.next} className="mt-6" />
+      <OAuthButtons
+        next={params.next}
+        highlightProvider={params.oauth_hint === "google" ? "google" : undefined}
+        className="mt-6"
+      />
 
       {/* Switch to Sign Up */}
       <p className="mt-7 text-center text-xs text-text-secondary">

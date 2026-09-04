@@ -27,6 +27,7 @@ import {
   DashboardHeaderAnimation,
   DashboardStatCardsAnimation,
 } from "@/components/dashboard/DashboardAnimations";
+import { AccountSecurityCard } from "@/components/dashboard/AccountSecurityCard";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -667,6 +668,12 @@ export default async function DashboardPage() {
             </Link>
           </div>
         </section>
+
+        {/* Account Security & Password Linking */}
+        <AccountSecurityCard
+          email={user.email}
+          providers={(user.app_metadata?.providers as string[]) || ["google"]}
+        />
       </div>
     </div>
   );
