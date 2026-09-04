@@ -12,6 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/visualizers",
     "/privacy",
     "/terms",
+    "/license",
+    "/cookies",
     "/login",
     "/signup",
     "/mental-math",

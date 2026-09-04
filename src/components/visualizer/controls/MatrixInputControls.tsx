@@ -1,8 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { AlertCircle, FileEdit, Shuffle, SortAsc, Target } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { AlertCircle, Shuffle, SortAsc, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
@@ -168,174 +167,183 @@ export function MatrixInputControls({
   };
 
   return (
-    <div className="flex flex-col gap-2.5 text-sm lg:flex-row lg:items-center lg:gap-3">
-      <div className="flex flex-wrap items-center gap-2">
-        {squareOnly ? (
-          <label className="flex flex-col gap-1" htmlFor={`${fieldId}-size`}>
-            <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
-              Size: {rows} × {cols}
-            </span>
-            <input
-              id={`${fieldId}-size`}
-              type="range"
-              min="1"
-              max="6"
-              value={rows}
-              onChange={(event) => setSquareSize(Number(event.target.value))}
-              className="h-7 w-28 accent-primary"
-            />
-          </label>
-        ) : (
-          <div className="flex items-center gap-2">
-            <label className="flex flex-col gap-0.5" htmlFor={`${fieldId}-rows`}>
-              <span className="text-xs font-medium text-text-muted">Rows: {rows}</span>
-              <input
-                id={`${fieldId}-rows`}
-                type="range"
-                min="1"
-                max={isDual ? "4" : "10"}
-                value={rows}
-                onChange={(event) => {
-                  const nextRows = Number(event.target.value);
-                  setRows(nextRows);
-                  commitDimensions(nextRows, cols);
-                }}
-                className="h-7 w-24 accent-primary"
-              />
-            </label>
-            <label className="flex flex-col gap-0.5" htmlFor={`${fieldId}-cols`}>
-              <span className="text-xs font-medium text-text-muted">Cols: {cols}</span>
-              <input
-                id={`${fieldId}-cols`}
-                type="range"
-                min="1"
-                max={isDual ? "4" : "10"}
-                value={cols}
-                onChange={(event) => {
-                  const nextCols = Number(event.target.value);
-                  setCols(nextCols);
-                  commitDimensions(rows, nextCols);
-                }}
-                className="h-7 w-24 accent-primary"
-              />
-            </label>
+    <div className="flex flex-col gap-2 text-[11px]">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {/* Dimensions & Presets Pod */}
+          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            {squareOnly ? (
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <span className="font-mono text-[10px] font-semibold text-text-muted">Size:</span>
+                <input
+                  id={`${fieldId}-size`}
+                  type="range"
+                  min="1"
+                  max="6"
+                  value={rows}
+                  onChange={(event) => setSquareSize(Number(event.target.value))}
+                  className="h-1.5 w-14 cursor-pointer accent-primary"
+                />
+                <span className="min-w-6 text-center font-mono text-[10px] font-bold text-primary">
+                  {rows}×{cols}
+                </span>
+              </label>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <span className="font-mono text-[10px] font-semibold text-text-muted">R:</span>
+                  <input
+                    id={`${fieldId}-rows`}
+                    type="range"
+                    min="1"
+                    max={isDual ? "4" : "10"}
+                    value={rows}
+                    onChange={(event) => {
+                      const nextRows = Number(event.target.value);
+                      setRows(nextRows);
+                      commitDimensions(nextRows, cols);
+                    }}
+                    className="h-1.5 w-12 cursor-pointer accent-primary"
+                  />
+                  <span className="min-w-3 text-center font-mono text-[10px] font-bold text-primary">
+                    {rows}
+                  </span>
+                </label>
+                <span className="h-3.5 w-px bg-border mx-0.5" />
+                <label className="flex items-center gap-1 cursor-pointer">
+                  <span className="font-mono text-[10px] font-semibold text-text-muted">C:</span>
+                  <input
+                    id={`${fieldId}-cols`}
+                    type="range"
+                    min="1"
+                    max={isDual ? "4" : "10"}
+                    value={cols}
+                    onChange={(event) => {
+                      const nextCols = Number(event.target.value);
+                      setCols(nextCols);
+                      commitDimensions(rows, nextCols);
+                    }}
+                    className="h-1.5 w-12 cursor-pointer accent-primary"
+                  />
+                  <span className="min-w-3 text-center font-mono text-[10px] font-bold text-primary">
+                    {cols}
+                  </span>
+                </label>
+              </div>
+            )}
+            <span className="h-3.5 w-px bg-border mx-0.5" />
+            <Button
+              type="button"
+              size="sm"
+              className="h-6 min-h-0 rounded-md px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95 cursor-pointer"
+              onClick={generateRandom}
+            >
+              <Shuffle className="h-3 w-3 text-primary mr-1" aria-hidden="true" />
+              Random
+            </Button>
+            <span className="h-3.5 w-px bg-border mx-0.5" />
+            <Button
+              type="button"
+              size="sm"
+              className="h-6 min-h-0 rounded-md px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95 cursor-pointer"
+              onClick={generateSorted}
+            >
+              <SortAsc className="h-3 w-3 text-primary mr-1" aria-hidden="true" />
+              Sorted
+            </Button>
           </div>
-        )}
 
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-7 px-2.5 text-xs"
-            onClick={generateRandom}
-          >
-            <Shuffle className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-            Random
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-7 px-2.5 text-xs"
-            onClick={generateSorted}
-          >
-            <SortAsc className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-            Sorted
-          </Button>
-        </div>
-
-        {isDual ? (
-          <form onSubmit={handleDualCustomSubmit} className="flex flex-wrap items-center gap-1.5">
-            <label className="flex flex-col gap-0.5" htmlFor={`${fieldId}-custom-a`}>
-              <span className="text-xs font-medium text-text-muted">
-                Matrix A ({expectedLengthA})
-              </span>
-              <Input
+          {/* Custom Values Form Pod */}
+          {isDual ? (
+            <form
+              onSubmit={handleDualCustomSubmit}
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            >
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">A({expectedLengthA}):</span>
+              <input
                 id={`${fieldId}-custom-a`}
                 type="text"
-                placeholder={`${expectedLengthA} values`}
-                className="h-7 w-36 bg-bg-surface text-xs"
+                placeholder="e.g. 1, 2..."
+                className="h-6 w-24 sm:w-28 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
                 value={customInputA}
                 onChange={(event) => setCustomInputA(event.target.value)}
                 aria-invalid={Boolean(error)}
               />
-            </label>
-
-            <label className="flex flex-col gap-0.5" htmlFor={`${fieldId}-custom-b`}>
-              <span className="text-xs font-medium text-text-muted">
-                Matrix B ({expectedLengthB})
-              </span>
-              <Input
+              <span className="h-3.5 w-px bg-border mx-0.5" />
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">B({expectedLengthB}):</span>
+              <input
                 id={`${fieldId}-custom-b`}
                 type="text"
-                placeholder={`${expectedLengthB} values`}
-                className="h-7 w-36 bg-bg-surface text-xs"
+                placeholder="e.g. 3, 4..."
+                className="h-6 w-24 sm:w-28 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
                 value={customInputB}
                 onChange={(event) => setCustomInputB(event.target.value)}
                 aria-invalid={Boolean(error)}
               />
-            </label>
-
-            <Button type="submit" variant="secondary" size="sm" className="h-7 px-2.5 text-xs">
-              <FileEdit className="h-3.5 w-3.5" aria-hidden="true" />
-              Set
-            </Button>
-          </form>
-        ) : (
-          <form onSubmit={handleSingleCustomSubmit} className="flex items-center gap-1.5">
-            <label className="flex flex-col gap-0.5" htmlFor={`${fieldId}-custom`}>
-              <span className="text-xs font-medium text-text-muted">
-                Values ({expectedLengthA})
-              </span>
-              <Input
+              <Button
+                type="submit"
+                size="sm"
+                className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0 cursor-pointer"
+              >
+                Set
+              </Button>
+            </form>
+          ) : (
+            <form
+              onSubmit={handleSingleCustomSubmit}
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            >
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">Vals({expectedLengthA}):</span>
+              <input
                 id={`${fieldId}-custom`}
                 type="text"
-                placeholder={`${expectedLengthA} comma-separated values`}
-                className="h-7 w-52 bg-bg-surface text-xs"
+                placeholder={`${expectedLengthA} comma-separated`}
+                className="h-6 w-32 sm:w-44 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
                 value={customInputSingle}
                 onChange={(event) => setCustomInputSingle(event.target.value)}
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? `${fieldId}-error` : undefined}
               />
-            </label>
-            <Button type="submit" variant="secondary" size="sm" className="h-7 px-2.5 text-xs">
-              <FileEdit className="h-3.5 w-3.5" aria-hidden="true" />
-              Set
-            </Button>
-          </form>
-        )}
+              <Button
+                type="submit"
+                size="sm"
+                className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0 cursor-pointer"
+              >
+                Set
+              </Button>
+            </form>
+          )}
+
+          {/* Target Pod */}
+          {needsTarget(slug) && (
+            <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+              <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">Target:</span>
+              <input
+                id={`${fieldId}-target`}
+                type="number"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                value={options.target}
+                onChange={(event) =>
+                  onOptionsChange?.({ ...options, target: Number(event.target.value) })
+                }
+                aria-label="Target value"
+              />
+            </div>
+          )}
+        </div>
       </div>
 
-      {needsTarget(slug) ? (
-        <label
-          className="flex items-center gap-1.5 rounded-md border border-border bg-bg-surface/50 px-2.5 py-1"
-          htmlFor={`${fieldId}-target`}
-        >
-          <Target className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-          <span className="font-medium text-text-muted text-xs">Target</span>
-          <Input
-            id={`${fieldId}-target`}
-            type="number"
-            className="h-7 w-18 border-border bg-bg-base px-2 py-0 text-xs"
-            value={options.target}
-            onChange={(event) =>
-              onOptionsChange?.({ ...options, target: Number(event.target.value) })
-            }
-          />
-        </label>
-      ) : null}
-
-      {error ? (
+      {error && (
         <div
           id={`${fieldId}-error`}
           role="alert"
-          className="flex items-center gap-1.5 text-xs font-medium text-error lg:ml-auto"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-error/30 bg-error-muted px-2.5 py-1 text-[10px] font-semibold text-error animate-in fade-in slide-in-from-top-1"
         >
-          <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
-          {error}
+          <AlertCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
+          <span>{error}</span>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

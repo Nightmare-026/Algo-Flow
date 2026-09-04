@@ -38,7 +38,7 @@ export function SpeedSlider() {
 
   return (
     <div
-      className="flex items-center gap-0.5 rounded-lg bg-bg-surface-inset p-0.5 border border-border shadow-[var(--shadow-inset)]"
+      className="flex items-center gap-0.5 rounded-full bg-bg-surface-inset p-1 border border-border shadow-[var(--shadow-inset)] shrink-0 overflow-hidden"
       role="group"
       aria-label="Playback speed"
     >
@@ -52,7 +52,7 @@ export function SpeedSlider() {
             aria-pressed={active}
             aria-label={`Set speed to ${s.label}`}
             className={cn(
-              "min-h-7 px-1.5 text-[10px] font-mono font-bold rounded transition-all cursor-pointer select-none",
+              "min-h-7 px-2 text-[10px] font-mono font-bold rounded-full transition-all cursor-pointer select-none",
               active
                 ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
                 : "text-text-muted hover:text-text-primary"

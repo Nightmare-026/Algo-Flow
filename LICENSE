@@ -1,45 +1,70 @@
-PROPRIETARY SOFTWARE LICENSE AGREEMENT
+PROPRIETARY SOFTWARE LICENSE & EVALUATION AGREEMENT
 
+Algo Flow (Interactive Computer Science Visualizer & Workstation Platform)
 Copyright (c) 2026 Nightmare. All Rights Reserved.
 
-NOTICE TO ALL RECIPIENTS:
+================================================================================
+IMPORTANT NOTICE TO ALL USERS, DEVELOPERS, AND EVALUATORS:
+================================================================================
 
-This software, its source code, object code, documentation, visual designs, algorithmic 
-implementations, workflows, user interfaces, and related artifacts (collectively, the "Software") 
-are the confidential, proprietary, and exclusive intellectual property of Nightmare 
-(the "Copyright Holder").
+This software, including but not limited to its source code, object code, 
+TypeScript/JavaScript implementations, Next.js architecture, component libraries, 
+design systems, interactive visualizer algorithms, animation state synchronization 
+pipelines, mental arithmetic training engines, quizzes, test suites, and documentation 
+(collectively, the "Software"), constitutes the confidential, proprietary, and 
+exclusive intellectual property of Nightmare (the "Copyright Holder").
 
-1. RESERVATION OF ALL RIGHTS
-   All rights, title, interest, and intellectual property rights in and to the Software are 
-   retained solely and exclusively by the Copyright Holder. No title or ownership rights to 
-   the Software are transferred under any circumstances.
+1. GRANT OF LIMITED EDUCATIONAL STUDY LICENSE
+   Subject to the strict terms of this Agreement, the Copyright Holder grants you 
+   a personal, non-exclusive, non-transferable, revocable license to view, study, 
+   and interact with the Software solely for:
+   (a) Personal academic learning, self-study, and algorithmic interview preparation;
+   (b) Private classroom demonstration and non-commercial educational instruction;
+   (c) Security auditing or code review specifically authorized by the Copyright Holder.
 
-2. PROHIBITION OF USE, REPRODUCTION, AND DISTRIBUTION
-   Without the prior, express, and written authorization of the Copyright Holder, no person 
-   or entity possessing or viewing this Software is permitted to:
-   (a) Copy, duplicate, reproduce, or transcribe the Software, in whole or in part;
+2. STRICT PROHIBITIONS & RESTRICTIONS
+   Unless explicitly granted in advance through a separate written contract signed 
+   by the Copyright Holder, you shall NOT under any circumstances:
+   (a) Copy, duplicate, reproduce, clone, or transcribe the Software in whole or in part;
    (b) Modify, adapt, translate, enhance, or create derivative works of the Software;
-   (c) Distribute, publish, lease, sell, sublicense, assign, rent, convey, or disclose 
+   (c) Distribute, publish, lease, sell, sublicense, rent, convey, bundle, or disclose 
        the Software or any portion thereof to any third party;
-   (d) Reverse engineer, decompile, disassemble, or attempt to derive source code or underlying 
-       algorithms from any part of the Software;
-   (e) Remove, alter, or obscure any copyright, proprietary notice, or identification 
+   (d) Reverse engineer, decompile, disassemble, or extract proprietary algorithms, 
+       state transitions, or design tokens for commercial use or integration into 
+       competing platforms;
+   (e) Host a public or private mirror, software-as-a-service (SaaS) deployment, or 
+       commercial service derived from this repository;
+   (f) Remove, alter, or obscure any copyright, proprietary notices, or attribution 
        markings placed on or within the Software.
 
-3. AUTHORIZED EVALUATION ONLY
-   If access to this repository has been granted to you directly by the Copyright Holder, 
-   such access is granted strictly under the terms of your specific evaluation agreement 
-   or Non-Disclosure Agreement (NDA), exclusively for the purpose of private evaluation, 
-   code review, or authorized collaboration. Possession of or access to this Software 
-   does not constitute an open-source license, public grant, or patent license of any kind.
+3. THIRD-PARTY & OPEN-SOURCE ALGORITHMIC KNOWLEDGE
+   The mathematical foundations and computer science concepts implemented within this 
+   Software (such as Dijkstra's Algorithm, AVL Rotations, Quick Sort, Breadth-First 
+   Search, and standard data structures) are universal mathematical and algorithmic 
+   concepts. However, the specific visual representations, interactive state models, 
+   coordinate projection formulas, visualizer component interfaces, and platform 
+   code written in this repository represent original creative work protected by 
+   applicable intellectual property and copyright laws.
 
-4. DISCLAIMER OF WARRANTIES
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-   INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
-   PURPOSE, TITLE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE 
-   FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
-   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
-   IN ANY WAY OUT OF THE USE OR EVALUATION OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
-   OF SUCH DAMAGE.
+4. USER-GENERATED INPUTS
+   Users retain all rights to the arbitrary numbers, arrays, matrices, and graphs 
+   inputted into the visualization sandboxes during active browser sessions. The 
+   Software processes these inputs strictly in-memory or in accordance with the 
+   Algo Flow Privacy Policy.
+
+5. DISCLAIMER OF WARRANTIES
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+   FITNESS FOR A PARTICULAR PURPOSE, ACCURACY OF TIME/SPACE COMPLEXITY MODELS, 
+   AND NON-INFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS 
+   BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+   CONSEQUENTIAL DAMAGES (INCLUDING PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND 
+   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+6. INQUIRIES & LICENSING REQUESTS
+   For enterprise licensing, institutional educational partnerships, or permissions 
+   beyond the scope of this Agreement, please contact:
+   Email: ganeshsharma7114@gmail.com

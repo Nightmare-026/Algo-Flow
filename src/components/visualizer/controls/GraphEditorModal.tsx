@@ -20,6 +20,7 @@ import "@xyflow/react/dist/style.css";
 import { GraphVisualState } from "@/visualizers/graph/types";
 import { X, Plus, Trash2, RotateCcw, Save, Settings2, Dices, Upload, Download } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import { useTheme } from "@/components/providers/ThemeProvider";
 
 interface GraphEditorModalProps {
   isOpen: boolean;
@@ -38,9 +39,9 @@ const toReactFlowNodes = (state: GraphVisualState): Node[] => {
     position: { x: n.x, y: n.y },
     data: { label: n.value },
     style: {
-      background: "var(--color-bg-surface)",
-      color: "var(--color-text-primary)",
-      border: "2px solid var(--color-border)",
+      background: "var(--bg-surface)",
+      color: "var(--text-primary)",
+      border: "2px solid var(--border)",
       borderRadius: "50%",
       width: 50,
       height: 50,
@@ -63,11 +64,11 @@ const toReactFlowEdges = (
     target: e.target,
     label: isWeighted && e.weight !== undefined ? String(e.weight) : undefined,
     markerEnd: isDirected
-      ? { type: MarkerType.ArrowClosed, color: "var(--color-border)" }
+      ? { type: MarkerType.ArrowClosed, color: "var(--border)" }
       : undefined,
-    style: { stroke: "var(--color-border)", strokeWidth: 2 },
-    labelStyle: { fill: "var(--color-text-primary)", fontWeight: 700 },
-    labelBgStyle: { fill: "var(--color-bg-surface-light)" },
+    style: { stroke: "var(--border)", strokeWidth: 2 },
+    labelStyle: { fill: "var(--text-primary)", fontWeight: 700 },
+    labelBgStyle: { fill: "var(--bg-surface)" },
   }));
 };
 
@@ -172,6 +173,7 @@ export function GraphEditorModal({
   returnFocusRef,
   onSave,
 }: GraphEditorModalProps) {
+  const { resolvedTheme } = useTheme();
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
@@ -570,18 +572,18 @@ export function GraphEditorModal({
                 setSelectedEdge(null);
               }}
               fitView
-              colorMode="dark"
+              colorMode={resolvedTheme === "dark" ? "dark" : "light"}
             >
               <Background
                 variant={BackgroundVariant.Dots}
                 gap={12}
                 size={1}
-                color="var(--color-border)"
+                color="var(--border)"
               />
-              <Controls className="bg-bg-surface border-border fill-text-primary" />
+              <Controls className="bg-surface border-border fill-text-primary" />
               <MiniMap
-                className="bg-bg-surface border-border"
-                nodeColor="var(--color-primary)"
+                className="bg-surface border-border"
+                nodeColor="var(--primary)"
                 maskColor="rgba(0,0,0,0.2)"
               />
             </ReactFlow>

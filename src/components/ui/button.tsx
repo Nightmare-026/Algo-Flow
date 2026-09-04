@@ -34,13 +34,25 @@ export const buttonVariants = ({
   variant?: ButtonProps["variant"];
   size?: ButtonProps["size"];
   className?: string;
-} = {}) =>
-  cn(
+} = {}) => {
+  const hasCustomHeight = Boolean(className && /\bh-\d+/.test(className));
+  const hasCustomRadius = Boolean(className && /\brounded-(?:none|sm|md|lg|xl|2xl|3xl|full)\b/.test(className));
+
+  let sizeClass = sizes[size];
+  if (hasCustomHeight) {
+    sizeClass = sizeClass.replace(/min-h-\[[^\]]+\]\s*/g, "");
+  }
+  if (hasCustomRadius) {
+    sizeClass = sizeClass.replace(/rounded-(?:lg|xl)\s*/g, "");
+  }
+
+  return cn(
     "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer",
     variants[variant],
-    sizes[size],
+    sizeClass,
     className
   );
+};
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "md", type = "button", ...props }, ref) => (

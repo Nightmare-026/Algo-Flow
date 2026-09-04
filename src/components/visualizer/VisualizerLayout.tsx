@@ -590,11 +590,11 @@ export function VisualizerLayout({
           </AnimatePresence>
 
           {/* VCR Playback Controls & Timeline Bar - Compact */}
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-2 border-t border-border bg-surface px-3 py-2 z-20 shadow-[var(--shadow-raised-sm)] shrink-0">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-2 border-t border-border bg-surface px-3 py-2 z-20 shadow-[var(--shadow-raised-sm)] shrink-0 w-full min-w-0">
+            <div className="flex items-center gap-2 shrink-0">
               <PlaybackControls />
             </div>
-            <div className="flex-1 w-full flex items-center gap-2">
+            <div className="flex-1 w-full min-w-0 flex items-center gap-2">
               <StepTimeline />
             </div>
             <div className="flex items-center gap-1.5 shrink-0">

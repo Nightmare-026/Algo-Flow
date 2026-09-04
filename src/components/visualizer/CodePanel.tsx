@@ -217,7 +217,7 @@ export function CodePanel({
         </div>
         <div className="flex items-center gap-1.5">
           {activeLineNum ? (
-            <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-1.5 py-0.5 rounded border border-primary/20">
+            <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-1.5 py-0.5 rounded-md border border-primary/20">
               Line {activeLineNum}
             </span>
           ) : null}

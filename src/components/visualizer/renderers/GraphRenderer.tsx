@@ -1,9 +1,10 @@
 "use client";
 
 import { usePlaybackStore } from "@/stores/playback-store";
+import { useTheme } from "@/components/providers/ThemeProvider";
 import { GraphVisualState } from "@/visualizers/graph/types";
 import { VisualStepHighlights } from "@/types";
-import { ReactFlow, Node, Edge, MarkerType } from "@xyflow/react";
+import { ReactFlow, Node, Edge, MarkerType, Background, BackgroundVariant } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { getVisualElementState } from "../visual-state";
 
@@ -11,31 +12,65 @@ import { getVisualElementState } from "../visual-state";
 function getNodeColor(id: string, highlights: VisualStepHighlights) {
   const state = getVisualElementState(highlights, id);
   const palette = {
-    default: { bg: "var(--bg-surface)", text: "var(--text-primary)", border: "var(--border)" },
+    default: {
+      bg: "var(--bg-surface)",
+      text: "var(--text-primary)",
+      border: "var(--border)",
+      glow: "none",
+    },
     current: {
       bg: "var(--primary-muted)",
-      text: "var(--primary-active)",
-      border: "var(--vis-current)",
+      text: "var(--primary-active, var(--primary))",
+      border: "var(--primary)",
+      glow: "var(--shadow-glow-primary, 0 0 0 4px rgba(22, 163, 74, 0.2))",
     },
-    compared: { bg: "var(--warning-muted)", text: "var(--warning)", border: "var(--vis-compared)" },
+    compared: {
+      bg: "var(--warning-muted)",
+      text: "var(--warning)",
+      border: "var(--warning)",
+      glow: "0 0 0 4px rgba(234, 179, 8, 0.2)",
+    },
     swapped: {
       bg: "var(--secondary-muted)",
       text: "var(--secondary)",
-      border: "var(--vis-swapped)",
+      border: "var(--secondary)",
+      glow: "0 0 0 4px rgba(15, 118, 110, 0.2)",
     },
     inserted: {
       bg: "var(--primary-muted)",
-      text: "var(--primary-active)",
-      border: "var(--vis-current)",
+      text: "var(--primary)",
+      border: "var(--primary)",
+      glow: "var(--shadow-glow-primary, 0 0 0 4px rgba(22, 163, 74, 0.2))",
     },
-    deleted: { bg: "var(--error-muted)", text: "var(--error)", border: "var(--vis-error)" },
-    found: { bg: "var(--success-muted)", text: "var(--success)", border: "var(--vis-found)" },
-    error: { bg: "var(--error-muted)", text: "var(--error)", border: "var(--vis-error)" },
-    sorted: { bg: "var(--success-muted)", text: "var(--success)", border: "var(--vis-sorted)" },
+    deleted: {
+      bg: "var(--error-muted)",
+      text: "var(--error)",
+      border: "var(--error)",
+      glow: "0 0 0 4px rgba(239, 68, 68, 0.2)",
+    },
+    found: {
+      bg: "var(--success-muted)",
+      text: "var(--success)",
+      border: "var(--success)",
+      glow: "0 0 0 4px rgba(34, 197, 94, 0.2)",
+    },
+    error: {
+      bg: "var(--error-muted)",
+      text: "var(--error)",
+      border: "var(--error)",
+      glow: "0 0 0 4px rgba(239, 68, 68, 0.2)",
+    },
+    sorted: {
+      bg: "var(--success-muted)",
+      text: "var(--success)",
+      border: "var(--success)",
+      glow: "0 0 0 4px rgba(34, 197, 94, 0.2)",
+    },
     visited: {
       bg: "var(--primary-muted)",
       text: "var(--text-secondary)",
-      border: "var(--vis-visited)",
+      border: "var(--primary)",
+      glow: "none",
     },
   };
   return palette[state];
@@ -46,12 +81,13 @@ function getEdgeColor(source: string, target: string, highlights: VisualStepHigh
     highlights.active?.includes(source) || highlights.visited?.includes(source);
   const isTargetActive =
     highlights.active?.includes(target) || highlights.visited?.includes(target);
-  if (isSourceActive && isTargetActive) return "var(--color-primary)";
-  return "var(--color-border)";
+  if (isSourceActive && isTargetActive) return "var(--primary)";
+  return "var(--border)";
 }
 
 export function GraphRenderer() {
   const { steps, currentStepIndex, reducedMotion } = usePlaybackStore();
+  const { resolvedTheme } = useTheme();
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep || !currentStep.dataState) {
@@ -73,16 +109,19 @@ export function GraphRenderer() {
         background: colors.bg,
         color: colors.text,
         border: `3px solid ${colors.border}`,
+        boxShadow: colors.glow,
         borderRadius: "50%",
-        width: 50,
-        height: 50,
+        width: 52,
+        height: 52,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontWeight: "bold",
+        fontWeight: 800,
+        fontSize: 16,
+        fontFamily: "var(--font-mono, monospace)",
         transition: reducedMotion
           ? "none"
-          : "background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, opacity 0.3s ease, transform 0.3s ease",
+          : "background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease",
       },
       draggable: false,
       selectable: false,
@@ -91,19 +130,46 @@ export function GraphRenderer() {
 
   const reactFlowEdges: Edge[] = (dataState.edges ?? []).map((e, i) => {
     const color = getEdgeColor(e.source, e.target, highlights);
+    const isSourceActive =
+      highlights.active?.includes(e.source) || highlights.visited?.includes(e.source);
+    const isTargetActive =
+      highlights.active?.includes(e.target) || highlights.visited?.includes(e.target);
+    const isEdgeActive = isSourceActive && isTargetActive;
+
     return {
       id: `e-${e.source}-${e.target}-${i}`,
       source: e.source,
       target: e.target,
       label: e.weight !== undefined ? String(e.weight) : undefined,
-      markerEnd: e.isDirected ? { type: MarkerType.ArrowClosed, color } : undefined,
+      markerEnd: e.isDirected
+        ? {
+            type: MarkerType.ArrowClosed,
+            color,
+            width: 18,
+            height: 18,
+          }
+        : undefined,
       style: {
         stroke: color,
-        strokeWidth: 3,
-        transition: reducedMotion ? "none" : "stroke 0.3s ease, opacity 0.3s ease",
+        strokeWidth: isEdgeActive ? 3.5 : 2.5,
+        transition: reducedMotion
+          ? "none"
+          : "stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease",
       },
-      labelStyle: { fill: "var(--color-text-primary)", fontWeight: 700 },
-      labelBgStyle: { fill: "var(--color-bg-surface-light)" },
+      labelStyle: {
+        fill: isEdgeActive ? "var(--primary)" : "var(--text-primary)",
+        fontWeight: 800,
+        fontSize: 12,
+        fontFamily: "var(--font-mono, monospace)",
+      },
+      labelBgStyle: {
+        fill: "var(--bg-surface)",
+        fillOpacity: 0.95,
+        stroke: isEdgeActive ? "var(--primary)" : "var(--border)",
+        strokeWidth: isEdgeActive ? 2 : 1,
+      },
+      labelBgPadding: [6, 4] as [number, number],
+      labelBgBorderRadius: 6,
       animated:
         !reducedMotion &&
         (highlights.active?.includes(e.source) || highlights.active?.includes(e.target)),
@@ -113,7 +179,7 @@ export function GraphRenderer() {
 
   return (
     <div
-      className="flex items-center justify-center w-full h-full relative overflow-hidden bg-bg-surface-light/30 rounded-xl"
+      className="flex items-center justify-center w-full h-full relative overflow-hidden rounded-2xl border border-border/60 bg-surface shadow-xs"
       role="img"
       aria-label={`${currentStep.title}. Graph simulation with ${dataState.nodes.length} nodes and ${dataState.edges.length} edges`}
     >
@@ -121,13 +187,21 @@ export function GraphRenderer() {
         nodes={reactFlowNodes}
         edges={reactFlowEdges}
         fitView
-        colorMode="dark"
+        colorMode={resolvedTheme === "dark" ? "dark" : "light"}
         nodesDraggable={false}
         nodesConnectable={false}
         elementsSelectable={false}
         panOnDrag={true}
         zoomOnScroll={true}
-      />
+      >
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={16}
+          size={1.2}
+          color="var(--border)"
+          className="opacity-40"
+        />
+      </ReactFlow>
     </div>
   );
 }

@@ -1,4 +1,10 @@
-import { GraphVisualState, createDefaultGraph } from "@/visualizers/graph/types";
+import {
+  GraphVisualState,
+  createDefaultGraph,
+  createDefaultWeightedGraph,
+  createDefaultDAG,
+  createDefaultCyclicGraph,
+} from "@/visualizers/graph/types";
 import { TreeVisualState } from "@/visualizers/tree/types";
 
 export interface ParseNumberListResult {
@@ -36,6 +42,63 @@ export const defaultVisualizerInputOptions: VisualizerInputOptions = {
   isDirected: false,
   isWeighted: false,
 };
+
+export function getDefaultVisualizerInputOptions(
+  slug?: string,
+  dataStructureId?: string
+): VisualizerInputOptions {
+  if (
+    dataStructureId === "ds_graph" ||
+    [
+      "bfs",
+      "dfs",
+      "dijkstra",
+      "bellman-ford",
+      "kruskal",
+      "prim",
+      "topological-sort",
+      "detect-cycle-graph",
+      "connected-components",
+    ].includes(slug || "")
+  ) {
+    if (["dijkstra", "bellman-ford", "kruskal", "prim"].includes(slug || "")) {
+      return {
+        ...defaultVisualizerInputOptions,
+        graphState: createDefaultWeightedGraph(),
+        isWeighted: true,
+        isDirected: slug === "bellman-ford",
+        text: "A",
+      };
+    }
+    if (slug === "topological-sort") {
+      return {
+        ...defaultVisualizerInputOptions,
+        graphState: createDefaultDAG(),
+        isWeighted: false,
+        isDirected: true,
+        text: "A",
+      };
+    }
+    if (slug === "detect-cycle-graph") {
+      return {
+        ...defaultVisualizerInputOptions,
+        graphState: createDefaultCyclicGraph(),
+        isWeighted: false,
+        isDirected: true,
+        text: "A",
+      };
+    }
+    return {
+      ...defaultVisualizerInputOptions,
+      graphState: createDefaultGraph(),
+      isWeighted: false,
+      isDirected: false,
+      text: "A",
+    };
+  }
+
+  return defaultVisualizerInputOptions;
+}
 
 export function parseNumberList(input: string, maxLength: number = 20): ParseNumberListResult {
   const rawValues = input.split(",").map((item) => item.trim());

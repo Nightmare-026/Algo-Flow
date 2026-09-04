@@ -252,11 +252,15 @@ algo-flow/
 
 ---
 
-## Ownership & Intellectual Property
+## Ownership & Legal Policies
 
 This software and all associated intellectual property, patents, trade secrets, design assets, and copyright rights are the sole, exclusive property of **Nightmare**.
 
-This software is licensed strictly under private, proprietary terms. See the [LICENSE](LICENSE) file for complete legal conditions.
+- **License Agreement**: [LICENSE](LICENSE) (Proprietary Educational & Evaluation Agreement)
+- **Security Policy**: [SECURITY.md](SECURITY.md) (Vulnerability Disclosure & SLAs)
+- **Terms of Service**: [TERMS.md](TERMS.md) (Platform Terms & Acceptable Use)
+- **Privacy Policy**: [PRIVACY.md](PRIVACY.md) (GDPR, CCPA & Data Governance)
+- **Cookie Policy**: [COOKIES.md](COOKIES.md) (Zero-Ad-Tracker & Storage Inventory)
 
 ---
 

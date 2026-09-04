@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertCircle, FileEdit, Type, Target } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { AlertCircle, Type, Target, Shuffle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
@@ -75,64 +74,78 @@ export function StringInputControls({
   };
 
   return (
-    <div className="flex flex-col gap-2.5 text-sm lg:flex-row lg:items-center lg:gap-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <form onSubmit={handleCustomSubmit} className="flex flex-wrap items-center gap-1.5">
-          <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
-            <Type className="h-3.5 w-3.5 text-primary" />
-            <span className="text-text-muted font-medium text-xs">Text:</span>
-            <Input
+    <div className="flex flex-col gap-2 text-[11px]">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {/* Presets Pod */}
+          <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+            <Button
+              type="button"
+              size="sm"
+              className="h-6 min-h-0 rounded-md px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95 cursor-pointer"
+              onClick={generateRandom}
+              title="Generate random text"
+            >
+              <Shuffle className="h-3 w-3 text-primary mr-1" aria-hidden="true" />
+              Random
+            </Button>
+            {!needsPattern(slug) && (
+              <>
+                <span className="h-3.5 w-px bg-border mx-0.5" />
+                <Button
+                  type="button"
+                  size="sm"
+                  className="h-6 min-h-0 rounded-md px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95 cursor-pointer"
+                  onClick={generatePalindrome}
+                  title="Generate palindrome"
+                >
+                  <Sparkles className="h-3 w-3 text-primary mr-1" aria-hidden="true" />
+                  Palindrome
+                </Button>
+              </>
+            )}
+          </div>
+
+          {/* Custom String Input Form Pod */}
+          <form
+            onSubmit={handleCustomSubmit}
+            className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+          >
+            <Type className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+            <span className="font-mono text-[10px] font-semibold text-text-secondary">Text:</span>
+            <input
               type="text"
-              className="w-28 h-7 border-border bg-bg-base px-2 py-0 font-mono text-xs"
+              className="h-6 w-24 sm:w-28 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted uppercase"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              placeholder="Text…"
-              aria-invalid={Boolean(error)}
-              aria-describedby={error ? "string-input-error" : undefined}
+              placeholder="TEXT…"
+              aria-label="Custom text"
             />
-          </label>
 
-          {needsPattern(slug) && (
-            <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
-              <Target className="h-3.5 w-3.5 text-primary" />
-              <span className="text-text-muted font-medium text-xs">Pattern:</span>
-              <Input
-                type="text"
-                className="w-18 h-7 border-border bg-bg-base px-2 py-0 font-mono text-xs"
-                value={patternInput}
-                onChange={(e) => setPatternInput(e.target.value)}
-                placeholder="Pattern…"
-                aria-invalid={Boolean(error)}
-                aria-describedby={error ? "string-input-error" : undefined}
-              />
-            </label>
-          )}
+            {needsPattern(slug) && (
+              <>
+                <span className="h-3.5 w-px bg-border mx-0.5" />
+                <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+                <span className="font-mono text-[10px] font-semibold text-text-secondary">Pat:</span>
+                <input
+                  type="text"
+                  className="h-6 w-16 sm:w-20 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted uppercase"
+                  value={patternInput}
+                  onChange={(e) => setPatternInput(e.target.value)}
+                  placeholder="PAT…"
+                  aria-label="Pattern to match"
+                />
+              </>
+            )}
 
-          <Button type="submit" variant="secondary" size="sm" className="h-7 px-3 text-xs">
-            <FileEdit className="h-3.5 w-3.5" />
-            Set
-          </Button>
-        </form>
-
-        <div className="flex items-center gap-1">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 px-2.5 text-xs"
-            onClick={generateRandom}
-          >
-            Random
-          </Button>
-          {!needsPattern(slug) && (
             <Button
-              variant="outline"
+              type="submit"
               size="sm"
-              className="h-7 px-2.5 text-xs"
-              onClick={generatePalindrome}
+              className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0 cursor-pointer"
             >
-              Palindrome
+              Set
             </Button>
-          )}
+          </form>
         </div>
       </div>
 
@@ -141,10 +154,10 @@ export function StringInputControls({
           id="string-input-error"
           role="alert"
           aria-live="polite"
-          className="flex items-center gap-1.5 text-xs font-medium text-error animate-in fade-in slide-in-from-top-1 lg:ml-auto"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-error/30 bg-error-muted px-2.5 py-1 text-[10px] font-semibold text-error animate-in fade-in slide-in-from-top-1"
         >
-          <AlertCircle className="h-3.5 w-3.5" />
-          {error}
+          <AlertCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
+          <span>{error}</span>
         </div>
       )}
     </div>

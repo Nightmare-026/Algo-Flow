@@ -17,6 +17,7 @@ import {
   Scale,
 } from "lucide-react";
 import Link from "next/link";
+import { LegalNav } from "@/components/legal/LegalNav";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Algo Flow",
@@ -51,8 +52,13 @@ export default async function PrivacyPage() {
             Version {PRIVACY_VERSION} • Effective Date: September 4, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
-            At Algo Flow (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), we believe that interactive education should be transparent, respectful of your privacy, and built on robust security foundations. This Privacy Policy details the exact types of information we collect, how your data is protected, and your statutory rights under global data protection frameworks including GDPR, CCPA/CPRA, and COPPA.
+            At Algo Flow (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), we believe that
+            interactive education should be transparent, respectful of your privacy, and built on
+            robust security foundations. This Privacy Policy details the exact types of information
+            we collect, how your data is protected, and your statutory rights under global data
+            protection frameworks including GDPR, CCPA/CPRA, and COPPA.
           </p>
+          <LegalNav currentPath="/privacy" />
         </div>
 
         {/* Privacy at a Glance (Executive Summary) */}
@@ -68,7 +74,8 @@ export default async function PrivacyPage() {
                 Zero Commercial Ad Monetization
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                We never sell, rent, license, or monetize your personal data or activity telemetry with third-party advertising networks.
+                We never sell, rent, license, or monetize your personal data or activity telemetry
+                with third-party advertising networks.
               </p>
             </div>
 
@@ -78,7 +85,8 @@ export default async function PrivacyPage() {
                 Anonymous Public Exploration
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                All 133 algorithm visualizers, code execution workspaces, and training sandboxes can be explored anonymously without an account.
+                All 133 algorithm visualizers, code execution workspaces, and training sandboxes can
+                be explored anonymously without an account.
               </p>
             </div>
 
@@ -88,7 +96,8 @@ export default async function PrivacyPage() {
                 Minimalist Google OAuth
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                When using Sign in with Google, we only request non-sensitive identity scopes (email and public profile). We never touch your private Google assets.
+                When using Sign in with Google, we only request non-sensitive identity scopes (email
+                and public profile). We never touch your private Google assets.
               </p>
             </div>
 
@@ -98,7 +107,8 @@ export default async function PrivacyPage() {
                 PostgreSQL Row-Level Security
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                Your database records (streaks, session telemetry, bookmarks) are strictly isolated with cryptographic user ID policies in Supabase.
+                Your database records (streaks, session telemetry, bookmarks) are strictly isolated
+                with cryptographic user ID policies in Supabase.
               </p>
             </div>
           </div>
@@ -118,10 +128,29 @@ export default async function PrivacyPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                Algo Flow operates as an interactive Computer Science laboratory and educational workstation dedicated to algorithm visualization, data structure modeling, and computational mental arithmetic.
+                Algo Flow operates as an interactive Computer Science laboratory and educational
+                workstation dedicated to algorithm visualization, data structure modeling, and
+                computational mental arithmetic. This Privacy Policy operates in conjunction with
+                our{" "}
+                <Link href="/terms" className="text-primary hover:underline font-bold">
+                  Terms of Service
+                </Link>
+                , our{" "}
+                <Link href="/license" className="text-primary hover:underline font-bold">
+                  License Agreement
+                </Link>
+                , and our dedicated{" "}
+                <Link href="/cookies" className="text-primary hover:underline font-bold">
+                  Cookie Policy
+                </Link>
+                .
               </p>
               <p>
-                <strong>Guest & Public Access:</strong> You can access all visualizer simulations, tree and graph canvases, code editors, and calculation sandboxes without providing any personal identifying information. In guest mode, all execution states, timeline steps, array inputs, and scratch data remain exclusively within your client browser memory and are never transmitted to our persistent database servers.
+                <strong>Guest & Public Access:</strong> You can access all visualizer simulations,
+                tree and graph canvases, code editors, and calculation sandboxes without providing
+                any personal identifying information. In guest mode, all execution states, timeline
+                steps, array inputs, and scratch data remain exclusively within your client browser
+                memory and are never transmitted to our persistent database servers.
               </p>
             </div>
           </section>
@@ -138,23 +167,35 @@ export default async function PrivacyPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                When you create an account or authenticate on Algo Flow, we collect only the minimum information necessary to maintain your student identity and provide personalized educational progress tracking:
+                When you create an account or authenticate on Algo Flow, we collect only the minimum
+                information necessary to maintain your student identity and provide personalized
+                educational progress tracking:
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>Account Credentials & Identity:</strong> Email address, hashed authentication credentials, chosen display username, and avatar URL if authenticated via third-party OAuth.
+                  <strong>Account Credentials & Identity:</strong> Email address, hashed
+                  authentication credentials, chosen display username, and avatar URL if
+                  authenticated via third-party OAuth.
                 </li>
                 <li>
-                  <strong>Educational & Telemetry Records:</strong> Completed algorithm visualizers, topic mastery percentages, study habit streaks, experience points (XP), bookmarked algorithms, interactive quiz scores, and practice session completion timestamps.
+                  <strong>Educational & Telemetry Records:</strong> Completed algorithm visualizers,
+                  topic mastery percentages, study habit streaks, experience points (XP), bookmarked
+                  algorithms, interactive quiz scores, and practice session completion timestamps.
                 </li>
                 <li>
-                  <strong>Mental Math Calculation Telemetry:</strong> Anonymized problem latency times (average solve time in milliseconds), accuracy percentages, calculation streaks, operation breakdown indices, and verified daily challenge scores.
+                  <strong>Mental Math Calculation Telemetry:</strong> Anonymized problem latency
+                  times (average solve time in milliseconds), accuracy percentages, calculation
+                  streaks, operation breakdown indices, and verified daily challenge scores.
                 </li>
                 <li>
-                  <strong>Client Preferences:</strong> Interface theme preference (Light / Dark), volume configurations, and code editor preferred programming language (Python, C++, Java, JavaScript).
+                  <strong>Client Preferences:</strong> Interface theme preference (Light / Dark),
+                  volume configurations, and code editor preferred programming language (Python,
+                  C++, Java, JavaScript).
                 </li>
                 <li>
-                  <strong>Technical & Security Metadata:</strong> Standard HTTP request headers, browser user-agent strings, and IP addresses utilized solely for security diagnostics, rate-limiting enforcement, and DDoS mitigation.
+                  <strong>Technical & Security Metadata:</strong> Standard HTTP request headers,
+                  browser user-agent strings, and IP addresses utilized solely for security
+                  diagnostics, rate-limiting enforcement, and DDoS mitigation.
                 </li>
               </ul>
             </div>
@@ -172,20 +213,38 @@ export default async function PrivacyPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                Algo Flow offers seamless, secure single sign-on authentication through Google OAuth 2.0 services. When you choose to authenticate via Google:
+                Algo Flow offers seamless, secure single sign-on authentication through Google OAuth
+                2.0 services. When you choose to authenticate via Google:
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  We request access strictly to <strong>non-sensitive standard identity scopes</strong>: <code className="font-mono text-xs bg-surface-inset px-1.5 py-0.5 rounded border border-border">email</code>, <code className="font-mono text-xs bg-surface-inset px-1.5 py-0.5 rounded border border-border">profile</code>, and <code className="font-mono text-xs bg-surface-inset px-1.5 py-0.5 rounded border border-border">openid</code>.
+                  We request access strictly to{" "}
+                  <strong>non-sensitive standard identity scopes</strong>:{" "}
+                  <code className="font-mono text-xs bg-surface-inset px-1.5 py-0.5 rounded border border-border">
+                    email
+                  </code>
+                  ,{" "}
+                  <code className="font-mono text-xs bg-surface-inset px-1.5 py-0.5 rounded border border-border">
+                    profile
+                  </code>
+                  , and{" "}
+                  <code className="font-mono text-xs bg-surface-inset px-1.5 py-0.5 rounded border border-border">
+                    openid
+                  </code>
+                  .
                 </li>
                 <li>
-                  We receive and store only your email address, full name, and avatar profile picture provided by Google to create your authenticated student profile.
+                  We receive and store only your email address, full name, and avatar profile
+                  picture provided by Google to create your authenticated student profile.
                 </li>
                 <li>
-                  We <strong>never request, access, read, or store</strong> any sensitive Google account data, such as your Google Drive files, Gmail messages, contacts, or location history.
+                  We <strong>never request, access, read, or store</strong> any sensitive Google
+                  account data, such as your Google Drive files, Gmail messages, contacts, or
+                  location history.
                 </li>
                 <li>
-                  Authentication tokens are securely exchanged directly via Supabase Auth and encrypted over HTTPS TLS 1.3.
+                  Authentication tokens are securely exchanged directly via Supabase Auth and
+                  encrypted over HTTPS TLS 1.3.
                 </li>
               </ul>
             </div>
@@ -202,16 +261,24 @@ export default async function PrivacyPage() {
               </h2>
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
-              <p>Under the EU General Data Protection Regulation (GDPR), we process your data on the following lawful grounds:</p>
+              <p>
+                Under the EU General Data Protection Regulation (GDPR), we process your data on the
+                following lawful grounds:
+              </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>Contractual Necessity:</strong> To deliver the core Algo Flow platform services you request, including maintaining your study account, authenticating your sessions, saving your bookmarks, and rendering your Student Dashboard.
+                  <strong>Contractual Necessity:</strong> To deliver the core Algo Flow platform
+                  services you request, including maintaining your study account, authenticating
+                  your sessions, saving your bookmarks, and rendering your Student Dashboard.
                 </li>
                 <li>
-                  <strong>Legitimate Interests:</strong> To protect platform integrity, enforce rate limits against automated scraping, prevent cheating on public daily challenge leaderboards, and ensure high availability across global edge regions.
+                  <strong>Legitimate Interests:</strong> To protect platform integrity, enforce rate
+                  limits against automated scraping, prevent cheating on public daily challenge
+                  leaderboards, and ensure high availability across global edge regions.
                 </li>
                 <li>
-                  <strong>User Consent:</strong> For client-side optional preferences, such as retaining customized visualizer layout settings in your browser storage.
+                  <strong>User Consent:</strong> For client-side optional preferences, such as
+                  retaining customized visualizer layout settings in your browser storage.
                 </li>
               </ul>
             </div>
@@ -229,17 +296,36 @@ export default async function PrivacyPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                We implement industry-grade defense-in-depth security measures to protect your information from unauthorized access, alteration, or disclosure:
+                We implement industry-grade defense-in-depth security measures to protect your
+                information from unauthorized access, alteration, or disclosure:
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>PostgreSQL Row-Level Security (RLS):</strong> Every database table storing personal data (<code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">profiles</code>, <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">bookmarks</code>, <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">mental_math_sessions</code>) is fortified with Postgres RLS policies. Your data is cryptographically tied to your authenticated user ID and cannot be accessed by other users.
+                  <strong>PostgreSQL Row-Level Security (RLS):</strong> Every database table storing
+                  personal data (
+                  <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">
+                    profiles
+                  </code>
+                  ,{" "}
+                  <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">
+                    bookmarks
+                  </code>
+                  ,{" "}
+                  <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">
+                    mental_math_sessions
+                  </code>
+                  ) is fortified with Postgres RLS policies. Your data is cryptographically tied to
+                  your authenticated user ID and cannot be accessed by other users.
                 </li>
                 <li>
-                  <strong>End-to-End Transport Encryption:</strong> All communications between your client device, Vercel edge servers, and Supabase database endpoints are strictly encrypted using TLS 1.3.
+                  <strong>End-to-End Transport Encryption:</strong> All communications between your
+                  client device, Vercel edge servers, and Supabase database endpoints are strictly
+                  encrypted using TLS 1.3.
                 </li>
                 <li>
-                  <strong>Authentication Cookie Security:</strong> Authentication tokens are transmitted in strict HttpOnly, SameSite, Secure cookie payloads, protecting your active session from cross-site scripting (XSS) and CSRF vulnerabilities.
+                  <strong>Authentication Cookie Security:</strong> Authentication tokens are
+                  transmitted in strict HttpOnly, SameSite, Secure cookie payloads, protecting your
+                  active session from cross-site scripting (XSS) and CSRF vulnerabilities.
                 </li>
               </ul>
             </div>
@@ -257,16 +343,28 @@ export default async function PrivacyPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                Algo Flow maintains a strict <strong>Zero-Ad-Tracker</strong> policy. We do not use third-party advertising cookies or cross-site tracking beacons.
+                Algo Flow maintains a strict <strong>Zero-Ad-Tracker</strong> policy. We do not use
+                third-party advertising cookies or cross-site tracking beacons.
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>Essential Authentication Cookies:</strong> Used strictly to verify your logged-in state across Next.js server components and API routes.
+                  <strong>Essential Authentication Cookies:</strong> Used strictly to verify your
+                  logged-in state across Next.js server components and API routes.
                 </li>
                 <li>
-                  <strong>Browser Local Storage:</strong> Used to store your UI preferences (Light/Dark theme, sound toggle, practice session settings) directly on your device without sending unnecessary telemetry to external servers.
+                  <strong>Browser Local Storage:</strong> Used to store your UI preferences
+                  (Light/Dark theme, sound toggle, practice session settings) directly on your
+                  device without sending unnecessary telemetry to external servers.
                 </li>
               </ul>
+              <p className="pt-2 text-xs">
+                For a complete, itemized inventory of all storage keys, session cookies, expiration
+                windows, and security attributes, please read our dedicated{" "}
+                <Link href="/cookies" className="text-primary hover:underline font-bold">
+                  Cookie Policy & Storage Inventory
+                </Link>
+                .
+              </p>
             </div>
           </section>
 
@@ -282,7 +380,8 @@ export default async function PrivacyPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                To provide high-performance, low-latency educational simulations globally, we partner with world-class cloud infrastructure providers:
+                To provide high-performance, low-latency educational simulations globally, we
+                partner with world-class cloud infrastructure providers:
               </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border border-border rounded-xl overflow-hidden mt-2">
@@ -326,19 +425,31 @@ export default async function PrivacyPage() {
               </h2>
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
-              <p>Regardless of your geographic jurisdiction, we grant all learners universal privacy controls:</p>
+              <p>
+                Regardless of your geographic jurisdiction, we grant all learners universal privacy
+                controls:
+              </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>Right to Access & Inspect:</strong> You can view all saved sessions, bookmarks, and practice telemetry directly from your <Link href="/dashboard" className="text-primary hover:underline font-bold">Student Dashboard</Link> or request a full data export.
+                  <strong>Right to Access & Inspect:</strong> You can view all saved sessions,
+                  bookmarks, and practice telemetry directly from your{" "}
+                  <Link href="/dashboard" className="text-primary hover:underline font-bold">
+                    Student Dashboard
+                  </Link>{" "}
+                  or request a full data export.
                 </li>
                 <li>
-                  <strong>Right to Rectification:</strong> You can update your display name, email, and preferences at any time.
+                  <strong>Right to Rectification:</strong> You can update your display name, email,
+                  and preferences at any time.
                 </li>
                 <li>
-                  <strong>Right to Erasure (&quot;Right to be Forgotten&quot;):</strong> You have the absolute right to delete your account and all associated practice history permanently. Deletion removes your records from our live database immediately.
+                  <strong>Right to Erasure (&quot;Right to be Forgotten&quot;):</strong> You have
+                  the absolute right to delete your account and all associated practice history
+                  permanently. Deletion removes your records from our live database immediately.
                 </li>
                 <li>
-                  <strong>Right to Restrict or Object:</strong> You can opt out of any non-essential processing by browsing in guest mode.
+                  <strong>Right to Restrict or Object:</strong> You can opt out of any non-essential
+                  processing by browsing in guest mode.
                 </li>
               </ul>
             </div>
@@ -356,10 +467,15 @@ export default async function PrivacyPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                Algo Flow is designed for computer science learners, students, and professionals. We do not knowingly collect or solicit personal information from children under the age of 13 (or under 16 in the European Economic Area) without parental or educational institution consent.
+                Algo Flow is designed for computer science learners, students, and professionals. We
+                do not knowingly collect or solicit personal information from children under the age
+                of 13 (or under 16 in the European Economic Area) without parental or educational
+                institution consent.
               </p>
               <p>
-                If we discover that personal data of a minor under 13 has been collected without verifiable parental consent, we will take immediate steps to delete that account and associated records from our database.
+                If we discover that personal data of a minor under 13 has been collected without
+                verifiable parental consent, we will take immediate steps to delete that account and
+                associated records from our database.
               </p>
             </div>
           </section>
@@ -376,12 +492,18 @@ export default async function PrivacyPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                We may periodically update this Privacy Policy to reflect platform improvements, new educational features, or evolving regulatory standards. When material modifications occur, we will update the version number and effective date at the top of this document.
+                We may periodically update this Privacy Policy to reflect platform improvements, new
+                educational features, or evolving regulatory standards. When material modifications
+                occur, we will update the version number and effective date at the top of this
+                document.
               </p>
               <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] mt-4">
-                <p className="font-bold text-text-primary text-xs">Official Privacy & Legal Contact:</p>
+                <p className="font-bold text-text-primary text-xs">
+                  Official Privacy & Legal Contact:
+                </p>
                 <p className="text-xs text-text-secondary mt-1">
-                  For privacy inquiries, data subject requests, or security disclosures, please contact the Algo Flow team directly at:
+                  For privacy inquiries, data subject requests, or security disclosures, please
+                  contact the Algo Flow team directly at:
                 </p>
                 <p className="font-mono text-xs font-bold text-primary mt-2">
                   <a href="mailto:ganeshsharma7114@gmail.com" className="hover:underline">

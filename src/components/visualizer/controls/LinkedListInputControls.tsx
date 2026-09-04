@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { AlertCircle, Target, HardDriveDownload } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import {
   defaultVisualizerInputOptions,
   validateIndex,
@@ -72,86 +70,91 @@ export function LinkedListInputControls({
   const errorId = "linked-list-control-error";
 
   return (
-    <div className="flex flex-col gap-2.5 text-sm lg:flex-row lg:items-center lg:gap-3">
-      <div className="flex flex-wrap items-center gap-2">
-        {showTarget && (
-          <form onSubmit={handleTargetSubmit} className="flex items-center gap-1.5">
-            <label className="flex flex-col gap-0.5" htmlFor="linked-list-target">
-              <span className="text-text-muted text-xs">Target</span>
-              <Input
+    <div className="flex flex-col gap-2 text-[11px]">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {showTarget && (
+            <form onSubmit={handleTargetSubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+              <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">Target:</span>
+              <input
                 id="linked-list-target"
                 name="target"
                 type="number"
                 inputMode="numeric"
-                className="h-7 w-20 border-border bg-bg-base px-2 text-xs"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
                 value={targetInput}
                 onChange={(event) => setTargetInput(event.target.value)}
+                aria-label="Target value"
               />
-            </label>
-            <Button type="submit" className="h-7 px-3 text-xs" variant="secondary" size="sm">
-              <Target className="mr-1 h-3.5 w-3.5" />
-              Set
-            </Button>
-          </form>
-        )}
+              <Button
+                type="submit"
+                size="sm"
+                className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0"
+              >
+                Set
+              </Button>
+            </form>
+          )}
 
-        {showValue && (
-          <form onSubmit={handleValueSubmit} className="flex items-center gap-1.5">
-            {showPosition && (
-              <div className="grid gap-0.5">
-                <Label htmlFor="linked-list-position" className="text-text-muted text-xs">
-                  Position
-                </Label>
-                <Input
-                  id="linked-list-position"
-                  name="position"
-                  type="number"
-                  min={0}
-                  max={dataLength}
-                  step={1}
-                  inputMode="numeric"
-                  className="h-7 w-20 border-border bg-bg-base px-2 text-xs"
-                  value={positionInput}
-                  aria-invalid={Boolean(error)}
-                  aria-describedby={error ? errorId : undefined}
-                  onChange={(event) => setPositionInput(event.target.value)}
-                />
-              </div>
-            )}
-            <div className="grid gap-0.5">
-              <Label htmlFor="linked-list-value" className="text-text-muted text-xs">
-                Value
-              </Label>
-              <Input
+          {showValue && (
+            <form onSubmit={handleValueSubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+              {showPosition && (
+                <>
+                  <span className="font-mono text-[10px] font-semibold text-text-secondary">Pos:</span>
+                  <input
+                    id="linked-list-position"
+                    name="position"
+                    type="number"
+                    min={0}
+                    max={dataLength}
+                    step={1}
+                    inputMode="numeric"
+                    className="h-6 w-12 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                    value={positionInput}
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={error ? errorId : undefined}
+                    onChange={(event) => setPositionInput(event.target.value)}
+                    aria-label="Position"
+                  />
+                  <span className="h-3.5 w-px bg-border mx-0.5" />
+                </>
+              )}
+              <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">Val:</span>
+              <input
                 id="linked-list-value"
                 name="value"
                 type="number"
                 step={1}
                 inputMode="numeric"
-                className="h-7 w-20 border-border bg-bg-base px-2 text-xs"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
                 value={valInput}
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? errorId : undefined}
                 onChange={(event) => setValInput(event.target.value)}
+                aria-label="Value"
               />
-            </div>
-
-            <Button type="submit" className="h-7 px-3 text-xs" variant="secondary" size="sm">
-              <HardDriveDownload className="mr-1 h-3.5 w-3.5" />
-              {showPosition ? "Build" : "Set"}
-            </Button>
-          </form>
-        )}
+              <Button
+                type="submit"
+                size="sm"
+                className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0"
+              >
+                {showPosition ? "Build" : "Set"}
+              </Button>
+            </form>
+          )}
+        </div>
       </div>
 
       {error && (
         <div
           id={errorId}
           role="alert"
-          className="flex animate-in items-center gap-1.5 text-xs font-medium text-error fade-in slide-in-from-top-1 lg:ml-auto"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-error/30 bg-error-muted px-2.5 py-1 text-[10px] font-semibold text-error animate-in fade-in slide-in-from-top-1"
         >
-          <AlertCircle className="h-3.5 w-3.5" />
-          {error}
+          <AlertCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
+          <span>{error}</span>
         </div>
       )}
     </div>

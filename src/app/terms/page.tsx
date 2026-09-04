@@ -18,11 +18,12 @@ import {
   Cpu,
 } from "lucide-react";
 import Link from "next/link";
+import { LegalNav } from "@/components/legal/LegalNav";
 
 export const metadata: Metadata = {
   title: "Terms of Service | Algo Flow",
   description:
-    "Official Terms of Service and user agreement governing the use of Algo Flow's interactive CS visualizers, code execution workspaces, and mental math engines.",
+    "Official Terms of Service and user agreement for Algo Flow. Review permitted educational uses, user conduct, intellectual property rights, and platform disclaimers.",
   alternates: { canonical: "/terms" },
 };
 
@@ -52,8 +53,13 @@ export default async function TermsPage() {
             Version {TERMS_VERSION} • Effective Date: September 4, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
-            Welcome to Algo Flow (&quot;Algo Flow&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;). These Terms of Service constitute a legally binding agreement between you and Algo Flow governing your access to and use of our computer science visualizer library, interactive execution engines, mental calculation studios, and associated web services.
+            Welcome to Algo Flow (&quot;Algo Flow&quot;, &quot;we&quot;, &quot;us&quot;, or
+            &quot;our&quot;). These Terms of Service constitute a legally binding agreement between
+            you and Algo Flow governing your access to and use of our computer science visualizer
+            library, interactive execution engines, mental calculation studios, and associated web
+            services.
           </p>
+          <LegalNav currentPath="/terms" />
         </div>
 
         {/* Terms at a Glance (Executive Summary) */}
@@ -69,7 +75,8 @@ export default async function TermsPage() {
                 Educational Study License
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                Algo Flow is provided for personal, academic, classroom, and interview preparation. Visualizer algorithms and simulations are for educational purposes.
+                Algo Flow is provided for personal, academic, classroom, and interview preparation.
+                Visualizer algorithms and simulations are for educational purposes.
               </p>
             </div>
 
@@ -79,7 +86,8 @@ export default async function TermsPage() {
                 Academic & Leaderboard Integrity
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                Automated bots, headless scrapers, script injectors, or anti-cheat tampering on mental math competitions and quizzes are strictly prohibited.
+                Automated bots, headless scrapers, script injectors, or anti-cheat tampering on
+                mental math competitions and quizzes are strictly prohibited.
               </p>
             </div>
 
@@ -89,7 +97,8 @@ export default async function TermsPage() {
                 Intellectual Property Protection
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                All bespoke visualizer architectures, state synchronization pipelines, visual assets, and brand trademarks are proprietary assets of Algo Flow.
+                All bespoke visualizer architectures, state synchronization pipelines, visual
+                assets, and brand trademarks are proprietary assets of Algo Flow.
               </p>
             </div>
 
@@ -99,7 +108,8 @@ export default async function TermsPage() {
                 Account Confidentiality
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                You are solely responsible for maintaining the confidentiality of your credentials and Google OAuth sessions, and all actions under your profile.
+                You are solely responsible for maintaining the confidentiality of your credentials
+                and Google OAuth sessions, and all actions under your profile.
               </p>
             </div>
           </div>
@@ -119,10 +129,26 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                By accessing, browsing, registering for, or using Algo Flow, you confirm that you have read, understood, and agreed to be bound by these Terms of Service and our <Link href="/privacy" className="text-primary hover:underline font-bold">Privacy Policy</Link>. If you do not agree to these terms, you must not access or use the platform.
+                By accessing, browsing, registering for, or using Algo Flow, you confirm that you
+                have read, understood, and agreed to be bound by these Terms of Service, our{" "}
+                <Link href="/privacy" className="text-primary hover:underline font-bold">
+                  Privacy Policy
+                </Link>
+                , our{" "}
+                <Link href="/license" className="text-primary hover:underline font-bold">
+                  License Agreement
+                </Link>
+                , and our{" "}
+                <Link href="/cookies" className="text-primary hover:underline font-bold">
+                  Cookie Policy
+                </Link>
+                . If you do not agree to these terms, you must not access or use the platform.
               </p>
               <p>
-                <strong>Age & Capacity Requirements:</strong> You must be at least 13 years of age (or at least 16 years of age in the European Economic Area) to create an account. If you are under the legal age of majority in your jurisdiction, you represent that your parent or legal guardian has reviewed and agreed to these Terms on your behalf.
+                <strong>Age & Capacity Requirements:</strong> You must be at least 13 years of age
+                (or at least 16 years of age in the European Economic Area) to create an account. If
+                you are under the legal age of majority in your jurisdiction, you represent that
+                your parent or legal guardian has reviewed and agreed to these Terms on your behalf.
               </p>
             </div>
           </section>
@@ -138,25 +164,30 @@ export default async function TermsPage() {
               </h2>
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
-              <p>
-                Algo Flow provides interactive Computer Science education tools, including:
-              </p>
+              <p>Algo Flow provides interactive Computer Science education tools, including:</p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>133+ Visualizer Workstations:</strong> Dynamic execution traces for linear, tree, graph, sorting, searching, and dynamic programming algorithms.
+                  <strong>133+ Visualizer Workstations:</strong> Dynamic execution traces for
+                  linear, tree, graph, sorting, searching, and dynamic programming algorithms.
                 </li>
                 <li>
-                  <strong>Synchronized Multi-Language Source Code:</strong> Interactive code panels supporting Python, C++, Java, and JavaScript with line-by-line pointer synchronization.
+                  <strong>Synchronized Multi-Language Source Code:</strong> Interactive code panels
+                  supporting Python, C++, Java, and JavaScript with line-by-line pointer
+                  synchronization.
                 </li>
                 <li>
-                  <strong>Mental Math Calculation Studio:</strong> Structured multi-digit calculation drills, 60s speed sprints, timed tests, and daily global challenges.
+                  <strong>Mental Math Calculation Studio:</strong> Structured multi-digit
+                  calculation drills, 60s speed sprints, timed tests, and daily global challenges.
                 </li>
                 <li>
-                  <strong>Diagnostic Telemetry & Student Dashboard:</strong> Study streaks, XP rewards, bookmarked topics, and cognitive accuracy analytics.
+                  <strong>Diagnostic Telemetry & Student Dashboard:</strong> Study streaks, XP
+                  rewards, bookmarked topics, and cognitive accuracy analytics.
                 </li>
               </ul>
               <p>
-                We reserve the right to modify, enhance, update, or deprecate any specific visualization, algorithm, or training format at any time to preserve pedagogical accuracy and platform performance.
+                We reserve the right to modify, enhance, update, or deprecate any specific
+                visualization, algorithm, or training format at any time to preserve pedagogical
+                accuracy and platform performance.
               </p>
             </div>
           </section>
@@ -173,17 +204,29 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                While public exploration mode requires no registration, accessing persistent features (such as bookmarks, XP points, and verified daily challenge ranks) requires creating an account via email or third-party OAuth (Sign in with Google).
+                While public exploration mode requires no registration, accessing persistent
+                features (such as bookmarks, XP points, and verified daily challenge ranks) requires
+                creating an account via email or third-party OAuth (Sign in with Google).
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  You agree to provide accurate, truthful, and complete registration information and keep your credentials up to date.
+                  You agree to provide accurate, truthful, and complete registration information and
+                  keep your credentials up to date.
                 </li>
                 <li>
-                  You are solely responsible for all activities occurring under your account. You must immediately notify us at <a href="mailto:ganeshsharma7114@gmail.com" className="text-primary hover:underline font-bold">ganeshsharma7114@gmail.com</a> if you discover or suspect any unauthorized access or breach of security.
+                  You are solely responsible for all activities occurring under your account. You
+                  must immediately notify us at{" "}
+                  <a
+                    href="mailto:ganeshsharma7114@gmail.com"
+                    className="text-primary hover:underline font-bold"
+                  >
+                    ganeshsharma7114@gmail.com
+                  </a>{" "}
+                  if you discover or suspect any unauthorized access or breach of security.
                 </li>
                 <li>
-                  Accounts are strictly personal and non-transferable. You may not sell, lease, or share your account credentials with third parties.
+                  Accounts are strictly personal and non-transferable. You may not sell, lease, or
+                  share your account credentials with third parties.
                 </li>
               </ul>
             </div>
@@ -205,16 +248,25 @@ export default async function TermsPage() {
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>Automated Scraping & Denial of Service:</strong> Deploy automated bots, crawlers, spiders, or load-testing scripts that burden our servers, edge network, or database infrastructure.
+                  <strong>Automated Scraping & Denial of Service:</strong> Deploy automated bots,
+                  crawlers, spiders, or load-testing scripts that burden our servers, edge network,
+                  or database infrastructure.
                 </li>
                 <li>
-                  <strong>Competition & Anti-Cheat Tampering:</strong> Submit falsified, pre-computed, or mechanically scripted solve times to the Mental Math Daily Challenge, speed sprints, or global leaderboards. Our engine enforces anti-cheat verification; flagged fraudulent submissions are purged automatically.
+                  <strong>Competition & Anti-Cheat Tampering:</strong> Submit falsified,
+                  pre-computed, or mechanically scripted solve times to the Mental Math Daily
+                  Challenge, speed sprints, or global leaderboards. Our engine enforces anti-cheat
+                  verification; flagged fraudulent submissions are purged automatically.
                 </li>
                 <li>
-                  <strong>Malicious Payloads:</strong> Inject malicious JavaScript, cross-site scripting (XSS) vectors, malformed JSON structures, or oversized input vectors intended to crash visualizer rendering canvases.
+                  <strong>Malicious Payloads:</strong> Inject malicious JavaScript, cross-site
+                  scripting (XSS) vectors, malformed JSON structures, or oversized input vectors
+                  intended to crash visualizer rendering canvases.
                 </li>
                 <li>
-                  <strong>Circumventing Security:</strong> Probe, scan, or test the vulnerability of our authentication systems, Supabase Row-Level Security policies, or rate-limiting safeguards without express authorization.
+                  <strong>Circumventing Security:</strong> Probe, scan, or test the vulnerability of
+                  our authentication systems, Supabase Row-Level Security policies, or rate-limiting
+                  safeguards without express authorization.
                 </li>
               </ul>
             </div>
@@ -232,13 +284,22 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                <strong>Algo Flow Proprietary Assets:</strong> All original software code, user interface designs, visualizer animation engines, step synchronization algorithms, design tokens, trademarks, logos, and pedagogical diagrams on Algo Flow are the exclusive intellectual property of Algo Flow and its licensors.
+                <strong>Algo Flow Proprietary Assets:</strong> All original software code, user
+                interface designs, visualizer animation engines, step synchronization algorithms,
+                design tokens, trademarks, logos, and pedagogical diagrams on Algo Flow are the
+                exclusive intellectual property of Algo Flow and its licensors.
               </p>
               <p>
-                <strong>Limited Educational License:</strong> Subject to compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to access, view, and interact with the visualizers and curriculum strictly for your personal, non-commercial educational study.
+                <strong>Limited Educational License:</strong> Subject to compliance with these
+                Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to
+                access, view, and interact with the visualizers and curriculum strictly for your
+                personal, non-commercial educational study.
               </p>
               <p>
-                <strong>Open-Source Code Implementations:</strong> Standard algorithmic implementations and code syntax provided within the code inspection panels for study (e.g. standard AVL rotation routines, Dijkstra implementations) remain subject to standard open-source educational conventions.
+                <strong>Open-Source Code Implementations:</strong> Standard algorithmic
+                implementations and code syntax provided within the code inspection panels for study
+                (e.g. standard AVL rotation routines, Dijkstra implementations) remain subject to
+                standard open-source educational conventions.
               </p>
             </div>
           </section>
@@ -255,10 +316,14 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                When you input custom arrays, graphs, trees, or math parameters into our interactive visualizer canvases, you retain full ownership of your input data. You grant Algo Flow a worldwide, royalty-free license to parse, execute, and render that input dynamically within your active browser session.
+                When you input custom arrays, graphs, trees, or math parameters into our interactive
+                visualizer canvases, you retain full ownership of your input data. You grant Algo
+                Flow a worldwide, royalty-free license to parse, execute, and render that input
+                dynamically within your active browser session.
               </p>
               <p>
-                We do not claim ownership over any computer algorithms, solutions, or code that you write or develop independently outside of our platform.
+                We do not claim ownership over any computer algorithms, solutions, or code that you
+                write or develop independently outside of our platform.
               </p>
             </div>
           </section>
@@ -278,10 +343,16 @@ export default async function TermsPage() {
                 Academic & Educational Notice:
               </p>
               <p>
-                ALGO FLOW AND ALL ASSOCIATED VISUALIZERS, SIMULATIONS, SOURCE CODE TRACES, AND PRACTICE MATERIALS ARE PROVIDED ON AN &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, ACCURACY OF COMPLEXITY RUNTIMES, OR UNINTERRUPTED OPERATION.
+                ALGO FLOW AND ALL ASSOCIATED VISUALIZERS, SIMULATIONS, SOURCE CODE TRACES, AND
+                PRACTICE MATERIALS ARE PROVIDED ON AN &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot;
+                BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT
+                LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+                ACCURACY OF COMPLEXITY RUNTIMES, OR UNINTERRUPTED OPERATION.
               </p>
               <p>
-                While we strive for rigorous pedagogical precision, computational models and Big-O estimations are provided as educational approximations. We do not guarantee that platform materials will guarantee employment, interview success, or academic grades.
+                While we strive for rigorous pedagogical precision, computational models and Big-O
+                estimations are provided as educational approximations. We do not guarantee that
+                platform materials will guarantee employment, interview success, or academic grades.
               </p>
             </div>
           </section>
@@ -298,15 +369,27 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL ALGO FLOW, ITS CREATORS, DIRECTORS, EMPLOYEES, OR INFRASTRUCTURE PARTNERS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES RESULTING FROM:
+                TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL ALGO FLOW, ITS
+                CREATORS, DIRECTORS, EMPLOYEES, OR INFRASTRUCTURE PARTNERS BE LIABLE FOR ANY
+                INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT
+                LIMITED TO LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES
+                RESULTING FROM:
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>Your access to, use of, or inability to access or use the platform;</li>
-                <li>Any third-party conduct or content, including unauthorized database access or edge network downtime;</li>
-                <li>Any bugs, errors, or inaccuracies in algorithmic visualizations or score calculations.</li>
+                <li>
+                  Any third-party conduct or content, including unauthorized database access or edge
+                  network downtime;
+                </li>
+                <li>
+                  Any bugs, errors, or inaccuracies in algorithmic visualizations or score
+                  calculations.
+                </li>
               </ul>
               <p>
-                IN NO EVENT SHALL OUR AGGREGATE LIABILITY EXCEED THE GREATER OF ONE HUNDRED UNITED STATES DOLLARS ($100.00 USD) OR THE AMOUNT YOU PAID TO ALGO FLOW IN THE PAST TWELVE MONTHS.
+                IN NO EVENT SHALL OUR AGGREGATE LIABILITY EXCEED THE GREATER OF ONE HUNDRED UNITED
+                STATES DOLLARS ($100.00 USD) OR THE AMOUNT YOU PAID TO ALGO FLOW IN THE PAST TWELVE
+                MONTHS.
               </p>
             </div>
           </section>
@@ -323,10 +406,14 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                You may discontinue your use of Algo Flow at any time and may request deletion of your account and personal history from your Student Dashboard settings or by contacting support.
+                You may discontinue your use of Algo Flow at any time and may request deletion of
+                your account and personal history from your Student Dashboard settings or by
+                contacting support.
               </p>
               <p>
-                We reserve the right, without prior notice, to suspend, limit, or terminate access to any account that engages in abusive conduct, automated scraping, competition cheating, or material violation of these Terms.
+                We reserve the right, without prior notice, to suspend, limit, or terminate access
+                to any account that engages in abusive conduct, automated scraping, competition
+                cheating, or material violation of these Terms.
               </p>
             </div>
           </section>
@@ -343,12 +430,18 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                We may revise these Terms from time to time to accommodate platform advancements, new visualizer features, or legal updates. When modifications are made, the revised version will be published here with an updated Effective Date. Continued use of Algo Flow following the posting of modifications indicates your binding acceptance.
+                We may revise these Terms from time to time to accommodate platform advancements,
+                new visualizer features, or legal updates. When modifications are made, the revised
+                version will be published here with an updated Effective Date. Continued use of Algo
+                Flow following the posting of modifications indicates your binding acceptance.
               </p>
               <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] mt-4">
-                <p className="font-bold text-text-primary text-xs">Official Legal Contact & Notices:</p>
+                <p className="font-bold text-text-primary text-xs">
+                  Official Legal Contact & Notices:
+                </p>
                 <p className="text-xs text-text-secondary mt-1">
-                  If you have questions, feedback, or legal inquiries regarding these Terms of Service, please contact us at:
+                  If you have questions, feedback, or legal inquiries regarding these Terms of
+                  Service, please contact us at:
                 </p>
                 <p className="font-mono text-xs font-bold text-primary mt-2">
                   <a href="mailto:ganeshsharma7114@gmail.com" className="hover:underline">

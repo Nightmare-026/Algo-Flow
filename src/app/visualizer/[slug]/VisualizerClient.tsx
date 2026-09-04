@@ -5,7 +5,7 @@ import type { Algorithm } from "@/types";
 import type { StepLegendItem } from "@/components/visualizer/StepLegend";
 import {
   clampOperationOptions,
-  defaultVisualizerInputOptions,
+  getDefaultVisualizerInputOptions,
   type VisualizerInputOptions,
 } from "@/lib/validation/visualizer-input";
 import { VisualizerLayout } from "@/components/visualizer/VisualizerLayout";
@@ -45,7 +45,9 @@ export function VisualizerClient({
       ? [15, 23, 4, 8, 42, 16, 9, 31, 7, 18, 27, 12, 36, 2, 21, 11]
       : [15, 23, 4, 8, 42, 16]
   );
-  const [options, setOptions] = useState<VisualizerInputOptions>(defaultVisualizerInputOptions);
+  const [options, setOptions] = useState<VisualizerInputOptions>(() =>
+    getDefaultVisualizerInputOptions(algorithm.slug, algorithm.dataStructureId)
+  );
 
   const definition = algorithmRegistry[slug];
   const dataStructureDefinition = dsRegistry[algorithm.dataStructureId];

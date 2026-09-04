@@ -35,7 +35,9 @@ const footerSections = [
     title: "Transparency",
     links: [
       { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Terms of Service", href: "/terms" },
+      { label: "License Agreement", href: "/license" },
+      { label: "Cookie Policy", href: "/cookies" },
     ],
   },
 ];
@@ -100,7 +102,8 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col gap-4 border-t border-border pt-8 text-xs text-text-muted sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} Algo Flow. Engineered for intentional, tactile CS mastery.
+            © {new Date().getFullYear()} Algo Flow by Nightmare. All Rights Reserved. Engineered for
+            intentional, tactile CS mastery.
           </p>
         </div>
       </div>

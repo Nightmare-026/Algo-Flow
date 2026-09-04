@@ -9,7 +9,7 @@ export function StepExplanation() {
 
   if (!currentStep) {
     return (
-      <div className="flex h-full items-center justify-center rounded-2xl border border-border bg-surface p-6 text-sm text-text-muted">
+      <div className="flex h-full items-center justify-center rounded-none border border-border bg-surface p-6 text-sm text-text-muted">
         <Info className="mr-2 h-4 w-4 opacity-50" />
         <span>Preparing step explanation…</span>
       </div>
@@ -20,7 +20,7 @@ export function StepExplanation() {
     <div
       aria-live="polite"
       aria-atomic="true"
-      className="neu-inset flex h-full flex-col overflow-hidden rounded-xl border border-border bg-surface p-3"
+      className="neu-inset flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface p-3"
     >
       <div className="flex items-center justify-between border-b border-border pb-2">
         <div className="flex items-center gap-1.5">

@@ -1,5 +1,7 @@
 export const TERMS_VERSION = "2026-09-04";
 export const PRIVACY_VERSION = "2026-09-04";
+export const LICENSE_VERSION = "2026-09-04";
+export const COOKIE_VERSION = "2026-09-04";
 
 // Registration is open for user signup and authentication.
 export const ACCOUNT_REGISTRATION_AVAILABLE = true;

@@ -1,15 +1,13 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { AlertCircle, Target, HardDriveDownload } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { AlertCircle, Target, HardDriveDownload, Network } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
   VisualizerInputOptions,
 } from "@/lib/validation/visualizer-input";
 import { TreeEditorModal } from "./TreeEditorModal";
-import { Network } from "lucide-react";
 import { TreeVisualState, createBSTFromArr, createDefaultTree } from "@/visualizers/tree/types";
 import { cn } from "@/lib/utils";
 
@@ -102,21 +100,22 @@ export function TreeInputControls({
   const showValue = slug.includes("insert");
 
   return (
-    <div className="flex flex-col gap-2.5 text-sm lg:flex-row lg:items-center lg:gap-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <Button
-          onClick={() => setIsEditorOpen(true)}
-          variant="outline"
-          size="sm"
-          className="h-7 px-3 text-xs border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary cursor-pointer active:scale-95"
-        >
-          <Network className="h-3.5 w-3.5 mr-1.5" /> Edit Tree
-        </Button>
+    <div className="flex flex-col gap-2 text-[11px]">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <Button
+            type="button"
+            onClick={() => setIsEditorOpen(true)}
+            size="sm"
+            className="h-8 min-h-0 rounded-lg border border-primary/20 bg-primary/5 px-2.5 text-[10px] font-bold text-primary shadow-[var(--shadow-raised-sm)] hover:bg-primary/10 active:scale-95 cursor-pointer shrink-0"
+          >
+            <Network className="h-3.5 w-3.5 mr-1" />
+            Edit Tree
+          </Button>
 
-        {isAVL && (
-          <div className="flex items-center gap-1.5 rounded-md border border-border bg-surface/80 px-2 py-0.5 shadow-sm">
-            <span className="text-[11px] font-semibold text-text-muted">Presets:</span>
-            <div className="flex items-center gap-1">
+          {isAVL && (
+            <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+              <span className="font-mono text-[10px] font-semibold text-text-muted mr-0.5">AVL:</span>
               {[
                 { type: "LL", label: "Right (LL)" },
                 { type: "RR", label: "Left (RR)" },
@@ -134,7 +133,7 @@ export function TreeInputControls({
                     });
                   }}
                   className={cn(
-                    "px-2 py-0.5 rounded text-xs font-mono font-bold transition-all cursor-pointer",
+                    "h-6 min-h-0 rounded px-1.5 text-[10px] font-mono font-bold transition-all cursor-pointer",
                     (options.pattern === type || (!options.pattern && type === "LL")) && options.pattern !== "custom"
                       ? "bg-primary text-white shadow-sm"
                       : "text-text-muted hover:text-text-primary hover:bg-surface-hover"
@@ -146,56 +145,63 @@ export function TreeInputControls({
               ))}
               {options.pattern === "custom" && (
                 <span
-                  className="px-2 py-0.5 rounded text-xs font-mono font-bold bg-primary text-white shadow-sm"
+                  className="h-6 inline-flex items-center rounded px-1.5 text-[10px] font-mono font-bold bg-primary text-white shadow-sm"
                   title="Custom Tree Active"
                 >
                   Custom
                 </span>
               )}
             </div>
-          </div>
-        )}
+          )}
 
-        {showTarget && (
-          <form onSubmit={handleTargetSubmit} className="flex items-center gap-1.5">
-            <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
-              <span className="text-text-muted font-medium text-xs">Target:</span>
-              <Input
+          {showTarget && (
+            <form onSubmit={handleTargetSubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+              <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">Target:</span>
+              <input
                 type="number"
-                className="w-14 h-7 border-border bg-bg-base px-2 py-0 text-xs"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
                 value={targetInput}
                 onChange={(e) => setTargetInput(e.target.value)}
+                aria-label="Target"
               />
-            </label>
-            <Button type="submit" variant="secondary" size="sm" className="h-7 px-3 text-xs">
-              <Target className="h-3.5 w-3.5 mr-1" /> Set
-            </Button>
-          </form>
-        )}
+              <Button
+                type="submit"
+                size="sm"
+                className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0 cursor-pointer"
+              >
+                Set
+              </Button>
+            </form>
+          )}
 
-        {showValue && (
-          <form onSubmit={handleValueSubmit} className="flex items-center gap-1.5">
-            <label className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 bg-bg-surface/50">
-              <span className="text-text-muted font-medium text-xs">Value:</span>
-              <Input
+          {showValue && (
+            <form onSubmit={handleValueSubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+              <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">Val:</span>
+              <input
                 type="number"
-                className="w-14 h-7 border-border bg-bg-base px-2 py-0 text-xs"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
                 value={valInput}
                 onChange={(e) => setValInput(e.target.value)}
+                aria-label="Value"
               />
-            </label>
-
-            <Button type="submit" variant="secondary" size="sm" className="h-7 px-3 text-xs">
-              <HardDriveDownload className="h-3.5 w-3.5 mr-1" /> Set
-            </Button>
-          </form>
-        )}
+              <Button
+                type="submit"
+                size="sm"
+                className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0 cursor-pointer"
+              >
+                Set
+              </Button>
+            </form>
+          )}
+        </div>
       </div>
 
       {error && (
-        <div className="flex items-center gap-1.5 text-error text-xs font-medium animate-in fade-in slide-in-from-top-1 lg:ml-auto">
-          <AlertCircle className="h-3.5 w-3.5" />
-          {error}
+        <div className="inline-flex items-center gap-1.5 rounded-lg border border-error/30 bg-error-muted px-2.5 py-1 text-[10px] font-semibold text-error animate-in fade-in slide-in-from-top-1">
+          <AlertCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
+          <span>{error}</span>
         </div>
       )}
 

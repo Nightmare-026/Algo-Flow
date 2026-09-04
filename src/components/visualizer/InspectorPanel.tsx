@@ -70,7 +70,7 @@ export function InspectorPanel({
         {/* Desktop: Tabs | Mobile: Accordion Headers */}
         {!isMobile ? (
           <div
-            className="mb-1.5 flex items-center gap-1 px-0.5"
+            className="my-1.5 flex items-center gap-1 px-0.5"
             role="tablist"
             aria-label="Algorithm representation"
           >
