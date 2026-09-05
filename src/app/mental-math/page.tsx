@@ -15,7 +15,7 @@ import { ModeSelector } from "@/features/mental-math/components/ModeSelector";
 import { OperationsExplorer } from "@/features/mental-math/components/OperationsExplorer";
 
 export const metadata = {
-  title: "Mental Math Calculation Studio | Algo Flow",
+  title: "Mental Math Calculation Studio",
   description:
     "Train arithmetic reflexes, master decomposition heuristics, and build high-precision mental calculation speed across 9 domains and 6 training formats.",
 };

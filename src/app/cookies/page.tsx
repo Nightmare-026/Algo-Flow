@@ -18,7 +18,7 @@ import Link from "next/link";
 import { LegalNav } from "@/components/legal/LegalNav";
 
 export const metadata: Metadata = {
-  title: "Cookie Policy | Algo Flow",
+  title: "Cookie Policy",
   description:
     "Cookie Policy and local storage transparency for Algo Flow. Understand our zero-ad-tracker approach, essential authentication cookies, and client-side preferences.",
   alternates: { canonical: "/cookies" },

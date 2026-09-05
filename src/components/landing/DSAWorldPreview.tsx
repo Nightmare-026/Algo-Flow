@@ -49,7 +49,7 @@ export function DSAWorldPreview() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8 lg:py-28"
+      className="relative overflow-hidden px-4 py-14 sm:px-6 lg:px-8 lg:py-20"
       id="dsa-world"
     >
       <motion.div
@@ -59,18 +59,18 @@ export function DSAWorldPreview() {
       />
 
       <div className="relative mx-auto max-w-7xl">
-        <div className="mb-14 max-w-3xl">
+        <div className="mb-10 max-w-3xl">
           <p className="section-kicker">Unified Architecture</p>
-          <h2 className="mt-3 text-3xl font-extrabold font-display tracking-tight text-text-primary sm:text-4xl md:text-5xl">
+          <h2 className="mt-2.5 text-2xl font-extrabold font-display tracking-tight text-text-primary sm:text-3xl md:text-4xl">
             One Integrated Workstation. Complete Clarity.
           </h2>
-          <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
+          <p className="mt-3 text-sm sm:text-base leading-relaxed text-text-secondary">
             Keep visual representations, playback controls, variable inspection, and code execution
             visible simultaneously.
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {previewLayers.map(({ title, description, detail, Icon }, index) => (
             <motion.div
               key={title}
@@ -78,21 +78,21 @@ export function DSAWorldPreview() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: index * 0.08 }}
-              className="neu-raised group flex flex-col justify-between rounded-2xl border border-border p-6 hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
+              className="neu-raised group flex flex-col justify-between rounded-2xl border border-border p-5 hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
             >
               <div>
-                <div className="mb-5 flex items-center justify-between gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-[var(--shadow-inset)] group-hover:scale-105 transition-transform">
-                    <Icon className="h-6 w-6" />
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-[var(--shadow-inset)] group-hover:scale-105 transition-transform">
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <span className="rounded-lg border border-border bg-bg-surface-inset px-2.5 py-1 font-mono text-[11px] font-bold text-text-muted shadow-[var(--shadow-inset)]">
+                  <span className="rounded-lg border border-border bg-bg-surface-inset px-2.5 py-0.5 font-mono text-[10px] font-bold text-text-muted shadow-[var(--shadow-inset)]">
                     {detail}
                   </span>
                 </div>
-                <h3 className="mb-2 text-lg font-bold font-display text-text-primary group-hover:text-primary transition-colors">
+                <h3 className="mb-1.5 text-base font-bold font-display text-text-primary group-hover:text-primary transition-colors">
                   {title}
                 </h3>
-                <p className="text-sm leading-relaxed text-text-secondary">{description}</p>
+                <p className="text-[13px] leading-relaxed text-text-secondary">{description}</p>
               </div>
             </motion.div>
           ))}

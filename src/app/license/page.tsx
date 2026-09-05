@@ -18,7 +18,7 @@ import Link from "next/link";
 import { LegalNav } from "@/components/legal/LegalNav";
 
 export const metadata: Metadata = {
-  title: "License Agreement | Algo Flow",
+  title: "License Agreement",
   description:
     "Official Proprietary Software License & Educational Study Agreement for Algo Flow. Read about permitted educational uses, commercial restrictions, and copyright rights.",
   alternates: { canonical: "/license" },

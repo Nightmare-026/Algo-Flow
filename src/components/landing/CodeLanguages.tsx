@@ -71,14 +71,14 @@ export function CodeLanguages() {
   };
 
   return (
-    <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28" id="code-languages">
+    <section className="px-4 py-14 sm:px-6 lg:px-8 lg:py-20" id="code-languages">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-14 max-w-3xl">
+        <div className="mb-10 max-w-3xl">
           <p className="section-kicker">Multi-Language Code Tracing</p>
-          <h2 className="mt-3 text-3xl font-extrabold font-display tracking-tight text-text-primary sm:text-4xl md:text-5xl">
+          <h2 className="mt-2.5 text-2xl font-extrabold font-display tracking-tight text-text-primary sm:text-3xl md:text-4xl">
             Learn in the Language of Your Choice.
           </h2>
-          <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
+          <p className="mt-3 text-sm sm:text-base leading-relaxed text-text-secondary">
             Every algorithm in the library includes verified reference implementations across 4
             major languages with synchronized step pointers.
           </p>
@@ -93,7 +93,7 @@ export function CodeLanguages() {
         >
           {/* Language Selector Tabs */}
           <div
-            className="flex items-center gap-1.5 overflow-x-auto border-b border-border bg-surface-inset p-2.5 sm:px-4"
+            className="flex items-center gap-1.5 overflow-x-auto border-b border-border bg-surface-inset p-2 sm:px-3.5"
             role="tablist"
             aria-label="Algorithm code languages"
           >
@@ -111,13 +111,13 @@ export function CodeLanguages() {
                   onClick={() => setActiveTab(language.language)}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
                   className={cn(
-                    "flex min-h-10 items-center gap-2 rounded-xl px-4 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer select-none",
+                    "flex min-h-9 items-center gap-2 rounded-xl px-3.5 text-xs sm:text-[13px] font-bold transition-all duration-200 cursor-pointer select-none",
                     isActive
                       ? "border border-primary/30 bg-primary text-white shadow-[var(--shadow-raised-sm)]"
                       : "text-text-secondary hover:bg-surface hover:text-text-primary"
                   )}
                 >
-                  <span className="font-mono text-[11px] uppercase tracking-wider opacity-80">
+                  <span className="font-mono text-[10px] uppercase tracking-wider opacity-80">
                     {language.tag}
                   </span>
                   <span>{language.name}</span>
@@ -127,13 +127,13 @@ export function CodeLanguages() {
           </div>
 
           {/* Description & Copy Action Header */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface px-6 py-3.5">
-            <span className="text-xs sm:text-sm font-medium text-text-secondary">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface px-5 py-3">
+            <span className="text-xs sm:text-[13px] font-medium text-text-secondary">
               {activeLanguage.description}
             </span>
             <button
               type="button"
-              className="inline-flex h-9 items-center gap-2 rounded-xl border border-border bg-surface px-3.5 text-xs font-bold text-text-primary shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:text-primary active:scale-95 transition-all"
+              className="inline-flex h-8 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-bold text-text-primary shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:text-primary active:scale-95 transition-all"
               onClick={handleCopy}
               aria-label={`Copy ${activeLanguage.name} code`}
             >
@@ -158,12 +158,12 @@ export function CodeLanguages() {
             role="tabpanel"
             aria-labelledby={`code-tab-${activeLanguage.language}`}
             tabIndex={0}
-            className="overflow-x-auto bg-code-panel-bg p-4 sm:p-6 text-xs sm:text-sm font-mono leading-7"
+            className="overflow-x-auto bg-code-panel-bg p-3.5 sm:p-5 text-xs sm:text-[13px] font-mono leading-6"
           >
             <div className="table w-full border-collapse">
               {activeLanguage.code.split("\n").map((line, idx) => (
                 <div key={idx} className="table-row hover:bg-emerald-500/5 transition-colors">
-                  <span className="table-cell select-none pr-4 sm:pr-6 text-right text-emerald-500/35 font-mono text-[11px] sm:text-xs w-8">
+                  <span className="table-cell select-none pr-4 sm:pr-5 text-right text-emerald-500/35 font-mono text-[10px] sm:text-[11px] w-7">
                     {idx + 1}
                   </span>
                   <span className="table-cell text-emerald-100 font-mono whitespace-pre">

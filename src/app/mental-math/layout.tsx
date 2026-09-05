@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { MentalMathSubNav } from "@/features/mental-math/components/MentalMathSubNav";
 
 export const metadata: Metadata = {
-  title: "Mental Math - Algo Flow",
+  title: "Mental Math",
   description:
     "Master arithmetic speed and calculation fluency with structured mental math training, timed assessments, 60-second speed sprints, and official daily challenges.",
 };

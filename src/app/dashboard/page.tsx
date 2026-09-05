@@ -22,12 +22,18 @@ import {
   Trophy,
   Crown,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import {
   DashboardHeaderAnimation,
   DashboardStatCardsAnimation,
 } from "@/components/dashboard/DashboardAnimations";
 import { AccountSecurityCard } from "@/components/dashboard/AccountSecurityCard";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "View your learning progress, saved algorithm sessions, streaks, and bookmarks.",
+};
 
 export default async function DashboardPage() {
   const supabase = await createClient();

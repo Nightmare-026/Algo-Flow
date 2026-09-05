@@ -46,22 +46,22 @@ export function LearningFeatures() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="relative px-4 py-20 sm:px-6 lg:px-8 lg:py-28 bg-surface/30" id="features">
+    <section className="relative px-4 py-14 sm:px-6 lg:px-8 lg:py-20 bg-surface/30" id="features">
       {/* Top divider with margin on both sides */}
       <div className="absolute inset-x-4 sm:inset-x-8 lg:inset-x-16 top-0 h-px bg-border rounded-full" />
       <div className="mx-auto max-w-7xl">
-        <div className="mb-14 max-w-3xl">
+        <div className="mb-10 max-w-3xl">
           <p className="section-kicker">Engineered For Mastery</p>
-          <h2 className="mt-3 text-3xl font-extrabold font-display tracking-tight text-text-primary sm:text-4xl md:text-5xl">
+          <h2 className="mt-2.5 text-2xl font-extrabold font-display tracking-tight text-text-primary sm:text-3xl md:text-4xl">
             Everything You Need to Understand What Happens Inside Code.
           </h2>
-          <p className="mt-4 text-base sm:text-lg leading-relaxed text-text-secondary">
+          <p className="mt-3 text-sm sm:text-base leading-relaxed text-text-secondary">
             Built from first principles to provide complete transparency into computational states,
             memory representations, and algorithmic invariants.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {features.map(({ title, description, Icon }, index) => (
             <motion.div
               key={title}
@@ -69,15 +69,15 @@ export function LearningFeatures() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: index * 0.06 }}
-              className="neu-raised group rounded-2xl border border-border p-6 hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
+              className="neu-raised group rounded-2xl border border-border p-5 hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
             >
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-[var(--shadow-inset)] group-hover:scale-105 transition-transform">
-                <Icon className="h-6 w-6" />
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-[var(--shadow-inset)] group-hover:scale-105 transition-transform">
+                <Icon className="h-5 w-5" />
               </div>
-              <h3 className="mb-2 text-lg font-bold font-display text-text-primary group-hover:text-primary transition-colors">
+              <h3 className="mb-1.5 text-base font-bold font-display text-text-primary group-hover:text-primary transition-colors">
                 {title}
               </h3>
-              <p className="text-sm leading-relaxed text-text-secondary">{description}</p>
+              <p className="text-[13px] leading-relaxed text-text-secondary">{description}</p>
             </motion.div>
           ))}
         </div>

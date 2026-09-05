@@ -20,7 +20,7 @@ import Link from "next/link";
 import { LegalNav } from "@/components/legal/LegalNav";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Algo Flow",
+  title: "Privacy Policy",
   description:
     "Comprehensive Privacy Policy and data governance standards for Algo Flow. Learn how we collect, store, and protect your personal information, practice telemetry, and authentication data.",
   alternates: { canonical: "/privacy" },

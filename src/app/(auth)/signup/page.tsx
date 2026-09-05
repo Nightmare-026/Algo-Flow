@@ -18,7 +18,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signup } from "../login/actions";
 
 export const metadata: Metadata = {
-  title: "Sign Up | Algo Flow",
+  title: "Sign Up",
   description: "Sign up for an Algo Flow account to save DSA progress, sessions, and bookmarks.",
 };
 

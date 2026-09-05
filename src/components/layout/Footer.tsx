@@ -44,9 +44,7 @@ const footerSections = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-auto bg-surface/50 transition-colors duration-200">
-      {/* Top divider with margin on both sides */}
-      <div className="absolute inset-x-4 sm:inset-x-8 lg:inset-x-16 top-0 h-px bg-border rounded-full" />
+    <footer className="relative mt-auto border-t border-border bg-surface/50 transition-colors duration-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid gap-8 sm:gap-10 grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
           {/* Brand Column */}
@@ -100,11 +98,8 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 flex flex-col gap-4 border-t border-border pt-8 text-xs text-text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} Algo Flow by Nightmare. All Rights Reserved. Engineered for
-            intentional, tactile CS mastery.
-          </p>
+        <div className="mt-12 flex items-center justify-center border-t border-border pt-8 text-xs text-text-muted text-center">
+          <p>© {new Date().getFullYear()} Algo Flow by Nightmare. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

@@ -17,7 +17,7 @@ export default function NotFound() {
           404 Error
         </p>
         <h1 className="mt-2 text-3xl font-extrabold font-display tracking-tight text-text-primary sm:text-4xl">
-          Algorithm Not Found
+          Page or Algorithm Not Found
         </h1>
         <p className="mt-4 text-sm leading-relaxed text-text-secondary">
           The requested page or visualizer does not exist or may have been relocated in the catalog.

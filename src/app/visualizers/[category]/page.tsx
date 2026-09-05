@@ -26,7 +26,7 @@ export async function generateMetadata({
   const structure = dataStructures.find((item) => item.slug === category && item.isPublished);
   if (!structure) return {};
 
-  const title = `${structure.name} Algorithms & Visualizers | Algo Flow`;
+  const title = `${structure.name} Algorithms & Visualizers`;
   const description = `${structure.description} Explore interactive step-by-step traces and visualizers for ${structure.name} algorithms.`;
   return {
     title,
