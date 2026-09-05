@@ -92,6 +92,20 @@ const INITIAL_MASTERY: Record<MathOperation, OperationMastery> = {
       "4-digit": { accuracy: 0, total: 0 },
     },
   },
+  cubes: {
+    operation: "cubes",
+    level: 0,
+    totalAttempts: 0,
+    totalCorrect: 0,
+    accuracy: 0,
+    averageSpeedMs: 0,
+    byDigitComplexity: {
+      "1-digit": { accuracy: 0, total: 0 },
+      "2-digit": { accuracy: 0, total: 0 },
+      "3-digit": { accuracy: 0, total: 0 },
+      "4-digit": { accuracy: 0, total: 0 },
+    },
+  },
   roots: {
     operation: "roots",
     level: 0,

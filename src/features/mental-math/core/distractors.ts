@@ -78,6 +78,11 @@ export function generateDistractors(
     addCandidate(a * 10);
     addCandidate((a - 1) * (a - 1));
     addCandidate((a + 1) * (a + 1));
+  } else if (operation === "cubes") {
+    addCandidate(a * a);
+    addCandidate(a * 3);
+    addCandidate((a - 1) * (a - 1) * (a - 1));
+    addCandidate((a + 1) * (a + 1) * (a + 1));
   } else if (operation === "roots") {
     addCandidate(Math.round(a / 2));
     addCandidate(correctAnswer + 1);

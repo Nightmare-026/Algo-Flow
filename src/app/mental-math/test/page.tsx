@@ -88,7 +88,7 @@ export default function TimedTestPage() {
   }
 
   return (
-    <div className="flex w-full flex-col px-4 max-w-3xl mx-auto gap-4">
+    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-3 sm:gap-4">
       {status === "countdown" && <CountdownOverlay onComplete={completeCountdown} />}
 
       <SessionHUD
@@ -107,39 +107,43 @@ export default function TimedTestPage() {
       />
 
       {status === "paused" ? (
-        <div className="neu-float flex flex-col items-center justify-center p-12 rounded-3xl border border-border text-center my-8">
+        <div className="neu-float flex flex-col items-center justify-center p-10 sm:p-12 rounded-3xl border border-border text-center my-6 shadow-xl max-w-xl mx-auto w-full">
           <h2 className="text-2xl font-bold font-display text-text-primary">Assessment Paused</h2>
           <p className="text-xs text-text-secondary mt-1 mb-6">
             Timer is frozen. Resume whenever you are ready.
           </p>
           <button
             onClick={resumeSession}
-            className="py-3 px-8 rounded-2xl bg-primary text-white text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all"
+            className="py-3 px-8 rounded-2xl bg-primary text-white text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
           >
             Resume Assessment
           </button>
         </div>
       ) : currentQ ? (
-        <div className="flex flex-col items-center w-full">
-          <CalculationDisplay
-            question={currentQ}
-            userAnswer={currentInput}
-            isAnswered={status === "feedback"}
-            isCorrect={lastAnswerFeedback?.isCorrect}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 lg:gap-6 items-stretch w-full">
+          <div className="lg:col-span-7 flex flex-col">
+            <CalculationDisplay
+              question={currentQ}
+              userAnswer={currentInput}
+              isAnswered={status === "feedback"}
+              isCorrect={lastAnswerFeedback?.isCorrect}
+            />
+          </div>
 
-          <AnswerPad
-            hintsEnabled={config.hintsEnabled}
-            options={currentQ.options}
-            selectedOptionIndex={selectedOptionIndex}
-            currentInput={currentInput}
-            isAnswered={status === "feedback"}
-            correctAnswer={lastAnswerFeedback?.correctAnswer}
-            onInputChange={setInput}
-            onOptionSelect={selectOption}
-            onSubmit={submitCurrentAnswer}
-            onToggleHints={toggleHintsMode}
-          />
+          <div className="lg:col-span-5 flex flex-col">
+            <AnswerPad
+              hintsEnabled={config.hintsEnabled}
+              options={currentQ.options}
+              selectedOptionIndex={selectedOptionIndex}
+              currentInput={currentInput}
+              isAnswered={status === "feedback"}
+              correctAnswer={lastAnswerFeedback?.correctAnswer}
+              onInputChange={setInput}
+              onOptionSelect={selectOption}
+              onSubmit={submitCurrentAnswer}
+              onToggleHints={toggleHintsMode}
+            />
+          </div>
         </div>
       ) : null}
     </div>

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { usePlaybackStore, getActiveSpeedMs } from "@/stores/playback-store";
 
 const controlClass =
-  "inline-flex min-h-7 min-w-7 items-center justify-center rounded-md border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35";
+  "inline-flex min-h-9 min-w-9 sm:min-h-8 sm:min-w-8 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35 cursor-pointer";
 
 export function PlaybackControls() {
   const {
@@ -158,7 +158,7 @@ export function PlaybackControls() {
         onClick={isPlaying ? pause : play}
         disabled={totalSteps === 0}
         aria-pressed={isPlaying}
-        className="mx-0.5 inline-flex min-h-8 min-w-8 items-center justify-center rounded-lg bg-primary text-white shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary-hover active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+        className="mx-0.5 inline-flex min-h-10 min-w-10 sm:min-h-9 sm:min-w-9 items-center justify-center rounded-xl bg-primary text-white shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary-hover active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
         title={isPlaying ? "Pause" : "Play"}
         aria-label={isPlaying ? "Pause playback" : "Play visualization"}
         aria-keyshortcuts="Space k"

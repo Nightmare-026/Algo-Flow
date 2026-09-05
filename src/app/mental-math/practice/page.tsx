@@ -6,7 +6,6 @@ import { useMentalMathStore } from "@/features/mental-math/engine/session-store"
 import { CalculationDisplay } from "@/features/mental-math/components/CalculationDisplay";
 import { AnswerPad } from "@/features/mental-math/components/AnswerPad";
 import { SessionHUD } from "@/features/mental-math/components/SessionHUD";
-import { CountdownOverlay } from "@/features/mental-math/components/CountdownOverlay";
 import { SessionResults } from "@/features/mental-math/components/SessionResults";
 import { ConfigModal } from "@/features/mental-math/components/ConfigModal";
 import { saveLocalSessionSummary } from "@/features/mental-math/storage/local-store";
@@ -40,7 +39,6 @@ export default function PracticeGamePage() {
     pauseSession,
     resumeSession,
     abortSession,
-    completeCountdown,
     toggleHintsMode,
   } = useMentalMathStore();
 
@@ -116,7 +114,7 @@ export default function PracticeGamePage() {
   // Show Drill Setup Studio if status is idle or user explicitly opened config
   if (status === "idle" || showConfig) {
     return (
-      <div className="flex w-full flex-col px-4 max-w-5xl mx-auto pb-12">
+      <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
         <ConfigModal
           initialConfig={{
             ...config,
@@ -141,9 +139,7 @@ export default function PracticeGamePage() {
   }
 
   return (
-    <div className="flex w-full flex-col px-4 max-w-3xl mx-auto gap-4">
-      {status === "countdown" && <CountdownOverlay onComplete={completeCountdown} />}
-
+    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-3 sm:gap-4">
       <SessionHUD
         mode={config.mode}
         currentIndex={currentIndex}
@@ -164,7 +160,7 @@ export default function PracticeGamePage() {
       />
 
       {status === "paused" ? (
-        <div className="neu-float flex flex-col items-center justify-center p-10 sm:p-12 rounded-3xl border border-border text-center my-6 shadow-xl">
+        <div className="neu-float flex flex-col items-center justify-center p-10 sm:p-12 rounded-3xl border border-border text-center my-6 shadow-xl max-w-xl mx-auto w-full">
           <h2 className="text-2xl font-bold font-display text-text-primary">Session Paused</h2>
           <p className="text-xs sm:text-sm text-text-secondary mt-1 mb-6">
             Take a breath. Your score and progress are saved.
@@ -185,32 +181,36 @@ export default function PracticeGamePage() {
           </div>
         </div>
       ) : currentQ ? (
-        <div className="flex flex-col items-center w-full">
-          <CalculationDisplay
-            question={currentQ}
-            userAnswer={
-              config.hintsEnabled
-                ? selectedOptionIndex !== null
-                  ? String(currentQ.options[selectedOptionIndex])
-                  : undefined
-                : currentInput
-            }
-            isAnswered={status === "feedback"}
-            isCorrect={lastAnswerFeedback?.isCorrect}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 lg:gap-6 items-stretch w-full">
+          <div className="lg:col-span-7 flex flex-col">
+            <CalculationDisplay
+              question={currentQ}
+              userAnswer={
+                config.hintsEnabled
+                  ? selectedOptionIndex !== null
+                    ? String(currentQ.options[selectedOptionIndex])
+                    : undefined
+                  : currentInput
+              }
+              isAnswered={status === "feedback"}
+              isCorrect={lastAnswerFeedback?.isCorrect}
+            />
+          </div>
 
-          <AnswerPad
-            hintsEnabled={config.hintsEnabled}
-            options={currentQ.options}
-            selectedOptionIndex={selectedOptionIndex}
-            currentInput={currentInput}
-            isAnswered={status === "feedback"}
-            correctAnswer={lastAnswerFeedback?.correctAnswer}
-            onInputChange={setInput}
-            onOptionSelect={selectOption}
-            onSubmit={submitCurrentAnswer}
-            onToggleHints={toggleHintsMode}
-          />
+          <div className="lg:col-span-5 flex flex-col">
+            <AnswerPad
+              hintsEnabled={config.hintsEnabled}
+              options={currentQ.options}
+              selectedOptionIndex={selectedOptionIndex}
+              currentInput={currentInput}
+              isAnswered={status === "feedback"}
+              correctAnswer={lastAnswerFeedback?.correctAnswer}
+              onInputChange={setInput}
+              onOptionSelect={selectOption}
+              onSubmit={submitCurrentAnswer}
+              onToggleHints={toggleHintsMode}
+            />
+          </div>
         </div>
       ) : null}
     </div>

@@ -78,7 +78,7 @@ export function VisualizerLayout({
   const [tourStep, setTourStep] = useState(0);
   const canvasRegionRef = useRef<HTMLDivElement>(null);
   const tourInitializedRef = useRef(false);
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   const { statusMessage, showStatus } = useStatusToast();
   const { isBookmarked, handleToggleBookmark } = useVisualizerBookmark(algorithm.id, showStatus);
@@ -247,7 +247,7 @@ export function VisualizerLayout({
     <main
       id="main-content"
       data-reduced-motion={reducedMotion}
-      className="flex min-h-screen lg:h-dvh flex-col lg:overflow-hidden bg-background text-text-primary"
+      className="flex h-dvh min-h-dvh flex-col overflow-hidden bg-background text-text-primary"
     >
       <a
         href="#main-content"
@@ -255,118 +255,138 @@ export function VisualizerLayout({
       >
         Skip to main content
       </a>
-      {/* Top Workstation Header - Compact */}
-      <header className="flex min-h-[48px] shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border bg-surface/80 backdrop-blur-md px-4 py-2 shadow-[var(--shadow-raised-sm)] z-30">
-        <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:flex-1 sm:gap-3">
-          <Link
-            href={`/visualizers/${algorithm.dataStructureId.replace("ds_", "").replace("_", "-")}`}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-all hover:border-primary/40 hover:text-primary active:scale-95 shadow-[var(--shadow-raised-sm)]"
-            aria-label="Back to category"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-          </Link>
+      {/* Top Workstation Header */}
+      <header className="flex shrink-0 flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border bg-surface/80 backdrop-blur-md px-3 sm:px-4 py-2 shadow-[var(--shadow-raised-sm)] z-30">
+        <div className="flex items-center justify-between gap-2 w-full sm:w-auto sm:flex-1 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <Link
+              href={`/visualizers/${algorithm.dataStructureId.replace("ds_", "").replace("_", "-")}`}
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-all hover:border-primary/40 hover:text-primary active:scale-95 shadow-[var(--shadow-raised-sm)]"
+              aria-label="Back to category"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+            </Link>
 
-          <div className="min-w-0">
-            <h1 className="truncate text-sm sm:text-base font-bold font-display leading-tight text-text-primary">
-              {algorithm.name}
-            </h1>
-            <div className="mt-0 flex flex-wrap items-center gap-1.5 text-[10px] text-text-muted">
-              <span
-                className={cn(
-                  "rounded-md border px-1.5 py-0.2 text-[10px] font-mono font-bold uppercase tracking-wider",
-                  algorithm.difficulty === "easy"
-                    ? "bg-success-muted text-success border-success/30"
-                    : algorithm.difficulty === "medium"
-                      ? "bg-warning-muted text-warning border-warning/30"
-                      : "bg-error-muted text-error border-error/30"
-                )}
-              >
-                {algorithm.difficulty}
-              </span>
-              <span className="font-mono text-[11px]">Time: {algorithm.timeComplexityAverage}</span>
-              <span className="font-mono text-[11px]">Space: {algorithm.spaceComplexity}</span>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <h1 className="truncate text-sm sm:text-base font-bold font-display leading-tight text-text-primary">
+                  {algorithm.name}
+                </h1>
+                <span
+                  className={cn(
+                    "shrink-0 rounded-md border px-1.5 py-0.2 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider",
+                    algorithm.difficulty === "easy"
+                      ? "bg-success-muted text-success border-success/30"
+                      : algorithm.difficulty === "medium"
+                        ? "bg-warning-muted text-warning border-warning/30"
+                        : "bg-error-muted text-error border-error/30"
+                  )}
+                >
+                  {algorithm.difficulty}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-[10px] text-text-muted font-mono">
+                <span>T: {algorithm.timeComplexityAverage}</span>
+                <span>S: {algorithm.spaceComplexity}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile & Tablet top-right shortcuts: Inspector toggle + Theme toggle */}
+          <div className="flex items-center gap-1.5 lg:hidden shrink-0">
+            <button
+              onClick={() => setShowInspector(!showInspector)}
+              className={cn(
+                "inline-flex h-8 items-center gap-1 px-2.5 rounded-xl border text-xs font-bold transition-all shadow-[var(--shadow-raised-sm)] active:scale-95 cursor-pointer",
+                showInspector
+                  ? "bg-primary text-white border-primary"
+                  : "border-primary/40 bg-primary-muted text-primary hover:bg-primary hover:text-white"
+              )}
+              title={showInspector ? "Close Inspector" : "Open Code & Explanation"}
+              aria-label={showInspector ? "Close Inspector" : "Open Code & Explanation"}
+              aria-expanded={showInspector}
+            >
+              {showInspector ? (
+                <X className="h-3.5 w-3.5" />
+              ) : (
+                <LayoutDashboard className="h-3.5 w-3.5" />
+              )}
+              <span>{showInspector ? "Close" : "Inspect"}</span>
+            </button>
+            <div className="sm:hidden">
+              <ThemeToggle />
             </div>
           </div>
         </div>
 
         {/* Action Suite */}
-        <div className="flex w-full max-w-full flex-wrap items-center justify-start gap-1.5 sm:w-auto sm:justify-end">
-          <Link
-            href={`/quizzes/${algorithm.id}`}
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-primary/40 bg-primary-muted px-3 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)] hover:bg-primary hover:text-white transition-all active:scale-95"
-            title="Take Knowledge Quiz"
-          >
-            <Trophy className="h-3.5 w-3.5" />
-            Take Quiz
-          </Link>
+        <div className="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-1.5 overflow-x-auto no-scrollbar py-0.5 sm:py-0">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Link
+              href={`/quizzes/${algorithm.id}`}
+              className="inline-flex min-h-8 sm:min-h-9 items-center gap-1.5 rounded-xl border border-primary/40 bg-primary-muted px-2.5 sm:px-3 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)] hover:bg-primary hover:text-white transition-all active:scale-95"
+              title="Take Knowledge Quiz"
+            >
+              <Trophy className="h-3.5 w-3.5" />
+              <span>Quiz</span>
+            </Link>
 
-          <button
-            onClick={() => setIsPracticeMode(!isPracticeMode)}
-            className={cn(
-              "min-h-9 rounded-xl px-3 text-xs font-bold transition-all shadow-[var(--shadow-raised-sm)] border active:scale-95 cursor-pointer",
-              isPracticeMode
-                ? "bg-primary text-white border-primary"
-                : "border-border bg-surface text-text-secondary hover:text-text-primary hover:border-border-hover"
-            )}
-            title="Toggle Interactive Practice Mode"
-          >
-            Practice Mode
-          </button>
+            <button
+              onClick={() => setIsPracticeMode(!isPracticeMode)}
+              className={cn(
+                "min-h-8 sm:min-h-9 rounded-xl px-2.5 sm:px-3 text-xs font-bold transition-all shadow-[var(--shadow-raised-sm)] border active:scale-95 cursor-pointer",
+                isPracticeMode
+                  ? "bg-primary text-white border-primary"
+                  : "border-border bg-surface text-text-secondary hover:text-text-primary hover:border-border-hover"
+              )}
+              title="Toggle Interactive Practice Mode"
+            >
+              Practice
+            </button>
+          </div>
 
-          <div className="mx-1 h-5 w-px bg-border" />
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={handleToggleBookmark}
+              className={cn(
+                "inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-border bg-surface transition-all shadow-[var(--shadow-raised-sm)] hover:border-primary/40 active:scale-95 cursor-pointer",
+                isBookmarked
+                  ? "text-warning border-warning/40"
+                  : "text-text-muted hover:text-primary"
+              )}
+              title={isBookmarked ? "Remove Bookmark" : "Save Bookmark"}
+              aria-label={isBookmarked ? "Remove Bookmark" : "Save Bookmark"}
+            >
+              {isBookmarked ? (
+                <Bookmark className="h-3.5 w-3.5 sm:h-4 sm:w-4 fill-current" />
+              ) : (
+                <BookmarkPlus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              )}
+            </button>
 
-          <button
-            onClick={handleToggleBookmark}
-            className={cn(
-              "inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface transition-all shadow-[var(--shadow-raised-sm)] hover:border-primary/40 active:scale-95 cursor-pointer",
-              isBookmarked ? "text-warning border-warning/40" : "text-text-muted hover:text-primary"
-            )}
-            title={isBookmarked ? "Remove Bookmark" : "Save Bookmark"}
-            aria-label={isBookmarked ? "Remove Bookmark" : "Save Bookmark"}
-          >
-            {isBookmarked ? (
-              <Bookmark className="h-4 w-4 fill-current" />
-            ) : (
-              <BookmarkPlus className="h-4 w-4" />
-            )}
-          </button>
+            <button
+              onClick={handleSaveSession}
+              disabled={isSaving}
+              className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 disabled:opacity-40 cursor-pointer"
+              title="Save Session State"
+              aria-label="Save Session"
+            >
+              <Save className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            </button>
 
-          <button
-            onClick={handleSaveSession}
-            disabled={isSaving}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 disabled:opacity-40 cursor-pointer"
-            title="Save Session State"
-            aria-label="Save Session"
-          >
-            <Save className="h-4 w-4" />
-          </button>
+            <button
+              onClick={handleShare}
+              className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
+              title="Share Visualizer Link"
+              aria-label="Share"
+            >
+              <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            </button>
 
-          <button
-            onClick={handleShare}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
-            title="Share Visualizer Link"
-            aria-label="Share"
-          >
-            <Share2 className="h-4 w-4" />
-          </button>
-
-          <ThemeToggle />
-
-          {/* Inspector Toggle (Mobile) */}
-          <button
-            onClick={() => setShowInspector(!showInspector)}
-            className={cn(
-              "inline-flex lg:hidden h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface transition-all shadow-[var(--shadow-raised-sm)] hover:border-primary/40 active:scale-95 cursor-pointer",
-              showInspector
-                ? "text-primary border-primary/40"
-                : "text-text-muted hover:text-primary"
-            )}
-            title={showInspector ? "Hide Inspector" : "Show Inspector"}
-            aria-label={showInspector ? "Hide Inspector" : "Show Inspector"}
-            aria-expanded={showInspector}
-          >
-            {showInspector ? <X className="h-4 w-4" /> : <LayoutDashboard className="h-4 w-4" />}
-          </button>
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
       </header>
 
@@ -395,18 +415,21 @@ export function VisualizerLayout({
       </AnimatePresence>
 
       {/* Main Workspace Split */}
-      <div className="flex flex-col lg:flex-row flex-1 overflow-y-auto lg:overflow-hidden">
+      <div className="flex flex-1 min-h-0 flex-col lg:flex-row overflow-hidden">
         {/* Left Column: Canvas, Legend, Input Controls, and Playback Footer */}
-        <div className="flex min-w-0 w-full shrink-0 flex-col h-auto min-h-[360px] sm:min-h-[480px] lg:min-h-0 lg:h-auto lg:w-0 lg:flex-1 lg:shrink">
+        <div className="flex min-w-0 w-full flex-1 flex-col h-full min-h-0 lg:w-0 lg:flex-1">
           <div className="relative flex flex-1 flex-col overflow-hidden bg-background min-h-0">
             {controls && (
-              <div className="w-full shrink-0 border-b border-border bg-surface/50 p-2.5 shadow-[var(--shadow-raised-sm)]">
+              <div className="w-full shrink-0 border-b border-border bg-surface/50 p-2 sm:p-2.5 shadow-[var(--shadow-raised-sm)]">
                 {controls}
               </div>
             )}
             {legend && legend.length > 0 ? <StepLegend items={legend} /> : null}
 
-            <div ref={canvasRegionRef} className="relative flex-1 overflow-hidden min-h-0">
+            <div
+              ref={canvasRegionRef}
+              className="relative flex-1 overflow-hidden min-h-0 flex flex-col justify-center"
+            >
               {children}
 
               {/* Practice Prompt Modal */}
@@ -589,60 +612,92 @@ export function VisualizerLayout({
             )}
           </AnimatePresence>
 
-          {/* VCR Playback Controls & Timeline Bar - Compact */}
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-2 border-t border-border bg-surface px-3 py-2 z-20 shadow-[var(--shadow-raised-sm)] shrink-0 w-full min-w-0">
-            <div className="flex items-center gap-2 shrink-0">
+          {/* VCR Playback Controls & Timeline Bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-border bg-surface px-3 py-2 pb-safe z-20 shadow-[var(--shadow-raised-sm)] shrink-0 w-full min-w-0">
+            <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-2 shrink-0">
               <PlaybackControls />
+              <div className="sm:hidden">
+                <SpeedSlider />
+              </div>
             </div>
             <div className="flex-1 w-full min-w-0 flex items-center gap-2">
               <StepTimeline />
             </div>
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="hidden sm:flex items-center gap-1.5 shrink-0">
               <SpeedSlider />
             </div>
           </div>
         </div>
 
         {/* Right Column: Dual-Split Inspector Panels (Pseudocode/Code & Explanation/Log) */}
-        {/* Mobile: Bottom Sheet Inspector */}
-        <div
-          className={cn(
-            "fixed inset-x-0 bottom-0 z-40 transform transition-transform duration-300 ease-out lg:hidden",
-            showInspector ? "translate-y-0" : "translate-y-full"
-          )}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Inspector panels"
-        >
+        {/* Mobile / Tablet Drawer Inspector */}
+        <AnimatePresence>
           {showInspector && (
             <div
-              className="absolute inset-0 bg-background/50 backdrop-blur-sm"
-              onClick={() => setShowInspector(false)}
-              aria-hidden="true"
-            />
-          )}
-          <aside className="relative flex max-h-[75vh] w-full shrink-0 flex-col border-t border-border bg-surface shadow-[var(--shadow-float)] rounded-t-2xl">
-            {/* Drag Handle */}
-            <div className="mx-auto mt-2 h-1.5 w-10 rounded-full bg-border" aria-hidden="true" />
-            {/* Mobile Inspector (only one CodePanel instance) */}
-            {isMobile && (
-              <InspectorPanel
-                activeRightTab={activeRightTab}
-                setActiveRightTab={setActiveRightTab}
-                activeLowerTab={activeLowerTab}
-                setActiveLowerTab={setActiveLowerTab}
-                setActiveLanguage={setActiveLanguage}
-                algorithm={algorithm}
-                codeExamples={codeExamples}
-                codeLineMapping={codeLineMapping}
+              className="fixed inset-0 z-50 lg:hidden"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Inspector panels"
+            >
+              {/* Full-screen Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-background/60 backdrop-blur-sm"
+                onClick={() => setShowInspector(false)}
+                aria-hidden="true"
               />
-            )}
-          </aside>
-        </div>
+
+              {/* Bottom Sheet Drawer */}
+              <motion.aside
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ type: "spring", damping: 30, stiffness: 350 }}
+                className="fixed inset-x-0 bottom-0 z-10 flex h-[80vh] max-h-[85vh] w-full flex-col rounded-t-3xl border-t border-border bg-surface shadow-[var(--shadow-float)] pb-safe overflow-hidden"
+              >
+                {/* Header with Title and Close Button */}
+                <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-2.5 bg-surface/95 backdrop-blur-md">
+                  <div className="flex items-center gap-2">
+                    <div className="h-1 w-8 rounded-full bg-border mr-1" aria-hidden="true" />
+                    <span className="text-xs font-bold font-display text-text-primary">
+                      {algorithm.name} Inspector
+                    </span>
+                    <span className="rounded-md border border-border bg-surface-hover px-1.5 py-0.5 text-[10px] font-mono text-text-muted">
+                      Step {currentStepIndex + 1}/{totalSteps}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setShowInspector(false)}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-all active:scale-95 cursor-pointer"
+                    aria-label="Close inspector"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-h-0 overflow-y-auto">
+                  <InspectorPanel
+                    activeRightTab={activeRightTab}
+                    setActiveRightTab={setActiveRightTab}
+                    activeLowerTab={activeLowerTab}
+                    setActiveLowerTab={setActiveLowerTab}
+                    setActiveLanguage={setActiveLanguage}
+                    algorithm={algorithm}
+                    codeExamples={codeExamples}
+                    codeLineMapping={codeLineMapping}
+                  />
+                </div>
+              </motion.aside>
+            </div>
+          )}
+        </AnimatePresence>
 
         {/* Desktop: Right Column Inspector */}
         {!isMobile && (
-          <aside className="lg:flex h-full flex-col border-l border-border bg-surface-hover/40 lg:w-[26rem]">
+          <aside className="lg:flex h-full flex-col border-l border-border bg-surface-hover/40 lg:w-[26rem] shrink-0">
             <InspectorPanel
               activeRightTab={activeRightTab}
               setActiveRightTab={setActiveRightTab}

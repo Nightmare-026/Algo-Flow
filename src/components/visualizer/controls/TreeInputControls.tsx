@@ -31,7 +31,7 @@ export function TreeInputControls({
 
   const currentTreeState = useMemo<TreeVisualState | null>(() => {
     if (isAVL) {
-      if (options.pattern === "custom" && options.treeState) {
+      if (options.treeState) {
         return options.treeState;
       }
       const type = (options.pattern || "LL").toUpperCase();
@@ -69,7 +69,6 @@ export function TreeInputControls({
     onOptionsChange?.({
       ...options,
       treeState: newTreeState,
-      ...(isAVL ? { pattern: "custom" } : {}),
     });
     setIsEditorOpen(false);
   };
@@ -115,7 +114,9 @@ export function TreeInputControls({
 
           {isAVL && (
             <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
-              <span className="font-mono text-[10px] font-semibold text-text-muted mr-0.5">AVL:</span>
+              <span className="font-mono text-[10px] font-semibold text-text-muted mr-0.5">
+                AVL:
+              </span>
               {[
                 { type: "LL", label: "Right (LL)" },
                 { type: "RR", label: "Left (RR)" },
@@ -129,12 +130,11 @@ export function TreeInputControls({
                     onOptionsChange?.({
                       ...options,
                       pattern: type,
-                      treeState: undefined,
                     });
                   }}
                   className={cn(
                     "h-6 min-h-0 rounded px-1.5 text-[10px] font-mono font-bold transition-all cursor-pointer",
-                    (options.pattern === type || (!options.pattern && type === "LL")) && options.pattern !== "custom"
+                    options.pattern === type || (!options.pattern && type === "LL")
                       ? "bg-primary text-white shadow-sm"
                       : "text-text-muted hover:text-text-primary hover:bg-surface-hover"
                   )}
@@ -143,21 +143,33 @@ export function TreeInputControls({
                   {type}
                 </button>
               ))}
-              {options.pattern === "custom" && (
-                <span
-                  className="h-6 inline-flex items-center rounded px-1.5 text-[10px] font-mono font-bold bg-primary text-white shadow-sm"
-                  title="Custom Tree Active"
+              {options.treeState && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOptionsChange?.({
+                      ...options,
+                      treeState: undefined,
+                    });
+                  }}
+                  className="ml-1 h-6 min-h-0 rounded px-1.5 text-[10px] font-medium text-text-muted hover:text-danger hover:bg-danger-muted/30 transition-all cursor-pointer border border-transparent hover:border-danger/30"
+                  title="Reset custom edits and restore preset tree"
                 >
-                  Custom
-                </span>
+                  Reset Tree
+                </button>
               )}
             </div>
           )}
 
           {showTarget && (
-            <form onSubmit={handleTargetSubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <form
+              onSubmit={handleTargetSubmit}
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            >
               <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
-              <span className="font-mono text-[10px] font-semibold text-text-secondary">Target:</span>
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                Target:
+              </span>
               <input
                 type="number"
                 className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
@@ -176,7 +188,10 @@ export function TreeInputControls({
           )}
 
           {showValue && (
-            <form onSubmit={handleValueSubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <form
+              onSubmit={handleValueSubmit}
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            >
               <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">Val:</span>
               <input

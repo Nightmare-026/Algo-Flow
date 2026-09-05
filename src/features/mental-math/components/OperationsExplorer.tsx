@@ -9,6 +9,7 @@ import {
   X,
   Divide,
   Superscript,
+  Box,
   Radical,
   Percent,
   Shuffle,
@@ -92,6 +93,18 @@ const ALL_OPERATIONS: OperationInfo[] = [
     icon: Superscript,
   },
   {
+    id: "cubes",
+    name: "Cubes (x³)",
+    symbol: "x³",
+    category: "powers",
+    categoryLabel: "Powers & Radicals",
+    description:
+      "Rapid cubic exponentiation (1³ to 25³) leveraging binomial expansion (a+b)³ and terminal digit patterns.",
+    formulaSample: "12³ = 1,728",
+    complexityTiers: "1–2 Digits",
+    icon: Box,
+  },
+  {
     id: "roots",
     name: "Square Roots (√x)",
     symbol: "√x",
@@ -149,7 +162,8 @@ export function OperationsExplorer() {
         !query ||
         op.name.toLowerCase().includes(query) ||
         op.description.toLowerCase().includes(query) ||
-        op.symbol.toLowerCase().includes(query);
+        op.symbol.toLowerCase().includes(query) ||
+        op.formulaSample.toLowerCase().includes(query);
       const matchesCategory = activeCategory === "all" || op.category === activeCategory;
       return matchesQuery && matchesCategory;
     });
@@ -171,7 +185,7 @@ export function OperationsExplorer() {
           <input
             id="operation-search"
             type="search"
-            placeholder="Search operations (e.g., Multiplication, Squares, Percentages)..."
+            placeholder="Search operations (e.g., Multiplication, Cubes, Squares)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -198,7 +212,7 @@ export function OperationsExplorer() {
           )}
         </div>
 
-        {/* Category Pills (Single clean row on desktop, smooth horizontal scroll on mobile) */}
+        {/* Category Pills with Dynamic Counts */}
         <div
           className="flex w-full lg:w-auto items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-none"
           role="tablist"
@@ -206,6 +220,11 @@ export function OperationsExplorer() {
         >
           {CATEGORIES.map((cat) => {
             const selected = activeCategory === cat.id;
+            const count =
+              cat.id === "all"
+                ? ALL_OPERATIONS.length
+                : ALL_OPERATIONS.filter((o) => o.category === cat.id).length;
+
             return (
               <button
                 key={cat.id}
@@ -214,13 +233,23 @@ export function OperationsExplorer() {
                 aria-selected={selected}
                 onClick={() => setActiveCategory(cat.id)}
                 className={cn(
-                  "h-11 shrink-0 rounded-xl px-4 text-xs font-bold font-display transition-all duration-200 cursor-pointer select-none flex items-center justify-center whitespace-nowrap",
+                  "h-11 shrink-0 rounded-xl px-3.5 text-xs font-bold font-display transition-all duration-200 cursor-pointer select-none flex items-center justify-center gap-1.5 whitespace-nowrap",
                   selected
                     ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
                     : "border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-text-primary hover:bg-surface-hover active:scale-95"
                 )}
               >
-                {cat.label}
+                <span>{cat.label}</span>
+                <span
+                  className={cn(
+                    "px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold leading-none",
+                    selected
+                      ? "bg-white/20 text-white"
+                      : "bg-surface-inset text-text-muted border border-border/60"
+                  )}
+                >
+                  {count}
+                </span>
               </button>
             );
           })}
@@ -229,19 +258,22 @@ export function OperationsExplorer() {
 
       {/* Meta Counter */}
       <div className="flex items-center justify-between px-1">
-        <p className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted" aria-live="polite">
+        <p
+          className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted"
+          aria-live="polite"
+        >
           Showing {filteredOperations.length} of {ALL_OPERATIONS.length} operations
         </p>
         <span className="text-xs font-mono font-semibold text-primary">1–4 Digit Configurable</span>
       </div>
 
-      {/* Operation Cards Grid */}
+      {/* Operation Cards Grid - Perfectly balanced 3x3 layout on desktop */}
       {filteredOperations.length > 0 ? (
         <motion.div
           initial={reduceMotion ? false : "hidden"}
           animate="visible"
           variants={{ visible: { transition: { staggerChildren: 0.04 } } }}
-          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
         >
           {filteredOperations.map((op) => {
             const Icon = op.icon;
@@ -260,29 +292,49 @@ export function OperationsExplorer() {
                   aria-label={`Launch ${op.name} calculation drill`}
                 >
                   <div>
+                    {/* Card Top: Icon, Category Badge & Complexity Tier */}
                     <div className="flex items-start justify-between gap-3">
-                      <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border bg-surface-inset text-primary shadow-inner transition-transform duration-200 group-hover:scale-105 group-hover:border-primary/40">
-                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-surface-inset text-primary shadow-inner transition-transform duration-200 group-hover:scale-110 group-hover:border-primary/40 group-hover:bg-primary/10">
+                        <Icon className="h-6 w-6" aria-hidden="true" />
                       </span>
-                      <span className="rounded-lg border border-border bg-surface-inset px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted shadow-inner">
-                        {op.categoryLabel}
-                      </span>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="rounded-lg border border-border bg-surface-inset px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted shadow-inner">
+                          {op.categoryLabel}
+                        </span>
+                        <span className="text-[10px] font-mono font-semibold text-primary/80">
+                          {op.complexityTiers}
+                        </span>
+                      </div>
                     </div>
 
-                    <h3 className="mt-5 text-xl font-bold font-display text-text-primary group-hover:text-primary transition-colors tracking-tight flex items-center justify-between gap-2">
+                    {/* Title & Description */}
+                    <h3 className="mt-4 text-xl font-bold font-display text-text-primary group-hover:text-primary transition-colors tracking-tight flex items-center justify-between gap-2">
                       <span>{op.name}</span>
                       <ArrowRight className="w-4 h-4 text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
                     </h3>
-                    <p className="mt-2 text-xs leading-relaxed text-text-secondary">
+                    <p className="mt-2 text-xs leading-relaxed text-text-secondary line-clamp-2">
                       {op.description}
                     </p>
+
+                    {/* Example Formula Badge */}
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-border/80 bg-surface-inset px-3 py-1.5 shadow-inner max-w-full">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-text-muted font-bold shrink-0">
+                        e.g.
+                      </span>
+                      <code className="font-mono text-xs font-bold text-primary truncate">
+                        {op.formulaSample}
+                      </code>
+                    </div>
                   </div>
 
-                  <div className="mt-6 pt-3.5 border-t border-border/60 flex items-center justify-between text-xs font-bold font-display text-text-muted group-hover:text-primary transition-colors">
-                    <span>Start Practice Drill</span>
-                    <span className="text-[11px] font-mono text-primary font-extrabold group-hover:underline flex items-center gap-1">
+                  {/* Card Bottom CTA */}
+                  <div className="mt-6 pt-3.5 border-t border-border/60 flex items-center justify-between text-xs font-bold font-display text-text-muted group-hover:text-text-primary transition-colors">
+                    <span className="text-[11px] text-text-muted group-hover:text-text-secondary">
+                      Start Practice Drill
+                    </span>
+                    <span className="text-xs font-bold font-display text-primary group-hover:underline flex items-center gap-1.5">
                       <span>Launch</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                     </span>
                   </div>
                 </Link>

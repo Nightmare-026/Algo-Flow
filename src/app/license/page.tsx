@@ -71,8 +71,9 @@ export default async function LicensePage() {
                 Permitted: Personal Study & Learning
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                You are encouraged to explore, interact with, and learn from all 133+ algorithm
-                visualizers, code panels, and mental calculation drills for your personal education.
+                You are encouraged to explore, interact with, and learn from all 133 published
+                algorithm visualizers across 12 data structure categories, code panels, and mental
+                calculation drills for your personal education.
               </p>
             </div>
 

@@ -65,6 +65,8 @@ export function getOperatorSymbol(op: MathOperation): string {
       return "% of";
     case "squares":
       return "²";
+    case "cubes":
+      return "³";
     case "roots":
       return "√";
     case "mixed":
@@ -80,7 +82,11 @@ export function validateGeneratorCapacity(config: GeneratorConfig): {
   estimatedCombinations: number;
   reason?: string;
 } {
-  if (config.operation === "squares" || config.operation === "roots") {
+  if (
+    config.operation === "squares" ||
+    config.operation === "roots" ||
+    config.operation === "cubes"
+  ) {
     const range = getDigitRange(config.digitCountLeft);
     const count = Math.max(1, range.max - range.min + 1);
     return {
@@ -184,6 +190,11 @@ export function generateSessionQuestions(config: GeneratorConfig): MentalMathQue
     if (activeOp === "squares") {
       a = getRandomInRange(range1.min, range1.max);
       b = a;
+    } else if (activeOp === "cubes") {
+      const minCube = config.digitCountLeft <= 1 ? 2 : 10;
+      const maxCube = config.digitCountLeft <= 1 ? 9 : config.digitCountLeft === 2 ? 25 : 50;
+      a = getRandomInRange(minCube, maxCube);
+      b = a;
     } else if (activeOp === "roots") {
       const minRoot = Math.max(2, Math.ceil(Math.sqrt(range1.min)));
       const maxRoot = Math.min(100, Math.floor(Math.sqrt(range1.max)));
@@ -263,6 +274,8 @@ export function generateSessionQuestions(config: GeneratorConfig): MentalMathQue
     let formattedInline = "";
     if (activeOp === "squares") {
       formattedInline = `${a}² = ?`;
+    } else if (activeOp === "cubes") {
+      formattedInline = `${a}³ = ?`;
     } else if (activeOp === "roots") {
       formattedInline = `√${a} = ?`;
     } else if (activeOp === "percentages") {
@@ -279,7 +292,8 @@ export function generateSessionQuestions(config: GeneratorConfig): MentalMathQue
     const displayLayout: DisplayLayout = isMultiDigit ? "vertical" : "inline";
 
     const expression: ExpressionNode = {
-      operands: activeOp === "squares" ? [a] : activeOp === "roots" ? [a] : [a, b],
+      operands:
+        activeOp === "squares" || activeOp === "cubes" || activeOp === "roots" ? [a] : [a, b],
       operators: [activeOp],
       targetAnswer: evaluation.value,
       formattedInline,

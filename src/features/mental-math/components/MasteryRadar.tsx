@@ -1,16 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Plus,
-  Minus,
-  X,
-  Divide,
-  Superscript,
-  Radical,
-  Percent,
-  Shuffle,
-} from "lucide-react";
+import { Plus, Minus, X, Divide, Superscript, Box, Radical, Percent, Shuffle } from "lucide-react";
 import { MathOperation, OperationMastery } from "../core/types";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +21,7 @@ const OPERATIONS_META: OperationMeta[] = [
   { id: "multiplication", name: "Multiplication", icon: X },
   { id: "division", name: "Division", icon: Divide },
   { id: "squares", name: "Squares (x²)", icon: Superscript },
+  { id: "cubes", name: "Cubes (x³)", icon: Box },
   { id: "roots", name: "Square Roots (√x)", icon: Radical },
   { id: "percentages", name: "Percentages (%)", icon: Percent },
   { id: "mixed", name: "Mixed Operations", icon: Shuffle },
@@ -119,7 +111,9 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
 
                 <div className="flex justify-between text-[11px] font-mono text-text-muted">
                   <span>
-                    {hasAttempts ? `${stat.totalCorrect}/${stat.totalAttempts} correct` : "0 drills"}
+                    {hasAttempts
+                      ? `${stat.totalCorrect}/${stat.totalAttempts} correct`
+                      : "0 drills"}
                   </span>
                   <span className={cn(hasAttempts ? "font-semibold text-text-secondary" : "")}>
                     {hasAttempts ? `${stat.accuracy}% acc` : "—"}

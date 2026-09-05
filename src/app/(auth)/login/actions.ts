@@ -363,6 +363,7 @@ export async function setAccountPassword(
   revalidatePath("/dashboard");
   return {
     ok: true,
-    message: "Password set successfully! You can now sign in with both Google and your email/password.",
+    message:
+      "Password set successfully! You can now sign in with both Google and your email/password.",
   };
 }

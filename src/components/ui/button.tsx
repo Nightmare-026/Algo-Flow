@@ -36,7 +36,9 @@ export const buttonVariants = ({
   className?: string;
 } = {}) => {
   const hasCustomHeight = Boolean(className && /\bh-\d+/.test(className));
-  const hasCustomRadius = Boolean(className && /\brounded-(?:none|sm|md|lg|xl|2xl|3xl|full)\b/.test(className));
+  const hasCustomRadius = Boolean(
+    className && /\brounded-(?:none|sm|md|lg|xl|2xl|3xl|full)\b/.test(className)
+  );
 
   let sizeClass = sizes[size];
   if (hasCustomHeight) {

@@ -63,9 +63,7 @@ const toReactFlowEdges = (
     source: e.source,
     target: e.target,
     label: isWeighted && e.weight !== undefined ? String(e.weight) : undefined,
-    markerEnd: isDirected
-      ? { type: MarkerType.ArrowClosed, color: "var(--border)" }
-      : undefined,
+    markerEnd: isDirected ? { type: MarkerType.ArrowClosed, color: "var(--border)" } : undefined,
     style: { stroke: "var(--border)", strokeWidth: 2 },
     labelStyle: { fill: "var(--text-primary)", fontWeight: 700 },
     labelBgStyle: { fill: "var(--bg-surface)" },

@@ -126,7 +126,9 @@ export function StringInputControls({
               <>
                 <span className="h-3.5 w-px bg-border mx-0.5" />
                 <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
-                <span className="font-mono text-[10px] font-semibold text-text-secondary">Pat:</span>
+                <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                  Pat:
+                </span>
                 <input
                   type="text"
                   className="h-6 w-16 sm:w-20 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted uppercase"

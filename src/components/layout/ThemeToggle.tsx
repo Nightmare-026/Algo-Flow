@@ -30,7 +30,9 @@ export function ThemeToggle({ className }: { className?: string }) {
         "relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-foreground shadow-[var(--shadow-raised-sm)] transition-colors duration-200 hover:border-primary/40 hover:text-primary active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25 cursor-pointer overflow-hidden",
         className
       )}
-      aria-label={mounted ? (isDark ? "Switch to light theme" : "Switch to dark theme") : "Toggle theme"}
+      aria-label={
+        mounted ? (isDark ? "Switch to light theme" : "Switch to dark theme") : "Toggle theme"
+      }
       title={mounted ? (isDark ? "Switch to light theme" : "Switch to dark theme") : "Toggle theme"}
     >
       <AnimatePresence mode="wait" initial={false}>

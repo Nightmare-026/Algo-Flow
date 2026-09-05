@@ -52,7 +52,7 @@ export function SpeedSlider() {
             aria-pressed={active}
             aria-label={`Set speed to ${s.label}`}
             className={cn(
-              "min-h-7 px-2 text-[10px] font-mono font-bold rounded-full transition-all cursor-pointer select-none",
+              "min-h-8 px-2.5 sm:min-h-7 sm:px-2 text-[10px] font-mono font-bold rounded-full transition-all cursor-pointer select-none active:scale-95",
               active
                 ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
                 : "text-text-muted hover:text-text-primary"

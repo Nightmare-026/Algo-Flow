@@ -47,7 +47,7 @@ export default async function CookiesPage() {
             Cookie Policy
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {COOKIE_VERSION} • Effective Date: September 4, 2026
+            Version {COOKIE_VERSION} • Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             At Algo Flow, we believe in radical transparency. We operate a strict{" "}
@@ -188,6 +188,12 @@ export default async function CookiesPage() {
                   </tbody>
                 </table>
               </div>
+              <p className="text-xs text-text-muted mt-3">
+                <em>Privacy-First Web Telemetry:</em> Algo Flow uses Vercel Web Analytics to monitor
+                platform health and Core Web Vitals. Vercel Web Analytics operates completely
+                <strong>cookie-less</strong>—it does not use cookies, does not persist identifiers
+                across sites, and does not store personal data.
+              </p>
             </div>
           </section>
 
@@ -217,29 +223,51 @@ export default async function CookiesPage() {
                   </thead>
                   <tbody className="divide-y divide-border/60 text-text-secondary">
                     <tr>
-                      <td className="p-3 font-mono font-bold text-text-primary">theme</td>
+                      <td className="p-3 font-mono font-bold text-text-primary">algo-flow-theme</td>
                       <td className="p-3">
                         Stores active UI color theme (&quot;dark&quot; or &quot;light&quot;)
                       </td>
-                      <td className="p-3">Zero tracking; strictly local to client device</td>
+                      <td className="p-3">Zero tracking; strictly local client presentation</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-mono font-bold text-text-primary">algo-flow-lang</td>
+                      <td className="p-3">
+                        Persists preferred programming language for code panel
+                        (&quot;javascript&quot;, &quot;python&quot;, &quot;cpp&quot;,
+                        &quot;java&quot;)
+                      </td>
+                      <td className="p-3">Zero tracking; strictly client editor utility</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-mono font-bold text-text-primary">
+                        algo_flow_sound_muted
+                      </td>
+                      <td className="p-3">
+                        Persists audio sound effects toggle for mental math exercises
+                      </td>
+                      <td className="p-3">Zero tracking; strictly client audio utility</td>
                     </tr>
                     <tr>
                       <td className="p-3 font-mono font-bold text-text-primary">
                         visualizer-tour-[slug]
                       </td>
                       <td className="p-3">
-                        Records whether the interactive tour has been completed
+                        Records whether the interactive tour has been completed for a specific
+                        algorithm
                       </td>
                       <td className="p-3">Zero tracking; prevents repetitive tour popups</td>
                     </tr>
                     <tr>
                       <td className="p-3 font-mono font-bold text-text-primary">
-                        mental-math-practice-settings
+                        algo_flow_mental_math_stats_v1
                       </td>
                       <td className="p-3">
-                        Saves drill configurations (selected operations and digit ranges)
+                        Caches local calculation statistics, operation mastery radar, and practice
+                        session history
                       </td>
-                      <td className="p-3">Zero tracking; strictly client-side learning utility</td>
+                      <td className="p-3">
+                        Zero tracking; enables seamless offline-friendly practice tracking
+                      </td>
                     </tr>
                   </tbody>
                 </table>

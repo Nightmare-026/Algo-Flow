@@ -19,7 +19,7 @@ export default async function MentalMathLayout({ children }: { children: React.R
   return (
     <div className="page-shell flex flex-col min-h-screen">
       <Navbar initialUser={user} />
-      <main id="main-content" className="flex-1 pt-24 pb-16">
+      <main id="main-content" className="flex-1 pt-20 sm:pt-22 pb-6">
         <MentalMathSubNav />
         {children}
       </main>

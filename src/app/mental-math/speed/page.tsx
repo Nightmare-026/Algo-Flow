@@ -87,7 +87,7 @@ export default function SpeedSprintPage() {
   }
 
   return (
-    <div className="flex w-full flex-col px-4 max-w-3xl mx-auto gap-4">
+    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-3 sm:gap-4">
       {status === "countdown" && <CountdownOverlay onComplete={completeCountdown} />}
 
       <SessionHUD
@@ -106,30 +106,34 @@ export default function SpeedSprintPage() {
       />
 
       {currentQ ? (
-        <div className="flex flex-col items-center w-full">
-          <CalculationDisplay
-            question={currentQ}
-            userAnswer={
-              config.hintsEnabled
-                ? selectedOptionIndex !== null
-                  ? String(currentQ.options[selectedOptionIndex])
-                  : undefined
-                : currentInput
-            }
-            isAnswered={false}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 lg:gap-6 items-stretch w-full">
+          <div className="lg:col-span-7 flex flex-col">
+            <CalculationDisplay
+              question={currentQ}
+              userAnswer={
+                config.hintsEnabled
+                  ? selectedOptionIndex !== null
+                    ? String(currentQ.options[selectedOptionIndex])
+                    : undefined
+                  : currentInput
+              }
+              isAnswered={false}
+            />
+          </div>
 
-          <AnswerPad
-            hintsEnabled={config.hintsEnabled}
-            options={currentQ.options}
-            selectedOptionIndex={selectedOptionIndex}
-            currentInput={currentInput}
-            isAnswered={status === "feedback"}
-            onInputChange={setInput}
-            onOptionSelect={selectOption}
-            onSubmit={submitCurrentAnswer}
-            onToggleHints={toggleHintsMode}
-          />
+          <div className="lg:col-span-5 flex flex-col">
+            <AnswerPad
+              hintsEnabled={config.hintsEnabled}
+              options={currentQ.options}
+              selectedOptionIndex={selectedOptionIndex}
+              currentInput={currentInput}
+              isAnswered={status === "feedback"}
+              onInputChange={setInput}
+              onOptionSelect={selectOption}
+              onSubmit={submitCurrentAnswer}
+              onToggleHints={toggleHintsMode}
+            />
+          </div>
         </div>
       ) : null}
     </div>

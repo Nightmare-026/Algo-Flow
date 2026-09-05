@@ -30,29 +30,19 @@ export function ConfigModal({
   title = "Practice Studio Setup",
   subtitle = "Configure your calculation parameters and session rules.",
 }: ConfigModalProps) {
-  const [operation, setOperation] = useState<MathOperation>(
-    initialConfig?.operation ?? "addition"
-  );
-  const [difficulty, setDifficulty] = useState<DifficultyTier>(
-    initialConfig?.difficulty ?? "easy"
-  );
-  const [digitCountLeft, setDigitCountLeft] = useState<number>(
-    initialConfig?.digitCountLeft ?? 2
-  );
+  const [operation, setOperation] = useState<MathOperation>(initialConfig?.operation ?? "addition");
+  const [difficulty, setDifficulty] = useState<DifficultyTier>(initialConfig?.difficulty ?? "easy");
+  const [digitCountLeft, setDigitCountLeft] = useState<number>(initialConfig?.digitCountLeft ?? 2);
   const [digitCountRight, setDigitCountRight] = useState<number>(
     initialConfig?.digitCountRight ?? 2
   );
-  const [questionCount, setQuestionCount] = useState<number>(
-    initialConfig?.questionCount ?? 10
-  );
-  const [hintsEnabled, setHintsEnabled] = useState<boolean>(
-    initialConfig?.hintsEnabled ?? false
-  );
+  const [questionCount, setQuestionCount] = useState<number>(initialConfig?.questionCount ?? 10);
+  const [hintsEnabled, setHintsEnabled] = useState<boolean>(initialConfig?.hintsEnabled ?? false);
   const [timeLimitSeconds, setTimeLimitSeconds] = useState<number | undefined>(
     initialConfig?.timeLimitSeconds ?? undefined
   );
 
-  const isUnaryOp = operation === "squares" || operation === "roots";
+  const isUnaryOp = operation === "squares" || operation === "roots" || operation === "cubes";
 
   // Escape key handler to cancel/close
   useEffect(() => {
@@ -78,6 +68,8 @@ export function ConfigModal({
         return "÷";
       case "squares":
         return "²";
+      case "cubes":
+        return "³";
       case "roots":
         return "√";
       case "percentages":
@@ -95,9 +87,15 @@ export function ConfigModal({
   }> = [
     { id: "addition", label: "Addition", symbol: "+", shortDesc: "Summation & partial adds" },
     { id: "subtraction", label: "Subtraction", symbol: "−", shortDesc: "Difference & borrows" },
-    { id: "multiplication", label: "Multiplication", symbol: "×", shortDesc: "Cross-products & tables" },
+    {
+      id: "multiplication",
+      label: "Multiplication",
+      symbol: "×",
+      shortDesc: "Cross-products & tables",
+    },
     { id: "division", label: "Division", symbol: "÷", shortDesc: "Integer quotient splits" },
     { id: "squares", label: "Squares", symbol: "x²", shortDesc: "Base powers & identities" },
+    { id: "cubes", label: "Cubes", symbol: "x³", shortDesc: "Powers of 3 & binomials" },
     { id: "roots", label: "Square Roots", symbol: "√x", shortDesc: "Perfect square extraction" },
     { id: "percentages", label: "Percentages", symbol: "%", shortDesc: "Benchmark proportions" },
     { id: "mixed", label: "Mixed Ops", symbol: "±×÷", shortDesc: "Interleaved arithmetic" },
@@ -112,7 +110,12 @@ export function ConfigModal({
     { id: "easy", label: "Easy", desc: "No carries / friendly factors", tag: "0 Carries" },
     { id: "medium", label: "Medium", desc: "Single carry / borrow steps", tag: "1–2 Carries" },
     { id: "hard", label: "Hard", desc: "Complex regrouping & borrows", tag: "Multi-Carry" },
-    { id: "expert", label: "Expert", desc: "Maximum focus & non-round numbers", tag: "Max Regrouping" },
+    {
+      id: "expert",
+      label: "Expert",
+      desc: "Maximum focus & non-round numbers",
+      tag: "Max Regrouping",
+    },
   ];
 
   const handleResetDefaults = () => {
@@ -153,6 +156,13 @@ export function ConfigModal({
       return {
         formula: `${sampleLeft}² = ${sampleLeft * sampleLeft}`,
         desc: `Squaring ${digitCountLeft}-digit integers (${digitCountLeft === 1 ? "1–9" : digitCountLeft === 2 ? "10–99" : "100–999"})`,
+      };
+    }
+    if (operation === "cubes") {
+      sampleLeft = digitCountLeft === 1 ? 5 : digitCountLeft === 2 ? 12 : 25;
+      return {
+        formula: `${sampleLeft}³ = ${(sampleLeft * sampleLeft * sampleLeft).toLocaleString()}`,
+        desc: `Cubic powers of ${digitCountLeft}-digit base integers (${digitCountLeft === 1 ? "1–9" : digitCountLeft === 2 ? "10–25" : "25–50"})`,
       };
     }
     if (operation === "roots") {
@@ -205,7 +215,7 @@ export function ConfigModal({
   return (
     <form
       onSubmit={handleSubmit}
-      className="neu-float w-full max-w-5xl mx-auto p-6 sm:p-8 rounded-3xl border border-border bg-surface/95 shadow-[var(--shadow-raised)] backdrop-blur-md flex flex-col gap-6"
+      className="neu-float w-full max-w-7xl mx-auto p-6 sm:p-8 lg:p-10 rounded-3xl border border-border bg-surface/95 shadow-[var(--shadow-raised)] backdrop-blur-md flex flex-col gap-8"
     >
       {/* Top Header Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-border/80">
@@ -248,7 +258,7 @@ export function ConfigModal({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* LEFT COLUMN: Controls (7 cols) */}
         <div className="lg:col-span-7 flex flex-col gap-6">
-          {/* 1. Arithmetic Operation Grid */}
+          {/* 1. Arithmetic Operation Grid (3x3 Layout) */}
           <div className="flex flex-col gap-2.5">
             <div className="flex justify-between items-center">
               <label className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
@@ -262,7 +272,7 @@ export function ConfigModal({
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               {operations.map((op) => {
                 const isSelected = operation === op.id;
                 return (
@@ -271,20 +281,33 @@ export function ConfigModal({
                     type="button"
                     onClick={() => setOperation(op.id)}
                     className={cn(
-                      "neu-raised p-2.5 sm:p-3 rounded-2xl border text-left flex items-center gap-2.5 transition-all duration-150 active:scale-95 cursor-pointer relative overflow-hidden",
+                      "neu-raised p-3 rounded-2xl border text-left flex items-center justify-between gap-2.5 transition-all duration-150 active:scale-95 cursor-pointer relative overflow-hidden group",
                       isSelected
-                        ? "border-primary bg-primary-muted/30 text-primary shadow-[var(--shadow-inset)] ring-2 ring-primary/40"
-                        : "border-border text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                        ? "border-primary bg-primary-muted/40 text-primary shadow-[var(--shadow-inset)] ring-2 ring-primary/40"
+                        : "border-border text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border-primary/30"
                     )}
                   >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-extrabold border border-border bg-surface-inset text-primary shadow-inner">
-                      {op.symbol}
-                    </span>
-                    <div className="truncate min-w-0">
-                      <p className="text-xs font-bold font-display text-text-primary truncate">
-                        {op.label}
-                      </p>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span
+                        className={cn(
+                          "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-extrabold border transition-colors shadow-inner",
+                          isSelected
+                            ? "border-primary bg-primary text-white"
+                            : "border-border bg-surface-inset text-primary"
+                        )}
+                      >
+                        {op.symbol}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-xs sm:text-sm font-bold font-display text-text-primary group-hover:text-primary transition-colors truncate">
+                          {op.label}
+                        </p>
+                        <p className="text-[10px] text-text-muted truncate mt-0.5">
+                          {op.shortDesc}
+                        </p>
+                      </div>
                     </div>
+                    {isSelected && <CheckCircle2 className="w-4 h-4 text-primary shrink-0 ml-1" />}
                   </button>
                 );
               })}
@@ -362,7 +385,12 @@ export function ConfigModal({
 
                 {isUnaryOp ? (
                   <div className="flex items-center justify-center h-8 px-2 rounded-lg border border-border/60 bg-surface text-[10px] font-mono text-text-muted text-center">
-                    Single base {operation === "squares" ? "power (x²)" : "root (√x)"}
+                    Single base{" "}
+                    {operation === "squares"
+                      ? "power (x²)"
+                      : operation === "cubes"
+                        ? "cubic power (x³)"
+                        : "root (√x)"}
                   </div>
                 ) : (
                   <div className="grid grid-cols-4 gap-1">
@@ -543,7 +571,7 @@ export function ConfigModal({
         </div>
 
         {/* RIGHT COLUMN: Live Problem Inspector & Launch Card (5 cols) */}
-        <div className="lg:col-span-5 flex flex-col gap-4 lg:sticky lg:top-6">
+        <div className="lg:col-span-5 flex flex-col gap-4 lg:sticky lg:top-28">
           <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between gap-6 shadow-[var(--shadow-raised-sm)]">
             <div>
               <div className="flex items-center justify-between gap-2 pb-3 border-b border-border/80">
@@ -606,7 +634,11 @@ export function ConfigModal({
                 <ArrowRight className="w-4 h-4" />
               </button>
               <p className="text-[10px] font-mono text-text-muted text-center">
-                Press <kbd className="px-1 py-0.5 rounded bg-surface border border-border text-[9px] font-bold text-text-primary">Enter ↵</kbd> to launch drill
+                Press{" "}
+                <kbd className="px-1 py-0.5 rounded bg-surface border border-border text-[9px] font-bold text-text-primary">
+                  Enter ↵
+                </kbd>{" "}
+                to launch drill
               </p>
             </div>
           </div>

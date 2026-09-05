@@ -46,10 +46,7 @@ export function LearningFeatures() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section
-      className="relative px-4 py-20 sm:px-6 lg:px-8 lg:py-28 bg-surface/30"
-      id="features"
-    >
+    <section className="relative px-4 py-20 sm:px-6 lg:px-8 lg:py-28 bg-surface/30" id="features">
       {/* Top divider with margin on both sides */}
       <div className="absolute inset-x-4 sm:inset-x-8 lg:inset-x-16 top-0 h-px bg-border rounded-full" />
       <div className="mx-auto max-w-7xl">

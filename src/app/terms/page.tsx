@@ -50,7 +50,7 @@ export default async function TermsPage() {
             Terms of Service
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {TERMS_VERSION} • Effective Date: September 4, 2026
+            Version {TERMS_VERSION} • Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             Welcome to Algo Flow (&quot;Algo Flow&quot;, &quot;we&quot;, &quot;us&quot;, or
@@ -167,21 +167,26 @@ export default async function TermsPage() {
               <p>Algo Flow provides interactive Computer Science education tools, including:</p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>133+ Visualizer Workstations:</strong> Dynamic execution traces for
-                  linear, tree, graph, sorting, searching, and dynamic programming algorithms.
+                  <strong>133 Visualizer Workstations:</strong> Dynamic, deterministic execution
+                  traces across 12 data structure categories (Arrays, Linked Lists, Doubly Linked
+                  Lists, Circular Linked Lists, Stacks, Queues, Hash Tables, Hash Sets, Trees,
+                  Graphs, Matrices, and Strings).
                 </li>
                 <li>
                   <strong>Synchronized Multi-Language Source Code:</strong> Interactive code panels
-                  supporting Python, C++, Java, and JavaScript with line-by-line pointer
-                  synchronization.
+                  supporting JavaScript, Python, C++, and Java with step-by-step line-by-line
+                  pointer synchronization.
                 </li>
                 <li>
-                  <strong>Mental Math Calculation Studio:</strong> Structured multi-digit
-                  calculation drills, 60s speed sprints, timed tests, and daily global challenges.
+                  <strong>Mental Math Calculation Studio:</strong> 2-column zero-scroll workstation
+                  matching navbar width with Dual Input modes (Direct Tactile Keypad and 4-Choices
+                  Multiple Choice Grid), structured calculation drills, 60s speed sprints, timed
+                  assessment tests, and verified daily global challenges.
                 </li>
                 <li>
-                  <strong>Diagnostic Telemetry & Student Dashboard:</strong> Study streaks, XP
-                  rewards, bookmarked topics, and cognitive accuracy analytics.
+                  <strong>Diagnostic Telemetry &amp; Student Dashboard:</strong> Study streaks,
+                  algorithm completion tracking, bookmarked topics, interactive quiz scores, and
+                  arithmetic fluency analytics.
                 </li>
               </ul>
               <p>
@@ -199,14 +204,15 @@ export default async function TermsPage() {
                 <UserCheck className="h-4 w-4" />
               </span>
               <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
-                3. User Accounts, Authentication & Security
+                3. User Accounts, Authentication &amp; Security
               </h2>
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
                 While public exploration mode requires no registration, accessing persistent
-                features (such as bookmarks, XP points, and verified daily challenge ranks) requires
-                creating an account via email or third-party OAuth (Sign in with Google).
+                features (such as bookmarks, algorithm progress tracking, and verified daily
+                challenge ranks) requires creating an account via email or third-party OAuth (Sign
+                in with Google or GitHub).
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>

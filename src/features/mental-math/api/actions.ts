@@ -65,8 +65,7 @@ export async function recordMentalMathSession(summary: SessionSummary): Promise<
 
     // 2. If it's a daily challenge, record into daily attempts
     if (summary.isDailyChallenge || summary.mode === "daily") {
-      const challengeDate =
-        summary.dailyChallengeDate || new Date().toISOString().split("T")[0];
+      const challengeDate = summary.dailyChallengeDate || new Date().toISOString().split("T")[0];
       await supabase.from("mental_math_daily_attempts").upsert(
         {
           user_id: user.id,
@@ -161,8 +160,7 @@ export async function submitDailyChallenge(summary: SessionSummary): Promise<Sub
     };
   }
 
-  const challengeDate =
-    summary.dailyChallengeDate || new Date().toISOString().split("T")[0];
+  const challengeDate = summary.dailyChallengeDate || new Date().toISOString().split("T")[0];
 
   try {
     await supabase.from("mental_math_daily_attempts").upsert(
@@ -287,8 +285,7 @@ export async function getMentalMathLeaderboard(
 
         entries = attemptsData.map((row, index) => {
           const profile = profileMap.get(row.user_id);
-          const displayName =
-            profile?.username || `Learner ${row.user_id.slice(0, 6)}`;
+          const displayName = profile?.username || `Learner ${row.user_id.slice(0, 6)}`;
           return {
             id: row.id,
             userId: row.user_id,
@@ -297,9 +294,7 @@ export async function getMentalMathLeaderboard(
             score: row.score,
             accuracy: Number(row.accuracy),
             speedQPM:
-              row.solve_time_ms > 0
-                ? Number((10 / (row.solve_time_ms / 60000)).toFixed(1))
-                : 0,
+              row.solve_time_ms > 0 ? Number((10 / (row.solve_time_ms / 60000)).toFixed(1)) : 0,
             mode: "daily" as GameMode,
             operation: "mixed" as MathOperation,
             difficulty: "medium" as DifficultyTier,
@@ -342,8 +337,7 @@ export async function getMentalMathLeaderboard(
 
         entries = sessionsData.map((row, index) => {
           const profile = profileMap.get(row.user_id);
-          const displayName =
-            profile?.username || `Learner ${row.user_id.slice(0, 6)}`;
+          const displayName = profile?.username || `Learner ${row.user_id.slice(0, 6)}`;
           const speedQPM =
             row.total_time_ms > 0
               ? Number((row.total_questions / (row.total_time_ms / 60000)).toFixed(1))
@@ -360,7 +354,9 @@ export async function getMentalMathLeaderboard(
             mode,
             operation: (row.operation as MathOperation) || "mixed",
             difficulty: (row.difficulty as DifficultyTier) || "medium",
-            date: row.created_at ? row.created_at.split("T")[0] : new Date().toISOString().split("T")[0],
+            date: row.created_at
+              ? row.created_at.split("T")[0]
+              : new Date().toISOString().split("T")[0],
             rank: index + 1,
             isCurrentUser: currentUser ? currentUser.id === row.user_id : false,
           };
@@ -420,25 +416,27 @@ export async function getMentalMathUserStats(): Promise<UserMentalMathStats | nu
       },
       operationMastery: {} as UserMentalMathStats["operationMastery"],
       identifiedWeaknesses: [],
-      recentSessions: ((recentSessions || []) as Array<{
-        id: string;
-        user_id: string;
-        mode: GameMode;
-        operation: MathOperation;
-        difficulty: DifficultyTier;
-        total_questions: number;
-        correct_count: number;
-        accuracy_percentage: number;
-        total_time_ms: number;
-        average_solve_time_ms: number;
-        final_score: number;
-        max_combo: number;
-        hints_used: number;
-        score_version: string;
-        generator_version: string;
-        created_at: string;
-        answers: AnswerEvent[] | null;
-      }>).map((s) => ({
+      recentSessions: (
+        (recentSessions || []) as Array<{
+          id: string;
+          user_id: string;
+          mode: GameMode;
+          operation: MathOperation;
+          difficulty: DifficultyTier;
+          total_questions: number;
+          correct_count: number;
+          accuracy_percentage: number;
+          total_time_ms: number;
+          average_solve_time_ms: number;
+          final_score: number;
+          max_combo: number;
+          hints_used: number;
+          score_version: string;
+          generator_version: string;
+          created_at: string;
+          answers: AnswerEvent[] | null;
+        }>
+      ).map((s) => ({
         sessionId: s.id,
         userId: s.user_id,
         mode: s.mode,
@@ -454,7 +452,7 @@ export async function getMentalMathUserStats(): Promise<UserMentalMathStats | nu
         slowestSolveTimeMs: 0,
         questionsPerMinute:
           s.total_time_ms > 0
-            ? Number(((s.total_questions / (s.total_time_ms / 60000))).toFixed(1))
+            ? Number((s.total_questions / (s.total_time_ms / 60000)).toFixed(1))
             : 0,
         finalScore: s.final_score,
         maxComboStreak: s.max_combo,

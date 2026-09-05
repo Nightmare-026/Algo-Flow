@@ -22,55 +22,22 @@ function findParentOf(root: TreeNodeData | null, targetId: string): TreeNodeData
   return findParentOf(root.right, targetId);
 }
 
-function findLowestUnbalancedNode(root: TreeNodeData | null): {
-  node: TreeNodeData;
-  balance: number;
-} | null {
-  if (!root) return null;
-
-  // Post-order: check children first
-  const leftUnbalanced = findLowestUnbalancedNode(root.left);
-  if (leftUnbalanced) return leftUnbalanced;
-
-  const rightUnbalanced = findLowestUnbalancedNode(root.right);
-  if (rightUnbalanced) return rightUnbalanced;
-
-  const bf = getBalance(root);
-  if (bf > 1 || bf < -1) {
-    return { node: root, balance: bf };
-  }
-
-  return null;
-}
-
 export function generateAVLRotationsSteps(
   rotationType: string = "LL",
   customTree?: TreeVisualState | null
 ): VisualStep[] {
-  // If custom tree mode is active, balance the user's custom tree
-  if (rotationType === "custom") {
-    if (!customTree || !customTree.root) {
-      return [
-        {
-          id: uuidv4(),
-          stepNumber: 1,
-          title: "Empty Tree",
-          description: "The custom tree has no nodes to balance. Use 'Edit Tree' to add nodes.",
-          operation: "AVL Rotation",
-          actionType: "complete",
-          dataState: { root: null },
-          highlights: {},
-          codeLine: 1,
-          pseudocodeLine: 1,
-        },
-      ];
-    }
-    return generateCustomTreeAVLSteps(customTree);
+  const type = (rotationType.toUpperCase() as AVLRotationType) || "LL";
+
+  // If a custom tree is provided, execute the selected rotation (LL, RR, LR, RL) on the custom tree
+  if (customTree && customTree.root) {
+    if (type === "RR") return applyRRRotation(customTree);
+    if (type === "LR") return applyLRRotation(customTree);
+    if (type === "RL") return applyRLRotation(customTree);
+    return applyLLRotation(customTree);
   }
 
   const steps: VisualStep[] = [];
   let stepNumber = 1;
-  const type = (rotationType.toUpperCase() as AVLRotationType) || "LL";
 
   if (type === "RR") {
     // RR Imbalance: Root 10, Right 20, Right-Right 30 -> Left Rotate
@@ -98,7 +65,8 @@ export function generateAVLRotationsSteps(
       id: uuidv4(),
       stepNumber: stepNumber++,
       title: "Detect Right-Right (RR) Case",
-      description: "Node 10 has height difference -2 with right child 20. Performing Left Rotation.",
+      description:
+        "Node 10 has height difference -2 with right child 20. Performing Left Rotation.",
       operation: "AVL Rotation",
       actionType: "compare",
       dataState: structuredClone(currentState),
@@ -187,7 +155,8 @@ export function generateAVLRotationsSteps(
       id: uuidv4(),
       stepNumber: stepNumber++,
       title: "Step 1: Left Rotate Child (Node 10)",
-      description: "Left rotate node 10 to align the subtree into a straight Left-Left (LL) imbalance.",
+      description:
+        "Left rotate node 10 to align the subtree into a straight Left-Left (LL) imbalance.",
       operation: "AVL Rotation",
       actionType: "update",
       dataState: structuredClone(currentState),
@@ -271,7 +240,8 @@ export function generateAVLRotationsSteps(
       id: uuidv4(),
       stepNumber: stepNumber++,
       title: "Step 1: Right Rotate Child (Node 30)",
-      description: "Right rotate node 30 to align the subtree into a straight Right-Right (RR) imbalance.",
+      description:
+        "Right rotate node 30 to align the subtree into a straight Right-Right (RR) imbalance.",
       operation: "AVL Rotation",
       actionType: "update",
       dataState: structuredClone(currentState),
@@ -407,314 +377,557 @@ export function generateAVLRotationsSteps(
   return steps;
 }
 
-function generateCustomTreeAVLSteps(customTree: TreeVisualState): VisualStep[] {
+// ---------------------------------------------------------------------------
+// Custom Tree Rotation Executors (Applies LL, RR, LR, RL to user's tree)
+// ---------------------------------------------------------------------------
+
+function applyLLRotation(customTree: TreeVisualState): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
   const currentState: TreeVisualState = structuredClone(customTree);
+  if (!currentState.root) return [];
 
-  if (!currentState.root) {
-    return [
-      {
-        id: uuidv4(),
-        stepNumber: 1,
-        title: "Empty Tree",
-        description: "The tree has no nodes to balance.",
-        operation: "AVL Rotation",
-        actionType: "complete",
-        dataState: currentState,
-        highlights: {},
-        codeLine: 1,
-        pseudocodeLine: 1,
-      },
-    ];
+  function findLLTarget(node: TreeNodeData | null): TreeNodeData | null {
+    if (!node) return null;
+    const bf = getBalance(node);
+    if (bf > 1 && node.left && getBalance(node.left) >= 0) return node;
+    const l = findLLTarget(node.left);
+    if (l) return l;
+    return findLLTarget(node.right);
   }
 
-  const unbalanced = findLowestUnbalancedNode(currentState.root);
+  function findAnyWithLeft(node: TreeNodeData | null): TreeNodeData | null {
+    if (!node) return null;
+    if (node.left) return node;
+    const l = findAnyWithLeft(node.left);
+    if (l) return l;
+    return findAnyWithLeft(node.right);
+  }
 
-  if (!unbalanced) {
-    // Tree is already balanced
-    const rootBf = getBalance(currentState.root);
+  const targetNode =
+    findLLTarget(currentState.root) ||
+    (currentState.root.left ? currentState.root : findAnyWithLeft(currentState.root));
+
+  if (!targetNode || !targetNode.left) {
     steps.push({
       id: uuidv4(),
       stepNumber: stepNumber++,
-      title: "Inspect Tree Balance",
-      description: "Traversed custom tree: all nodes have balance factors within [-1, +1].",
+      title: "LL Rotation (Right Rotation) Unavailable",
+      description:
+        "Single Right Rotation (LL) requires a node with a left child to rotate around. None of the nodes in this tree currently have a left child. Use 'Edit Tree' to add a left child or choose RR rotation.",
       operation: "AVL Rotation",
       actionType: "initialize",
       dataState: structuredClone(currentState),
       highlights: { active: [currentState.root.id] },
       codeLine: 1,
       pseudocodeLine: 1,
-      variables: { "Root Balance Factor": rootBf, Status: "Balanced" },
+      variables: { Status: "No Left Child Found", Requirement: "Node with left child" },
     });
-
-    steps.push({
-      id: uuidv4(),
-      stepNumber: stepNumber++,
-      title: "Tree is Already Balanced",
-      description: "Every subtree satisfies the AVL balance property (|balance factor| <= 1). No rotations needed.",
-      operation: "AVL Rotation",
-      actionType: "complete",
-      dataState: structuredClone(currentState),
-      highlights: { sorted: [currentState.root.id] },
-      codeLine: 7,
-      pseudocodeLine: 4,
-      variables: { "AVL Status": "Valid Balanced Tree" },
-    });
-
     return steps;
   }
 
-  const y = unbalanced.node;
-  const bf = unbalanced.balance;
+  const y = targetNode;
+  const x = targetNode.left;
   const parent = findParentOf(currentState.root, y.id);
+  const bf = getBalance(y);
 
   steps.push({
     id: uuidv4(),
     stepNumber: stepNumber++,
-    title: "Detect Imbalance in Custom Tree",
-    description: `Node ${y.value} is unbalanced with balance factor ${bf} (outside [-1, +1]).`,
+    title: `Initialize LL Rotation on Node ${y.value}`,
+    description: `Target node ${y.value} (Balance Factor = ${bf}) has left child ${x.value}. Preparing to perform a single Right Rotation around left child ${x.value}.`,
     operation: "AVL Rotation",
     actionType: "initialize",
     dataState: structuredClone(currentState),
-    highlights: { active: [y.id] },
+    highlights: { active: [y.id], compared: [x.id] },
     codeLine: 1,
     pseudocodeLine: 1,
-    variables: { "Imbalance Node": y.value, "Balance Factor": bf },
+    variables: {
+      "Target Node": y.value,
+      "Left Child (Pivot)": x.value,
+      "Balance Factor": bf,
+      Rotation: "Right Rotation (LL)",
+    },
   });
 
-  if (bf > 1) {
-    // Left-Heavy: either LL or LR
-    const x = y.left!;
-    const childBf = getBalance(x);
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: `Detect Left-Left (LL) Case on Node ${y.value}`,
+    description: `Node ${y.value} has left child ${x.value}. Right rotation will pull pivot ${x.value} up to the subtree root and push ${y.value} down to the right.`,
+    operation: "AVL Rotation",
+    actionType: "compare",
+    dataState: structuredClone(currentState),
+    highlights: { active: [y.id], compared: [x.id, ...(x.left ? [x.left.id] : [])] },
+    codeLine: 3,
+    pseudocodeLine: 2,
+    variables: { Pivot: x.value, Root: y.value, Case: "Left-Left (LL)" },
+  });
 
-    if (childBf >= 0) {
-      // LL Case: Right Rotate on y
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: "Detect Left-Left (LL) Case",
-        description: `Node ${y.value} (BF=${bf}) has left child ${x.value} (BF=${childBf}). Executing Right Rotation.`,
-        operation: "AVL Rotation",
-        actionType: "compare",
-        dataState: structuredClone(currentState),
-        highlights: { active: [y.id], compared: [x.id] },
-        codeLine: 3,
-        pseudocodeLine: 2,
-        variables: { Case: "Left-Left (LL)", Pivot: x.value, Root: y.value },
-      });
+  // Perform Right Rotate:
+  const t2 = x.right;
+  x.right = y;
+  y.left = t2;
 
-      // Perform Right Rotate:
-      const t2 = x.right;
-      x.right = y;
-      y.left = t2;
-
-      if (parent) {
-        if (parent.left?.id === y.id) parent.left = x;
-        else parent.right = x;
-      } else {
-        currentState.root = x;
-      }
-
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: "Rewire Pointers (Right Rotate)",
-        description: `Rotated node ${y.value} right: ${x.value} becomes the new subtree root.`,
-        operation: "AVL Rotation",
-        actionType: "update",
-        dataState: structuredClone(currentState),
-        highlights: { active: [x.id], swapped: [y.id] },
-        codeLine: 5,
-        pseudocodeLine: 3,
-        variables: { "New Subtree Root": x.value },
-      });
-    } else {
-      // LR Case: Left rotate x, then Right rotate y
-      const z = x.right!;
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: "Detect Left-Right (LR) Case",
-        description: `Node ${y.value} (BF=${bf}) has left child ${x.value} with right-heavy child ${z.value}. Executing Left-Right Double Rotation.`,
-        operation: "AVL Rotation",
-        actionType: "compare",
-        dataState: structuredClone(currentState),
-        highlights: { active: [y.id], compared: [x.id, z.id] },
-        codeLine: 3,
-        pseudocodeLine: 2,
-        variables: { Case: "Left-Right (LR)", Child: x.value, Grandchild: z.value },
-      });
-
-      // Step 1: Left rotate child x
-      const t2 = z.left;
-      z.left = x;
-      x.right = t2;
-      y.left = z;
-
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: `Step 1: Left Rotate Child (${x.value})`,
-        description: `Left rotated child node ${x.value} around ${z.value} to align into a straight LL imbalance.`,
-        operation: "AVL Rotation",
-        actionType: "update",
-        dataState: structuredClone(currentState),
-        highlights: { active: [z.id], swapped: [x.id] },
-        codeLine: 8,
-        pseudocodeLine: 3,
-        variables: { "Aligned Subtree": `${y.value} -> ${z.value} -> ${x.value}` },
-      });
-
-      // Step 2: Right rotate root y
-      const t3 = z.right;
-      z.right = y;
-      y.left = t3;
-
-      if (parent) {
-        if (parent.left?.id === y.id) parent.left = z;
-        else parent.right = z;
-      } else {
-        currentState.root = z;
-      }
-
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: `Step 2: Right Rotate Root (${y.value})`,
-        description: `Right rotated root node ${y.value} around ${z.value} to complete the double rotation.`,
-        operation: "AVL Rotation",
-        actionType: "update",
-        dataState: structuredClone(currentState),
-        highlights: { active: [z.id], swapped: [y.id] },
-        codeLine: 5,
-        pseudocodeLine: 3,
-        variables: { "New Subtree Root": z.value },
-      });
-    }
+  if (parent) {
+    if (parent.left?.id === y.id) parent.left = x;
+    else parent.right = x;
   } else {
-    // Right-Heavy: either RR or RL
-    const x = y.right!;
-    const childBf = getBalance(x);
-
-    if (childBf <= 0) {
-      // RR Case: Left Rotate on y
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: "Detect Right-Right (RR) Case",
-        description: `Node ${y.value} (BF=${bf}) has right child ${x.value} (BF=${childBf}). Executing Left Rotation.`,
-        operation: "AVL Rotation",
-        actionType: "compare",
-        dataState: structuredClone(currentState),
-        highlights: { active: [y.id], compared: [x.id] },
-        codeLine: 9,
-        pseudocodeLine: 2,
-        variables: { Case: "Right-Right (RR)", Pivot: x.value, Root: y.value },
-      });
-
-      // Perform Left Rotate:
-      const t2 = x.left;
-      x.left = y;
-      y.right = t2;
-
-      if (parent) {
-        if (parent.left?.id === y.id) parent.left = x;
-        else parent.right = x;
-      } else {
-        currentState.root = x;
-      }
-
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: "Rewire Pointers (Left Rotate)",
-        description: `Rotated node ${y.value} left: ${x.value} becomes the new subtree root.`,
-        operation: "AVL Rotation",
-        actionType: "update",
-        dataState: structuredClone(currentState),
-        highlights: { active: [x.id], swapped: [y.id] },
-        codeLine: 11,
-        pseudocodeLine: 3,
-        variables: { "New Subtree Root": x.value },
-      });
-    } else {
-      // RL Case: Right rotate x, then Left rotate y
-      const z = x.left!;
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: "Detect Right-Left (RL) Case",
-        description: `Node ${y.value} (BF=${bf}) has right child ${x.value} with left-heavy child ${z.value}. Executing Right-Left Double Rotation.`,
-        operation: "AVL Rotation",
-        actionType: "compare",
-        dataState: structuredClone(currentState),
-        highlights: { active: [y.id], compared: [x.id, z.id] },
-        codeLine: 9,
-        pseudocodeLine: 2,
-        variables: { Case: "Right-Left (RL)", Child: x.value, Grandchild: z.value },
-      });
-
-      // Step 1: Right rotate child x
-      const t2 = z.right;
-      z.right = x;
-      x.left = t2;
-      y.right = z;
-
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: `Step 1: Right Rotate Child (${x.value})`,
-        description: `Right rotated child node ${x.value} around ${z.value} to align into a straight RR imbalance.`,
-        operation: "AVL Rotation",
-        actionType: "update",
-        dataState: structuredClone(currentState),
-        highlights: { active: [z.id], swapped: [x.id] },
-        codeLine: 1,
-        pseudocodeLine: 3,
-        variables: { "Aligned Subtree": `${y.value} -> ${z.value} -> ${x.value}` },
-      });
-
-      // Step 2: Left rotate root y
-      const t3 = z.left;
-      z.left = y;
-      y.right = t3;
-
-      if (parent) {
-        if (parent.left?.id === y.id) parent.left = z;
-        else parent.right = z;
-      } else {
-        currentState.root = z;
-      }
-
-      steps.push({
-        id: uuidv4(),
-        stepNumber: stepNumber++,
-        title: `Step 2: Left Rotate Root (${y.value})`,
-        description: `Left rotated root node ${y.value} around ${z.value} to complete the double rotation.`,
-        operation: "AVL Rotation",
-        actionType: "update",
-        dataState: structuredClone(currentState),
-        highlights: { active: [z.id], swapped: [y.id] },
-        codeLine: 11,
-        pseudocodeLine: 3,
-        variables: { "New Subtree Root": z.value },
-      });
-    }
+    currentState.root = x;
   }
 
   steps.push({
     id: uuidv4(),
     stepNumber: stepNumber++,
-    title: "AVL Rotation Applied to Custom Tree",
-    description: "Custom tree rebalanced successfully. Subtree now satisfies the AVL height-balance condition.",
+    title: "Rewire Pointers for Right Rotation",
+    description: `Node ${x.value} is now the new subtree root. ${y.value} is its right child, and ${x.value}'s original right child (${t2 ? t2.value : "null"}) is now ${y.value}'s left child.`,
+    operation: "AVL Rotation",
+    actionType: "update",
+    dataState: structuredClone(currentState),
+    highlights: { active: [x.id], swapped: [y.id] },
+    codeLine: 5,
+    pseudocodeLine: 3,
+    variables: { "New Subtree Root": x.value, "Right Child": y.value },
+  });
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: "LL Right Rotation Applied",
+    description: `Right rotation complete. Node ${x.value} elevated to subtree root. Subtree balance factor is now ${getBalance(x)}.`,
     operation: "AVL Rotation",
     actionType: "complete",
     dataState: structuredClone(currentState),
-    highlights: { sorted: [currentState.root?.id || ""] },
+    highlights: {
+      active: [x.id],
+      sorted: [x.id, y.id, ...(x.left ? [x.left.id] : []), ...(y.right ? [y.right.id] : [])],
+    },
     codeLine: 7,
     pseudocodeLine: 4,
-    variables: { "New Root BF": getBalance(currentState.root) },
+    variables: {
+      "New Subtree Root BF": getBalance(x),
+      "Original Node BF": getBalance(y),
+      Status: "Rotated & Balanced",
+    },
+  });
+
+  return steps;
+}
+
+function applyRRRotation(customTree: TreeVisualState): VisualStep[] {
+  const steps: VisualStep[] = [];
+  let stepNumber = 1;
+  const currentState: TreeVisualState = structuredClone(customTree);
+  if (!currentState.root) return [];
+
+  function findRRTarget(node: TreeNodeData | null): TreeNodeData | null {
+    if (!node) return null;
+    const bf = getBalance(node);
+    if (bf < -1 && node.right && getBalance(node.right) <= 0) return node;
+    const l = findRRTarget(node.left);
+    if (l) return l;
+    return findRRTarget(node.right);
+  }
+
+  function findAnyWithRight(node: TreeNodeData | null): TreeNodeData | null {
+    if (!node) return null;
+    if (node.right) return node;
+    const l = findAnyWithRight(node.left);
+    if (l) return l;
+    return findAnyWithRight(node.right);
+  }
+
+  const targetNode =
+    findRRTarget(currentState.root) ||
+    (currentState.root.right ? currentState.root : findAnyWithRight(currentState.root));
+
+  if (!targetNode || !targetNode.right) {
+    steps.push({
+      id: uuidv4(),
+      stepNumber: stepNumber++,
+      title: "RR Rotation (Left Rotation) Unavailable",
+      description:
+        "Single Left Rotation (RR) requires a node with a right child to rotate around. None of the nodes in this tree currently have a right child. Use 'Edit Tree' to add a right child or select LL rotation.",
+      operation: "AVL Rotation",
+      actionType: "initialize",
+      dataState: structuredClone(currentState),
+      highlights: { active: [currentState.root.id] },
+      codeLine: 8,
+      pseudocodeLine: 1,
+      variables: { Status: "No Right Child Found", Requirement: "Node with right child" },
+    });
+    return steps;
+  }
+
+  const x = targetNode;
+  const y = targetNode.right;
+  const parent = findParentOf(currentState.root, x.id);
+  const bf = getBalance(x);
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: `Initialize RR Rotation on Node ${x.value}`,
+    description: `Target node ${x.value} (Balance Factor = ${bf}) has right child ${y.value}. Preparing to perform a single Left Rotation around right child ${y.value}.`,
+    operation: "AVL Rotation",
+    actionType: "initialize",
+    dataState: structuredClone(currentState),
+    highlights: { active: [x.id], compared: [y.id] },
+    codeLine: 8,
+    pseudocodeLine: 1,
+    variables: {
+      "Target Node": x.value,
+      "Right Child (Pivot)": y.value,
+      "Balance Factor": bf,
+      Rotation: "Left Rotation (RR)",
+    },
+  });
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: `Detect Right-Right (RR) Case on Node ${x.value}`,
+    description: `Node ${x.value} has right child ${y.value}. Left rotation will pull pivot ${y.value} up to the subtree root and push ${x.value} down to the left.`,
+    operation: "AVL Rotation",
+    actionType: "compare",
+    dataState: structuredClone(currentState),
+    highlights: { active: [x.id], compared: [y.id, ...(y.right ? [y.right.id] : [])] },
+    codeLine: 9,
+    pseudocodeLine: 2,
+    variables: { Pivot: y.value, Root: x.value, Case: "Right-Right (RR)" },
+  });
+
+  // Perform Left Rotate:
+  const t2 = y.left;
+  y.left = x;
+  x.right = t2;
+
+  if (parent) {
+    if (parent.left?.id === x.id) parent.left = y;
+    else parent.right = y;
+  } else {
+    currentState.root = y;
+  }
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: "Rewire Pointers for Left Rotation",
+    description: `Node ${y.value} is now the new subtree root. ${x.value} is its left child, and ${y.value}'s original left child (${t2 ? t2.value : "null"}) is now ${x.value}'s right child.`,
+    operation: "AVL Rotation",
+    actionType: "update",
+    dataState: structuredClone(currentState),
+    highlights: { active: [y.id], swapped: [x.id] },
+    codeLine: 11,
+    pseudocodeLine: 3,
+    variables: { "New Subtree Root": y.value, "Left Child": x.value },
+  });
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: "RR Left Rotation Applied",
+    description: `Left rotation complete. Node ${y.value} elevated to subtree root. Subtree balance factor is now ${getBalance(y)}.`,
+    operation: "AVL Rotation",
+    actionType: "complete",
+    dataState: structuredClone(currentState),
+    highlights: {
+      active: [y.id],
+      sorted: [y.id, x.id, ...(y.right ? [y.right.id] : []), ...(x.left ? [x.left.id] : [])],
+    },
+    codeLine: 13,
+    pseudocodeLine: 4,
+    variables: {
+      "New Subtree Root BF": getBalance(y),
+      "Original Node BF": getBalance(x),
+      Status: "Rotated & Balanced",
+    },
+  });
+
+  return steps;
+}
+
+function applyLRRotation(customTree: TreeVisualState): VisualStep[] {
+  const steps: VisualStep[] = [];
+  let stepNumber = 1;
+  const currentState: TreeVisualState = structuredClone(customTree);
+  if (!currentState.root) return [];
+
+  function findLRTarget(
+    node: TreeNodeData | null
+  ): { z: TreeNodeData; y: TreeNodeData; x: TreeNodeData } | null {
+    if (!node) return null;
+    if (node.left && node.left.right) {
+      return { z: node, y: node.left, x: node.left.right };
+    }
+    const l = findLRTarget(node.left);
+    if (l) return l;
+    return findLRTarget(node.right);
+  }
+
+  function findAnyLeftWithChild(
+    node: TreeNodeData | null
+  ): { z: TreeNodeData; y: TreeNodeData; x: TreeNodeData } | null {
+    if (!node) return null;
+    if (node.left) {
+      if (node.left.right) return { z: node, y: node.left, x: node.left.right };
+      if (node.left.left) return { z: node, y: node.left, x: node.left.left };
+    }
+    const l = findAnyLeftWithChild(node.left);
+    if (l) return l;
+    return findAnyLeftWithChild(node.right);
+  }
+
+  const found = findLRTarget(currentState.root) || findAnyLeftWithChild(currentState.root);
+
+  if (!found) {
+    steps.push({
+      id: uuidv4(),
+      stepNumber: stepNumber++,
+      title: "LR Double Rotation Unavailable",
+      description:
+        "A Left-Right (LR) Double Rotation requires a node with a left child that also has a child (zigzag). None of the nodes in this tree have this structure. Use 'Edit Tree' to add children or select LL rotation.",
+      operation: "AVL Rotation",
+      actionType: "initialize",
+      dataState: structuredClone(currentState),
+      highlights: { active: [currentState.root.id] },
+      codeLine: 1,
+      pseudocodeLine: 1,
+      variables: { Status: "No LR Zigzag Structure Found" },
+    });
+    return steps;
+  }
+
+  const { z, y, x } = found;
+  const parent = findParentOf(currentState.root, z.id);
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: `Initialize LR Double Rotation on Node ${z.value}`,
+    description: `Node ${z.value} has left child ${y.value}, and ${y.value} has child ${x.value} (Zigzag Left-Right imbalance). Executing Left-Right Double Rotation.`,
+    operation: "AVL Rotation",
+    actionType: "initialize",
+    dataState: structuredClone(currentState),
+    highlights: { active: [z.id], compared: [y.id, x.id] },
+    codeLine: 1,
+    pseudocodeLine: 1,
+    variables: {
+      "Imbalance Node": z.value,
+      "Left Child": y.value,
+      "Pivot (Grandchild)": x.value,
+      Type: "LR (Left-Right)",
+    },
+  });
+
+  // Step 1 of LR: Left rotate child y around x
+  const t2 = x.left;
+  x.left = y;
+  y.right = t2;
+  z.left = x;
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: `Step 1: Left Rotate Child (${y.value})`,
+    description: `Left rotate child node ${y.value} around ${x.value}. This straightens the zigzag subtree into a Left-Left (LL) alignment.`,
+    operation: "AVL Rotation",
+    actionType: "update",
+    dataState: structuredClone(currentState),
+    highlights: { active: [x.id], swapped: [y.id] },
+    codeLine: 8,
+    pseudocodeLine: 3,
+    variables: {
+      "Aligned Subtree": `${z.value} -> ${x.value} -> ${y.value}`,
+      "Subtree Root": z.value,
+    },
+  });
+
+  // Step 2 of LR: Right rotate root z around x
+  const t3 = x.right;
+  x.right = z;
+  z.left = t3;
+
+  if (parent) {
+    if (parent.left?.id === z.id) parent.left = x;
+    else parent.right = x;
+  } else {
+    currentState.root = x;
+  }
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: `Step 2: Right Rotate Root (${z.value})`,
+    description: `Right rotate root node ${z.value} around ${x.value} to complete the double rotation.`,
+    operation: "AVL Rotation",
+    actionType: "update",
+    dataState: structuredClone(currentState),
+    highlights: { active: [x.id], swapped: [z.id] },
+    codeLine: 5,
+    pseudocodeLine: 3,
+    variables: { "New Subtree Root": x.value, "Left Child": y.value, "Right Child": z.value },
+  });
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: "LR Double Rotation Applied",
+    description: `Double rotation complete. Node ${x.value} is now the root of the subtree with left child ${y.value} and right child ${z.value}.`,
+    operation: "AVL Rotation",
+    actionType: "complete",
+    dataState: structuredClone(currentState),
+    highlights: { active: [x.id], sorted: [x.id, y.id, z.id] },
+    codeLine: 7,
+    pseudocodeLine: 4,
+    variables: {
+      "Root BF": getBalance(x),
+      "Left BF": getBalance(y),
+      "Right BF": getBalance(z),
+    },
+  });
+
+  return steps;
+}
+
+function applyRLRotation(customTree: TreeVisualState): VisualStep[] {
+  const steps: VisualStep[] = [];
+  let stepNumber = 1;
+  const currentState: TreeVisualState = structuredClone(customTree);
+  if (!currentState.root) return [];
+
+  function findRLTarget(
+    node: TreeNodeData | null
+  ): { z: TreeNodeData; y: TreeNodeData; x: TreeNodeData } | null {
+    if (!node) return null;
+    if (node.right && node.right.left) {
+      return { z: node, y: node.right, x: node.right.left };
+    }
+    const l = findRLTarget(node.left);
+    if (l) return l;
+    return findRLTarget(node.right);
+  }
+
+  function findAnyRightWithChild(
+    node: TreeNodeData | null
+  ): { z: TreeNodeData; y: TreeNodeData; x: TreeNodeData } | null {
+    if (!node) return null;
+    if (node.right) {
+      if (node.right.left) return { z: node, y: node.right, x: node.right.left };
+      if (node.right.right) return { z: node, y: node.right, x: node.right.right };
+    }
+    const l = findAnyRightWithChild(node.left);
+    if (l) return l;
+    return findAnyRightWithChild(node.right);
+  }
+
+  const found = findRLTarget(currentState.root) || findAnyRightWithChild(currentState.root);
+
+  if (!found) {
+    steps.push({
+      id: uuidv4(),
+      stepNumber: stepNumber++,
+      title: "RL Double Rotation Unavailable",
+      description:
+        "A Right-Left (RL) Double Rotation requires a node with a right child that also has a child (zigzag). None of the nodes in this tree have this structure. Use 'Edit Tree' to add children or select RR rotation.",
+      operation: "AVL Rotation",
+      actionType: "initialize",
+      dataState: structuredClone(currentState),
+      highlights: { active: [currentState.root.id] },
+      codeLine: 8,
+      pseudocodeLine: 1,
+      variables: { Status: "No RL Zigzag Structure Found" },
+    });
+    return steps;
+  }
+
+  const { z, y, x } = found;
+  const parent = findParentOf(currentState.root, z.id);
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: `Initialize RL Double Rotation on Node ${z.value}`,
+    description: `Node ${z.value} has right child ${y.value}, and ${y.value} has child ${x.value} (Zigzag Right-Left imbalance). Executing Right-Left Double Rotation.`,
+    operation: "AVL Rotation",
+    actionType: "initialize",
+    dataState: structuredClone(currentState),
+    highlights: { active: [z.id], compared: [y.id, x.id] },
+    codeLine: 8,
+    pseudocodeLine: 1,
+    variables: {
+      "Imbalance Node": z.value,
+      "Right Child": y.value,
+      "Pivot (Grandchild)": x.value,
+      Type: "RL (Right-Left)",
+    },
+  });
+
+  // Step 1 of RL: Right rotate child y around x
+  const t2 = x.right;
+  x.right = y;
+  y.left = t2;
+  z.right = x;
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: `Step 1: Right Rotate Child (${y.value})`,
+    description: `Right rotate child node ${y.value} around ${x.value}. This straightens the zigzag subtree into a Right-Right (RR) alignment.`,
+    operation: "AVL Rotation",
+    actionType: "update",
+    dataState: structuredClone(currentState),
+    highlights: { active: [x.id], swapped: [y.id] },
+    codeLine: 1,
+    pseudocodeLine: 3,
+    variables: {
+      "Aligned Subtree": `${z.value} -> ${x.value} -> ${y.value}`,
+      "Subtree Root": z.value,
+    },
+  });
+
+  // Step 2 of RL: Left rotate root z around x
+  const t3 = x.left;
+  x.left = z;
+  z.right = t3;
+
+  if (parent) {
+    if (parent.left?.id === z.id) parent.left = x;
+    else parent.right = x;
+  } else {
+    currentState.root = x;
+  }
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: `Step 2: Left Rotate Root (${z.value})`,
+    description: `Left rotate root node ${z.value} around ${x.value} to complete the double rotation.`,
+    operation: "AVL Rotation",
+    actionType: "update",
+    dataState: structuredClone(currentState),
+    highlights: { active: [x.id], swapped: [z.id] },
+    codeLine: 11,
+    pseudocodeLine: 3,
+    variables: { "New Subtree Root": x.value, "Left Child": z.value, "Right Child": y.value },
+  });
+
+  steps.push({
+    id: uuidv4(),
+    stepNumber: stepNumber++,
+    title: "RL Double Rotation Applied",
+    description: `Double rotation complete. Node ${x.value} is now the root of the subtree with left child ${z.value} and right child ${y.value}.`,
+    operation: "AVL Rotation",
+    actionType: "complete",
+    dataState: structuredClone(currentState),
+    highlights: { active: [x.id], sorted: [x.id, z.id, y.id] },
+    codeLine: 13,
+    pseudocodeLine: 4,
+    variables: {
+      "New Root BF": getBalance(x),
+      "Left BF": getBalance(z),
+      "Right BF": getBalance(y),
+    },
   });
 
   return steps;

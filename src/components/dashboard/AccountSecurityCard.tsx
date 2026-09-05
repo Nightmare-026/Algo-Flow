@@ -10,10 +10,7 @@ interface AccountSecurityCardProps {
   providers?: string[];
 }
 
-export function AccountSecurityCard({
-  email,
-  providers = ["google"],
-}: AccountSecurityCardProps) {
+export function AccountSecurityCard({ email, providers = ["google"] }: AccountSecurityCardProps) {
   const isGoogleUser = providers.includes("google");
   const [isOpen, setIsOpen] = useState(false);
   const [state, formAction, isPending] = useActionState(setAccountPassword, null);
@@ -54,7 +51,9 @@ export function AccountSecurityCard({
           )}
         >
           <KeyRound className="w-3.5 h-3.5" />
-          <span>{isOpen ? "Close Form" : isGoogleUser ? "Add / Change Password" : "Change Password"}</span>
+          <span>
+            {isOpen ? "Close Form" : isGoogleUser ? "Add / Change Password" : "Change Password"}
+          </span>
         </button>
       </div>
 
@@ -65,13 +64,13 @@ export function AccountSecurityCard({
             <h3 className="text-sm font-bold font-display text-text-primary flex items-center gap-2">
               <Lock className="w-4 h-4 text-primary" />
               <span>
-                {isGoogleUser
-                  ? "Set Password for Email Sign-in"
-                  : "Update Account Password"}
+                {isGoogleUser ? "Set Password for Email Sign-in" : "Update Account Password"}
               </span>
             </h3>
             <p className="text-xs text-text-secondary mt-1 max-w-xl">
-              Setting an account password allows you to sign in directly using your email (<strong>{email}</strong>) and password on any device, while keeping your Google 1-click login active.
+              Setting an account password allows you to sign in directly using your email (
+              <strong>{email}</strong>) and password on any device, while keeping your Google
+              1-click login active.
             </p>
           </div>
 
@@ -91,7 +90,10 @@ export function AccountSecurityCard({
 
           <form action={formAction} className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="sec-password" className="text-xs font-mono font-bold text-text-secondary">
+              <label
+                htmlFor="sec-password"
+                className="text-xs font-mono font-bold text-text-secondary"
+              >
                 New Password
               </label>
               <input
@@ -106,7 +108,10 @@ export function AccountSecurityCard({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="sec-password-confirm" className="text-xs font-mono font-bold text-text-secondary">
+              <label
+                htmlFor="sec-password-confirm"
+                className="text-xs font-mono font-bold text-text-secondary"
+              >
                 Confirm Password
               </label>
               <input

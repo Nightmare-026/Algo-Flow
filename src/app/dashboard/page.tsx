@@ -65,8 +65,7 @@ export default async function DashboardPage() {
   const activities = activitiesResult.status === "fulfilled" ? activitiesResult.value : [];
   const dailyChallenge =
     dailyChallengeResult.status === "fulfilled" ? dailyChallengeResult.value : null;
-  const mentalMathStats =
-    mentalMathResult.status === "fulfilled" ? mentalMathResult.value : null;
+  const mentalMathStats = mentalMathResult.status === "fulfilled" ? mentalMathResult.value : null;
 
   let challengeCompleted = false;
   let challengeAlgorithm = null;
@@ -314,15 +313,19 @@ export default async function DashboardPage() {
                 <div className="flex flex-col gap-2">
                   {activities.slice(0, 6).map((act) => {
                     const isMentalMath = act.algorithm_id?.startsWith("mental_math");
-                    const alg = !isMentalMath ? algorithms.find((a) => a.id === act.algorithm_id) : null;
+                    const alg = !isMentalMath
+                      ? algorithms.find((a) => a.id === act.algorithm_id)
+                      : null;
                     if (!alg && !isMentalMath) return null;
 
-                    const mmMetadata = act.metadata as {
-                      score?: number;
-                      accuracy?: number;
-                      mode?: string;
-                      operation?: string;
-                    } | undefined;
+                    const mmMetadata = act.metadata as
+                      | {
+                          score?: number;
+                          accuracy?: number;
+                          mode?: string;
+                          operation?: string;
+                        }
+                      | undefined;
 
                     const title = isMentalMath
                       ? `Mental Math (${mmMetadata?.operation || "Mixed"}): ${mmMetadata?.score || 0} pts`
@@ -363,12 +366,8 @@ export default async function DashboardPage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-xs font-bold text-text-primary truncate">
-                            {title}
-                          </h3>
-                          <p className="text-[11px] font-mono text-text-muted mt-0.5">
-                            {subtext}
-                          </p>
+                          <h3 className="text-xs font-bold text-text-primary truncate">{title}</h3>
+                          <p className="text-[11px] font-mono text-text-muted mt-0.5">{subtext}</p>
                         </div>
                         <Link
                           href={linkHref}

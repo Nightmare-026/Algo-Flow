@@ -17,7 +17,7 @@ import { OperationsExplorer } from "@/features/mental-math/components/Operations
 export const metadata = {
   title: "Mental Math Calculation Studio | Algo Flow",
   description:
-    "Train arithmetic reflexes, master decomposition heuristics, and build high-precision mental calculation speed across 8 domains and 6 training formats.",
+    "Train arithmetic reflexes, master decomposition heuristics, and build high-precision mental calculation speed across 9 domains and 6 training formats.",
 };
 
 export default function MentalMathHubPage() {
@@ -73,18 +73,24 @@ export default function MentalMathHubPage() {
         <div className="grid grid-cols-2 gap-3.5 w-full lg:w-84 shrink-0">
           <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
             <div className="flex items-center justify-between text-text-muted mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Operations</span>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
+                Operations
+              </span>
               <BrainCircuit className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-extrabold font-display text-text-primary">8 Domains</p>
-              <p className="text-[11px] font-sans text-text-muted mt-0.5">Addition to roots & %</p>
+              <p className="text-2xl font-extrabold font-display text-text-primary">9 Domains</p>
+              <p className="text-[11px] font-sans text-text-muted mt-0.5">
+                Addition, roots, cubes & %
+              </p>
             </div>
           </div>
 
           <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
             <div className="flex items-center justify-between text-text-muted mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Range Control</span>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
+                Range Control
+              </span>
               <Target className="w-4 h-4 text-primary" />
             </div>
             <div>
@@ -95,7 +101,9 @@ export default function MentalMathHubPage() {
 
           <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
             <div className="flex items-center justify-between text-text-muted mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Training Modes</span>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
+                Training Modes
+              </span>
               <Layers className="w-4 h-4 text-primary" />
             </div>
             <div>
@@ -106,7 +114,9 @@ export default function MentalMathHubPage() {
 
           <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
             <div className="flex items-center justify-between text-text-muted mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Telemetry</span>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
+                Telemetry
+              </span>
               <Sparkles className="w-4 h-4 text-primary" />
             </div>
             <div>
@@ -125,7 +135,7 @@ export default function MentalMathHubPage() {
               Explore Arithmetic Operations
             </h2>
             <p className="text-xs sm:text-sm text-text-secondary mt-1">
-              Browse all 8 calculation domains. Click any card to launch an instant practice drill.
+              Browse all 9 calculation domains. Click any card to launch an instant practice drill.
             </p>
           </div>
           <Link
@@ -147,8 +157,8 @@ export default function MentalMathHubPage() {
             Training Formats
           </h2>
           <p className="text-xs sm:text-sm text-text-secondary mt-1">
-            Choose your training style: custom sandbox studio, 60s speed sprint, standardized
-            timed benchmarks, or official daily competition.
+            Choose your training style: custom sandbox studio, 60s speed sprint, standardized timed
+            benchmarks, or official daily competition.
           </p>
         </div>
 
@@ -162,7 +172,8 @@ export default function MentalMathHubPage() {
             Cognitive Calculation Pillars
           </h2>
           <p className="text-xs sm:text-sm text-text-secondary mt-1">
-            Proven algorithmic strategies that replace slow column memorization with intuitive mental heuristics.
+            Proven algorithmic strategies that replace slow column memorization with intuitive
+            mental heuristics.
           </p>
         </div>
 
@@ -176,7 +187,8 @@ export default function MentalMathHubPage() {
                 Left-to-Right Addition
               </h3>
               <p className="text-xs text-text-secondary mt-2 leading-relaxed">
-                Add highest place values first (hundreds, then tens, then units). Keeps running intermediate sums active without carrying stack overhead.
+                Add highest place values first (hundreds, then tens, then units). Keeps running
+                intermediate sums active without carrying stack overhead.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
@@ -193,7 +205,8 @@ export default function MentalMathHubPage() {
                 Complement Subtraction
               </h3>
               <p className="text-xs text-text-secondary mt-2 leading-relaxed">
-                Subtract by referencing friendly 100 or 1000 base complements. Completely avoids borrow hesitation across multiple zero digits.
+                Subtract by referencing friendly 100 or 1000 base complements. Completely avoids
+                borrow hesitation across multiple zero digits.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
@@ -210,7 +223,8 @@ export default function MentalMathHubPage() {
                 Distributive Multipliers
               </h3>
               <p className="text-xs text-text-secondary mt-2 leading-relaxed">
-                Decompose non-trivial factors into friendly anchors (e.g. ×25 = ×100÷4, ×9 = ×10−1) or leverage doubling and halving symmetries.
+                Decompose non-trivial factors into friendly anchors (e.g. ×25 = ×100÷4, ×9 = ×10−1)
+                or leverage doubling and halving symmetries.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
@@ -227,7 +241,8 @@ export default function MentalMathHubPage() {
                 Anchor Squaring (a±b)²
               </h3>
               <p className="text-xs text-text-secondary mt-2 leading-relaxed">
-                Square numbers close to base-50 anchors instantly using (50±d)² = (25±d)×100 + d². Solves two-digit squares in under 2 seconds.
+                Square numbers close to base-50 anchors instantly using (50±d)² = (25±d)×100 + d².
+                Solves two-digit squares in under 2 seconds.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
@@ -248,7 +263,9 @@ export default function MentalMathHubPage() {
               Personal Analytics & Cognitive Diagnostics
             </h3>
             <p className="text-xs sm:text-sm text-text-secondary mt-1 leading-relaxed">
-              Looking for your personal accuracy trends, carry/borrow bottleneck analysis, and operation radar breakdown? Track deep calculation telemetry on the Mastery & Stats page or view your unified progress in the Student Command Center.
+              Looking for your personal accuracy trends, carry/borrow bottleneck analysis, and
+              operation radar breakdown? Track deep calculation telemetry on the Mastery & Stats
+              page or view your unified progress in the Student Command Center.
             </p>
           </div>
         </div>

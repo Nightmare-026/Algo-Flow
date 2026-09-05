@@ -48,9 +48,9 @@ export function Footer() {
       {/* Top divider with margin on both sides */}
       <div className="absolute inset-x-4 sm:inset-x-8 lg:inset-x-16 top-0 h-px bg-border rounded-full" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
+        <div className="grid gap-8 sm:gap-10 grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
           {/* Brand Column */}
-          <div className="flex flex-col gap-4">
+          <div className="col-span-2 lg:col-span-1 flex flex-col gap-4">
             <Link href="/" className="inline-flex min-h-11 items-center gap-3 rounded-xl pr-2">
               <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
                 <Image
@@ -80,9 +80,9 @@ export function Footer() {
           {/* Directory Columns */}
           {footerSections.map((section) => (
             <div key={section.title} className="flex flex-col gap-3">
-              <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary">
+              <h3 className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary">
                 {section.title}
-              </h2>
+              </h3>
               <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.label}>

@@ -62,7 +62,9 @@ export function GraphInputControls({
         <div className="flex flex-wrap items-center gap-1.5">
           {hasStartNode && (
             <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
-              <span className="font-mono text-[10px] font-semibold text-text-secondary">Start Node:</span>
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                Start Node:
+              </span>
               <select
                 value={selectedNode}
                 onChange={(event) => onOptionsChange?.({ ...options, text: event.target.value })}

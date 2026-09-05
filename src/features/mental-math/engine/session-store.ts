@@ -98,16 +98,18 @@ export const useMentalMathStore = create<SessionState>((set, get) => ({
     });
 
     const initialTimer = config.timeLimitSeconds ?? (config.mode === "speed" ? 60 : null);
+    const needsCountdown = config.mode === "test";
+    const now = Date.now();
 
     set({
-      status: "countdown",
+      status: needsCountdown ? "countdown" : "active",
       config,
       questions,
       currentIndex: 0,
       currentInput: "",
       selectedOptionIndex: null,
-      questionStartTime: 0,
-      sessionStartTime: Date.now(),
+      questionStartTime: needsCountdown ? 0 : now,
+      sessionStartTime: now,
       timeRemainingSeconds: initialTimer,
       combo: 0,
       maxCombo: 0,
@@ -121,7 +123,6 @@ export const useMentalMathStore = create<SessionState>((set, get) => ({
 
   completeCountdown: () => {
     const now = Date.now();
-    soundEngine.playCountdownTick(true);
     set({
       status: "active",
       questionStartTime: now,

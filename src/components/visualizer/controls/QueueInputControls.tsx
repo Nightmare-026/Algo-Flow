@@ -53,8 +53,13 @@ export function QueueInputControls({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Capacity Pod */}
-          <form onSubmit={handleCapacitySubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
-            <span className="font-mono text-[10px] font-semibold text-text-secondary">Capacity:</span>
+          <form
+            onSubmit={handleCapacitySubmit}
+            className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+          >
+            <span className="font-mono text-[10px] font-semibold text-text-secondary">
+              Capacity:
+            </span>
             <input
               type="number"
               className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
@@ -74,7 +79,10 @@ export function QueueInputControls({
           </form>
 
           {/* Value / Enqueue Pod */}
-          <form onSubmit={handleEnqueueSubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+          <form
+            onSubmit={handleEnqueueSubmit}
+            className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+          >
             <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
             <span className="font-mono text-[10px] font-semibold text-text-secondary">Value:</span>
             <input

@@ -1,22 +1,80 @@
 "use client";
 
+import { useMemo } from "react";
+import { usePathname } from "next/navigation";
 import { usePlaybackStore } from "@/stores/playback-store";
+import { useTheme } from "@/components/providers/ThemeProvider";
 import { TreeVisualState, TreeNodeData } from "@/visualizers/tree/types";
 import { VisualStepHighlights } from "@/types";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { useMemo, useRef, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { getVisualElementClassName } from "../visual-state";
+import { ReactFlow, Node, Edge, Background, BackgroundVariant } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+import { getVisualElementState } from "../visual-state";
 
-interface NodeLayout {
-  id: string;
-  value: number;
-  x: number;
-  y: number;
-  leftId?: string;
-  rightId?: string;
-  parentId?: string;
+function getNodeColor(id: string, highlights: VisualStepHighlights) {
+  const state = getVisualElementState(highlights, id);
+  const palette = {
+    default: {
+      bg: "var(--bg-surface)",
+      text: "var(--text-primary)",
+      border: "var(--border)",
+      glow: "none",
+    },
+    current: {
+      bg: "var(--primary-muted)",
+      text: "var(--primary-active, var(--primary))",
+      border: "var(--primary)",
+      glow: "var(--shadow-glow-primary, 0 0 0 4px rgba(22, 163, 74, 0.2))",
+    },
+    compared: {
+      bg: "var(--warning-muted)",
+      text: "var(--warning)",
+      border: "var(--warning)",
+      glow: "0 0 0 4px rgba(234, 179, 8, 0.2)",
+    },
+    swapped: {
+      bg: "var(--secondary-muted)",
+      text: "var(--secondary)",
+      border: "var(--secondary)",
+      glow: "0 0 0 4px rgba(15, 118, 110, 0.2)",
+    },
+    inserted: {
+      bg: "var(--primary-muted)",
+      text: "var(--primary)",
+      border: "var(--primary)",
+      glow: "var(--shadow-glow-primary, 0 0 0 4px rgba(22, 163, 74, 0.2))",
+    },
+    deleted: {
+      bg: "var(--error-muted)",
+      text: "var(--error)",
+      border: "var(--error)",
+      glow: "0 0 0 4px rgba(239, 68, 68, 0.2)",
+    },
+    found: {
+      bg: "var(--success-muted)",
+      text: "var(--success)",
+      border: "var(--success)",
+      glow: "0 0 0 4px rgba(34, 197, 94, 0.2)",
+    },
+    error: {
+      bg: "var(--error-muted)",
+      text: "var(--error)",
+      border: "var(--error)",
+      glow: "0 0 0 4px rgba(239, 68, 68, 0.2)",
+    },
+    sorted: {
+      bg: "var(--success-muted)",
+      text: "var(--success)",
+      border: "var(--success)",
+      glow: "0 0 0 4px rgba(34, 197, 94, 0.2)",
+    },
+    visited: {
+      bg: "var(--primary-muted)",
+      text: "var(--text-secondary)",
+      border: "var(--primary)",
+      glow: "none",
+    },
+  };
+  return palette[state];
 }
 
 function describeTree(root: TreeNodeData | null): string {
@@ -39,74 +97,117 @@ function describeTree(root: TreeNodeData | null): string {
 }
 
 export function TreeRenderer() {
-  const { steps, currentStepIndex } = usePlaybackStore();
-  const currentStep = steps[currentStepIndex];
+  const { steps, currentStepIndex, reducedMotion } = usePlaybackStore();
+  const { resolvedTheme } = useTheme();
   const pathname = usePathname();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState(800);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (typeof container.checkVisibility === "function" && !container.checkVisibility()) {
-          continue;
-        }
-        setContainerWidth(entry.contentRect.width);
-      }
-    });
-    resizeObserver.observe(container);
-    return () => resizeObserver.disconnect();
-  }, [pathname]);
+  const currentStep = steps[currentStepIndex];
 
   const dataState = (currentStep?.dataState as TreeVisualState) || {};
-  const highlights: VisualStepHighlights = currentStep?.highlights || {};
   const traversalOutput = dataState.traversalOutput ?? [];
   const callStack = dataState.callStack ?? [];
   const accessibleLabel = `${describeTree(dataState.root)} Current traversal output: ${
     traversalOutput.join(", ") || "empty"
   }.`;
 
-  const layout = useMemo(() => {
-    const nodes: NodeLayout[] = [];
-    if (!dataState.root) return nodes;
+  const { reactFlowNodes, reactFlowEdges } = useMemo(() => {
+    const highlights: VisualStepHighlights = currentStep?.highlights ?? {};
+    const nodes: Node[] = [];
+    const edges: Edge[] = [];
+    if (!dataState.root) return { reactFlowNodes: nodes, reactFlowEdges: edges };
+
+    function getDepth(node: TreeNodeData | null): number {
+      if (!node) return 0;
+      return 1 + Math.max(getDepth(node.left), getDepth(node.right));
+    }
+
+    const depth = getDepth(dataState.root);
+    const totalWidth = Math.max(700, Math.pow(2, depth - 1) * 90);
 
     const traverse = (
       node: TreeNodeData,
       level: number,
       leftBound: number,
-      rightBound: number,
-      parentId?: string
+      rightBound: number
     ) => {
       const x = (leftBound + rightBound) / 2;
-      const y = level * 80 + 40; // 80px vertical spacing, 40px top padding
+      const y = level * 85 + 40;
+      const colors = getNodeColor(node.id, highlights);
 
-      const layoutNode: NodeLayout = {
+      nodes.push({
         id: node.id,
-        value: node.value,
-        x,
-        y,
-        parentId,
-        leftId: node.left?.id,
-        rightId: node.right?.id,
-      };
-
-      nodes.push(layoutNode);
+        position: { x: x - 26, y: y - 26 },
+        data: { label: String(node.value) },
+        className: "visual-element",
+        style: {
+          background: colors.bg,
+          color: colors.text,
+          border: `3px solid ${colors.border}`,
+          boxShadow: colors.glow,
+          borderRadius: "50%",
+          width: 52,
+          height: 52,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: 800,
+          fontSize: 16,
+          fontFamily: "var(--font-mono, monospace)",
+          transition: reducedMotion
+            ? "none"
+            : "background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease",
+        },
+        draggable: false,
+        selectable: false,
+      });
 
       if (node.left) {
-        traverse(node.left, level + 1, leftBound, x, node.id);
+        const isEdgeActive =
+          (highlights.active?.includes(node.id) || highlights.visited?.includes(node.id)) &&
+          (highlights.active?.includes(node.left.id) || highlights.visited?.includes(node.left.id));
+
+        edges.push({
+          id: `e-${node.id}-${node.left.id}`,
+          source: node.id,
+          target: node.left.id,
+          type: "straight",
+          style: {
+            stroke: isEdgeActive ? "var(--primary)" : "var(--border)",
+            strokeWidth: isEdgeActive ? 3.5 : 2,
+            transition: reducedMotion ? "none" : "stroke 0.3s ease, stroke-width 0.3s ease",
+          },
+          animated: !reducedMotion && isEdgeActive,
+          selectable: false,
+        });
+
+        traverse(node.left, level + 1, leftBound, x);
       }
+
       if (node.right) {
-        traverse(node.right, level + 1, x, rightBound, node.id);
+        const isEdgeActive =
+          (highlights.active?.includes(node.id) || highlights.visited?.includes(node.id)) &&
+          (highlights.active?.includes(node.right.id) || highlights.visited?.includes(node.right.id));
+
+        edges.push({
+          id: `e-${node.id}-${node.right.id}`,
+          source: node.id,
+          target: node.right.id,
+          type: "straight",
+          style: {
+            stroke: isEdgeActive ? "var(--primary)" : "var(--border)",
+            strokeWidth: isEdgeActive ? 3.5 : 2,
+            transition: reducedMotion ? "none" : "stroke 0.3s ease, stroke-width 0.3s ease",
+          },
+          animated: !reducedMotion && isEdgeActive,
+          selectable: false,
+        });
+
+        traverse(node.right, level + 1, x, rightBound);
       }
     };
 
-    const effectiveWidth = Math.min(containerWidth, 680);
-    const offsetX = (containerWidth - effectiveWidth) / 2;
-    traverse(dataState.root, 0, offsetX, offsetX + effectiveWidth);
-    return nodes;
-  }, [dataState.root, containerWidth]);
+    traverse(dataState.root, 0, 0, totalWidth);
+    return { reactFlowNodes: nodes, reactFlowEdges: edges };
+  }, [dataState.root, currentStep?.highlights, reducedMotion]);
 
   if (!currentStep || !currentStep.dataState) {
     return null;
@@ -114,76 +215,59 @@ export function TreeRenderer() {
 
   return (
     <div
-      ref={containerRef}
+      className="flex items-center justify-center w-full h-full relative overflow-hidden rounded-2xl border border-border/60 bg-surface shadow-xs"
       role="img"
       aria-label={accessibleLabel}
-      className="flex items-start justify-center w-full h-full relative overflow-visible bg-bg-surface-light/30 rounded-xl"
     >
+      <ReactFlow
+        key={pathname}
+        nodes={reactFlowNodes}
+        edges={reactFlowEdges}
+        fitView
+        fitViewOptions={{ padding: 0.2 }}
+        colorMode={resolvedTheme === "dark" ? "dark" : "light"}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        elementsSelectable={false}
+        panOnDrag={true}
+        zoomOnScroll={true}
+      >
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={16}
+          size={1.2}
+          color="var(--border)"
+          className="opacity-40"
+        />
+      </ReactFlow>
+
+      {!dataState.root && (
+        <div className="absolute inset-0 flex items-center justify-center font-mono text-sm text-text-muted pointer-events-none">
+          Tree is empty
+        </div>
+      )}
+
       {(dataState.traversalOutput !== undefined || dataState.traversalMode !== undefined) && (
         <div
-          className="absolute bottom-4 left-4 right-4 z-30 flex flex-wrap gap-3 text-xs"
+          className="absolute bottom-4 left-4 right-4 z-30 flex flex-wrap gap-3 text-xs pointer-events-none"
           aria-hidden="true"
         >
-          <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm">
+          <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm pointer-events-auto backdrop-blur-xs">
             <span className="font-semibold text-text-secondary">Output: </span>
-            <span className="font-mono text-primary">
+            <span className="font-mono text-primary font-bold">
               {traversalOutput.length > 0 ? traversalOutput.join(" → ") : "Waiting for visits"}
             </span>
           </div>
           {dataState.traversalMode === "recursive" && (
-            <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm">
+            <div className="rounded-lg border border-border bg-surface/95 px-3 py-2 shadow-sm pointer-events-auto backdrop-blur-xs">
               <span className="font-semibold text-text-secondary">Call stack: </span>
-              <span className="font-mono text-secondary">
+              <span className="font-mono text-secondary font-bold">
                 {callStack.length > 0 ? callStack.join(" → ") : "empty"}
               </span>
             </div>
           )}
         </div>
       )}
-      <div className="absolute inset-0 pointer-events-none">
-        <svg className="w-full h-full overflow-visible">
-          {layout.map((node) => {
-            if (node.parentId) {
-              const parent = layout.find((n) => n.id === node.parentId);
-              if (parent) {
-                return (
-                  <motion.line
-                    key={`line-${node.id}-${parent.id}`}
-                    x1={parent.x}
-                    y1={parent.y}
-                    x2={node.x}
-                    y2={node.y}
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="text-border"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                );
-              }
-            }
-            return null;
-          })}
-        </svg>
-      </div>
-
-      {layout.map((node) => (
-        <motion.div
-          key={node.id}
-          layoutId={node.id}
-          className={cn(
-            "visual-element absolute left-0 top-0 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 font-bold shadow-sm z-10 transition-colors duration-200 text-lg sm:text-xl font-mono",
-            getVisualElementClassName(highlights, node.id)
-          )}
-          initial={{ opacity: 0, scale: 0.5, x: node.x - 24, y: node.y - 24 }}
-          animate={{ opacity: 1, scale: 1, x: node.x - 24, y: node.y - 24 }}
-          exit={{ opacity: 0, scale: 0.5 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        >
-          {node.value}
-        </motion.div>
-      ))}
     </div>
   );
 }

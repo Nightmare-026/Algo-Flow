@@ -30,14 +30,7 @@ interface CustomDropdownProps {
   className?: string;
 }
 
-function CustomDropdown({
-  id,
-  label,
-  value,
-  options,
-  onChange,
-  className,
-}: CustomDropdownProps) {
+function CustomDropdown({ id, label, value, options, onChange, className }: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -189,9 +182,7 @@ export function CategoryExplorer({
   }, [activeDifficulty, searchQuery, selectedOperation, structureAlgorithms]);
 
   const hasActiveFilters =
-    Boolean(searchQuery.trim()) ||
-    activeDifficulty !== "all" ||
-    selectedOperation !== "all";
+    Boolean(searchQuery.trim()) || activeDifficulty !== "all" || selectedOperation !== "all";
 
   const handleResetFilters = () => {
     setSearchQuery("");
@@ -279,10 +270,7 @@ export function CategoryExplorer({
       {/* Result Counter & State */}
       <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border/60 pb-3">
         <p className="text-xs font-semibold text-text-secondary" aria-live="polite">
-          Showing{" "}
-          <span className="font-bold text-text-primary">
-            {filteredAlgorithms.length}
-          </span>{" "}
+          Showing <span className="font-bold text-text-primary">{filteredAlgorithms.length}</span>{" "}
           of {structureAlgorithms.length} algorithms
           {searchQuery.trim() && (
             <span className="text-text-muted font-normal">
@@ -299,10 +287,7 @@ export function CategoryExplorer({
             </span>
           )}
           {activeDifficulty !== "all" && (
-            <span className="text-text-muted font-normal capitalize">
-              {" "}
-              ({activeDifficulty})
-            </span>
+            <span className="text-text-muted font-normal capitalize"> ({activeDifficulty})</span>
           )}
         </p>
 
@@ -418,7 +403,8 @@ export function CategoryExplorer({
             No matching algorithms
           </h2>
           <p className="mt-2 text-sm text-text-secondary">
-            No algorithms match your selected filters. Reset filters to see all available algorithms.
+            No algorithms match your selected filters. Reset filters to see all available
+            algorithms.
           </p>
           <button
             type="button"

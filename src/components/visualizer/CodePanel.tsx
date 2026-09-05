@@ -59,7 +59,10 @@ export function CodePanel({
 
   const savedLang = useSyncExternalStore(
     emptySubscribe,
-    () => (typeof window !== "undefined" ? (localStorage.getItem("algo-flow-lang") as CodeLanguage | null) : null),
+    () =>
+      typeof window !== "undefined"
+        ? (localStorage.getItem("algo-flow-lang") as CodeLanguage | null)
+        : null,
     () => null
   );
 
@@ -69,7 +72,7 @@ export function CodePanel({
     selectedLang ??
     (savedLang && examples.some((example) => example.language === savedLang)
       ? savedLang
-      : examples[0]?.language ?? "python");
+      : (examples[0]?.language ?? "python"));
 
   const setActiveLang = (lang: CodeLanguage) => {
     setSelectedLang(lang);

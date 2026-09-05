@@ -4,7 +4,7 @@ import type { Database } from "@/types/database";
 /**
  * Creates an administrative Supabase client using the service role key.
  * This client bypasses Row Level Security (RLS) policies.
- * 
+ *
  * IMPORTANT: Strictly restricted to server-side trusted operations, such as
  * fetching public display attributes (usernames, avatars) for public leaderboards
  * or background administrative maintenance. Never expose this client to the browser.

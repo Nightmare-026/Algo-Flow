@@ -77,7 +77,11 @@ export function FloatingSelect({
             <span
               className={cn(
                 "truncate text-sm font-medium",
-                selectedOption ? "text-text-primary font-semibold" : "text-transparent"
+                selectedOption
+                  ? "text-text-primary font-semibold"
+                  : open
+                    ? "text-text-muted"
+                    : "text-transparent"
               )}
             >
               {selectedOption ? selectedOption.label : placeholder}
@@ -98,7 +102,7 @@ export function FloatingSelect({
           <PopoverPrimitive.Content
             align="start"
             sideOffset={6}
-            className="z-50 w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-2xl border border-border bg-surface p-1.5 text-text-primary shadow-[var(--shadow-float)] backdrop-blur-xl animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
+            className="z-50 w-[var(--radix-popover-trigger-width)] max-h-60 overflow-y-auto rounded-2xl border border-border bg-surface p-1.5 text-text-primary shadow-[var(--shadow-float)] backdrop-blur-xl animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
             role="listbox"
             aria-labelledby={id}
           >

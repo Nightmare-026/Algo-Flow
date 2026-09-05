@@ -103,7 +103,7 @@ export function ArrayInputControls({
         {/* Left Section: Generators & Custom Input */}
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Pod 1: Data Size & Presets */}
-          <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+          <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
             <div className="flex items-center gap-1.5 pr-1">
               <span className="font-mono text-[10px] font-semibold text-text-muted">Size</span>
               <input
@@ -127,7 +127,7 @@ export function ArrayInputControls({
                 variant="ghost"
                 size="sm"
                 onClick={generateRandom}
-                className="h-6 min-h-0 px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+                className="h-7 sm:h-6 min-h-0 px-2 sm:px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
                 title="Generate random array"
               >
                 <Shuffle className="h-3 w-3 text-primary mr-0.5" />
@@ -137,7 +137,7 @@ export function ArrayInputControls({
                 variant="ghost"
                 size="sm"
                 onClick={generateSorted}
-                className="h-6 min-h-0 px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+                className="h-7 sm:h-6 min-h-0 px-2 sm:px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
                 title="Generate sorted array"
               >
                 <SortAsc className="h-3 w-3 text-primary mr-0.5" />
@@ -147,7 +147,7 @@ export function ArrayInputControls({
                 variant="ghost"
                 size="sm"
                 onClick={generateReverseSorted}
-                className="h-6 min-h-0 px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+                className="h-7 sm:h-6 min-h-0 px-2 sm:px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
                 title="Generate reverse sorted array"
               >
                 <SortDesc className="h-3 w-3 text-primary mr-0.5" />
@@ -159,7 +159,7 @@ export function ArrayInputControls({
           {/* Pod 2: Custom Number List Form */}
           <form
             onSubmit={handleCustomSubmit}
-            className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
           >
             <FileEdit className="h-3.5 w-3.5 text-text-muted shrink-0" aria-hidden="true" />
             <input
@@ -169,13 +169,13 @@ export function ArrayInputControls({
               placeholder="5, 2, 9, 1, 8"
               aria-invalid={Boolean(error)}
               aria-describedby={error ? "array-input-error" : undefined}
-              className="h-6 w-28 sm:w-32 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
+              className="h-7 sm:h-6 w-28 sm:w-32 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
               aria-label="Custom comma-separated numbers"
             />
             <Button
               type="submit"
               size="sm"
-              className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0"
+              className="h-7 sm:h-6 min-h-0 rounded-lg bg-primary px-3 sm:px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0"
             >
               Build
             </Button>

@@ -2,7 +2,16 @@
 
 import React from "react";
 import Link from "next/link";
-import { TrendingUp, CheckCircle2, Play, Sparkles, BrainCircuit, Activity, Clock, ShieldCheck } from "lucide-react";
+import {
+  TrendingUp,
+  CheckCircle2,
+  Play,
+  Sparkles,
+  BrainCircuit,
+  Activity,
+  Clock,
+  ShieldCheck,
+} from "lucide-react";
 import { WeaknessPattern } from "../core/types";
 
 interface WeaknessCardProps {
@@ -33,31 +42,44 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
           </div>
 
           <p className="text-xs text-text-secondary leading-relaxed mt-2.5">
-            Complete your first session to activate automated error-pattern clustering and targeted arithmetic coaching:
+            Complete your first session to activate automated error-pattern clustering and targeted
+            arithmetic coaching:
           </p>
 
           <div className="mt-4 flex flex-col gap-2.5">
             <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-inset border border-border/80 text-xs shadow-inner">
               <Activity className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold text-text-primary font-display block">Carry & Borrow Detection</span>
-                <span className="text-[11px] text-text-secondary leading-snug block mt-0.5">Tracks calculation hesitation during multi-digit regrouping.</span>
+                <span className="font-bold text-text-primary font-display block">
+                  Carry & Borrow Detection
+                </span>
+                <span className="text-[11px] text-text-secondary leading-snug block mt-0.5">
+                  Tracks calculation hesitation during multi-digit regrouping.
+                </span>
               </div>
             </div>
 
             <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-inset border border-border/80 text-xs shadow-inner">
               <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold text-text-primary font-display block">Cadence & QPM Tracking</span>
-                <span className="text-[11px] text-text-secondary leading-snug block mt-0.5">Measures raw questions-per-minute speed and endurance.</span>
+                <span className="font-bold text-text-primary font-display block">
+                  Cadence & QPM Tracking
+                </span>
+                <span className="text-[11px] text-text-secondary leading-snug block mt-0.5">
+                  Measures raw questions-per-minute speed and endurance.
+                </span>
               </div>
             </div>
 
             <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-inset border border-border/80 text-xs shadow-inner">
               <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold text-text-primary font-display block">Precision Error Profiling</span>
-                <span className="text-[11px] text-text-secondary leading-snug block mt-0.5">Identifies neighbor slips, digit swaps, and quotient errors.</span>
+                <span className="font-bold text-text-primary font-display block">
+                  Precision Error Profiling
+                </span>
+                <span className="text-[11px] text-text-secondary leading-snug block mt-0.5">
+                  Identifies neighbor slips, digit swaps, and quotient errors.
+                </span>
               </div>
             </div>
           </div>

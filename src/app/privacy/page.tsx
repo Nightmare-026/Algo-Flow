@@ -49,7 +49,7 @@ export default async function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {PRIVACY_VERSION} • Effective Date: September 4, 2026
+            Version {PRIVACY_VERSION} • Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             At Algo Flow (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), we believe that
@@ -93,11 +93,12 @@ export default async function PrivacyPage() {
             <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-success" />
-                Minimalist Google OAuth
+                Minimalist OAuth (Google &amp; GitHub)
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                When using Sign in with Google, we only request non-sensitive identity scopes (email
-                and public profile). We never touch your private Google assets.
+                When using Sign in with Google or GitHub, we only request standard identity scopes
+                (email and public profile). We never touch your private repositories or Google
+                assets.
               </p>
             </div>
 
@@ -179,18 +180,21 @@ export default async function PrivacyPage() {
                 </li>
                 <li>
                   <strong>Educational & Telemetry Records:</strong> Completed algorithm visualizers,
-                  topic mastery percentages, study habit streaks, experience points (XP), bookmarked
-                  algorithms, interactive quiz scores, and practice session completion timestamps.
+                  topic mastery percentages, study habit streaks, bookmarked algorithms, interactive
+                  quiz scores, and practice session completion timestamps.
                 </li>
                 <li>
-                  <strong>Mental Math Calculation Telemetry:</strong> Anonymized problem latency
-                  times (average solve time in milliseconds), accuracy percentages, calculation
-                  streaks, operation breakdown indices, and verified daily challenge scores.
+                  <strong>Mental Math Calculation Telemetry:</strong> Problem solve latency in
+                  milliseconds, overall accuracy percentages, calculation speed in questions per
+                  minute (QPM), active and maximum streak days, operation mastery breakdowns
+                  (Addition, Subtraction, Multiplication, Division across 1- to 4-digit
+                  complexities), and verified daily challenge scores with client-side anti-cheat
+                  verification.
                 </li>
                 <li>
                   <strong>Client Preferences:</strong> Interface theme preference (Light / Dark),
-                  volume configurations, and code editor preferred programming language (Python,
-                  C++, Java, JavaScript).
+                  audio sound effects toggle, and code editor preferred programming language
+                  (JavaScript, Python, C++, Java).
                 </li>
                 <li>
                   <strong>Technical & Security Metadata:</strong> Standard HTTP request headers,
@@ -201,20 +205,21 @@ export default async function PrivacyPage() {
             </div>
           </section>
 
-          {/* Section 3: Google OAuth Authentication */}
+          {/* Section 3: Third-Party Authentication (Google & GitHub OAuth) */}
           <section className="py-8">
             <div className="flex items-center gap-3 mb-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-muted text-primary border border-primary/20 shadow-xs">
                 <KeyRound className="h-4 w-4" />
               </span>
               <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
-                3. Third-Party Authentication (Sign in with Google)
+                3. Third-Party Authentication (Sign in with Google &amp; GitHub)
               </h2>
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                Algo Flow offers seamless, secure single sign-on authentication through Google OAuth
-                2.0 services. When you choose to authenticate via Google:
+                Algo Flow offers seamless, secure single sign-on authentication through trusted
+                OAuth 2.0 identity providers (Google and GitHub). When you choose to authenticate
+                via OAuth:
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
@@ -234,13 +239,14 @@ export default async function PrivacyPage() {
                   .
                 </li>
                 <li>
-                  We receive and store only your email address, full name, and avatar profile
-                  picture provided by Google to create your authenticated student profile.
+                  We receive and store only your email address, chosen public display name, and
+                  avatar profile picture provided by the identity provider to instantiate your
+                  authenticated student profile.
                 </li>
                 <li>
-                  We <strong>never request, access, read, or store</strong> any sensitive Google
-                  account data, such as your Google Drive files, Gmail messages, contacts, or
-                  location history.
+                  We <strong>never request, access, read, or store</strong> any private external
+                  account assets, such as your private GitHub source code repositories, Google Drive
+                  files, Gmail messages, or contacts.
                 </li>
                 <li>
                   Authentication tokens are securely exchanged directly via Supabase Auth and
@@ -400,13 +406,20 @@ export default async function PrivacyPage() {
                     </tr>
                     <tr>
                       <td className="p-3 font-bold text-text-primary">Vercel Inc.</td>
-                      <td className="p-3">Global Edge CDN, Application Serverless Hosting</td>
-                      <td className="p-3">SOC 2 Type II, ISO 27001, Edge SSL/TLS</td>
+                      <td className="p-3">
+                        Global Edge CDN, Serverless Hosting &amp; Privacy-First Web Analytics
+                      </td>
+                      <td className="p-3">SOC 2 Type II, ISO 27001, Cookie-less Telemetry</td>
                     </tr>
                     <tr>
                       <td className="p-3 font-bold text-text-primary">Google LLC</td>
-                      <td className="p-3">Google OAuth 2.0 Identity Provider (Optional)</td>
+                      <td className="p-3">Google OAuth 2.0 Identity Provider (Optional SSO)</td>
                       <td className="p-3">SOC 2, ISO 27001, Privacy Shield / DPA</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-bold text-text-primary">GitHub Inc. / Microsoft</td>
+                      <td className="p-3">GitHub OAuth 2.0 Identity Provider (Optional SSO)</td>
+                      <td className="p-3">SOC 2, ISO 27001, Microsoft Enterprise DPA</td>
                     </tr>
                   </tbody>
                 </table>

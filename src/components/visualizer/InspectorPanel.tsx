@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { PseudocodePanel } from "./PseudocodePanel";
 import { CodePanel } from "./CodePanel";
@@ -31,261 +31,319 @@ export function InspectorPanel({
   codeExamples,
   codeLineMapping,
 }: InspectorPanelProps) {
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
-  // On mobile, use accordion-style: only one panel open at a time
-  // We'll use a single active panel state instead of separate right/lower tabs
-  // Default to "pseudocode" to match desktop behavior
-  const [mobileActivePanel, setMobileActivePanel] = useState<
-    "pseudocode" | "code" | "explanation" | "log" | null
-  >("pseudocode");
+  // On mobile, use a clean 4-segment tab bar so exactly one panel is active at full height
+  const [mobileTab, setMobileTab] = useState<"pseudocode" | "code" | "explanation" | "log">(
+    "pseudocode"
+  );
 
-  // On desktop, use the traditional tabbed interface
-  // On mobile, we use accordion-style with a single active panel
-  const isRightTabActive = (tab: "pseudocode" | "code") =>
-    isMobile ? mobileActivePanel === tab : activeRightTab === tab;
-  const isLowerTabActive = (tab: "explanation" | "log") =>
-    isMobile ? mobileActivePanel === tab : activeLowerTab === tab;
+  // Sync with keyboard shortcut events
+  useEffect(() => {
+    const handleTabPseudocode = () => {
+      setMobileTab("pseudocode");
+      setActiveRightTab("pseudocode");
+    };
+    const handleTabCode = () => {
+      setMobileTab("code");
+      setActiveRightTab("code");
+    };
+    const handleTabExplanation = () => {
+      setMobileTab("explanation");
+      setActiveLowerTab("explanation");
+    };
+    const handleTabLog = () => {
+      setMobileTab("log");
+      setActiveLowerTab("log");
+    };
 
-  const handleRightTabClick = (tab: "pseudocode" | "code") => {
-    if (isMobile) {
-      setMobileActivePanel(mobileActivePanel === tab ? null : tab);
-    } else {
-      setActiveRightTab(tab);
-    }
-  };
+    window.addEventListener("tab-pseudocode", handleTabPseudocode);
+    window.addEventListener("tab-code", handleTabCode);
+    window.addEventListener("tab-explanation", handleTabExplanation);
+    window.addEventListener("tab-log", handleTabLog);
 
-  const handleLowerTabClick = (tab: "explanation" | "log") => {
-    if (isMobile) {
-      setMobileActivePanel(mobileActivePanel === tab ? null : tab);
-    } else {
-      setActiveLowerTab(tab);
-    }
-  };
+    return () => {
+      window.removeEventListener("tab-pseudocode", handleTabPseudocode);
+      window.removeEventListener("tab-code", handleTabCode);
+      window.removeEventListener("tab-explanation", handleTabExplanation);
+      window.removeEventListener("tab-log", handleTabLog);
+    };
+  }, [setActiveLowerTab, setActiveRightTab]);
 
+  if (isMobile) {
+    return (
+      <div className="flex h-full flex-col overflow-hidden p-3 gap-3">
+        {/* Unified 4-Segment Mobile Tab Bar */}
+        <div
+          className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-bg-surface-inset border border-border shadow-[var(--shadow-inset)] shrink-0"
+          role="tablist"
+          aria-label="Inspector panels"
+        >
+          <button
+            id="mobile-tab-pseudocode"
+            role="tab"
+            type="button"
+            aria-selected={mobileTab === "pseudocode"}
+            aria-controls="mobile-panel-pseudocode"
+            onClick={() => setMobileTab("pseudocode")}
+            className={cn(
+              "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
+              mobileTab === "pseudocode"
+                ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                : "text-text-muted hover:text-text-primary active:scale-95"
+            )}
+          >
+            Pseudocode
+          </button>
+          <button
+            id="mobile-tab-code"
+            role="tab"
+            type="button"
+            aria-selected={mobileTab === "code"}
+            aria-controls="mobile-panel-code"
+            onClick={() => setMobileTab("code")}
+            className={cn(
+              "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
+              mobileTab === "code"
+                ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                : "text-text-muted hover:text-text-primary active:scale-95"
+            )}
+          >
+            Code
+          </button>
+          <button
+            id="mobile-tab-explanation"
+            role="tab"
+            type="button"
+            aria-selected={mobileTab === "explanation"}
+            aria-controls="mobile-panel-explanation"
+            onClick={() => setMobileTab("explanation")}
+            className={cn(
+              "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
+              mobileTab === "explanation"
+                ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                : "text-text-muted hover:text-text-primary active:scale-95"
+            )}
+          >
+            Explain
+          </button>
+          <button
+            id="mobile-tab-log"
+            role="tab"
+            type="button"
+            aria-selected={mobileTab === "log"}
+            aria-controls="mobile-panel-log"
+            onClick={() => setMobileTab("log")}
+            className={cn(
+              "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
+              mobileTab === "log"
+                ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                : "text-text-muted hover:text-text-primary active:scale-95"
+            )}
+          >
+            Step Log
+          </button>
+        </div>
+
+        {/* Mobile Full-Height Scrollable Panel Content */}
+        <div className="flex-1 overflow-y-auto min-h-0">
+          {mobileTab === "pseudocode" && (
+            <div
+              id="mobile-panel-pseudocode"
+              role="tabpanel"
+              aria-labelledby="mobile-tab-pseudocode"
+              className="h-full min-h-[300px]"
+            >
+              <PseudocodePanel
+                slug={algorithm.slug}
+                fallback={algorithm.pseudocode}
+                isVisible={true}
+              />
+            </div>
+          )}
+
+          {mobileTab === "code" && (
+            <div
+              id="mobile-panel-code"
+              role="tabpanel"
+              aria-labelledby="mobile-tab-code"
+              className="h-full min-h-[300px]"
+            >
+              <CodePanel
+                examples={codeExamples}
+                codeLineMapping={codeLineMapping}
+                onLanguageChange={setActiveLanguage}
+                isVisible={true}
+              />
+            </div>
+          )}
+
+          {mobileTab === "explanation" && (
+            <div
+              id="mobile-panel-explanation"
+              role="tabpanel"
+              aria-labelledby="mobile-tab-explanation"
+              className="h-full"
+            >
+              <StepExplanation />
+            </div>
+          )}
+
+          {mobileTab === "log" && (
+            <div
+              id="mobile-panel-log"
+              role="tabpanel"
+              aria-labelledby="mobile-tab-log"
+              className="h-full"
+            >
+              <StepLog />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop: Traditional Dual-Split Layout
   return (
     <>
-      {/* Upper Inspector Panel - Accordion on Mobile, Tabs on Desktop */}
-      <div className={cn("flex flex-col overflow-hidden", isMobile ? "h-auto" : "h-1/2")}>
-        {/* Desktop: Tabs | Mobile: Accordion Headers */}
-        {!isMobile ? (
-          <div
-            className="my-1.5 flex items-center gap-1 px-0.5"
-            role="tablist"
-            aria-label="Algorithm representation"
+      {/* Upper Inspector Panel (Pseudocode / Code) */}
+      <div className="flex flex-col overflow-hidden h-1/2">
+        <div
+          className="my-1.5 flex items-center gap-1 px-0.5"
+          role="tablist"
+          aria-label="Algorithm representation"
+        >
+          <button
+            type="button"
+            id="tab-pseudocode"
+            role="tab"
+            aria-selected={activeRightTab === "pseudocode"}
+            aria-controls="panel-pseudocode"
+            onClick={() => setActiveRightTab("pseudocode")}
+            className={cn(
+              "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
+              activeRightTab === "pseudocode"
+                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
+            )}
           >
-            <button
-              type="button"
-              id="tab-pseudocode"
-              role="tab"
-              aria-selected={activeRightTab === "pseudocode"}
-              aria-controls="panel-pseudocode-or-code"
-              onClick={() => setActiveRightTab("pseudocode")}
-              className={cn(
-                "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
-                activeRightTab === "pseudocode"
-                  ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
-                  : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
-              )}
-            >
-              Pseudocode
-            </button>
-            <button
-              type="button"
-              id="tab-code"
-              role="tab"
-              aria-selected={activeRightTab === "code"}
-              aria-controls="panel-pseudocode-or-code"
-              onClick={() => setActiveRightTab("code")}
-              className={cn(
-                "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
-                activeRightTab === "code"
-                  ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
-                  : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
-              )}
-            >
-              Code
-            </button>
-          </div>
-        ) : (
-          // Mobile accordion headers
-          <div className="flex flex-col gap-1" role="tablist" aria-label="Algorithm representation">
-            <button
-              type="button"
-              id="mobile-tab-pseudocode"
-              role="tab"
-              aria-selected={isRightTabActive("pseudocode")}
-              aria-controls="mobile-panel-pseudocode"
-              onClick={() => handleRightTabClick("pseudocode")}
-              className={cn(
-                "min-h-9 rounded-lg px-3 py-2 text-[11px] font-bold transition-all cursor-pointer select-none w-full text-left",
-                isRightTabActive("pseudocode")
-                  ? "bg-primary-muted text-primary border border-primary/30 shadow-[var(--shadow-inset)]"
-                  : "text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border"
-              )}
-            >
-              Pseudocode
-            </button>
-            <button
-              type="button"
-              id="mobile-tab-code"
-              role="tab"
-              aria-selected={isRightTabActive("code")}
-              aria-controls="mobile-panel-code"
-              onClick={() => handleRightTabClick("code")}
-              className={cn(
-                "min-h-9 rounded-lg px-3 py-2 text-[11px] font-bold transition-all cursor-pointer select-none w-full text-left",
-                isRightTabActive("code")
-                  ? "bg-primary-muted text-primary border border-primary/30 shadow-[var(--shadow-inset)]"
-                  : "text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border"
-              )}
-            >
-              Code
-            </button>
-          </div>
-        )}
+            Pseudocode
+          </button>
+          <button
+            type="button"
+            id="tab-code"
+            role="tab"
+            aria-selected={activeRightTab === "code"}
+            aria-controls="panel-code"
+            onClick={() => setActiveRightTab("code")}
+            className={cn(
+              "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
+              activeRightTab === "code"
+                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
+            )}
+          >
+            Code
+          </button>
+        </div>
 
         {/* Panel Content */}
-        <div className={cn("flex-1 overflow-hidden min-h-0", isMobile ? "h-auto" : "")}>
-          {/* Pseudocode Panel */}
+        <div className="flex-1 overflow-hidden min-h-0">
           <div
-            id={isMobile ? "mobile-panel-pseudocode" : "panel-pseudocode"}
+            id="panel-pseudocode"
             role="tabpanel"
-            aria-labelledby={isMobile ? "mobile-tab-pseudocode" : "tab-pseudocode"}
+            aria-labelledby="tab-pseudocode"
             className={cn(
-              isMobile ? "overflow-hidden transition-all duration-200" : "h-full w-full",
-              isRightTabActive("pseudocode") ? "block" : "hidden pointer-events-none invisible"
+              "h-full w-full",
+              activeRightTab === "pseudocode" ? "block" : "hidden pointer-events-none invisible"
             )}
-            style={isMobile && !isRightTabActive("pseudocode") ? { display: "none" } : undefined}
           >
             <PseudocodePanel
               slug={algorithm.slug}
               fallback={algorithm.pseudocode}
-              isVisible={isRightTabActive("pseudocode")}
+              isVisible={activeRightTab === "pseudocode"}
             />
           </div>
 
-          {/* Code Panel */}
           <div
-            id={isMobile ? "mobile-panel-code" : "panel-code"}
+            id="panel-code"
             role="tabpanel"
-            aria-labelledby={isMobile ? "mobile-tab-code" : "tab-code"}
+            aria-labelledby="tab-code"
             className={cn(
-              isMobile ? "overflow-hidden transition-all duration-200" : "h-full w-full",
-              isRightTabActive("code") ? "block" : "hidden pointer-events-none invisible"
+              "h-full w-full",
+              activeRightTab === "code" ? "block" : "hidden pointer-events-none invisible"
             )}
-            style={isMobile && !isRightTabActive("code") ? { display: "none" } : undefined}
           >
             <CodePanel
               examples={codeExamples}
               codeLineMapping={codeLineMapping}
               onLanguageChange={setActiveLanguage}
-              isVisible={isRightTabActive("code")}
+              isVisible={activeRightTab === "code"}
             />
           </div>
         </div>
       </div>
 
-      {/* Lower Inspector Panel - Accordion on Mobile, Tabs on Desktop */}
-      <div className={cn("flex flex-col overflow-hidden mt-2", isMobile ? "h-auto" : "h-1/2")}>
-        {/* Desktop: Tabs | Mobile: Accordion Headers */}
-        {!isMobile ? (
-          <div
-            className="mb-1.5 flex items-center gap-1 px-0.5"
-            role="tablist"
-            aria-label="Step details"
+      {/* Lower Inspector Panel (Explanation / Step Log) */}
+      <div className="flex flex-col overflow-hidden mt-2 h-1/2">
+        <div
+          className="mb-1.5 flex items-center gap-1 px-0.5"
+          role="tablist"
+          aria-label="Step details"
+        >
+          <button
+            type="button"
+            id="tab-explanation"
+            role="tab"
+            aria-selected={activeLowerTab === "explanation"}
+            aria-controls="panel-explanation"
+            onClick={() => setActiveLowerTab("explanation")}
+            className={cn(
+              "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
+              activeLowerTab === "explanation"
+                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
+            )}
           >
-            <button
-              type="button"
-              id="tab-explanation"
-              role="tab"
-              aria-selected={activeLowerTab === "explanation"}
-              aria-controls="panel-explanation-or-log"
-              onClick={() => setActiveLowerTab("explanation")}
-              className={cn(
-                "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
-                activeLowerTab === "explanation"
-                  ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
-                  : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
-              )}
-            >
-              Step Explanation
-            </button>
-            <button
-              type="button"
-              id="tab-log"
-              role="tab"
-              aria-selected={activeLowerTab === "log"}
-              aria-controls="panel-explanation-or-log"
-              onClick={() => setActiveLowerTab("log")}
-              className={cn(
-                "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
-                activeLowerTab === "log"
-                  ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
-                  : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
-              )}
-            >
-              Step Log
-            </button>
-          </div>
-        ) : (
-          // Mobile accordion headers
-          <div className="flex flex-col gap-1" role="tablist" aria-label="Step details">
-            <button
-              type="button"
-              id="mobile-tab-explanation"
-              role="tab"
-              aria-selected={isLowerTabActive("explanation")}
-              aria-controls="mobile-panel-explanation"
-              onClick={() => handleLowerTabClick("explanation")}
-              className={cn(
-                "min-h-9 rounded-lg px-3 py-2 text-[11px] font-bold transition-all cursor-pointer select-none w-full text-left",
-                isLowerTabActive("explanation")
-                  ? "bg-primary-muted text-primary border border-primary/30 shadow-[var(--shadow-inset)]"
-                  : "text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border"
-              )}
-            >
-              Step Explanation
-            </button>
-            <button
-              type="button"
-              id="mobile-tab-log"
-              role="tab"
-              aria-selected={isLowerTabActive("log")}
-              aria-controls="mobile-panel-log"
-              onClick={() => handleLowerTabClick("log")}
-              className={cn(
-                "min-h-9 rounded-lg px-3 py-2 text-[11px] font-bold transition-all cursor-pointer select-none w-full text-left",
-                isLowerTabActive("log")
-                  ? "bg-primary-muted text-primary border border-primary/30 shadow-[var(--shadow-inset)]"
-                  : "text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border"
-              )}
-            >
-              Step Log
-            </button>
-          </div>
-        )}
+            Step Explanation
+          </button>
+          <button
+            type="button"
+            id="tab-log"
+            role="tab"
+            aria-selected={activeLowerTab === "log"}
+            aria-controls="panel-log"
+            onClick={() => setActiveLowerTab("log")}
+            className={cn(
+              "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
+              activeLowerTab === "log"
+                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
+            )}
+          >
+            Step Log
+          </button>
+        </div>
 
         {/* Panel Content */}
-        <div
-          id={isMobile ? "mobile-panel-explanation-or-log" : "panel-explanation-or-log"}
-          role="tabpanel"
-          aria-labelledby={
-            isMobile
-              ? isLowerTabActive("explanation")
-                ? "mobile-tab-explanation"
-                : "mobile-tab-log"
-              : activeLowerTab === "explanation"
-                ? "tab-explanation"
-                : "tab-log"
-          }
-          className={cn(
-            isMobile
-              ? "overflow-hidden transition-all duration-200"
-              : "flex-1 overflow-hidden min-h-0"
-          )}
-        >
-          {isLowerTabActive("explanation") ? <StepExplanation /> : <StepLog />}
+        <div className="flex-1 overflow-hidden min-h-0">
+          <div
+            id="panel-explanation"
+            role="tabpanel"
+            aria-labelledby="tab-explanation"
+            className={cn("h-full w-full", activeLowerTab === "explanation" ? "block" : "hidden")}
+          >
+            <StepExplanation />
+          </div>
+          <div
+            id="panel-log"
+            role="tabpanel"
+            aria-labelledby="tab-log"
+            className={cn("h-full w-full", activeLowerTab === "log" ? "block" : "hidden")}
+          >
+            <StepLog />
+          </div>
         </div>
       </div>
     </>

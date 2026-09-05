@@ -59,9 +59,14 @@ export function DoublyLinkedListInputControls({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
           {showTarget && (
-            <form onSubmit={handleTargetSubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <form
+              onSubmit={handleTargetSubmit}
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            >
               <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
-              <span className="font-mono text-[10px] font-semibold text-text-secondary">Target:</span>
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                Target:
+              </span>
               <input
                 id="dll-target"
                 name="target"
@@ -83,7 +88,10 @@ export function DoublyLinkedListInputControls({
           )}
 
           {showValue && (
-            <form onSubmit={handleValueSubmit} className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <form
+              onSubmit={handleValueSubmit}
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            >
               <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">Val:</span>
               <input

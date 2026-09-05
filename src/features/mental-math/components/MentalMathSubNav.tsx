@@ -57,7 +57,7 @@ export function MentalMathSubNav() {
   return (
     <nav
       aria-label="Mental Math Navigation"
-      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 sticky top-[4.5rem] z-30"
+      className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-3 sm:mb-4 sticky top-[4.5rem] z-30"
     >
       <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar p-1.5 rounded-2xl bg-surface/90 backdrop-blur-xl border border-border/90 shadow-[var(--shadow-raised-sm)]">
         {NAV_ITEMS.map((item) => {

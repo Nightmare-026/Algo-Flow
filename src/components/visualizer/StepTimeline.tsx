@@ -12,8 +12,7 @@ export function StepTimeline() {
   if (totalSteps === 0 || !currentStep) return null;
 
   const isContinuous = totalSteps > MAX_SEGMENTED_STEPS;
-  const progressPercent =
-    totalSteps > 1 ? (currentStepIndex / (totalSteps - 1)) * 100 : 100;
+  const progressPercent = totalSteps > 1 ? (currentStepIndex / (totalSteps - 1)) * 100 : 100;
   const clampedThumbPosition = Math.min(Math.max(progressPercent, 1.5), 98.5);
 
   return (

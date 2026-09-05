@@ -23,25 +23,29 @@ import { createDefaultTree } from "./types";
 const rawTreeRegistry: AlgorithmVisualizerDefinition[] = [
   {
     slug: "inorder-traversal",
-    generateSteps: (data, opts) => generateTreeInorderSteps(data, opts.treeState || createDefaultTree()),
+    generateSteps: (data, opts) =>
+      generateTreeInorderSteps(data, opts.treeState || createDefaultTree()),
     getCodeExamples: getTreeCodeExamples,
     codeLineMapping: treeCodeLineMappings["inorder-traversal"],
   },
   {
     slug: "preorder-traversal",
-    generateSteps: (data, opts) => generateTreePreorderSteps(data, opts.treeState || createDefaultTree()),
+    generateSteps: (data, opts) =>
+      generateTreePreorderSteps(data, opts.treeState || createDefaultTree()),
     getCodeExamples: getTreeCodeExamples,
     codeLineMapping: treeCodeLineMappings["preorder-traversal"],
   },
   {
     slug: "postorder-traversal",
-    generateSteps: (data, opts) => generateTreePostorderSteps(data, opts.treeState || createDefaultTree()),
+    generateSteps: (data, opts) =>
+      generateTreePostorderSteps(data, opts.treeState || createDefaultTree()),
     getCodeExamples: getTreeCodeExamples,
     codeLineMapping: treeCodeLineMappings["postorder-traversal"],
   },
   {
     slug: "level-order-traversal",
-    generateSteps: (data, opts) => generateTreeLevelOrderSteps(data, opts.treeState || createDefaultTree()),
+    generateSteps: (data, opts) =>
+      generateTreeLevelOrderSteps(data, opts.treeState || createDefaultTree()),
     getCodeExamples: getTreeCodeExamples,
     codeLineMapping: treeCodeLineMappings["level-order-traversal"],
   },
@@ -65,7 +69,8 @@ const rawTreeRegistry: AlgorithmVisualizerDefinition[] = [
   },
   {
     slug: "avl-rotations",
-    generateSteps: (data, opts) => generateAVLRotationsSteps(opts?.pattern || "LL", opts?.treeState),
+    generateSteps: (data, opts) =>
+      generateAVLRotationsSteps(opts?.pattern || "LL", opts?.treeState),
     getCodeExamples: getTreeCodeExamples,
     codeLineMapping: treeCodeLineMappings["avl-rotations"],
   },

@@ -2,16 +2,7 @@
 
 import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import {
-  Trophy,
-  Crown,
-  Sparkles,
-  Zap,
-  Timer,
-  Calendar,
-  ArrowRight,
-  RefreshCw,
-} from "lucide-react";
+import { Trophy, Crown, Sparkles, Zap, Timer, Calendar, ArrowRight, RefreshCw } from "lucide-react";
 import { getMentalMathLeaderboard } from "@/features/mental-math/api/actions";
 import { GameMode, LeaderboardEntry, MathOperation } from "@/features/mental-math/core/types";
 import { cn } from "@/lib/utils";
@@ -95,7 +86,8 @@ export default function LeaderboardPage() {
             Mental Math <span className="text-primary">Leaderboards</span>
           </h1>
           <p className="text-xs sm:text-sm text-text-secondary mt-1 max-w-2xl">
-            Live rankings tracking real-time mental calculation speed, solve accuracy, and verified score metrics across students and engineers.
+            Live rankings tracking real-time mental calculation speed, solve accuracy, and verified
+            score metrics across students and engineers.
           </p>
         </div>
 
@@ -164,10 +156,12 @@ export default function LeaderboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end pt-2">
           {/* #2 Rank */}
           {top2 ? (
-            <div className={cn(
-              "neu-raised order-2 md:order-1 p-5 rounded-3xl border bg-surface/90 flex flex-col items-center text-center shadow-md relative",
-              top2.isCurrentUser ? "border-primary ring-2 ring-primary/20" : "border-slate-400/40"
-            )}>
+            <div
+              className={cn(
+                "neu-raised order-2 md:order-1 p-5 rounded-3xl border bg-surface/90 flex flex-col items-center text-center shadow-md relative",
+                top2.isCurrentUser ? "border-primary ring-2 ring-primary/20" : "border-slate-400/40"
+              )}
+            >
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-extrabold text-sm mb-2 shadow-inner">
                 #2
               </span>
@@ -176,7 +170,9 @@ export default function LeaderboardPage() {
                   {top2.displayName}
                 </h2>
                 {top2.isCurrentUser && (
-                  <span className="px-1.5 py-0.5 rounded bg-primary text-white text-[9px] font-bold">You</span>
+                  <span className="px-1.5 py-0.5 rounded bg-primary text-white text-[9px] font-bold">
+                    You
+                  </span>
                 )}
               </div>
               <span className="text-xs font-mono font-bold text-slate-500 uppercase mt-0.5">
@@ -203,10 +199,12 @@ export default function LeaderboardPage() {
 
           {/* #1 Rank (Champion) */}
           {top1 ? (
-            <div className={cn(
-              "neu-float order-1 md:order-2 p-6 sm:p-7 rounded-3xl border-2 bg-amber-500/5 flex flex-col items-center text-center shadow-xl md:-translate-y-2 relative",
-              top1.isCurrentUser ? "border-primary ring-4 ring-primary/30" : "border-amber-500/50"
-            )}>
+            <div
+              className={cn(
+                "neu-float order-1 md:order-2 p-6 sm:p-7 rounded-3xl border-2 bg-amber-500/5 flex flex-col items-center text-center shadow-xl md:-translate-y-2 relative",
+                top1.isCurrentUser ? "border-primary ring-4 ring-primary/30" : "border-amber-500/50"
+              )}
+            >
               <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500 text-white font-extrabold text-base mb-2 shadow-lg ring-4 ring-amber-500/20">
                 <Crown className="w-7 h-7 fill-current" />
               </span>
@@ -219,7 +217,9 @@ export default function LeaderboardPage() {
                   {top1.displayName}
                 </h2>
                 {top1.isCurrentUser && (
-                  <span className="px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-bold">You</span>
+                  <span className="px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-bold">
+                    You
+                  </span>
                 )}
               </div>
               <span className="text-xs font-mono font-bold text-primary uppercase mt-0.5">
@@ -248,10 +248,12 @@ export default function LeaderboardPage() {
 
           {/* #3 Rank */}
           {top3 ? (
-            <div className={cn(
-              "neu-raised order-3 p-5 rounded-3xl border bg-surface/90 flex flex-col items-center text-center shadow-md relative",
-              top3.isCurrentUser ? "border-primary ring-2 ring-primary/20" : "border-amber-700/30"
-            )}>
+            <div
+              className={cn(
+                "neu-raised order-3 p-5 rounded-3xl border bg-surface/90 flex flex-col items-center text-center shadow-md relative",
+                top3.isCurrentUser ? "border-primary ring-2 ring-primary/20" : "border-amber-700/30"
+              )}
+            >
               <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-700 text-white font-extrabold text-sm mb-2 shadow-inner">
                 #3
               </span>
@@ -260,7 +262,9 @@ export default function LeaderboardPage() {
                   {top3.displayName}
                 </h2>
                 {top3.isCurrentUser && (
-                  <span className="px-1.5 py-0.5 rounded bg-primary text-white text-[9px] font-bold">You</span>
+                  <span className="px-1.5 py-0.5 rounded bg-primary text-white text-[9px] font-bold">
+                    You
+                  </span>
                 )}
               </div>
               <span className="text-xs font-mono font-bold text-amber-700 dark:text-amber-500 uppercase mt-0.5">
@@ -361,7 +365,9 @@ export default function LeaderboardPage() {
                         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-muted text-primary text-[10px] font-mono shrink-0">
                           {entry.displayName.charAt(0).toUpperCase()}
                         </span>
-                        <span className="truncate max-w-[160px] sm:max-w-xs">{entry.displayName}</span>
+                        <span className="truncate max-w-[160px] sm:max-w-xs">
+                          {entry.displayName}
+                        </span>
                         {entry.isCurrentUser && (
                           <span className="px-1.5 py-0.5 rounded bg-primary text-white text-[9px] font-bold shrink-0">
                             You
@@ -395,7 +401,13 @@ export default function LeaderboardPage() {
               No Verified Records in this Category Yet
             </h3>
             <p className="text-xs text-text-secondary max-w-sm leading-relaxed">
-              Be the first learner to complete a verified {activeTab === "daily" ? "Daily Challenge" : activeTab === "speed" ? "60-second Speed Sprint" : "Timed Assessment"} session and claim Rank #1!
+              Be the first learner to complete a verified{" "}
+              {activeTab === "daily"
+                ? "Daily Challenge"
+                : activeTab === "speed"
+                  ? "60-second Speed Sprint"
+                  : "Timed Assessment"}{" "}
+              session and claim Rank #1!
             </p>
             <Link
               href={

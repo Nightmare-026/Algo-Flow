@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { soundEngine } from "../engine/sound";
 
 interface CountdownOverlayProps {
@@ -9,29 +9,48 @@ interface CountdownOverlayProps {
 
 export function CountdownOverlay({ onComplete }: CountdownOverlayProps) {
   const [count, setCount] = useState(3);
+  const onCompleteRef = useRef(onComplete);
 
   useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  useEffect(() => {
+    // Initial tick at 3
     soundEngine.playCountdownTick(false);
+
+    let current = 3;
+    let finishTimer: NodeJS.Timeout | null = null;
+
     const interval = setInterval(() => {
-      setCount((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          onComplete();
-          return 0;
-        }
-        soundEngine.playCountdownTick(prev === 2);
-        return prev - 1;
-      });
+      current -= 1;
+      if (current > 0) {
+        // Standard tick on 2 and 1
+        soundEngine.playCountdownTick(false);
+        setCount(current);
+      } else {
+        // High chime precisely when "GO!" appears
+        soundEngine.playCountdownTick(true);
+        setCount(0);
+        clearInterval(interval);
+
+        finishTimer = setTimeout(() => {
+          onCompleteRef.current();
+        }, 400);
+      }
     }, 750);
 
-    return () => clearInterval(interval);
-  }, [onComplete]);
+    return () => {
+      clearInterval(interval);
+      if (finishTimer) clearTimeout(finishTimer);
+    };
+  }, []);
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg-deep/80 backdrop-blur-lg animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-transparent pointer-events-auto select-none"
       role="dialog"
-      aria-label="Starting practice session"
+      aria-label="Timed test countdown"
     >
       <div className="relative flex flex-col items-center justify-center">
         {/* Glowing pulse ring */}

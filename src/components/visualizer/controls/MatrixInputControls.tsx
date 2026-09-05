@@ -259,7 +259,9 @@ export function MatrixInputControls({
               onSubmit={handleDualCustomSubmit}
               className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
             >
-              <span className="font-mono text-[10px] font-semibold text-text-secondary">A({expectedLengthA}):</span>
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                A({expectedLengthA}):
+              </span>
               <input
                 id={`${fieldId}-custom-a`}
                 type="text"
@@ -270,7 +272,9 @@ export function MatrixInputControls({
                 aria-invalid={Boolean(error)}
               />
               <span className="h-3.5 w-px bg-border mx-0.5" />
-              <span className="font-mono text-[10px] font-semibold text-text-secondary">B({expectedLengthB}):</span>
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                B({expectedLengthB}):
+              </span>
               <input
                 id={`${fieldId}-custom-b`}
                 type="text"
@@ -293,7 +297,9 @@ export function MatrixInputControls({
               onSubmit={handleSingleCustomSubmit}
               className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
             >
-              <span className="font-mono text-[10px] font-semibold text-text-secondary">Vals({expectedLengthA}):</span>
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                Vals({expectedLengthA}):
+              </span>
               <input
                 id={`${fieldId}-custom`}
                 type="text"
@@ -318,7 +324,9 @@ export function MatrixInputControls({
           {needsTarget(slug) && (
             <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
               <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
-              <span className="font-mono text-[10px] font-semibold text-text-secondary">Target:</span>
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                Target:
+              </span>
               <input
                 id={`${fieldId}-target`}
                 type="number"

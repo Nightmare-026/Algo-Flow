@@ -46,7 +46,8 @@ export default async function LoginPage({
             <strong>Continue with Google</strong>.
           </p>
           <p className="mt-1 text-xs text-text-secondary">
-            Please click the highlighted <strong>Continue with Google</strong> button below to sign in instantly.
+            Please click the highlighted <strong>Continue with Google</strong> button below to sign
+            in instantly.
           </p>
         </Callout>
       ) : params.error ? (

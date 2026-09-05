@@ -19,6 +19,7 @@ const OPERATION_BASE_WEIGHTS: Record<MathOperation, number> = {
   division: 2.0,
   percentages: 1.8,
   squares: 1.7,
+  cubes: 1.85,
   roots: 1.9,
   mixed: 1.6,
 };

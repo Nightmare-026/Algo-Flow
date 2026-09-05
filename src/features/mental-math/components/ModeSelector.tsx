@@ -2,7 +2,15 @@
 
 import React from "react";
 import Link from "next/link";
-import { BrainCircuit, Clock, Zap, Trophy, TrendingUp, Trophy as LeaderboardIcon, ArrowRight } from "lucide-react";
+import {
+  BrainCircuit,
+  Clock,
+  Zap,
+  Trophy,
+  TrendingUp,
+  Trophy as LeaderboardIcon,
+  ArrowRight,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TrainingModeItem {
@@ -95,9 +103,7 @@ export function ModeSelector() {
             href={mode.href}
             className={cn(
               "neu-raised group relative p-6 sm:p-7 rounded-3xl border flex flex-col justify-between transition-all duration-300 hover:border-primary/40 hover:-translate-y-1 shadow-[var(--shadow-raised-sm)] hover:shadow-[var(--shadow-raised)] cursor-pointer",
-              mode.isFeatured
-                ? "border-primary/30 bg-surface/90"
-                : "border-border bg-surface"
+              mode.isFeatured ? "border-primary/30 bg-surface/90" : "border-border bg-surface"
             )}
             aria-label={`Open ${mode.title}`}
           >

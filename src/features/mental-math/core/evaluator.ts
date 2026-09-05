@@ -150,6 +150,15 @@ function getMentalStrategy(a: number, b: number, op: MathOperation, value: numbe
       return `${a}² = ${value}`;
     }
 
+    case "cubes": {
+      if (a <= 10) {
+        return `Standard cubic memory: ${a}³ = ${a} × ${a} × ${a} = ${value}`;
+      }
+      const tens = Math.floor(a / 10) * 10;
+      const units = a % 10;
+      return `Binomial expansion: (${tens} + ${units})³ ➔ ${value}`;
+    }
+
     case "roots": {
       return `Integer square root: ${value}² = ${a} ➔ √${a} = ${value}`;
     }
@@ -269,6 +278,18 @@ export function evaluateBinaryExpression(
     case "squares": {
       const value = a * a;
       const explanation = getMentalStrategy(a, a, "squares", value);
+      return {
+        value,
+        isValid: true,
+        carriesCount: 0,
+        borrowsCount: 0,
+        explanation,
+      };
+    }
+
+    case "cubes": {
+      const value = a * a * a;
+      const explanation = getMentalStrategy(a, a, "cubes", value);
       return {
         value,
         isValid: true,

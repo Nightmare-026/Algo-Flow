@@ -5,6 +5,7 @@ export type MathOperation =
   | "division"
   | "percentages"
   | "squares"
+  | "cubes"
   | "roots"
   | "mixed";
 

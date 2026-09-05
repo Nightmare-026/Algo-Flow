@@ -35,12 +35,23 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setMobileMenuOpen(false);
     };
     document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
+    };
   }, [mobileMenuOpen]);
+
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setMobileMenuOpen(false);
+  }
 
   const isActive = (href: string) =>
     href === "/visualizers"
@@ -160,80 +171,91 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile Backdrop & Navigation Drawer */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div
-              id="mobile-navigation"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              className="overflow-hidden border-t border-border bg-surface/98 backdrop-blur-2xl shadow-2xl rounded-b-2xl md:hidden"
-            >
-              <div className="grid gap-2 py-4">
-                {navLinks.map((link) => {
-                  const active = isActive(link.href);
-                  const Icon = link.icon;
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition-colors",
-                        active
-                          ? "border border-primary/30 bg-primary font-bold text-white shadow-[var(--shadow-raised-sm)]"
-                          : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
-                      )}
-                    >
-                      <Icon
-                        className={cn("h-4 w-4", active ? "text-white" : "text-text-muted")}
-                        aria-hidden="true"
-                      />
-                      {link.label}
-                    </Link>
-                  );
-                })}
-
-                {user ? (
-                  <div className="mt-2 border-t border-border pt-3">
-                    <div className="mb-3 px-4 text-xs text-text-muted">
-                      Signed in as{" "}
-                      <span className="font-semibold text-text-primary">{user.email}</span>
-                    </div>
-                    <form action={signout}>
-                      <button
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setMobileMenuOpen(false)}
+                className="fixed inset-0 top-18 bg-background/60 backdrop-blur-sm z-40 md:hidden"
+                aria-hidden="true"
+              />
+              <motion.div
+                id="mobile-navigation"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                className="relative z-50 overflow-hidden border-t border-border bg-surface/98 backdrop-blur-2xl shadow-2xl rounded-b-2xl md:hidden"
+              >
+                <div className="grid gap-2 py-4">
+                  {navLinks.map((link) => {
+                    const active = isActive(link.href);
+                    const Icon = link.icon;
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex min-h-11 w-full items-center gap-2 rounded-xl px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error cursor-pointer"
-                        type="submit"
+                        aria-current={active ? "page" : undefined}
+                        className={cn(
+                          "flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition-colors",
+                          active
+                            ? "border border-primary/30 bg-primary font-bold text-white shadow-[var(--shadow-raised-sm)]"
+                            : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                        )}
                       >
-                        <LogOut className="h-4 w-4" aria-hidden="true" />
-                        Sign out
-                      </button>
-                    </form>
-                  </div>
-                ) : (
-                  <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
-                    <Link
-                      href="/login"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={buttonVariants({ variant: "outline" })}
-                    >
-                      Log in
-                    </Link>
-                    <Link
-                      href="/signup"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={buttonVariants()}
-                    >
-                      Sign up
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </motion.div>
+                        <Icon
+                          className={cn("h-4 w-4", active ? "text-white" : "text-text-muted")}
+                          aria-hidden="true"
+                        />
+                        {link.label}
+                      </Link>
+                    );
+                  })}
+
+                  {user ? (
+                    <div className="mt-2 border-t border-border pt-3">
+                      <div className="mb-3 px-4 text-xs text-text-muted">
+                        Signed in as{" "}
+                        <span className="font-semibold text-text-primary">{user.email}</span>
+                      </div>
+                      <form action={signout}>
+                        <button
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex min-h-11 w-full items-center gap-2 rounded-xl px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error cursor-pointer"
+                          type="submit"
+                        >
+                          <LogOut className="h-4 w-4" aria-hidden="true" />
+                          Sign out
+                        </button>
+                      </form>
+                    </div>
+                  ) : (
+                    <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
+                      <Link
+                        href="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={buttonVariants({ variant: "outline" })}
+                      >
+                        Log in
+                      </Link>
+                      <Link
+                        href="/signup"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={buttonVariants()}
+                      >
+                        Sign up
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </nav>
