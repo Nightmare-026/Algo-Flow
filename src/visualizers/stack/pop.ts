@@ -14,7 +14,7 @@ export function generateStackPopSteps(
 
   let currentState: StackVisualState = { elements: [...elements], maxCapacity };
 
-  // Step 1: Initialize
+  // Step 1: Initialize Pop
   steps.push({
     id: uuidv4(),
     stepNumber: 1,
@@ -24,10 +24,11 @@ export function generateStackPopSteps(
     actionType: "initialize",
     dataState: { ...currentState },
     highlights: { active: [] },
-    codeLine: 2,
+    codeLine: 1,
     pseudocodeLine: 1,
     variables: {
       Top: elements.length - 1,
+      Size: elements.length,
     },
   });
 
@@ -38,16 +39,17 @@ export function generateStackPopSteps(
     stepNumber: 2,
     title: "Check Underflow",
     description: isUnderflow
-      ? "Stack is empty. Cannot pop element."
-      : "Stack is not empty. Proceeding with pop.",
+      ? "Stack is empty (top = -1). Underflow condition detected."
+      : `Stack is not empty (top = ${elements.length - 1}). Proceeding with pop.`,
     operation: "Pop",
     actionType: "compare",
     dataState: { ...currentState },
     highlights: { active: elements.at(-1) ? [elements.at(-1)!.id] : [] },
-    codeLine: 3,
+    codeLine: 2,
     pseudocodeLine: 2,
     variables: {
       Top: elements.length - 1,
+      isEmpty: isUnderflow,
     },
   });
 
@@ -56,49 +58,52 @@ export function generateStackPopSteps(
       id: uuidv4(),
       stepNumber: 3,
       title: "Stack Underflow Error",
-      description: "Pop operation failed due to Stack Underflow.",
+      description: "Pop operation failed due to Stack Underflow. Cannot pop from an empty stack.",
       operation: "Pop",
       actionType: "error",
       dataState: { ...currentState },
       highlights: { error: [] },
-      codeLine: 4,
-      pseudocodeLine: 3,
-      variables: {},
+      codeLine: 2,
+      pseudocodeLine: 2,
+      variables: {
+        Error: "Stack Underflow",
+        Top: -1,
+      },
     });
     return steps;
   }
 
-  // Step 3: Identify element to pop
+  // Step 3: Access Top Element
   const elementToPop = elements[elements.length - 1];
   steps.push({
     id: uuidv4(),
     stepNumber: 3,
-    title: "Access Top Element",
-    description: `Accessing value ${elementToPop.value} at the top of the stack.`,
+    title: "Read Top Element",
+    description: `Reading value ${elementToPop.value} from current top index (${elements.length - 1}).`,
     operation: "Pop",
     actionType: "access",
     dataState: { ...currentState },
-    highlights: { active: [elementToPop.id] },
-    codeLine: 5,
-    pseudocodeLine: 4,
+    highlights: { active: [elementToPop.id], pointer: [elementToPop.id] },
+    codeLine: 3,
+    pseudocodeLine: 3,
     variables: {
       Top: elements.length - 1,
       Value: elementToPop.value,
     },
   });
 
-  // Step 4: Mark the still-renderable top element for removal.
+  // Step 4: Decrement Top & Mark Element for Removal
   steps.push({
     id: uuidv4(),
     stepNumber: 4,
-    title: "Remove Top Element",
-    description: `Mark value ${elementToPop.value} for removal before decrementing the top pointer.`,
+    title: "Decrement Top Pointer",
+    description: `Decremented top pointer from ${elements.length - 1} to ${elements.length - 2} and marked ${elementToPop.value} for removal.`,
     operation: "Pop",
     actionType: "pop",
     dataState: { ...currentState },
     highlights: { deleted: [elementToPop.id] },
-    codeLine: 6,
-    pseudocodeLine: 5,
+    codeLine: 4,
+    pseudocodeLine: 4,
     variables: {
       Top: elements.length - 2,
       Value: elementToPop.value,
@@ -113,13 +118,18 @@ export function generateStackPopSteps(
     id: uuidv4(),
     stepNumber: 5,
     title: "Pop Complete",
-    description: `Value ${elementToPop.value} successfully popped from the stack.`,
+    description: `Popped value ${elementToPop.value} returned successfully. New top is at index ${elements.length - 1}.`,
     operation: "Pop",
     actionType: "complete",
     dataState: { ...currentState },
     highlights: {},
-    codeLine: 7,
-    pseudocodeLine: 6,
+    codeLine: 5,
+    pseudocodeLine: 5,
+    variables: {
+      ReturnedValue: elementToPop.value,
+      Top: elements.length - 1,
+      Size: elements.length,
+    },
   });
 
   return steps;

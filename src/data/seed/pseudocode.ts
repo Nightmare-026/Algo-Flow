@@ -79,8 +79,17 @@ export const pseudocodeMap: Record<string, string> = {
     "slow = head, fast = head\nwhile fast != null and fast.next != null:\n  slow = slow.next\n  fast = fast.next.next\n  if slow == fast: return true\nreturn false",
 
   // Stack & Queue
-  "stack-push": "arr[++top] = value",
-  "stack-pop": "if top >= 0:\n  return arr[top--]",
+  "array-stack":
+    "class ArrayStack:\n  top = -1, capacity = N\n  push(val): if top < capacity-1: arr[++top] = val\n  pop(): if top >= 0: return arr[top--]",
+  "stack-push":
+    "function push(stack, value):\n  if isFull(stack): return overflow\n  top = top + 1\n  stack[top] = value\n  return success",
+  "stack-pop":
+    "function pop(stack):\n  if isEmpty(stack): return underflow\n  value = stack[top]\n  top = top - 1\n  return value",
+  "stack-peek":
+    "function peek(stack):\n  if isEmpty(stack): return underflow\n  return stack[top]\n  stack is unchanged",
+  "stack-is-empty": "function isEmpty(stack):\n  return top == -1  // size == 0",
+  "stack-is-full": "function isFull(stack):\n  return size(stack) == capacity",
+  "stack-size": "function size(stack):\n  return top + 1",
   "queue-enqueue": "rear = (rear + 1) % capacity\narr[rear] = value\nsize++",
   "queue-dequeue": "val = arr[front]\nfront = (front + 1) % capacity\nsize--\nreturn val",
   "deque-push-front": "front = (front - 1 + capacity) % capacity\narr[front] = value\nsize++",
@@ -200,11 +209,6 @@ export const pseudocodeMap: Record<string, string> = {
 
   // Advanced / Catalog Only
   access: "return arr[index]",
-  "array-stack": "top = -1\npush(val): arr[++top] = val\npop(): return arr[top--]",
-  "stack-peek": "return arr[top]",
-  "stack-is-empty": "return top == -1",
-  "stack-is-full": "return top == capacity - 1",
-  "stack-size": "return top + 1",
   "simple-queue":
     "front = 0, rear = 0\nenqueue(val): arr[rear++] = val\ndequeue(): return arr[front++]",
   "circular-queue":

@@ -37,6 +37,8 @@ export function generateStackPeekSteps(
 ): VisualStep[] {
   const state = createState(initialData, maxCapacity);
   const top = state.elements[state.elements.length - 1] as StackElement | undefined;
+  const isUnderflow = !top;
+
   const steps: VisualStep[] = [
     step(
       1,
@@ -46,31 +48,33 @@ export function generateStackPeekSteps(
       "initialize",
       state,
       {},
-      { Top: state.elements.length - 1 },
+      { Top: state.elements.length - 1, Size: state.elements.length },
       1
     ),
     step(
       2,
       "Check Underflow",
-      top
-        ? "Stack is not empty, so the top value can be read."
-        : "Stack is empty, so peek cannot return a value.",
+      isUnderflow
+        ? "Stack is empty (top = -1). Underflow condition detected."
+        : `Stack is not empty (top = ${state.elements.length - 1}). The top element can be inspected.`,
       "Peek",
-      top ? "compare" : "error",
+      isUnderflow ? "error" : "compare",
       state,
-      top ? { active: [top.id] } : { error: [] },
-      { isEmpty: !top },
+      isUnderflow ? { error: [] } : { active: [top.id] },
+      { Top: state.elements.length - 1, isEmpty: isUnderflow },
       2
     ),
   ];
 
-  if (!top) return steps;
+  if (isUnderflow) {
+    return steps;
+  }
 
   steps.push(
     step(
       3,
-      "Read Top",
-      `Top points to value ${top.value}. The stack is unchanged.`,
+      "Read Top Element",
+      `Top pointer is at index ${state.elements.length - 1}, holding value ${top.value}.`,
       "Peek",
       "access",
       state,
@@ -81,12 +85,12 @@ export function generateStackPeekSteps(
     step(
       4,
       "Peek Complete",
-      `Returned ${top.value} without popping it from the stack.`,
+      `Returned value ${top.value}. The stack remains unchanged.`,
       "Peek",
       "complete",
       state,
-      { found: [top.id] },
-      { Value: top.value },
+      { found: [top.id], pointer: [top.id] },
+      { Value: top.value, Top: state.elements.length - 1 },
       4
     )
   );
@@ -99,29 +103,31 @@ export function generateStackIsEmptySteps(
 ): VisualStep[] {
   const state = createState(initialData, maxCapacity);
   const isEmpty = state.elements.length === 0;
+  const top = state.elements.at(-1);
+
   return [
     step(
       1,
-      "Check Stack Size",
-      "Read the current stack size.",
+      "Inspect Stack Top",
+      "Read the top index and current element count to check emptiness.",
       "isEmpty",
       "initialize",
       state,
       {},
-      { Size: state.elements.length },
+      { Top: state.elements.length - 1, Size: state.elements.length },
       1
     ),
     step(
       2,
-      "Compare With Zero",
+      isEmpty ? "Stack Is Empty (true)" : "Stack Is Not Empty (false)",
       isEmpty
-        ? "Size is 0, so the stack is empty."
-        : "Size is greater than 0, so the stack is not empty.",
+        ? "Top index is -1 (size is 0). The stack is empty."
+        : `Top index is ${state.elements.length - 1} (size is ${state.elements.length}). The stack is not empty.`,
       "isEmpty",
       isEmpty ? "found" : "not-found",
       state,
-      {},
-      { isEmpty },
+      isEmpty ? {} : (top ? { active: [top.id], pointer: [top.id] } : {}),
+      { Top: state.elements.length - 1, isEmpty, Size: state.elements.length },
       2
     ),
   ];
@@ -133,11 +139,13 @@ export function generateStackIsFullSteps(
 ): VisualStep[] {
   const state = createState(initialData, maxCapacity);
   const isFull = state.elements.length >= maxCapacity;
+  const top = state.elements.at(-1);
+
   return [
     step(
       1,
-      "Read Capacity",
-      "Compare the current stack size with the configured capacity.",
+      "Inspect Size & Capacity",
+      `Compare current stack size (${state.elements.length}) with maximum capacity (${maxCapacity}).`,
       "isFull",
       "initialize",
       state,
@@ -147,15 +155,15 @@ export function generateStackIsFullSteps(
     ),
     step(
       2,
-      "Compare Size and Capacity",
+      isFull ? "Stack Is Full (true)" : "Stack Is Not Full (false)",
       isFull
-        ? "Size has reached capacity, so the stack is full."
-        : "There is still room for more elements.",
+        ? `Stack has reached maximum capacity (${maxCapacity}/${maxCapacity}). No more elements can be pushed.`
+        : `Stack has space available (${state.elements.length}/${maxCapacity}). Space for ${maxCapacity - state.elements.length} more element(s).`,
       "isFull",
-      isFull ? "found" : "not-found",
+      isFull ? "error" : "not-found",
       state,
-      isFull ? { error: [] } : {},
-      { isFull },
+      isFull ? { error: state.elements.map((e) => e.id) } : (top ? { active: [top.id] } : {}),
+      { Size: state.elements.length, Capacity: maxCapacity, isFull },
       2
     ),
   ];
@@ -166,11 +174,13 @@ export function generateStackSizeSteps(
   maxCapacity: number = 8
 ): VisualStep[] {
   const state = createState(initialData, maxCapacity);
+  const top = state.elements.at(-1);
+
   return [
     step(
       1,
-      "Read Top Pointer",
-      "The top pointer tells us how many elements are currently stored.",
+      "Inspect Top Pointer",
+      `Top pointer is at index ${state.elements.length - 1}. In a 0-indexed stack, size is top + 1.`,
       "Size",
       "initialize",
       state,
@@ -180,13 +190,13 @@ export function generateStackSizeSteps(
     ),
     step(
       2,
-      "Return Size",
-      `The stack contains ${state.elements.length} element(s).`,
+      "Return Stack Size",
+      `The stack currently contains ${state.elements.length} element(s).`,
       "Size",
       "complete",
       state,
-      {},
-      { Size: state.elements.length },
+      top ? { found: [top.id], pointer: [top.id] } : {},
+      { Size: state.elements.length, Top: state.elements.length - 1 },
       2
     ),
   ];
@@ -204,12 +214,13 @@ export function generateArrayStackSteps(data: number[], capacity = 8): VisualSte
     maxCapacity: capacity,
   };
   const top = stack.elements.at(-1);
+
   return [
     visualStep({
       stepNumber: 1,
-      title: "Array-backed Stack",
+      title: "ArrayStack Structure",
       description:
-        "A stack can be implemented with an array and a top index pointing at the latest element.",
+        "An array-based stack uses a contiguous array with fixed capacity and a top index pointing to the latest element.",
       operation: "Implementation",
       actionType: "initialize",
       dataState: clone(stack),
@@ -220,15 +231,43 @@ export function generateArrayStackSteps(data: number[], capacity = 8): VisualSte
     }),
     visualStep({
       stepNumber: 2,
-      title: "Push and Pop Use Top",
-      description: "Push increments top and writes the value; pop reads and decrements top.",
+      title: "Top Index Tracking",
+      description: top
+        ? `Top index is at position ${stack.elements.length - 1}, referencing top element ${top.value}.`
+        : "Top index is initialized to -1, indicating an empty stack.",
       operation: "Implementation",
       actionType: "highlight",
       dataState: clone(stack),
-      highlights: { pointer: top ? [top.id] : [] },
-      variables: { size: stack.elements.length },
+      highlights: { pointer: top ? [top.id] : [], active: top ? [top.id] : [] },
+      variables: { topIndex: stack.elements.length - 1, size: stack.elements.length, capacity },
       pseudocodeLine: 2,
       codeLine: 2,
+    }),
+    visualStep({
+      stepNumber: 3,
+      title: "Push Mechanism (LIFO)",
+      description:
+        "Push verifies space available (top < capacity - 1), pre-increments top (++top), and writes value to arr[top].",
+      operation: "Implementation",
+      actionType: "push",
+      dataState: clone(stack),
+      highlights: { inserted: top ? [top.id] : [] },
+      variables: { topIndex: stack.elements.length - 1, capacity },
+      pseudocodeLine: 3,
+      codeLine: 3,
+    }),
+    visualStep({
+      stepNumber: 4,
+      title: "Pop Mechanism (LIFO)",
+      description:
+        "Pop verifies stack has elements (top >= 0), returns arr[top], and post-decrements top (top--).",
+      operation: "Implementation",
+      actionType: "complete",
+      dataState: clone(stack),
+      highlights: { active: top ? [top.id] : [] },
+      variables: { topIndex: stack.elements.length - 1, size: stack.elements.length },
+      pseudocodeLine: 4,
+      codeLine: 4,
     }),
   ];
 }

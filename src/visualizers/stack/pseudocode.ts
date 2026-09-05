@@ -1,5 +1,12 @@
 export function getStackPseudocode(slug: string): string[] {
   switch (slug) {
+    case "array-stack":
+      return [
+        "class ArrayStack:",
+        "    top = -1, capacity = N",
+        "    push(val): if top < capacity-1: arr[++top] = val",
+        "    pop(): if top >= 0: return arr[top--]",
+      ];
     case "stack-push":
       return [
         "function push(stack, value):",
@@ -24,9 +31,9 @@ export function getStackPseudocode(slug: string): string[] {
         "    stack is unchanged",
       ];
     case "stack-is-empty":
-      return ["function isEmpty(stack):", "    return size(stack) == 0"];
+      return ["function isEmpty(stack):", "    return top == -1  // size == 0"];
     case "stack-is-full":
-      return ["function isFull(stack):", "    return size(stack) == capacity(stack)"];
+      return ["function isFull(stack):", "    return size(stack) == capacity"];
     case "stack-size":
       return ["function size(stack):", "    return top + 1"];
     default:
