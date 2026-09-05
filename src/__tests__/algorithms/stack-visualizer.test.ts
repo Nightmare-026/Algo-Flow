@@ -11,6 +11,13 @@ import {
   generateStackSizeSteps,
   generateArrayStackSteps,
 } from "@/visualizers/stack/status";
+import {
+  generateBalancedParenthesesSteps,
+  generateInfixToPostfixSteps,
+  generatePostfixEvaluationSteps,
+  generateMinStackSteps,
+  generateNextGreaterElementSteps,
+} from "@/visualizers/stack/applications";
 import type { StackVisualState } from "@/visualizers/stack/types";
 
 describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => {
@@ -22,9 +29,14 @@ describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => 
     "stack-is-empty",
     "stack-is-full",
     "stack-size",
+    "balanced-parentheses",
+    "infix-to-postfix",
+    "postfix-evaluation",
+    "min-stack",
+    "next-greater-element",
   ];
 
-  it("registers all 7 stack visualizers in algorithmRegistry", () => {
+  it("registers all 12 stack visualizers in algorithmRegistry", () => {
     stackSlugs.forEach((slug) => {
       const def = algorithmRegistry[slug];
       expect(def, `Visualizer ${slug} must be registered`).toBeDefined();
@@ -33,7 +45,7 @@ describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => 
     });
   });
 
-  it("provides valid non-empty pseudocode for all 7 stack algorithms", () => {
+  it("provides valid non-empty pseudocode for all 12 stack algorithms", () => {
     stackSlugs.forEach((slug) => {
       const pseudocode = getStackPseudocode(slug);
       expect(pseudocode.length, `Pseudocode for ${slug} must not be empty`).toBeGreaterThan(0);
@@ -230,4 +242,154 @@ describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => 
       expect(steps[3].title).toContain("Pop");
     });
   });
+
+  describe("balanced-parentheses application", () => {
+    it("validates a fully balanced bracket sequence correctly", () => {
+      const expr = "{[()]}";
+      const steps = generateBalancedParenthesesSteps(expr);
+      expect(steps.length).toBeGreaterThan(5);
+
+      const finalStep = steps[steps.length - 1];
+      expect(finalStep.actionType).toBe("complete");
+      expect(finalStep.variables?.Result).toBe("Balanced");
+      const finalState = finalStep.dataState as StackVisualState;
+      expect(finalState.elements.length).toBe(0);
+      expect(finalState.statusMessage?.text).toContain("balanced");
+    });
+
+    it("detects mismatch between bracket types", () => {
+      const expr = "(]";
+      const steps = generateBalancedParenthesesSteps(expr);
+      const errorStep = steps.find((s) => s.actionType === "error");
+      expect(errorStep).toBeDefined();
+      expect(errorStep?.title).toContain("Mismatch");
+      expect(errorStep?.variables?.Error).toBe("Mismatched Brackets");
+    });
+
+    it("detects premature closing bracket (underflow)", () => {
+      const expr = ")";
+      const steps = generateBalancedParenthesesSteps(expr);
+      const errorStep = steps.find((s) => s.actionType === "error");
+      expect(errorStep).toBeDefined();
+      expect(errorStep?.title).toContain("Premature Closing");
+      expect(errorStep?.variables?.Error).toBe("Empty Stack on Closing");
+    });
+
+    it("detects unclosed open brackets remaining at expression end", () => {
+      const expr = "((";
+      const steps = generateBalancedParenthesesSteps(expr);
+      const finalStep = steps[steps.length - 1];
+      expect(finalStep.actionType).toBe("error");
+      expect(finalStep.title).toContain("Remaining Open Brackets");
+      expect(finalStep.variables?.Result).toBe("Unbalanced");
+    });
+  });
+
+  describe("infix-to-postfix application (Shunting-Yard)", () => {
+    it("converts simple arithmetic expressions respecting precedence", () => {
+      const expr = "A+B*C";
+      const steps = generateInfixToPostfixSteps(expr);
+      expect(steps.length).toBeGreaterThan(6);
+
+      const finalStep = steps[steps.length - 1];
+      expect(finalStep.actionType).toBe("complete");
+      const finalState = finalStep.dataState as StackVisualState;
+      expect(finalState.elements.length).toBe(0);
+      expect(finalState.outputTokens?.map((t) => t.label).join("")).toBe("ABC*+");
+      expect(finalStep.variables?.FinalPostfix).toBe("A B C * +");
+    });
+
+    it("handles grouped sub-expressions with parentheses", () => {
+      const expr = "(A+B)*C";
+      const steps = generateInfixToPostfixSteps(expr);
+      const finalStep = steps[steps.length - 1];
+      expect(finalStep.actionType).toBe("complete");
+      const finalState = finalStep.dataState as StackVisualState;
+      expect(finalState.outputTokens?.map((t) => t.label).join("")).toBe("AB+C*");
+    });
+  });
+
+  describe("postfix-evaluation application", () => {
+    it("evaluates a standard arithmetic postfix expression", () => {
+      const expr = "5 3 + 2 *";
+      const steps = generatePostfixEvaluationSteps(expr);
+      expect(steps.length).toBeGreaterThan(6);
+
+      const finalStep = steps[steps.length - 1];
+      expect(finalStep.actionType).toBe("complete");
+      expect(finalStep.variables?.FinalResult).toBe(16);
+      const finalState = finalStep.dataState as StackVisualState;
+      expect(finalState.elements.length).toBe(1);
+      expect(finalState.elements[0].value).toBe(16);
+    });
+
+    it("evaluates subtraction and division with correct operand order", () => {
+      const expr = "10 2 / 3 +";
+      const steps = generatePostfixEvaluationSteps(expr);
+      const finalStep = steps[steps.length - 1];
+      expect(finalStep.variables?.FinalResult).toBe(8); // (10 / 2) + 3 = 8
+    });
+
+    it("detects invalid expression with too few operands", () => {
+      const expr = "+";
+      const steps = generatePostfixEvaluationSteps(expr);
+      const errorStep = steps.find((s) => s.actionType === "error");
+      expect(errorStep).toBeDefined();
+      expect(errorStep?.title).toContain("Evaluation Error");
+      expect(errorStep?.variables?.Error).toBe("Insufficient Operands");
+    });
+  });
+
+  describe("min-stack application", () => {
+    it("tracks minimum element in O(1) across pushes, getMin, and pop", () => {
+      const input = [5, 3, 7, 2];
+      const steps = generateMinStackSteps(input);
+      // 1 init + 4 pushes + 1 getMin + 1 pop + 1 complete = 8 steps
+      expect(steps.length).toBe(8);
+
+      // Check after push 5 -> min is 5
+      const step1State = steps[1].dataState as StackVisualState;
+      expect(step1State.minElements?.at(-1)?.value).toBe(5);
+
+      // Check after push 3 -> min is 3
+      const step2State = steps[2].dataState as StackVisualState;
+      expect(step2State.minElements?.at(-1)?.value).toBe(3);
+
+      // Check after push 7 -> min remains 3
+      const step3State = steps[3].dataState as StackVisualState;
+      expect(step3State.minElements?.at(-1)?.value).toBe(3);
+
+      // Check after push 2 -> min is 2
+      const step4State = steps[4].dataState as StackVisualState;
+      expect(step4State.minElements?.at(-1)?.value).toBe(2);
+
+      // Check getMin step
+      expect(steps[5].variables?.MinValue).toBe(2);
+
+      // Check after pop -> popped 2, min is restored to 3
+      const step6State = steps[6].dataState as StackVisualState;
+      expect(step6State.minElements?.at(-1)?.value).toBe(3);
+      expect(step6State.elements.map((e) => e.value)).toEqual([5, 3, 7]);
+    });
+  });
+
+  describe("next-greater-element application", () => {
+    it("computes NGE for array using monotonic stack pattern", () => {
+      const input = [4, 5, 2, 25];
+      const steps = generateNextGreaterElementSteps(input);
+      expect(steps.length).toBeGreaterThan(input.length);
+
+      const finalStep = steps[steps.length - 1];
+      expect(finalStep.actionType).toBe("complete");
+      const finalState = finalStep.dataState as StackVisualState;
+      expect(finalState.resultMapping).toBeDefined();
+
+      // [4 -> 5, 5 -> 25, 2 -> 25, 25 -> -1]
+      expect(finalState.resultMapping?.[0]?.result).toBe(5);
+      expect(finalState.resultMapping?.[1]?.result).toBe(25);
+      expect(finalState.resultMapping?.[2]?.result).toBe(25);
+      expect(finalState.resultMapping?.[3]?.result).toBe(-1);
+    });
+  });
 });
+

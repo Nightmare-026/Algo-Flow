@@ -184,6 +184,41 @@ export const stackPublicationArtifacts: Record<
     [4, 8, 15],
     ["complete"]
   ),
+  "balanced-parentheses": artifacts(
+    stackCodeLineMappings["balanced-parentheses"],
+    [4, 8, 15],
+    options({ text: "{[()]}" }),
+    [],
+    ["push", "pop", "complete"]
+  ),
+  "infix-to-postfix": artifacts(
+    stackCodeLineMappings["infix-to-postfix"],
+    [4, 8, 15],
+    options({ text: "A + B * C" }),
+    [],
+    ["push", "pop", "complete"]
+  ),
+  "postfix-evaluation": artifacts(
+    stackCodeLineMappings["postfix-evaluation"],
+    [4, 8],
+    options({ text: "5 3 + 2 *" }),
+    [16],
+    ["push", "compare", "complete"]
+  ),
+  "min-stack": artifacts(
+    stackCodeLineMappings["min-stack"],
+    [4, 8, 15],
+    options(),
+    [4, 8],
+    ["push", "access", "pop", "complete"]
+  ),
+  "next-greater-element": artifacts(
+    stackCodeLineMappings["next-greater-element"],
+    [4, 8, 15],
+    options(),
+    [],
+    ["push", "pop", "complete"]
+  ),
 };
 
 export const queuePublicationArtifacts: Record<

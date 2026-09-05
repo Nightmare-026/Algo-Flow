@@ -12,7 +12,7 @@
 
 - **Zero Commercial Data Selling**: We never sell, rent, or monetize your personal information or practice telemetry with advertisers.
 - **Zero Third-Party Ad Trackers**: We do not load advertising scripts, invasive cross-site cookies, or surveillance beacons.
-- **Anonymous Guest Exploration**: You can access all 133 visualizers, code execution panels, and calculation sandboxes without creating an account or providing personal details.
+- **Anonymous Guest Exploration**: You can access all 137 visualizers, code execution panels, and calculation sandboxes without creating an account or providing personal details.
 - **PostgreSQL Row-Level Security (RLS)**: User data stored in Supabase is cryptographically restricted to your authenticated user ID.
 
 ---

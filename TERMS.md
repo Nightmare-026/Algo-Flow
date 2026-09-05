@@ -23,7 +23,7 @@ You must be at least **13 years of age** (or at least **16 years of age** in the
 ## 3. Educational Platform Scope
 
 Algo Flow provides interactive Computer Science visualizers and computational training software, including:
-- **133+ Algorithm & Data Structure Visualizers**: Real-time animation, step-by-step state tracking, timeline scrubbing, and speed adjustment across linear, tree, graph, sorting, searching, hashing, matrix, and dynamic programming algorithms.
+- **137+ Algorithm & Data Structure Visualizers**: Real-time animation, step-by-step state tracking, timeline scrubbing, and speed adjustment across linear, tree, graph, sorting, searching, hashing, matrix, and dynamic programming algorithms.
 - **Synchronized Multi-Language Source Code**: Synchronized pseudocode and verified implementations in **Python, C++, Java, and JavaScript**.
 - **Mental Math Calculation Studio**: Operation drills, 60s speed sprints, timed tests, and global daily challenges.
 - **Student Dashboard & Analytics**: Study streaks, XP points, saved bookmarks, and completion metrics.

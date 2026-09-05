@@ -123,7 +123,7 @@ export function AuthShell({
               <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold text-text-secondary">
                 <li className="flex items-center gap-1.5 text-primary">
                   <CheckCircle2 className="h-4 w-4 text-primary" />
-                  133 Interactive Visualizers
+                  137 Interactive Visualizers
                 </li>
                 <li className="flex items-center gap-1.5 text-secondary">
                   <Braces className="h-4 w-4 text-secondary" />5 Production Languages

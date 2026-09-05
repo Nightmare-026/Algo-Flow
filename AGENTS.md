@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Algo Flow is an interactive Data Structures & Algorithms visualizer. Users select an algorithm from a catalog of 133+ published visualizers, input custom data, and step through animated execution with synchronized pseudocode highlighting, multi-language code tracing (Python, C++, Java, JavaScript), and plain-English explanations. The app includes authentication, a user dashboard with progress tracking/streaks/bookmarks, a mental math trainer, quizzes, and full dark/light theme support.
+Algo Flow is an interactive Data Structures & Algorithms visualizer. Users select an algorithm from a catalog of 137+ published visualizers, input custom data, and step through animated execution with synchronized pseudocode highlighting, multi-language code tracing (Python, C++, Java, JavaScript), and plain-English explanations. The app includes authentication, a user dashboard with progress tracking/streaks/bookmarks, a mental math trainer, quizzes, and full dark/light theme support.
 
 ## Tech Stack
 
@@ -33,7 +33,7 @@ src/app/
 ├── (auth)/                     # Route group — login, signup, forgot-password, reset-password, verify-email
 ├── auth/callback/              # OAuth callback handler (server)
 ├── dashboard/                  # Protected dashboard (SSR, redirects if no user)
-├── visualizer/[slug]/          # Dynamic visualizer pages (~133 algorithms)
+├── visualizer/[slug]/          # Dynamic visualizer pages (~137 algorithms)
 ├── visualizers/                # Algorithm catalog listing
 │   └── [category]/             # Category-filtered catalog
 ├── mental-math/                # Mental math trainer (daily, practice, speed, test, leaderboard, progress)

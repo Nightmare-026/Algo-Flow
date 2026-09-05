@@ -97,6 +97,25 @@ export function getDefaultVisualizerInputOptions(
     };
   }
 
+  if (slug === "balanced-parentheses") {
+    return {
+      ...defaultVisualizerInputOptions,
+      text: "{[()]}",
+    };
+  }
+  if (slug === "infix-to-postfix") {
+    return {
+      ...defaultVisualizerInputOptions,
+      text: "A + B * C",
+    };
+  }
+  if (slug === "postfix-evaluation") {
+    return {
+      ...defaultVisualizerInputOptions,
+      text: "5 3 + 2 *",
+    };
+  }
+
   return defaultVisualizerInputOptions;
 }
 

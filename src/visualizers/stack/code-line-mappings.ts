@@ -39,4 +39,37 @@ export const stackCodeLineMappings = {
   "stack-is-empty": oneLineOperation([1, 2]),
   "stack-is-full": oneLineOperation([1, 2]),
   "stack-size": oneLineOperation([1, 2]),
+  "balanced-parentheses": [
+    line(1, 1, 1, 1, 1),
+    line(2, 3, 5, 3, 3),
+    line(3, 4, 6, 5, 5),
+    line(4, 4, 6, 6, 6),
+    line(5, 6, 8, 9, 9),
+  ],
+  "infix-to-postfix": [
+    line(1, 1, 1, 1, 1),
+    line(2, 4, 5, 4, 4),
+    line(3, 5, 6, 5, 5),
+    line(4, 6, 7, 6, 6),
+    line(5, 9, 12, 9, 9),
+  ],
+  "postfix-evaluation": [
+    line(1, 1, 1, 1, 1),
+    line(2, 3, 4, 3, 3),
+    line(3, 5, 7, 5, 5),
+    line(4, 11, 11, 11, 11),
+  ],
+  "min-stack": [
+    line(1, 1, 1, 1, 1),
+    line(2, 3, 4, 4, 4),
+    line(3, 8, 9, 9, 9),
+    line(4, 10, 12, 11, 11),
+  ],
+  "next-greater-element": [
+    line(1, 1, 1, 1, 1),
+    line(2, 3, 4, 3, 3),
+    line(3, 4, 5, 5, 5),
+    line(4, 6, 6, 7, 7),
+    line(5, 8, 7, 9, 9),
+  ],
 } as const satisfies Record<string, ReadonlyArray<CodeLineMapping>>;

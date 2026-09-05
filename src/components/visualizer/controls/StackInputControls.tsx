@@ -9,6 +9,8 @@ import {
   Layers,
   Shuffle,
   Info,
+  CheckCircle,
+  Code2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,10 +39,22 @@ export function StackInputControls({
   const [error, setError] = useState<string | null>(null);
 
   const isPush = slug === "stack-push";
+  const isParentheses = slug === "balanced-parentheses";
+  const isInfix = slug === "infix-to-postfix";
+  const isPostfix = slug === "postfix-evaluation";
+  const isMinStack = slug === "min-stack";
+  const isNGE = slug === "next-greater-element";
+  const isStringBased = isParentheses || isInfix || isPostfix;
+
   const capacity = options.capacity || 8;
 
-  const updateOption = (key: keyof VisualizerInputOptions, value: number) => {
+  const updateOption = (key: keyof VisualizerInputOptions, value: unknown) => {
     onOptionsChange?.({ ...options, [key]: value });
+  };
+
+  const setExpression = (text: string) => {
+    setError(null);
+    updateOption("text", text);
   };
 
   const generateRandom = () => {
@@ -63,6 +77,16 @@ export function StackInputControls({
 
   const handleCustomSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    if (isStringBased) {
+      if (!customInput.trim()) {
+        setError("Please enter a valid expression.");
+        return;
+      }
+      setError(null);
+      updateOption("text", customInput.trim());
+      return;
+    }
+
     if (!customInput.trim()) {
       generateEmpty();
       return;
@@ -92,6 +116,16 @@ export function StackInputControls({
         return "Returns top + 1 • O(1)";
       case "array-stack":
         return "Array implementation with top index pointer • O(1)";
+      case "balanced-parentheses":
+        return "Validates reverse-matching of (), {}, [] brackets • O(n)";
+      case "infix-to-postfix":
+        return "Shunting-Yard conversion using operator precedence • O(n)";
+      case "postfix-evaluation":
+        return "Arithmetic evaluation using operand stack • O(n)";
+      case "min-stack":
+        return "Dual-stack architecture supporting getMin() • O(1)";
+      case "next-greater-element":
+        return "Monotonic decreasing stack interview pattern • O(n)";
       default:
         return "Stack LIFO Data Structure • O(1)";
     }
@@ -101,8 +135,139 @@ export function StackInputControls({
     <div className="flex flex-col gap-2 text-[11px]">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
-          {/* Preset Buttons */}
-          {onGenerate && (
+          {/* Presets for String-Based Applications */}
+          {isParentheses && (
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpression("{[()]}")}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-success hover:bg-surface-hover active:scale-95"
+              >
+                <CheckCircle className="h-3 w-3 text-success mr-1" />
+                <span>Balanced</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpression("{[(])}")}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-error hover:bg-surface-hover active:scale-95"
+              >
+                <AlertCircle className="h-3 w-3 text-error mr-1" />
+                <span>Mismatch</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpression("((()")}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-warning hover:bg-surface-hover active:scale-95"
+              >
+                <CircleOff className="h-3 w-3 text-warning mr-1" />
+                <span>Unclosed</span>
+              </Button>
+            </div>
+          )}
+
+          {isInfix && (
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpression("A + B * C")}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+              >
+                <span>A + B * C</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpression("(A + B) * C")}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+              >
+                <span>(A + B) * C</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpression("A + B * (C ^ D - E)")}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+              >
+                <span>Precedence & ^</span>
+              </Button>
+            </div>
+          )}
+
+          {isPostfix && (
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpression("5 3 + 2 *")}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+              >
+                <span>5 3 + 2 * (16)</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpression("10 2 8 * + 3 -")}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+              >
+                <span>10 2 8 * + 3 - (23)</span>
+              </Button>
+            </div>
+          )}
+
+          {/* Presets for NGE and MinStack */}
+          {isNGE && onGenerate && (
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onGenerate([4, 5, 2, 25])}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+              >
+                <span>[4, 5, 2, 25]</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onGenerate([13, 7, 6, 12])}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+              >
+                <span>[13, 7, 6, 12]</span>
+              </Button>
+            </div>
+          )}
+
+          {isMinStack && onGenerate && (
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onGenerate([18, 19, 29, 15, 16])}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+              >
+                <span>[18, 19, 29, 15, 16]</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onGenerate([5, 1, 8, 3, 0])}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+              >
+                <span>[5, 1, 8, 3, 0]</span>
+              </Button>
+            </div>
+          )}
+
+          {/* Presets for standard stack operations */}
+          {!isStringBased && !isNGE && !isMinStack && onGenerate && (
             <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
               <Button
                 variant="ghost"
@@ -139,50 +304,62 @@ export function StackInputControls({
             </div>
           )}
 
-          {/* Custom Initial Stack Input */}
-          {onGenerate && (
-            <form
-              onSubmit={handleCustomSubmit}
-              className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
-            >
+          {/* Custom Input (String for expression algorithms, Numbers for standard stack) */}
+          <form
+            onSubmit={handleCustomSubmit}
+            className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+          >
+            {isStringBased ? (
+              <Code2 className="h-3 w-3 text-text-muted shrink-0" aria-hidden="true" />
+            ) : (
               <FileEdit className="h-3 w-3 text-text-muted shrink-0" aria-hidden="true" />
-              <input
-                type="text"
-                placeholder="e.g. 10, 20, 30"
-                value={customInput}
-                onChange={(event) => {
-                  setCustomInput(event.target.value);
-                  if (error) setError(null);
-                }}
-                className="h-6 w-24 sm:w-28 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
-                aria-label="Initial stack elements"
-              />
-              <Button
-                type="submit"
-                size="sm"
-                className="h-6 min-h-0 rounded-md bg-surface-hover px-2 text-[10px] font-semibold text-text-secondary hover:text-primary active:scale-95 shrink-0"
-              >
-                Load
-              </Button>
-            </form>
-          )}
-
-          {/* Capacity Pod */}
-          <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
-            <Layers className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
-            <span className="font-mono text-[10px] font-semibold text-text-secondary">
-              Capacity:
-            </span>
+            )}
             <input
-              type="number"
-              className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
-              value={capacity}
-              min={1}
-              max={15}
-              onChange={(e) => updateOption("capacity", Number(e.target.value))}
-              aria-label="Stack capacity"
+              type="text"
+              placeholder={
+                isParentheses
+                  ? "e.g. {[()]}"
+                  : isInfix
+                    ? "e.g. A + B * C"
+                    : isPostfix
+                      ? "e.g. 5 3 + 2 *"
+                      : "e.g. 10, 20, 30"
+              }
+              value={customInput}
+              onChange={(event) => {
+                setCustomInput(event.target.value);
+                if (error) setError(null);
+              }}
+              className="h-6 w-28 sm:w-36 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
+              aria-label="Custom input value"
             />
-          </div>
+            <Button
+              type="submit"
+              size="sm"
+              className="h-6 min-h-0 rounded-md bg-surface-hover px-2 text-[10px] font-semibold text-text-secondary hover:text-primary active:scale-95 shrink-0"
+            >
+              Set
+            </Button>
+          </form>
+
+          {/* Capacity Pod (Hidden on expression algorithms where capacity is managed internally) */}
+          {!isStringBased && (
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+              <Layers className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+              <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                Capacity:
+              </span>
+              <input
+                type="number"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                value={capacity}
+                min={1}
+                max={15}
+                onChange={(e) => updateOption("capacity", Number(e.target.value))}
+                aria-label="Stack capacity"
+              />
+            </div>
+          )}
 
           {/* Value to Push (ONLY shown on stack-push) */}
           {isPush && (
@@ -218,3 +395,4 @@ export function StackInputControls({
     </div>
   );
 }
+

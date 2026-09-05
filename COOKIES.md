@@ -48,7 +48,7 @@ We use HTML5 Browser `localStorage` to save your UI preferences locally on your 
 
 You maintain complete sovereignty over your browser storage at all times:
 - **Browser Settings**: You can clear all cookies and local storage items at any time through your web browser settings (Chrome, Firefox, Safari, Edge, or Brave).
-- **Guest Mode**: You can explore all 133 algorithm visualizers and code execution modules without logging in.
+- **Guest Mode**: You can explore all 137 algorithm visualizers and code execution modules without logging in.
 - **Account Deletion**: Deleting your account from the Student Dashboard purges all remote database records immediately.
 
 ---

@@ -39,7 +39,7 @@ Authorized evaluators may review the live deployment at:
 ![Algo Flow Landing Page & Live Sandbox](./public/screenshots/landing-hero-dark.png)
 
 ### 3. Comprehensive Data Structure Taxonomy & Catalog
-*Searchable index spanning 133+ algorithms grouped by data structure family with operational tags.*
+*Searchable index spanning 137+ algorithms grouped by data structure family with operational tags.*
 
 ![Visualizer Catalog & Taxonomy](./public/screenshots/visualizers-catalog-light.png)
 
@@ -52,7 +52,7 @@ Authorized evaluators may review the live deployment at:
 
 ## Overview
 
-**Algo Flow** is a high-performance, interactive Computer Science educational platform and technical interview preparation workstation. It provides deterministic, frame-accurate visualizations of over 133 data structures and algorithms, executing step-by-step alongside real-time variable inspections, plain-English step explanations, and synchronized code tracing across four core languages (Python, C++, Java, and JavaScript).
+**Algo Flow** is a high-performance, interactive Computer Science educational platform and technical interview preparation workstation. It provides deterministic, frame-accurate visualizations of over 137+ data structures and algorithms, executing step-by-step alongside real-time variable inspections, plain-English step explanations, and synchronized code tracing across four core languages (Python, C++, Java, and JavaScript).
 
 Engineered with Next.js 16, React 19, and a bespoke state-driven playback machine, Algo Flow replaces static diagrams with an interactive runtime environment. Students, software engineers, and hiring candidates can pause, scrub, inspect memory transitions, and test custom data structures—including full graphical editing of arbitrary trees and graphs—delivering deep algorithmic intuition and conceptual mastery.
 
@@ -96,7 +96,7 @@ Algo Flow is architected as a modern, type-safe Next.js application adhering to 
 ## Project Status & Maturity
 
 - **Current Maturity**: **Production-Ready / Commercial Release Candidate (v0.1.0)**
-- **Feature Completeness**: 100% of the planned 133 algorithm visualizer catalog is fully implemented and operational.
+- **Feature Completeness**: 100% of the planned 137 algorithm visualizer catalog is fully implemented and operational.
 - **Verification Gates**: Passes automated prebuild registry audits (`npm run validate:registry`), coordination checks, strict TypeScript type checks (`tsc --noEmit`), and ESLint suites with 0 errors and 0 warnings.
 - **Deployment**: Production deployment pipeline live on Vercel with automated security headers and edge caching.
 
@@ -205,7 +205,7 @@ algo-flow/
 │   │   ├── (auth)/             # Authentication workflows (login, signup, reset)
 │   │   ├── auth/callback/      # Supabase OAuth token exchange route
 │   │   ├── dashboard/          # Protected user telemetry & progress dashboard
-│   │   ├── visualizer/[slug]/  # Dynamic workstation runtime for 133+ algorithms
+│   │   ├── visualizer/[slug]/  # Dynamic workstation runtime for 137+ algorithms
 │   │   ├── visualizers/        # Searchable algorithmic catalog & category filters
 │   │   ├── mental-math/        # Interactive mental calculation studio
 │   │   ├── quizzes/            # Algorithmic comprehension assessment suites

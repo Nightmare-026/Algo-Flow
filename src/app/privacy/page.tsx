@@ -85,7 +85,7 @@ export default async function PrivacyPage() {
                 Anonymous Public Exploration
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                All 133 algorithm visualizers, code execution workspaces, and training sandboxes can
+                All 137 algorithm visualizers, code execution workspaces, and training sandboxes can
                 be explored anonymously without an account.
               </p>
             </div>

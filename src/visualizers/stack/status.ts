@@ -160,9 +160,9 @@ export function generateStackIsFullSteps(
         ? `Stack has reached maximum capacity (${maxCapacity}/${maxCapacity}). No more elements can be pushed.`
         : `Stack has space available (${state.elements.length}/${maxCapacity}). Space for ${maxCapacity - state.elements.length} more element(s).`,
       "isFull",
-      isFull ? "error" : "not-found",
+      isFull ? "found" : "not-found",
       state,
-      isFull ? { error: state.elements.map((e) => e.id) } : (top ? { active: [top.id] } : {}),
+      isFull ? { found: state.elements.map((e) => e.id) } : (top ? { active: [top.id] } : {}),
       { Size: state.elements.length, Capacity: maxCapacity, isFull },
       2
     ),

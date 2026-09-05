@@ -11,6 +11,13 @@ import {
   generateStackSizeSteps,
   generateArrayStackSteps,
 } from "./status";
+import {
+  generateBalancedParenthesesSteps,
+  generateInfixToPostfixSteps,
+  generatePostfixEvaluationSteps,
+  generateMinStackSteps,
+  generateNextGreaterElementSteps,
+} from "./applications";
 
 const rawStackRegistry: AlgorithmVisualizerDefinition[] = [
   {
@@ -54,6 +61,45 @@ const rawStackRegistry: AlgorithmVisualizerDefinition[] = [
     generateSteps: (data, opts) => generateStackSizeSteps(data, opts.capacity!),
     getCodeExamples: getStackCodeExamples,
     codeLineMapping: stackCodeLineMappings["stack-size"],
+  },
+  {
+    slug: "balanced-parentheses",
+    generateSteps: (_data, opts) =>
+      generateBalancedParenthesesSteps(
+        opts.text && /[()\[\]{}]/.test(opts.text) ? opts.text : "{[()]}"
+      ),
+    getCodeExamples: getStackCodeExamples,
+    codeLineMapping: stackCodeLineMappings["balanced-parentheses"],
+  },
+  {
+    slug: "infix-to-postfix",
+    generateSteps: (_data, opts) =>
+      generateInfixToPostfixSteps(
+        opts.text && /[+\-*/^()]/.test(opts.text) ? opts.text : "A + B * C"
+      ),
+    getCodeExamples: getStackCodeExamples,
+    codeLineMapping: stackCodeLineMappings["infix-to-postfix"],
+  },
+  {
+    slug: "postfix-evaluation",
+    generateSteps: (_data, opts) =>
+      generatePostfixEvaluationSteps(
+        opts.text && /[+\-*/^]/.test(opts.text) ? opts.text : "5 3 + 2 *"
+      ),
+    getCodeExamples: getStackCodeExamples,
+    codeLineMapping: stackCodeLineMappings["postfix-evaluation"],
+  },
+  {
+    slug: "min-stack",
+    generateSteps: (data) => generateMinStackSteps(data),
+    getCodeExamples: getStackCodeExamples,
+    codeLineMapping: stackCodeLineMappings["min-stack"],
+  },
+  {
+    slug: "next-greater-element",
+    generateSteps: (data) => generateNextGreaterElementSteps(data),
+    getCodeExamples: getStackCodeExamples,
+    codeLineMapping: stackCodeLineMappings["next-greater-element"],
   },
 ];
 

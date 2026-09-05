@@ -90,6 +90,16 @@ export const pseudocodeMap: Record<string, string> = {
   "stack-is-empty": "function isEmpty(stack):\n  return top == -1  // size == 0",
   "stack-is-full": "function isFull(stack):\n  return size(stack) == capacity",
   "stack-size": "function size(stack):\n  return top + 1",
+  "balanced-parentheses":
+    "function isBalanced(str):\n  if isOpen(char): stack.push(char)\n  if isEmpty() or not matches(top(), char): return false\n  if matches(top(), char): stack.pop()\n  return stack.isEmpty()",
+  "infix-to-postfix":
+    "function infixToPostfix(tokens):\n  if isOperand(token): output.append(token)\n  if token == '(': stack.push(token)\n  if token == ')': pop until '(' to output\n  if isOperator(token): pop higher prec to output; push(token)\n  pop remaining operators to output",
+  "postfix-evaluation":
+    "function evaluatePostfix(tokens):\n  if isOperand(token): stack.push(token)\n  if isOperator(token): b = pop(); a = pop(); push(eval(a, op, b))\n  return stack.pop()",
+  "min-stack":
+    "class MinStack:\n  push(val): main.push(val); min.push(min(val, min.top()))\n  pop(): main.pop(); min.pop()\n  getMin(): return min.top()",
+  "next-greater-element":
+    "function nextGreaterElement(arr):\n  while stack and arr[stack.top()] < arr[i]:\n    result[stack.pop()] = arr[i]\n  stack.push(i)\n  while stack: result[stack.pop()] = -1",
   "queue-enqueue": "rear = (rear + 1) % capacity\narr[rear] = value\nsize++",
   "queue-dequeue": "val = arr[front]\nfront = (front + 1) % capacity\nsize--\nreturn val",
   "deque-push-front": "front = (front - 1 + capacity) % capacity\narr[front] = value\nsize++",

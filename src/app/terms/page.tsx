@@ -167,7 +167,7 @@ export default async function TermsPage() {
               <p>Algo Flow provides interactive Computer Science education tools, including:</p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>133 Visualizer Workstations:</strong> Dynamic, deterministic execution
+                  <strong>137 Visualizer Workstations:</strong> Dynamic, deterministic execution
                   traces across 12 data structure categories (Arrays, Linked Lists, Doubly Linked
                   Lists, Circular Linked Lists, Stacks, Queues, Hash Tables, Hash Sets, Trees,
                   Graphs, Matrices, and Strings).
