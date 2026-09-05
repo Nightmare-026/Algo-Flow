@@ -28,15 +28,24 @@ function SingleStackBeaker({
   isMinStack?: boolean;
 }) {
   const isEmpty = elements.length === 0;
+  const beakerHeight = Math.min(420, Math.max(260, maxCapacity * 46 + 28));
 
   return (
     <div className="flex flex-col items-center justify-end">
-      {/* Label / Beaker Header */}
-      <div className="flex items-center gap-1 mb-1 text-[10px] font-mono font-bold tracking-wider uppercase text-text-muted/70">
-        <span>{label}</span>
+      {/* Label / Beaker Header with LIFO Entry Marker */}
+      <div className="flex flex-col items-center gap-0.5 mb-1.5 select-none">
+        <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider uppercase text-text-muted">
+          <span>{label}</span>
+        </div>
+        <div className="text-[8px] font-mono font-semibold tracking-tight text-primary/70">
+          ↓ PUSH / POP (LIFO) ↑
+        </div>
       </div>
 
-      <div className="relative flex h-64 sm:h-72 w-28 sm:w-32 flex-col-reverse justify-start gap-1.5 overflow-visible rounded-b-xl border-b-4 border-x-4 border-border bg-bg-surface-light/35 p-1.5 pb-0">
+      <div
+        style={{ height: beakerHeight }}
+        className="relative flex w-28 sm:w-32 flex-col-reverse justify-start gap-1.5 overflow-visible rounded-b-xl border-b-4 border-x-4 border-border bg-bg-surface-light/35 p-1.5 pb-0 shadow-[var(--shadow-inset)]"
+      >
         {/* Empty Stack TOP [-1] Indicator */}
         {isEmpty && (
           <>
@@ -113,13 +122,23 @@ function SingleStackBeaker({
           })}
         </AnimatePresence>
 
-        {/* Empty capacity slots */}
-        {Array.from({ length: Math.max(0, maxCapacity - elements.length) }).map((_, index) => (
-          <div
-            key={`empty-${index}`}
-            className="h-10 sm:h-11 w-full shrink-0 rounded-lg border-2 border-dashed border-border/30 opacity-30"
-          />
-        ))}
+        {/* Empty capacity slots with indices */}
+        {Array.from({ length: Math.max(0, maxCapacity - elements.length) }).map((_, index) => {
+          const slotIndex = elements.length + index;
+          return (
+            <div
+              key={`empty-${index}`}
+              className="relative flex h-10 sm:h-11 w-full shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-border/30 opacity-35"
+            >
+              <span
+                className="absolute -right-5 top-1/2 -translate-y-1/2 font-mono text-[8px] font-semibold text-text-muted/40 select-none"
+                title={`Empty Slot [${slotIndex}]`}
+              >
+                [{slotIndex}]
+              </span>
+            </div>
+          );
+        })}
       </div>
 
       {/* Chamber Pedestal Base */}

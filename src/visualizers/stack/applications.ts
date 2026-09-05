@@ -207,6 +207,9 @@ export function generateBalancedParenthesesSteps(
         );
         return steps;
       }
+    } else {
+      // Non-bracket characters (numbers, variables, operators) are skipped
+      inputTokens[i].status = "scanned";
     }
   }
 
@@ -414,6 +417,28 @@ export function generateInfixToPostfixSteps(
             }
           )
         );
+      } else {
+        inputTokens[i].status = "error";
+        state.statusMessage = {
+          text: "Syntax Error! Mismatched closing parenthesis ')' without opening '('.",
+          type: "error",
+        };
+        steps.push(
+          makeStep(
+            stepNumber++,
+            "Mismatched ')'",
+            "Encountered ')' without a matching '(' on the stack.",
+            "InfixToPostfix",
+            "error",
+            state,
+            {
+              highlights: { error: [] },
+              variables: { Token: ")", Error: "Mismatched Closing Parenthesis" },
+              pseudocodeLine: 4,
+            }
+          )
+        );
+        return steps;
       }
     } else if (isOperator(token)) {
       inputTokens[i].status = "scanned";
@@ -471,10 +496,13 @@ export function generateInfixToPostfixSteps(
   }
 
   // Pop any remaining operators
+  let hasUnclosedParen = false;
   state.activeTokenIndex = tokens.length;
   while (stack.length > 0) {
     const popped = stack.pop()!;
-    if (popped.value !== "(") {
+    if (popped.value === "(") {
+      hasUnclosedParen = true;
+    } else {
       outputTokens.push({ id: uuidv4(), label: String(popped.value) });
       steps.push(
         makeStep(
@@ -495,6 +523,29 @@ export function generateInfixToPostfixSteps(
         )
       );
     }
+  }
+
+  if (hasUnclosedParen) {
+    state.statusMessage = {
+      text: "Syntax Error! Infix expression has unclosed '(' parenthesis.",
+      type: "error",
+    };
+    steps.push(
+      makeStep(
+        stepNumber++,
+        "Unclosed '(' Error",
+        "Expression ended with unclosed '(' parenthesis on the stack.",
+        "InfixToPostfix",
+        "error",
+        state,
+        {
+          highlights: { error: [] },
+          variables: { Error: "Unclosed '('" },
+          pseudocodeLine: 5,
+        }
+      )
+    );
+    return steps;
   }
 
   // Complete
@@ -640,10 +691,31 @@ export function generatePostfixEvaluationSteps(
       const numB = Number(opB.value);
       let res = 0;
 
+      if (token === "/" && numB === 0) {
+        inputTokens[i].status = "error";
+        state.statusMessage = { text: `Division by Zero! Cannot divide ${numA} by 0.`, type: "error" };
+        steps.push(
+          makeStep(
+            stepNumber++,
+            "Division by Zero",
+            `Encountered '${numA} / 0'. Division by zero is undefined in mathematics.`,
+            "PostfixEvaluation",
+            "error",
+            state,
+            {
+              highlights: { error: [] },
+              variables: { OperandA: numA, OperandB: 0, Error: "Division by Zero" },
+              pseudocodeLine: 3,
+            }
+          )
+        );
+        return steps;
+      }
+
       if (token === "+") res = numA + numB;
       else if (token === "-") res = numA - numB;
       else if (token === "*") res = numA * numB;
-      else if (token === "/") res = numB !== 0 ? Math.floor(numA / numB) : 0;
+      else if (token === "/") res = Math.floor(numA / numB);
       else if (token === "^") res = Math.pow(numA, numB);
 
       const formula = `${numA} ${token} ${numB} = ${res}`;
@@ -697,6 +769,26 @@ export function generatePostfixEvaluationSteps(
         }
       )
     );
+  } else if (stack.length > 1) {
+    state.statusMessage = {
+      text: `Incomplete Expression! ${stack.length} operands remain on stack without operators.`,
+      type: "error",
+    };
+    steps.push(
+      makeStep(
+        stepNumber++,
+        "Incomplete Evaluation",
+        `Scan complete, but ${stack.length} operands remain on stack. Expression lacks sufficient operators.`,
+        "PostfixEvaluation",
+        "error",
+        state,
+        {
+          highlights: { error: stack.map((e) => e.id) },
+          variables: { RemainingOperands: stack.map((e) => e.value).join(", ") },
+          pseudocodeLine: 4,
+        }
+      )
+    );
   }
 
   return steps;
@@ -706,9 +798,11 @@ export function generatePostfixEvaluationSteps(
    4. MIN STACK (O(1) Minimum Element Retrieval)
    ================================================================ */
 export function generateMinStackSteps(
-  rawInput?: number[]
+  rawInput?: number[],
+  capacity: number = 8
 ): VisualStep[] {
-  const data = Array.isArray(rawInput) && rawInput.length > 0 ? rawInput.slice(0, 6) : [18, 19, 29, 15, 16];
+  const maxCap = Math.min(15, Math.max(4, capacity));
+  const data = Array.isArray(rawInput) && rawInput.length > 0 ? rawInput.slice(0, maxCap) : [18, 19, 29, 15, 16];
 
   const mainStack: StackElement[] = [];
   const minStack: StackElement[] = [];
@@ -718,7 +812,7 @@ export function generateMinStackSteps(
   const state: StackVisualState = {
     elements: mainStack,
     minElements: minStack,
-    maxCapacity: 8,
+    maxCapacity: maxCap,
     statusMessage: { text: "MinStack tracks the current minimum element in O(1) time.", type: "info" },
   };
 
@@ -846,9 +940,11 @@ export function generateMinStackSteps(
    5. NEXT GREATER ELEMENT (Monotonic Stack)
    ================================================================ */
 export function generateNextGreaterElementSteps(
-  rawInput?: number[]
+  rawInput?: number[],
+  capacity: number = 8
 ): VisualStep[] {
-  const arr = Array.isArray(rawInput) && rawInput.length > 0 ? rawInput.slice(0, 6) : [4, 5, 2, 25];
+  const maxCap = Math.min(15, Math.max(4, capacity));
+  const arr = Array.isArray(rawInput) && rawInput.length > 0 ? rawInput.slice(0, maxCap) : [4, 5, 2, 25];
 
   const stack: StackElement[] = []; // holds indices
   const results: Array<number | string> = new Array(arr.length).fill("-");
@@ -865,7 +961,7 @@ export function generateNextGreaterElementSteps(
 
   const state: StackVisualState = {
     elements: stack,
-    maxCapacity: 8,
+    maxCapacity: maxCap,
     resultMapping: buildResultMapping(),
     statusMessage: { text: "Monotonic Stack finds the Next Greater Element for each position in O(n).", type: "info" },
   };

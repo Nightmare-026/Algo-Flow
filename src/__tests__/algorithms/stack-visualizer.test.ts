@@ -283,6 +283,14 @@ describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => 
       expect(finalStep.title).toContain("Remaining Open Brackets");
       expect(finalStep.variables?.Result).toBe("Unbalanced");
     });
+
+    it("ignores non-bracket characters in balanced-parentheses", () => {
+      const expr = "(A + B) * [C - D]";
+      const steps = generateBalancedParenthesesSteps(expr);
+      const finalStep = steps[steps.length - 1];
+      expect(finalStep.actionType).toBe("complete");
+      expect(finalStep.variables?.Result).toBe("Balanced");
+    });
   });
 
   describe("infix-to-postfix application (Shunting-Yard)", () => {
@@ -306,6 +314,22 @@ describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => 
       expect(finalStep.actionType).toBe("complete");
       const finalState = finalStep.dataState as StackVisualState;
       expect(finalState.outputTokens?.map((t) => t.label).join("")).toBe("AB+C*");
+    });
+
+    it("detects syntax error on mismatched closing ')'", () => {
+      const expr = "A + B ) * C";
+      const steps = generateInfixToPostfixSteps(expr);
+      const errorStep = steps.find((s) => s.actionType === "error");
+      expect(errorStep).toBeDefined();
+      expect(errorStep?.title).toContain("Mismatched ')'");
+    });
+
+    it("detects syntax error on unclosed opening '('", () => {
+      const expr = "( A + B";
+      const steps = generateInfixToPostfixSteps(expr);
+      const errorStep = steps.find((s) => s.actionType === "error");
+      expect(errorStep).toBeDefined();
+      expect(errorStep?.title).toContain("Unclosed '('");
     });
   });
 
@@ -337,6 +361,23 @@ describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => 
       expect(errorStep).toBeDefined();
       expect(errorStep?.title).toContain("Evaluation Error");
       expect(errorStep?.variables?.Error).toBe("Insufficient Operands");
+    });
+
+    it("detects division by zero error in postfix expression", () => {
+      const expr = "10 0 /";
+      const steps = generatePostfixEvaluationSteps(expr);
+      const errorStep = steps.find((s) => s.actionType === "error");
+      expect(errorStep).toBeDefined();
+      expect(errorStep?.title).toContain("Division by Zero");
+      expect(errorStep?.variables?.Error).toBe("Division by Zero");
+    });
+
+    it("detects incomplete evaluation when leftover operands remain on stack", () => {
+      const expr = "10 20 30 +";
+      const steps = generatePostfixEvaluationSteps(expr);
+      const errorStep = steps.find((s) => s.actionType === "error");
+      expect(errorStep).toBeDefined();
+      expect(errorStep?.title).toContain("Incomplete Evaluation");
     });
   });
 
@@ -371,6 +412,12 @@ describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => 
       expect(step6State.minElements?.at(-1)?.value).toBe(3);
       expect(step6State.elements.map((e) => e.value)).toEqual([5, 3, 7]);
     });
+
+    it("supports custom capacity", () => {
+      const steps = generateMinStackSteps([10, 20], 10);
+      const initStep = steps[0].dataState as StackVisualState;
+      expect(initStep.maxCapacity).toBe(10);
+    });
   });
 
   describe("next-greater-element application", () => {
@@ -389,6 +436,12 @@ describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => 
       expect(finalState.resultMapping?.[1]?.result).toBe(25);
       expect(finalState.resultMapping?.[2]?.result).toBe(25);
       expect(finalState.resultMapping?.[3]?.result).toBe(-1);
+    });
+
+    it("supports custom capacity", () => {
+      const steps = generateNextGreaterElementSteps([1, 2, 3], 12);
+      const initStep = steps[0].dataState as StackVisualState;
+      expect(initStep.maxCapacity).toBe(12);
     });
   });
 });

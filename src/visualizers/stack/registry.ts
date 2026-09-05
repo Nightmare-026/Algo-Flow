@@ -91,13 +91,13 @@ const rawStackRegistry: AlgorithmVisualizerDefinition[] = [
   },
   {
     slug: "min-stack",
-    generateSteps: (data) => generateMinStackSteps(data),
+    generateSteps: (data, opts) => generateMinStackSteps(data, opts?.capacity),
     getCodeExamples: getStackCodeExamples,
     codeLineMapping: stackCodeLineMappings["min-stack"],
   },
   {
     slug: "next-greater-element",
-    generateSteps: (data) => generateNextGreaterElementSteps(data),
+    generateSteps: (data, opts) => generateNextGreaterElementSteps(data, opts?.capacity),
     getCodeExamples: getStackCodeExamples,
     codeLineMapping: stackCodeLineMappings["next-greater-element"],
   },

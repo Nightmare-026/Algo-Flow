@@ -35,9 +35,6 @@ export function StackInputControls({
   options = defaultVisualizerInputOptions,
   onOptionsChange,
 }: StackInputControlsProps) {
-  const [customInput, setCustomInput] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
   const isPush = slug === "stack-push";
   const isParentheses = slug === "balanced-parentheses";
   const isInfix = slug === "infix-to-postfix";
@@ -45,6 +42,11 @@ export function StackInputControls({
   const isMinStack = slug === "min-stack";
   const isNGE = slug === "next-greater-element";
   const isStringBased = isParentheses || isInfix || isPostfix;
+
+  const [customInput, setCustomInput] = useState(() =>
+    isStringBased ? options.text || "" : ""
+  );
+  const [error, setError] = useState<string | null>(null);
 
   const capacity = options.capacity || 8;
 
@@ -54,6 +56,7 @@ export function StackInputControls({
 
   const setExpression = (text: string) => {
     setError(null);
+    setCustomInput(text);
     updateOption("text", text);
   };
 
@@ -61,17 +64,20 @@ export function StackInputControls({
     setError(null);
     const count = Math.min(Math.max(defaultSize, 3), Math.min(capacity, 6));
     const randomArr = Array.from({ length: count }, () => Math.floor(Math.random() * 90) + 10);
+    setCustomInput(randomArr.join(", "));
     onGenerate?.(randomArr);
   };
 
   const generateEmpty = () => {
     setError(null);
+    setCustomInput("");
     onGenerate?.([]);
   };
 
   const generateFull = () => {
     setError(null);
     const fullArr = Array.from({ length: capacity }, (_, i) => (i + 1) * 10);
+    setCustomInput(fullArr.join(", "));
     onGenerate?.(fullArr);
   };
 
@@ -228,7 +234,10 @@ export function StackInputControls({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onGenerate([4, 5, 2, 25])}
+                onClick={() => {
+                  setCustomInput("4, 5, 2, 25");
+                  onGenerate([4, 5, 2, 25]);
+                }}
                 className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
               >
                 <span>[4, 5, 2, 25]</span>
@@ -236,10 +245,23 @@ export function StackInputControls({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onGenerate([13, 7, 6, 12])}
+                onClick={() => {
+                  setCustomInput("13, 7, 6, 12");
+                  onGenerate([13, 7, 6, 12]);
+                }}
                 className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
               >
                 <span>[13, 7, 6, 12]</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={generateRandom}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+                title="Generate random array for Next Greater Element"
+              >
+                <Shuffle className="h-3 w-3 text-primary mr-1" />
+                <span>Random</span>
               </Button>
             </div>
           )}
@@ -250,7 +272,10 @@ export function StackInputControls({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onGenerate([18, 19, 29, 15, 16])}
+                onClick={() => {
+                  setCustomInput("18, 19, 29, 15, 16");
+                  onGenerate([18, 19, 29, 15, 16]);
+                }}
                 className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
               >
                 <span>[18, 19, 29, 15, 16]</span>
@@ -258,10 +283,23 @@ export function StackInputControls({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onGenerate([5, 1, 8, 3, 0])}
+                onClick={() => {
+                  setCustomInput("5, 1, 8, 3, 0");
+                  onGenerate([5, 1, 8, 3, 0]);
+                }}
                 className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
               >
                 <span>[5, 1, 8, 3, 0]</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={generateRandom}
+                className="h-7 sm:h-6 min-h-0 px-2 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+                title="Generate random array for MinStack"
+              >
+                <Shuffle className="h-3 w-3 text-primary mr-1" />
+                <span>Random</span>
               </Button>
             </div>
           )}
