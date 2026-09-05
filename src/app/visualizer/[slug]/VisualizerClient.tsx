@@ -12,6 +12,7 @@ import { VisualizerLayout } from "@/components/visualizer/VisualizerLayout";
 import { usePlaybackStore } from "@/stores/playback-store";
 import { algorithmRegistry } from "@/visualizers/registry/algorithm-registry";
 import { dsRegistry } from "@/visualizers/registry/ds-registry";
+import { InteractiveCanvas } from "@/components/visualizer/InteractiveCanvas";
 
 function UnavailableCanvas({ name }: { name: string }) {
   return (
@@ -88,6 +89,9 @@ export function VisualizerClient({
   const Renderer = dataStructureDefinition?.Renderer;
   const Controls = dataStructureDefinition?.InputControls;
 
+  const isGraphOrTree =
+    algorithm.dataStructureId === "ds_tree" || algorithm.dataStructureId === "ds_graph";
+
   const canvasContent = !isReady ? (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex flex-col items-center gap-3">
@@ -96,7 +100,13 @@ export function VisualizerClient({
       </div>
     </div>
   ) : isImplemented && Renderer ? (
-    <Renderer />
+    isGraphOrTree ? (
+      <Renderer />
+    ) : (
+      <InteractiveCanvas name={algorithm.name}>
+        <Renderer />
+      </InteractiveCanvas>
+    )
   ) : (
     <UnavailableCanvas name={algorithm.name} />
   );

@@ -28,12 +28,12 @@ function SingleStackBeaker({
   isMinStack?: boolean;
 }) {
   const isEmpty = elements.length === 0;
-  const beakerHeight = Math.min(420, Math.max(260, maxCapacity * 46 + 28));
+  const beakerHeight = Math.min(340, Math.max(200, maxCapacity * 40 + 20));
 
   return (
     <div className="flex flex-col items-center justify-end">
       {/* Label / Beaker Header with LIFO Entry Marker */}
-      <div className="flex flex-col items-center gap-0.5 mb-1.5 select-none">
+      <div className="flex flex-col items-center gap-0.5 mb-1 select-none">
         <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider uppercase text-text-muted">
           <span>{label}</span>
         </div>
@@ -44,7 +44,7 @@ function SingleStackBeaker({
 
       <div
         style={{ height: beakerHeight }}
-        className="relative flex w-28 sm:w-32 flex-col-reverse justify-start gap-1.5 overflow-visible rounded-b-xl border-b-4 border-x-4 border-border bg-bg-surface-light/35 p-1.5 pb-0 shadow-[var(--shadow-inset)]"
+        className="relative flex w-28 sm:w-32 flex-col-reverse justify-start gap-1 overflow-visible rounded-b-xl border-b-4 border-x-4 border-border bg-bg-surface-light/35 p-1 pb-0 shadow-[var(--shadow-inset)]"
       >
         {/* Empty Stack TOP [-1] Indicator */}
         {isEmpty && (
@@ -110,7 +110,7 @@ function SingleStackBeaker({
                 <div
                   data-visual-state={state}
                   className={cn(
-                    "visual-element flex h-10 sm:h-11 w-full items-center justify-center rounded-lg border-2 font-mono text-sm sm:text-base font-bold",
+                    "visual-element flex h-9 sm:h-10 w-full items-center justify-center rounded-lg border-2 font-mono text-xs sm:text-sm font-bold",
                     isMinStack && "border-amber-500/50 bg-amber-500/10 text-amber-500",
                     getVisualElementClassName(highlights, element.id)
                   )}
@@ -128,7 +128,7 @@ function SingleStackBeaker({
           return (
             <div
               key={`empty-${index}`}
-              className="relative flex h-10 sm:h-11 w-full shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-border/30 opacity-35"
+              className="relative flex h-9 sm:h-10 w-full shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-border/30 opacity-35"
             >
               <span
                 className="absolute -right-5 top-1/2 -translate-y-1/2 font-mono text-[8px] font-semibold text-text-muted/40 select-none"
@@ -162,17 +162,17 @@ export function StackRenderer() {
 
   return (
     <div
-      className="relative flex h-full w-full flex-col items-center justify-between p-3 sm:p-5 overflow-y-auto"
+      className="relative flex h-full w-full flex-col items-center justify-between p-2 sm:p-4 overflow-hidden select-none pointer-events-auto"
       role="img"
       aria-label={`${currentStep.title}. Stack contains ${dataState.elements.map((element) => element.value).join(", ") || "no values"}.`}
     >
       {/* 1. TOP TAPE: Input Token Scanner (for Parentheses / Expressions) */}
       {dataState.inputTokens && dataState.inputTokens.length > 0 && (
-        <div className="w-full max-w-xl flex flex-col items-center gap-1 mb-2">
-          <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-text-muted">
+        <div className="w-full max-w-xl flex flex-col items-center gap-0.5 mb-1 shrink-0">
+          <div className="text-[9px] font-mono font-semibold uppercase tracking-wider text-text-muted">
             Input Stream Scanner
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
+          <div className="flex flex-wrap items-center justify-center gap-1 p-1 rounded-xl border border-border bg-surface/90 shadow-[var(--shadow-raised-sm)] backdrop-blur-xs">
             {dataState.inputTokens.map((token, idx) => {
               const isCurrent = idx === dataState.activeTokenIndex;
               return (
@@ -205,10 +205,10 @@ export function StackRenderer() {
       )}
 
       {/* 2. Live Status & Computation Pill */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
+      <div className="flex flex-wrap items-center justify-center gap-1.5 mb-1 shrink-0">
         {dataState.computation && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-primary/40 bg-primary/10 text-primary font-mono text-xs font-bold shadow-sm animate-in fade-in">
-            <Calculator className="h-3.5 w-3.5" />
+          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-primary/40 bg-primary/10 text-primary font-mono text-xs font-bold shadow-sm animate-in fade-in">
+            <Calculator className="h-3 w-3" />
             <span>{dataState.computation.formula}</span>
           </div>
         )}
@@ -216,7 +216,7 @@ export function StackRenderer() {
         {dataState.statusMessage && (
           <div
             className={cn(
-              "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold shadow-sm animate-in fade-in",
+              "inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-xs font-semibold shadow-sm animate-in fade-in",
               dataState.statusMessage.type === "success" && "border-success/40 bg-success-muted text-success",
               dataState.statusMessage.type === "error" && "border-error/40 bg-error-muted text-error",
               dataState.statusMessage.type === "warning" && "border-warning/40 bg-warning-muted text-warning",
@@ -232,7 +232,7 @@ export function StackRenderer() {
       </div>
 
       {/* 3. CENTER: Stack Beakers (Single Stack OR Dual Min-Stack) */}
-      <div className="flex items-end justify-center gap-8 sm:gap-12 my-auto">
+      <div className="flex items-end justify-center gap-6 sm:gap-10 my-auto shrink-0 py-1">
         {/* Main Stack */}
         <SingleStackBeaker
           elements={dataState.elements}
@@ -257,11 +257,11 @@ export function StackRenderer() {
 
       {/* 4. BOTTOM TRAY: Output Stream (Postfix output or Next Greater Element) */}
       {dataState.outputTokens && (
-        <div className="w-full max-w-xl flex flex-col items-center gap-1 mt-3">
-          <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-text-muted">
+        <div className="w-full max-w-xl flex flex-col items-center gap-0.5 mt-1 shrink-0">
+          <div className="text-[9px] font-mono font-semibold uppercase tracking-wider text-text-muted">
             Postfix Output Stream
           </div>
-          <div className="flex flex-wrap items-center justify-center min-h-[36px] w-full gap-1.5 p-2 rounded-xl border border-border bg-surface shadow-[var(--shadow-inset)]">
+          <div className="flex flex-wrap items-center justify-center min-h-[32px] w-full gap-1 p-1.5 rounded-xl border border-border bg-surface/90 shadow-[var(--shadow-inset)] backdrop-blur-xs">
             {dataState.outputTokens.length === 0 ? (
               <span className="text-[10px] font-mono text-text-muted/60 italic">
                 Waiting for operands & popped operators...
@@ -270,7 +270,7 @@ export function StackRenderer() {
               dataState.outputTokens.map((token) => (
                 <span
                   key={token.id}
-                  className="flex h-7 px-2.5 items-center justify-center rounded-lg border border-primary/40 bg-primary/10 font-mono text-xs font-bold text-primary animate-in zoom-in-95"
+                  className="flex h-6 px-2 items-center justify-center rounded-lg border border-primary/40 bg-primary/10 font-mono text-xs font-bold text-primary animate-in zoom-in-95"
                 >
                   {token.label}
                 </span>
@@ -282,8 +282,8 @@ export function StackRenderer() {
 
       {/* 5. BOTTOM TRAY: Next Greater Element Result Mapping */}
       {dataState.resultMapping && (
-        <div className="w-full max-w-xl flex flex-col items-center gap-1 mt-3">
-          <div className="text-[10px] font-mono font-semibold uppercase tracking-wider text-text-muted">
+        <div className="w-full max-w-xl flex flex-col items-center gap-0.5 mt-1 shrink-0">
+          <div className="text-[9px] font-mono font-semibold uppercase tracking-wider text-text-muted">
             Next Greater Element Map
           </div>
           <div className="grid grid-flow-col auto-cols-max items-center justify-center gap-2 p-2 rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)] overflow-x-auto max-w-full">
