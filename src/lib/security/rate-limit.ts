@@ -84,7 +84,8 @@ export function isDistributedRateLimitAvailable(): boolean {
   );
 }
 
-let upstashRatelimitInstance: Ratelimit | null = null;
+let sharedRedis: Redis | null = null;
+const upstashInstances = new Map<string, Ratelimit>();
 let upstashDisabled = false;
 
 function getUpstashRatelimit(limit: number, windowMs: number): Ratelimit | null {
@@ -96,20 +97,25 @@ function getUpstashRatelimit(limit: number, windowMs: number): Ratelimit | null 
     return null;
   }
 
-  if (upstashRatelimitInstance) {
-    return upstashRatelimitInstance;
+  const windowSeconds = Math.max(1, Math.ceil(windowMs / 1000));
+  const cacheKey = `${limit}:${windowSeconds}`;
+  const existing = upstashInstances.get(cacheKey);
+  if (existing) {
+    return existing;
   }
 
   try {
-    const redis = new Redis({ url, token });
-    const windowSeconds = Math.max(1, Math.ceil(windowMs / 1000));
-    upstashRatelimitInstance = new Ratelimit({
-      redis,
+    if (!sharedRedis) {
+      sharedRedis = new Redis({ url, token });
+    }
+    const instance = new Ratelimit({
+      redis: sharedRedis,
       limiter: Ratelimit.slidingWindow(limit, `${windowSeconds} s`),
       analytics: false,
       prefix: "algoflow",
     });
-    return upstashRatelimitInstance;
+    upstashInstances.set(cacheKey, instance);
+    return instance;
   } catch (e) {
     console.warn("Failed to initialize Upstash Redis rate limiter, falling back to in-memory:", e);
     upstashDisabled = true;

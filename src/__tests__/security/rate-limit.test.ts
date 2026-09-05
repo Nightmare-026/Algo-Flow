@@ -105,4 +105,24 @@ describe("Rate Limiter (Hybrid In-Memory Sliding Window Fallback)", () => {
     const fresh = await checkRateLimit(key, limit, windowMs);
     expect(fresh.success).toBe(true);
   });
+
+  it("supports different limits across different endpoints", async () => {
+    const loginKey = "auth:login:test";
+    const bookmarkKey = "bookmark:test";
+
+    // login has limit 3
+    await checkRateLimit(loginKey, 3, 60000);
+    await checkRateLimit(loginKey, 3, 60000);
+    await checkRateLimit(loginKey, 3, 60000);
+    const blockedLogin = await checkRateLimit(loginKey, 3, 60000);
+    expect(blockedLogin.success).toBe(false);
+
+    // bookmark has limit 30, should still be allowed after 3 calls
+    await checkRateLimit(bookmarkKey, 30, 60000);
+    await checkRateLimit(bookmarkKey, 30, 60000);
+    await checkRateLimit(bookmarkKey, 30, 60000);
+    const validBookmark = await checkRateLimit(bookmarkKey, 30, 60000);
+    expect(validBookmark.success).toBe(true);
+    expect(validBookmark.remaining).toBe(26);
+  });
 });
