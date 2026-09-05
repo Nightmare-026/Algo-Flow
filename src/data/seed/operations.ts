@@ -86,22 +86,22 @@ export const operations: Operation[] = [
 
   // ==================== LINKED LIST OPERATIONS ====================
   {
-    id: "op_ll_types",
-    dataStructureId: "ds_linked_list",
-    name: "Types",
-    slug: "types",
-    description: "Different implementations of Linked Lists.",
-    displayOrder: 1,
-    isPublished: true,
-  },
-  {
     id: "op_ll_traversal",
     dataStructureId: "ds_linked_list",
     name: "Traversal",
     slug: "traversal",
     description: "Navigating through linked list nodes.",
-    displayOrder: 2,
+    displayOrder: 1,
     isPublished: true,
+  },
+  {
+    id: "op_ll_types",
+    dataStructureId: "ds_linked_list",
+    name: "Types",
+    slug: "types",
+    description: "Different implementations of Linked Lists.",
+    displayOrder: 99,
+    isPublished: false,
   },
   {
     id: "op_ll_insertion",

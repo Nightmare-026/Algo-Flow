@@ -22,6 +22,11 @@ const nextConfig: NextConfig = {
         destination: "/visualizer/row-wise-traversal",
         permanent: true,
       },
+      {
+        source: "/visualizer/linked-list-types",
+        destination: "/visualizer/sll-traversal",
+        permanent: true,
+      },
     ];
   },
   async headers() {
