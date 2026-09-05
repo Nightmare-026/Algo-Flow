@@ -1,53 +1,65 @@
 "use client";
 
 import { useState } from "react";
-import { AlertCircle, Target, HardDriveDownload } from "lucide-react";
+import {
+  AlertCircle,
+  FileEdit,
+  HardDriveDownload,
+  Info,
+  Shuffle,
+  Target,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
+  parseNumberList,
   VisualizerInputOptions,
 } from "@/lib/validation/visualizer-input";
 
 interface DoublyLinkedListInputControlsProps {
+  onGenerate?: (arr: number[]) => void;
+  defaultSize?: number;
   slug?: string;
+  dataLength?: number;
   options?: VisualizerInputOptions;
   onOptionsChange?: (options: VisualizerInputOptions) => void;
-  dataLength?: number;
 }
 
 export function DoublyLinkedListInputControls({
+  onGenerate,
+  defaultSize = 5,
   slug = "dll-traversal",
   options = defaultVisualizerInputOptions,
   onOptionsChange,
 }: DoublyLinkedListInputControlsProps) {
-  const [valInput, setValInput] = useState(options.value.toString());
-  const [targetInput, setTargetInput] = useState(options.target.toString());
+  const [size, setSize] = useState(defaultSize || 5);
+  const [customInput, setCustomInput] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const updateOption = (key: keyof VisualizerInputOptions, value: number) => {
-    onOptionsChange?.({ ...options, [key]: value } as VisualizerInputOptions);
+    onOptionsChange?.({ ...options, [key]: value });
   };
 
-  const handleValueSubmit = (event?: React.FormEvent) => {
-    if (event) event.preventDefault();
-    const val = Number(valInput.trim());
-    if (!Number.isInteger(val)) {
-      setError("Value must be a whole number.");
+  const generateRandom = () => {
+    setError(null);
+    const count = Math.max(2, Math.min(size, 8));
+    const randomArr = Array.from({ length: count }, () => Math.floor(Math.random() * 90) + 10);
+    onGenerate?.(randomArr);
+  };
+
+  const handleCustomSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const result = parseNumberList(customInput, 8);
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+    if (result.values.length < 1) {
+      setError("Provide at least 1 number.");
       return;
     }
     setError(null);
-    updateOption("value", val);
-  };
-
-  const handleTargetSubmit = (event?: React.FormEvent) => {
-    if (event) event.preventDefault();
-    const target = parseInt(targetInput);
-    if (isNaN(target)) {
-      setError("Target must be a valid number.");
-      return;
-    }
-    setError(null);
-    updateOption("target", target);
+    onGenerate?.(result.values);
   };
 
   const showTarget = slug.includes("search") || slug.includes("delete-value");
@@ -58,11 +70,71 @@ export function DoublyLinkedListInputControls({
     <div className="flex flex-col gap-2 text-[11px]">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
-          {showTarget && (
+          {/* Pod 1: Data Size & Randomizer */}
+          {onGenerate && (
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+              <div className="flex items-center gap-1.5 pr-1">
+                <span className="font-mono text-[10px] font-semibold text-text-muted">Size</span>
+                <input
+                  type="range"
+                  min="2"
+                  max="8"
+                  value={size}
+                  onChange={(event) => setSize(Number(event.target.value))}
+                  className="h-1.5 w-12 sm:w-16 cursor-pointer accent-primary"
+                  aria-label="Generated list size"
+                />
+                <span className="min-w-3 text-center font-mono text-[10px] font-bold text-primary">
+                  {size}
+                </span>
+              </div>
+
+              <div className="h-3.5 w-px bg-border mx-0.5" aria-hidden="true" />
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={generateRandom}
+                className="h-7 sm:h-6 min-h-0 px-2 sm:px-1.5 text-[10px] font-semibold text-text-secondary hover:text-primary hover:bg-surface-hover active:scale-95"
+                title="Generate random list"
+              >
+                <Shuffle className="h-3 w-3 text-primary mr-0.5" />
+                <span className="hidden sm:inline">Random</span>
+              </Button>
+            </div>
+          )}
+
+          {/* Pod 2: Custom List Input */}
+          {onGenerate && (
             <form
-              onSubmit={handleTargetSubmit}
-              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+              onSubmit={handleCustomSubmit}
+              className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
             >
+              <FileEdit className="h-3 w-3 text-text-muted shrink-0" aria-hidden="true" />
+              <input
+                type="text"
+                placeholder="e.g. 10, 20, 30"
+                value={customInput}
+                onChange={(event) => {
+                  setCustomInput(event.target.value);
+                  if (error) setError(null);
+                }}
+                className="h-6 w-24 sm:w-32 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
+                aria-label="Custom comma-separated list"
+              />
+              <Button
+                type="submit"
+                size="sm"
+                className="h-6 min-h-0 rounded-md bg-surface-hover px-2 text-[10px] font-semibold text-text-secondary hover:text-primary active:scale-95 shrink-0"
+              >
+                Load
+              </Button>
+            </form>
+          )}
+
+          {/* Pod 3: Operation Parameters */}
+          {showTarget && (
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
               <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
                 Target:
@@ -73,25 +145,15 @@ export function DoublyLinkedListInputControls({
                 type="number"
                 inputMode="numeric"
                 className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
-                value={targetInput}
-                onChange={(event) => setTargetInput(event.target.value)}
+                value={options.target}
+                onChange={(event) => updateOption("target", Number(event.target.value))}
                 aria-label="Target value"
               />
-              <Button
-                type="submit"
-                size="sm"
-                className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0"
-              >
-                Set
-              </Button>
-            </form>
+            </div>
           )}
 
           {showValue && (
-            <form
-              onSubmit={handleValueSubmit}
-              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
-            >
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
               <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">Val:</span>
               <input
@@ -101,20 +163,52 @@ export function DoublyLinkedListInputControls({
                 step={1}
                 inputMode="numeric"
                 className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
-                value={valInput}
-                aria-invalid={Boolean(error)}
-                aria-describedby={error ? errorId : undefined}
-                onChange={(event) => setValInput(event.target.value)}
+                value={options.value}
+                onChange={(event) => updateOption("value", Number(event.target.value))}
                 aria-label="Value"
               />
-              <Button
-                type="submit"
-                size="sm"
-                className="h-6 min-h-0 rounded-md bg-primary px-2.5 text-[10px] font-bold text-white shadow-sm hover:bg-primary-hover active:scale-95 shrink-0"
-              >
-                Set
-              </Button>
-            </form>
+            </div>
+          )}
+
+          {/* Pod 4: Informative Status Pills for zero-arg operations */}
+          {slug === "dll-delete-head" && (
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
+              <Info className="h-3 w-3 text-primary shrink-0" />
+              <span>
+                Operation: <strong className="text-text-primary">Delete Head</strong> unlinks first
+                node in O(1)
+              </span>
+            </div>
+          )}
+
+          {slug === "dll-delete-tail" && (
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
+              <Info className="h-3 w-3 text-primary shrink-0" />
+              <span>
+                Operation: <strong className="text-text-primary">Delete Tail</strong> unlinks last
+                node in O(1)
+              </span>
+            </div>
+          )}
+
+          {slug === "dll-reverse" && (
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
+              <Info className="h-3 w-3 text-primary shrink-0" />
+              <span>
+                Operation: <strong className="text-text-primary">Reverse DLL</strong> swaps prev and
+                next pointers in O(n)
+              </span>
+            </div>
+          )}
+
+          {slug === "dll-traversal" && (
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
+              <Info className="h-3 w-3 text-primary shrink-0" />
+              <span>
+                Operation: <strong className="text-text-primary">Bi-Directional Traversal</strong>{" "}
+                can traverse forward or backward
+              </span>
+            </div>
           )}
         </div>
       </div>
