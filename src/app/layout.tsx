@@ -3,7 +3,6 @@ import { Inter, JetBrains_Mono, Manrope } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Script from "next/script";
 import { getSiteUrl } from "@/lib/site";
-import { catalogStats } from "@/lib/catalog";
 import { safeJsonLd } from "@/lib/security/safe-json";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
@@ -41,7 +40,8 @@ export const metadata: Metadata = {
     default: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
     template: "%s | Algo Flow",
   },
-  description: `Master Data Structures & Algorithms visually. ${catalogStats.visualizerCount} interactive step-by-step visualizers, multi-language code execution (Python, C++, Java, JS), and practice quizzes.`,
+  description:
+    "Master Data Structures & Algorithms visually with interactive step-by-step visualizers, multi-language code execution, and practice quizzes.",
   keywords: [
     "Algo Flow",
     "AlgoFlow",
@@ -76,10 +76,18 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-    description: `Master Data Structures & Algorithms visually with ${catalogStats.visualizerCount} interactive step-by-step visualizers and multi-language code traces.`,
+    description:
+      "Master Data Structures & Algorithms visually with interactive step-by-step visualizers and multi-language code traces.",
     siteName: "Algo Flow",
     url: "/",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Algo Flow" }],
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",

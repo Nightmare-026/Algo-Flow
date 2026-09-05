@@ -53,7 +53,7 @@ export function Footer() {
               <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
                 <Image
                   src="/logo.png"
-                  alt="Algo Flow"
+                  alt="Algo Flow logo - Interactive Data Structures & Algorithms Visualizer"
                   width={26}
                   height={26}
                   className="object-contain"

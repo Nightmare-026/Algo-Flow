@@ -46,7 +46,7 @@ export function AuthShell({
                 <span className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
                   <Image
                     src="/logo.png"
-                    alt="Algo Flow"
+                    alt="Algo Flow logo - Interactive Data Structures & Algorithms Visualizer"
                     width={22}
                     height={22}
                     className="object-contain"

@@ -14,20 +14,30 @@ import { safeJsonLd } from "@/lib/security/safe-json";
 
 export const metadata: Metadata = {
   title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-  description: `Master Data Structures & Algorithms visually. ${catalogStats.visualizerCount} interactive step-by-step visualizers, multi-language code execution (Python, C++, Java, JS), and practice quizzes.`,
+  description:
+    "Master Data Structures & Algorithms visually with interactive step-by-step visualizers, multi-language code execution, and practice quizzes.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-    description: `Master Data Structures & Algorithms visually with ${catalogStats.visualizerCount} interactive step-by-step visualizers and multi-language code traces.`,
+    description:
+      "Master Data Structures & Algorithms visually with interactive step-by-step visualizers and multi-language code traces.",
     url: "/",
     siteName: "Algo Flow",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Algo Flow Visualizer" }],
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
+      },
+    ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-    description: `Master Data Structures & Algorithms visually with ${catalogStats.visualizerCount} interactive step-by-step visualizers.`,
+    description:
+      "Master Data Structures & Algorithms visually with interactive step-by-step visualizers and multi-language code traces.",
     images: ["/opengraph-image"],
   },
 };

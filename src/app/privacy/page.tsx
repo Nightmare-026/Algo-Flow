@@ -22,7 +22,7 @@ import { LegalNav } from "@/components/legal/LegalNav";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Comprehensive Privacy Policy and data governance standards for Algo Flow. Learn how we collect, store, and protect your personal information, practice telemetry, and authentication data.",
+    "Algo Flow Privacy Policy and data governance. Learn how we collect, store, and protect your personal information, practice telemetry, and account data.",
   alternates: { canonical: "/privacy" },
 };
 

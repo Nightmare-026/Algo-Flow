@@ -27,7 +27,7 @@ export async function generateMetadata({
   if (!structure) return {};
 
   const title = `${structure.name} Algorithms & Visualizers`;
-  const description = `${structure.description} Explore interactive step-by-step traces and visualizers for ${structure.name} algorithms.`;
+  const description = `Explore interactive step-by-step visualizers and traces for ${structure.name} algorithms and data structures.`;
   return {
     title,
     description,

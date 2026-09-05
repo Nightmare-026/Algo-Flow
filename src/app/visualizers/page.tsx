@@ -3,27 +3,35 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CatalogExplorer } from "./CatalogExplorer";
 import { getSiteUrl } from "@/lib/site";
-import { catalogStats, publishedAlgorithms, publishedDataStructures } from "@/lib/catalog";
+import { publishedAlgorithms, publishedDataStructures } from "@/lib/catalog";
 import { safeJsonLd } from "@/lib/security/safe-json";
 
 export const metadata: Metadata = {
   title: "Visualizer Library",
-  description: `Explore ${catalogStats.visualizerCount} interactive data structure and algorithm visualizers. Step-by-step traces for arrays, linked lists, stacks, queues, trees, graphs, sorting, searching, and dynamic programming.`,
+  description:
+    "Explore interactive data structure and algorithm visualizers with step-by-step traces for trees, graphs, sorting, searching, and dynamic programming.",
   alternates: { canonical: "/visualizers" },
   openGraph: {
-    title: "Visualizer Library | Algo Flow",
-    description: `Explore ${catalogStats.visualizerCount} interactive data structure and algorithm visualizers with step-by-step code execution traces.`,
+    title: "Visualizer Library",
+    description:
+      "Explore interactive data structure and algorithm visualizers with step-by-step code execution traces.",
     url: "/visualizers",
     siteName: "Algo Flow",
     images: [
-      { url: "/opengraph-image", width: 1200, height: 630, alt: "Algo Flow Visualizer Library" },
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Algo Flow - Visualizer Library",
+      },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Visualizer Library | Algo Flow",
-    description: `Explore ${catalogStats.visualizerCount} interactive data structure and algorithm visualizers.`,
+    title: "Visualizer Library",
+    description:
+      "Explore interactive data structure and algorithm visualizers with step-by-step code execution traces.",
     images: ["/opengraph-image"],
   },
 };

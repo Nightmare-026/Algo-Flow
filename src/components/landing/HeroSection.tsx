@@ -151,7 +151,7 @@ function WorkbenchPreview() {
 
         <div
           className="flex min-h-40 items-end justify-center gap-3 sm:gap-4 pt-4"
-          role="img"
+          role="region"
           aria-label={`Array values ${state?.elements?.map((e) => e.value).join(", ")}. ${step.title}. ${step.description}`}
         >
           {state?.elements?.map((element, index) => {

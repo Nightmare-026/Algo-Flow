@@ -22,7 +22,8 @@ export async function generateMetadata({
   if (!algorithm) return {};
 
   const title = `${algorithm.name} Visualizer`;
-  const description = `${algorithm.shortDescription} Trace each committed step with synchronized state, explanation, pseudocode, and source code.`;
+  const rawDesc = `${algorithm.shortDescription} Interactive step-by-step visualizer with code traces.`;
+  const description = rawDesc.length > 155 ? `${rawDesc.slice(0, 152)}...` : rawDesc;
   return {
     title,
     description,

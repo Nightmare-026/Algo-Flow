@@ -23,7 +23,7 @@ import { LegalNav } from "@/components/legal/LegalNav";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "Official Terms of Service and user agreement for Algo Flow. Review permitted educational uses, user conduct, intellectual property rights, and platform disclaimers.",
+    "Terms of Service and user agreement for Algo Flow. Review permitted educational uses, user conduct, intellectual property rights, and platform disclaimers.",
   alternates: { canonical: "/terms" },
 };
 
