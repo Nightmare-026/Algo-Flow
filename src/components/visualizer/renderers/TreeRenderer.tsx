@@ -123,12 +123,7 @@ export function TreeRenderer() {
     const depth = getDepth(dataState.root);
     const totalWidth = Math.max(700, Math.pow(2, depth - 1) * 90);
 
-    const traverse = (
-      node: TreeNodeData,
-      level: number,
-      leftBound: number,
-      rightBound: number
-    ) => {
+    const traverse = (node: TreeNodeData, level: number, leftBound: number, rightBound: number) => {
       const x = (leftBound + rightBound) / 2;
       const y = level * 85 + 40;
       const colors = getNodeColor(node.id, highlights);
@@ -185,7 +180,8 @@ export function TreeRenderer() {
       if (node.right) {
         const isEdgeActive =
           (highlights.active?.includes(node.id) || highlights.visited?.includes(node.id)) &&
-          (highlights.active?.includes(node.right.id) || highlights.visited?.includes(node.right.id));
+          (highlights.active?.includes(node.right.id) ||
+            highlights.visited?.includes(node.right.id));
 
         edges.push({
           id: `e-${node.id}-${node.right.id}`,

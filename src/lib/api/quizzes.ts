@@ -28,7 +28,7 @@ export async function submitQuizAttempt(
 
   if (!user) return null;
 
-  const rateLimit = checkRateLimit(`quiz:${user.id}`, 30);
+  const rateLimit = await checkRateLimit(`quiz:${user.id}`, 30);
   if (!rateLimit.success) {
     throw new Error("Too many requests. Please wait a moment.");
   }

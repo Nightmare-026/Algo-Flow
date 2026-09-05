@@ -28,7 +28,7 @@ export async function toggleBookmark(
     return { ok: false, requiresAuth: true, message: "Log in to save bookmarks." };
   }
 
-  const rateLimit = checkRateLimit(`bookmark:${user.id}`, 30);
+  const rateLimit = await checkRateLimit(`bookmark:${user.id}`, 30);
   if (!rateLimit.success) {
     return { ok: false, message: "Too many requests. Please wait a moment." };
   }

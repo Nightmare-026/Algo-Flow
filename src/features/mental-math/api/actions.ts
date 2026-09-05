@@ -33,7 +33,7 @@ export async function recordMentalMathSession(summary: SessionSummary): Promise<
     return { ok: true, message: "Saved locally for guest user." };
   }
 
-  const rateLimit = checkRateLimit(`mental_math:${user.id}`, 60);
+  const rateLimit = await checkRateLimit(`mental_math:${user.id}`, 60);
   if (!rateLimit.success) {
     return { ok: false, message: "Rate limit exceeded. Please wait." };
   }

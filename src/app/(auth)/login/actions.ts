@@ -51,7 +51,7 @@ export async function login(formData: FormData) {
   const nextUrl = safeInternalPath(formData.get("next"));
 
   const clientId = await getClientIdentifier("login", data.email || "anon");
-  const rateLimit = checkRateLimit(clientId, 10, 60000);
+  const rateLimit = await checkRateLimit(clientId, 10, 60000);
   if (!rateLimit.success) {
     redirect(
       `/login?error=${encodeURIComponent("Too many login attempts. Please wait a minute and try again.")}&next=${encodeURIComponent(nextUrl)}`
@@ -163,7 +163,7 @@ export async function signup(formData: FormData) {
   const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const clientId = await getClientIdentifier("signup", email || "anon");
-  const rateLimit = checkRateLimit(clientId, 5, 60000);
+  const rateLimit = await checkRateLimit(clientId, 5, 60000);
   if (!rateLimit.success) {
     redirect(
       `/signup?error=${encodeURIComponent("Too many registration attempts. Please wait a minute and try again.")}&next=${encodeURIComponent(nextUrl)}`
@@ -244,7 +244,7 @@ export async function sendPasswordReset(formData: FormData) {
   const email = textField(formData, "email").toLowerCase();
 
   const clientId = await getClientIdentifier("reset", email || "anon");
-  const rateLimit = checkRateLimit(clientId, 3, 60000);
+  const rateLimit = await checkRateLimit(clientId, 3, 60000);
   if (!rateLimit.success) {
     redirect(
       "/forgot-password?error=" +
@@ -290,7 +290,7 @@ export async function updatePassword(formData: FormData) {
   const passwordConfirm = textField(formData, "password_confirm", false);
 
   const clientId = await getClientIdentifier("update-pass", "session");
-  const rateLimit = checkRateLimit(clientId, 5, 60000);
+  const rateLimit = await checkRateLimit(clientId, 5, 60000);
   if (!rateLimit.success) {
     redirect(
       "/reset-password?error=" +

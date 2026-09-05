@@ -20,7 +20,7 @@ export async function markCompleted(algorithmId: string): Promise<UserActionResu
     return { ok: false, requiresAuth: true, message: "Log in to save progress." };
   }
 
-  const rateLimit = checkRateLimit(`progress:${user.id}`, 30);
+  const rateLimit = await checkRateLimit(`progress:${user.id}`, 30);
   if (!rateLimit.success) {
     return { ok: false, message: "Too many requests. Please wait a moment." };
   }

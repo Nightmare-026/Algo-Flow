@@ -61,7 +61,7 @@ export async function updateUserPreferences(updates: Partial<UserPreferences>) {
 
   if (!user) throw new Error("Not authenticated");
 
-  const rateLimit = checkRateLimit(`preferences:${user.id}`, 30);
+  const rateLimit = await checkRateLimit(`preferences:${user.id}`, 30);
   if (!rateLimit.success) {
     throw new Error("Too many requests. Please wait a moment.");
   }

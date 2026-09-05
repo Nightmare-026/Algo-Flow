@@ -55,7 +55,7 @@ export async function saveSession(
     return { ok: false, requiresAuth: true, message: "Log in to save sessions." };
   }
 
-  const rateLimit = checkRateLimit(`session:${user.id}`, 20);
+  const rateLimit = await checkRateLimit(`session:${user.id}`, 20);
   if (!rateLimit.success) {
     return { ok: false, message: "Too many requests. Please wait a moment." };
   }
