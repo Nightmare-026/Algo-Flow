@@ -52,13 +52,15 @@ Algo Flow enforces defense-in-depth principles across its full stack:
 - Authentication tokens are handled via **Supabase Auth** with strict `HttpOnly`, `SameSite=Lax`, and `Secure` cookie attributes, mitigating cross-site scripting (XSS) token theft and CSRF attacks.
 
 ### 3. HTTP Security Headers
-Configured natively in `next.config.ts` for all application routes:
-- `Content-Security-Policy` (CSP)
+Configured via `src/proxy.ts` (dynamic nonce-based CSP) and `next.config.ts` (static transport headers):
+- `Content-Security-Policy` (CSP Level 3 with per-request cryptographically secure nonce and `strict-dynamic`; `'unsafe-eval'` disallowed in production)
 - `Strict-Transport-Security` (HSTS: max-age 2 years, includeSubDomains, preload)
 - `X-Frame-Options: DENY`
 - `X-Content-Type-Options: nosniff`
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+- `Cross-Origin-Opener-Policy: same-origin-allow-popups`
+- `X-Permitted-Cross-Domain-Policies: none`
 
 ### 4. Secret & Key Hygiene
 - Production secrets, service role keys, and API tokens are never committed to version control.
