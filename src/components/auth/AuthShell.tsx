@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Braces, CheckCircle2 } from "lucide-react";
 import { AuthVisual } from "@/components/auth/AuthVisual";
+import { catalogStats } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 
 type AuthShellProps = {
@@ -123,10 +124,11 @@ export function AuthShell({
               <ul className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-bold text-text-secondary">
                 <li className="flex items-center gap-1.5 text-primary">
                   <CheckCircle2 className="h-4 w-4 text-primary" />
-                  137 Interactive Visualizers
+                  {catalogStats.visualizerCount} Interactive Visualizers
                 </li>
                 <li className="flex items-center gap-1.5 text-secondary">
-                  <Braces className="h-4 w-4 text-secondary" />5 Production Languages
+                  <Braces className="h-4 w-4 text-secondary" />
+                  {catalogStats.languageCount} Production Languages
                 </li>
               </ul>
             </div>

@@ -1,11 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import type { VisualStep } from "@/types";
-import type {
-  InputToken,
-  OutputToken,
-  StackElement,
-  StackVisualState,
-} from "./types";
+import type { InputToken, OutputToken, StackElement, StackVisualState } from "./types";
 
 const clone = <T>(val: T): T => structuredClone(val);
 
@@ -42,9 +37,7 @@ function makeStep(
 /* ================================================================
    1. BALANCED PARENTHESES
    ================================================================ */
-export function generateBalancedParenthesesSteps(
-  rawInput?: string | number[]
-): VisualStep[] {
+export function generateBalancedParenthesesSteps(rawInput?: string | number[]): VisualStep[] {
   let exprStr = "{[()]}";
   if (typeof rawInput === "string" && rawInput.trim().length > 0) {
     exprStr = rawInput.trim();
@@ -200,7 +193,11 @@ export function generateBalancedParenthesesSteps(
             state,
             {
               highlights: { error: [topElem.id] },
-              variables: { Expected: expectedOpening, Found: topElem.value, Error: "Mismatched Brackets" },
+              variables: {
+                Expected: expectedOpening,
+                Found: topElem.value,
+                Error: "Mismatched Brackets",
+              },
               pseudocodeLine: 3,
             }
           )
@@ -216,7 +213,10 @@ export function generateBalancedParenthesesSteps(
   // End of scan check
   state.activeTokenIndex = chars.length;
   if (stack.length === 0 && isBalanced) {
-    state.statusMessage = { text: "Success! All brackets are perfectly balanced.", type: "success" };
+    state.statusMessage = {
+      text: "Success! All brackets are perfectly balanced.",
+      type: "success",
+    };
     steps.push(
       makeStep(
         stepNumber++,
@@ -259,9 +259,7 @@ export function generateBalancedParenthesesSteps(
 /* ================================================================
    2. INFIX TO POSTFIX CONVERSION (Shunting-Yard)
    ================================================================ */
-export function generateInfixToPostfixSteps(
-  rawInput?: string | number[]
-): VisualStep[] {
+export function generateInfixToPostfixSteps(rawInput?: string | number[]): VisualStep[] {
   let exprStr = "A + B * C";
   if (typeof rawInput === "string" && rawInput.trim().length > 0) {
     exprStr = rawInput.trim();
@@ -355,7 +353,10 @@ export function generateInfixToPostfixSteps(
       const newElem: StackElement = { id: uuidv4(), value: "(" };
       stack.push(newElem);
       inputTokens[i].status = "scanned";
-      state.statusMessage = { text: "Left parenthesis '(' pushed to operator stack.", type: "info" };
+      state.statusMessage = {
+        text: "Left parenthesis '(' pushed to operator stack.",
+        type: "info",
+      };
 
       steps.push(
         makeStep(
@@ -374,7 +375,10 @@ export function generateInfixToPostfixSteps(
       );
     } else if (token === ")") {
       inputTokens[i].status = "scanned";
-      state.statusMessage = { text: "Right parenthesis ')' encountered. Unwinding operators until '('.", type: "info" };
+      state.statusMessage = {
+        text: "Right parenthesis ')' encountered. Unwinding operators until '('.",
+        type: "info",
+      };
 
       while (stack.length > 0 && stack[stack.length - 1].value !== "(") {
         const popped = stack.pop()!;
@@ -576,9 +580,7 @@ export function generateInfixToPostfixSteps(
 /* ================================================================
    3. POSTFIX EXPRESSION EVALUATION
    ================================================================ */
-export function generatePostfixEvaluationSteps(
-  rawInput?: string | number[]
-): VisualStep[] {
+export function generatePostfixEvaluationSteps(rawInput?: string | number[]): VisualStep[] {
   let exprStr = "5 3 + 2 *";
   if (typeof rawInput === "string" && rawInput.trim().length > 0) {
     exprStr = rawInput.trim();
@@ -664,7 +666,10 @@ export function generatePostfixEvaluationSteps(
 
       if (stack.length < 2) {
         inputTokens[i].status = "error";
-        state.statusMessage = { text: `Invalid Expression! Operator '${token}' requires 2 operands.`, type: "error" };
+        state.statusMessage = {
+          text: `Invalid Expression! Operator '${token}' requires 2 operands.`,
+          type: "error",
+        };
 
         steps.push(
           makeStep(
@@ -693,7 +698,10 @@ export function generatePostfixEvaluationSteps(
 
       if (token === "/" && numB === 0) {
         inputTokens[i].status = "error";
-        state.statusMessage = { text: `Division by Zero! Cannot divide ${numA} by 0.`, type: "error" };
+        state.statusMessage = {
+          text: `Division by Zero! Cannot divide ${numA} by 0.`,
+          type: "error",
+        };
         steps.push(
           makeStep(
             stepNumber++,
@@ -797,12 +805,12 @@ export function generatePostfixEvaluationSteps(
 /* ================================================================
    4. MIN STACK (O(1) Minimum Element Retrieval)
    ================================================================ */
-export function generateMinStackSteps(
-  rawInput?: number[],
-  capacity: number = 8
-): VisualStep[] {
+export function generateMinStackSteps(rawInput?: number[], capacity: number = 8): VisualStep[] {
   const maxCap = Math.min(15, Math.max(4, capacity));
-  const data = Array.isArray(rawInput) && rawInput.length > 0 ? rawInput.slice(0, maxCap) : [18, 19, 29, 15, 16];
+  const data =
+    Array.isArray(rawInput) && rawInput.length > 0
+      ? rawInput.slice(0, maxCap)
+      : [18, 19, 29, 15, 16];
 
   const mainStack: StackElement[] = [];
   const minStack: StackElement[] = [];
@@ -813,7 +821,10 @@ export function generateMinStackSteps(
     elements: mainStack,
     minElements: minStack,
     maxCapacity: maxCap,
-    statusMessage: { text: "MinStack tracks the current minimum element in O(1) time.", type: "info" },
+    statusMessage: {
+      text: "MinStack tracks the current minimum element in O(1) time.",
+      type: "info",
+    },
   };
 
   steps.push(
@@ -867,7 +878,10 @@ export function generateMinStackSteps(
 
   // Demonstrate getMin O(1)
   const currentMin = minStack[minStack.length - 1].value;
-  state.statusMessage = { text: `getMin() returns ${currentMin} in O(1) from top of Min Stack.`, type: "success" };
+  state.statusMessage = {
+    text: `getMin() returns ${currentMin} in O(1) from top of Min Stack.`,
+    type: "success",
+  };
 
   steps.push(
     makeStep(
@@ -944,7 +958,8 @@ export function generateNextGreaterElementSteps(
   capacity: number = 8
 ): VisualStep[] {
   const maxCap = Math.min(15, Math.max(4, capacity));
-  const arr = Array.isArray(rawInput) && rawInput.length > 0 ? rawInput.slice(0, maxCap) : [4, 5, 2, 25];
+  const arr =
+    Array.isArray(rawInput) && rawInput.length > 0 ? rawInput.slice(0, maxCap) : [4, 5, 2, 25];
 
   const stack: StackElement[] = []; // holds indices
   const results: Array<number | string> = new Array(arr.length).fill("-");
@@ -963,7 +978,10 @@ export function generateNextGreaterElementSteps(
     elements: stack,
     maxCapacity: maxCap,
     resultMapping: buildResultMapping(),
-    statusMessage: { text: "Monotonic Stack finds the Next Greater Element for each position in O(n).", type: "info" },
+    statusMessage: {
+      text: "Monotonic Stack finds the Next Greater Element for each position in O(n).",
+      type: "info",
+    },
   };
 
   steps.push(

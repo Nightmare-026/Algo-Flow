@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   AlignRight,
   ArrowLeftRight,
@@ -57,9 +58,47 @@ type CatalogExplorerProps = {
 };
 
 export function CatalogExplorer({ dataStructures, publishedAlgorithms }: CatalogExplorerProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [, startTransition] = useTransition();
+
+  const urlCategory = searchParams.get("category") ?? "all";
+  const urlQuery = searchParams.get("q") ?? "";
+
+  const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery);
+  const [searchQuery, setSearchQuery] = useState(urlQuery);
+
+  if (urlQuery !== prevUrlQuery) {
+    setPrevUrlQuery(urlQuery);
+    setSearchQuery(urlQuery);
+  }
+
+  const activeCategory = urlCategory;
   const reduceMotion = useReducedMotion();
+
+  const syncUrl = useCallback(
+    (q: string, category: string) => {
+      const params = new URLSearchParams();
+      if (q.trim()) params.set("q", q.trim());
+      if (category && category !== "all") params.set("category", category);
+      const queryString = params.toString();
+      const nextUrl = queryString ? `${pathname}?${queryString}` : pathname;
+      startTransition(() => {
+        router.replace(nextUrl, { scroll: false });
+      });
+    },
+    [pathname, router]
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    syncUrl(value, activeCategory);
+  };
+
+  const handleCategoryChange = (cat: string) => {
+    syncUrl(searchQuery, cat);
+  };
 
   const algorithmsByStructure = useMemo(() => {
     const map = new Map<string, Algorithm[]>();
@@ -145,16 +184,16 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
             role="searchbox"
             placeholder="Search structures or algorithms (e.g. Array, Dijkstra, Tree)..."
             value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
+            onChange={(event) => handleSearchChange(event.target.value)}
             onKeyDown={(event) => {
-              if (event.key === "Escape") setSearchQuery("");
+              if (event.key === "Escape") handleSearchChange("");
             }}
             className="h-11 w-full rounded-xl border border-border bg-bg-surface-inset py-2.5 pl-11 pr-10 text-sm text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           />
           {searchQuery ? (
             <button
               type="button"
-              onClick={() => setSearchQuery("")}
+              onClick={() => handleSearchChange("")}
               className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
               aria-label="Clear search"
             >
@@ -184,9 +223,9 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
                 type="button"
                 role="tab"
                 aria-selected={selected}
-                onClick={() => setActiveCategory(category.id)}
+                onClick={() => handleCategoryChange(category.id)}
                 className={cn(
-                  "h-11 shrink-0 rounded-xl px-4 text-xs font-bold transition-all duration-200 cursor-pointer select-none",
+                  "h-11 shrink-0 rounded-xl px-4 text-xs font-bold transition-colors duration-200 cursor-pointer select-none",
                   selected
                     ? "border border-primary/40 bg-primary text-white shadow-[var(--shadow-raised-sm)]"
                     : "border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-text-primary hover:border-border-hover hover:bg-surface-hover"
@@ -349,9 +388,9 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
             type="button"
             onClick={() => {
               setSearchQuery("");
-              setActiveCategory("all");
+              syncUrl("", "all");
             }}
-            className="mt-5 inline-flex items-center justify-center min-h-10 rounded-xl bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-[var(--shadow-raised-sm)] cursor-pointer transition-all"
+            className="mt-5 inline-flex items-center justify-center min-h-10 rounded-xl bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-[var(--shadow-raised-sm)] cursor-pointer transition-colors"
           >
             Reset Filters
           </button>

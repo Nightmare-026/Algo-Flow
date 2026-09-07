@@ -9,6 +9,7 @@ import { updatePassword } from "../login/actions";
 export const metadata: Metadata = {
   title: "Reset Password",
   description: "Choose a new Algo Flow password.",
+  robots: { index: false, follow: false },
 };
 
 export default async function ResetPasswordPage({

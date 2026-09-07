@@ -1,14 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  AlertCircle,
-  FileEdit,
-  HardDriveDownload,
-  Info,
-  Shuffle,
-  Target,
-} from "lucide-react";
+import { AlertCircle, FileEdit, HardDriveDownload, Info, Shuffle, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -91,10 +92,16 @@ export default function VisualizersPage() {
             </p>
           </div>
 
-          <CatalogExplorer
-            dataStructures={publishedDataStructures}
-            publishedAlgorithms={publishedAlgorithms}
-          />
+          <Suspense
+            fallback={
+              <div className="mt-8 h-96 w-full animate-pulse rounded-2xl border border-border bg-surface-hover/30" />
+            }
+          >
+            <CatalogExplorer
+              dataStructures={publishedDataStructures}
+              publishedAlgorithms={publishedAlgorithms}
+            />
+          </Suspense>
         </div>
       </main>
       <Footer />

@@ -21,8 +21,8 @@ export async function proxy(request: NextRequest) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    connect-src 'self' https://*.supabase.co https://accounts.google.com https://github.com https://va.vercel-scripts.com;
-    upgrade-insecure-requests;
+    connect-src 'self' ${isDev ? "ws: wss: http://localhost:* http://127.0.0.1:*" : ""} https://*.supabase.co https://accounts.google.com https://github.com https://va.vercel-scripts.com https://*.upstash.io;
+    ${isDev ? "" : "upgrade-insecure-requests;"}
   `
     .replace(/\s{2,}/g, " ")
     .trim();

@@ -43,9 +43,7 @@ export function StackInputControls({
   const isNGE = slug === "next-greater-element";
   const isStringBased = isParentheses || isInfix || isPostfix;
 
-  const [customInput, setCustomInput] = useState(() =>
-    isStringBased ? options.text || "" : ""
-  );
+  const [customInput, setCustomInput] = useState(() => (isStringBased ? options.text || "" : ""));
   const [error, setError] = useState<string | null>(null);
 
   const capacity = options.capacity || 8;
@@ -144,7 +142,9 @@ export function StackInputControls({
           {/* Presets for String-Based Applications */}
           {isParentheses && (
             <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
-              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
+                Presets:
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -177,7 +177,9 @@ export function StackInputControls({
 
           {isInfix && (
             <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
-              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
+                Presets:
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -207,7 +209,9 @@ export function StackInputControls({
 
           {isPostfix && (
             <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
-              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
+                Presets:
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -230,7 +234,9 @@ export function StackInputControls({
           {/* Presets for NGE and MinStack */}
           {isNGE && onGenerate && (
             <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
-              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
+                Presets:
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -268,7 +274,9 @@ export function StackInputControls({
 
           {isMinStack && onGenerate && (
             <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
-              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">Presets:</span>
+              <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
+                Presets:
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -433,4 +441,3 @@ export function StackInputControls({
     </div>
   );
 }
-

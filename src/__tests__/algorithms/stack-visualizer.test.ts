@@ -445,4 +445,3 @@ describe("Stack Visualizers - Comprehensive LIFO & Step Integrity Suite", () => 
     });
   });
 });
-

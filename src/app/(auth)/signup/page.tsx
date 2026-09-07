@@ -20,6 +20,7 @@ import { signup } from "../login/actions";
 export const metadata: Metadata = {
   title: "Sign Up",
   description: "Sign up for an Algo Flow account to save DSA progress, sessions, and bookmarks.",
+  robots: { index: false, follow: false },
 };
 
 export default async function SignupPage({

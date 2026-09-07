@@ -294,8 +294,8 @@ export function LinkedListInputControls({
             <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
               <Info className="h-3 w-3 text-primary shrink-0" />
               <span>
-                Operation: <strong className="text-text-primary">Sequential Traversal</strong> visits
-                each node in O(n)
+                Operation: <strong className="text-text-primary">Sequential Traversal</strong>{" "}
+                visits each node in O(n)
               </span>
             </div>
           )}

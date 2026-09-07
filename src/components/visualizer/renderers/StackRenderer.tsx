@@ -217,14 +217,22 @@ export function StackRenderer() {
           <div
             className={cn(
               "inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-xs font-semibold shadow-sm animate-in fade-in",
-              dataState.statusMessage.type === "success" && "border-success/40 bg-success-muted text-success",
-              dataState.statusMessage.type === "error" && "border-error/40 bg-error-muted text-error",
-              dataState.statusMessage.type === "warning" && "border-warning/40 bg-warning-muted text-warning",
-              dataState.statusMessage.type === "info" && "border-border bg-surface text-text-secondary"
+              dataState.statusMessage.type === "success" &&
+                "border-success/40 bg-success-muted text-success",
+              dataState.statusMessage.type === "error" &&
+                "border-error/40 bg-error-muted text-error",
+              dataState.statusMessage.type === "warning" &&
+                "border-warning/40 bg-warning-muted text-warning",
+              dataState.statusMessage.type === "info" &&
+                "border-border bg-surface text-text-secondary"
             )}
           >
-            {dataState.statusMessage.type === "success" && <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />}
-            {dataState.statusMessage.type === "error" && <AlertCircle className="h-3.5 w-3.5 shrink-0" />}
+            {dataState.statusMessage.type === "success" && (
+              <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+            )}
+            {dataState.statusMessage.type === "error" && (
+              <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+            )}
             {dataState.statusMessage.type === "info" && <Info className="h-3.5 w-3.5 shrink-0" />}
             <span>{dataState.statusMessage.text}</span>
           </div>
@@ -315,4 +323,3 @@ export function StackRenderer() {
     </div>
   );
 }
-

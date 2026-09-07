@@ -3,7 +3,7 @@ import { algorithms } from "@/data/seed/algorithms";
 import { dataStructures } from "@/data/seed/data-structures";
 import { getSiteUrl } from "@/lib/site";
 
-const lastModified = new Date();
+const lastModified = new Date(process.env.BUILD_TIME || "2026-03-01T00:00:00.000Z");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
@@ -14,8 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/terms",
     "/license",
     "/cookies",
-    "/login",
-    "/signup",
     "/mental-math",
     "/mental-math/practice",
     "/mental-math/speed",

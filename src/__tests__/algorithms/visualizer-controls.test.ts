@@ -22,17 +22,9 @@ describe("Linked List Visualizers Step Generation Robustness", () => {
     "sll-remove-duplicates",
   ];
 
-  const dllSlugs = [
-    "dll-traversal",
-    "dll-delete-head",
-    "dll-delete-tail",
-    "dll-reverse",
-  ];
+  const dllSlugs = ["dll-traversal", "dll-delete-head", "dll-delete-tail", "dll-reverse"];
 
-  const cllSlugs = [
-    "cll-traversal",
-    "cll-delete-head",
-  ];
+  const cllSlugs = ["cll-traversal", "cll-delete-head"];
 
   sllSlugs.forEach((slug) => {
     it(`generates valid steps for ${slug} across various data sets`, () => {

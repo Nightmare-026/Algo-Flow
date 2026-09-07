@@ -126,7 +126,7 @@ export function generateStackIsEmptySteps(
       "isEmpty",
       isEmpty ? "found" : "not-found",
       state,
-      isEmpty ? {} : (top ? { active: [top.id], pointer: [top.id] } : {}),
+      isEmpty ? {} : top ? { active: [top.id], pointer: [top.id] } : {},
       { Top: state.elements.length - 1, isEmpty, Size: state.elements.length },
       2
     ),
@@ -162,7 +162,7 @@ export function generateStackIsFullSteps(
       "isFull",
       isFull ? "found" : "not-found",
       state,
-      isFull ? { found: state.elements.map((e) => e.id) } : (top ? { active: [top.id] } : {}),
+      isFull ? { found: state.elements.map((e) => e.id) } : top ? { active: [top.id] } : {},
       { Size: state.elements.length, Capacity: maxCapacity, isFull },
       2
     ),

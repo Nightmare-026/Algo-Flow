@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { MailCheck } from "lucide-react";
 import { AuthShell } from "@/components/auth/AuthShell";
@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 export const metadata: Metadata = {
   title: "Verify Email",
   description: "Check your email to verify your Algo Flow account.",
+  robots: { index: false, follow: false },
 };
 
 export default async function VerifyEmailPage() {

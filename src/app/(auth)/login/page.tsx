@@ -12,6 +12,7 @@ import { login } from "./actions";
 export const metadata: Metadata = {
   title: "Log In",
   description: "Log in to Algo Flow to save bookmarks, sessions, streaks, and progress.",
+  robots: { index: false, follow: false },
 };
 
 export default async function LoginPage({

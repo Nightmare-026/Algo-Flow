@@ -1,13 +1,6 @@
 "use client";
 
-import React, {
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-  useId,
-  ReactNode,
-} from "react";
+import React, { useState, useRef, useCallback, useEffect, useId, ReactNode } from "react";
 import { Plus, Minus, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -53,26 +46,29 @@ export function InteractiveCanvas({
   }, []);
 
   // Mouse pan handlers
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    // Only left click initiates drag
-    if (e.button !== 0) return;
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      // Only left click initiates drag
+      if (e.button !== 0) return;
 
-    // Ignore clicks on interactive controls inside the canvas
-    const target = e.target as HTMLElement;
-    if (
-      target.closest("button") ||
-      target.closest("input") ||
-      target.closest("select") ||
-      target.closest("a") ||
-      target.closest("[data-no-pan]")
-    ) {
-      return;
-    }
+      // Ignore clicks on interactive controls inside the canvas
+      const target = e.target as HTMLElement;
+      if (
+        target.closest("button") ||
+        target.closest("input") ||
+        target.closest("select") ||
+        target.closest("a") ||
+        target.closest("[data-no-pan]")
+      ) {
+        return;
+      }
 
-    setIsDragging(true);
-    dragStartRef.current = { x: e.clientX, y: e.clientY };
-    initialPanRef.current = { ...pan };
-  }, [pan]);
+      setIsDragging(true);
+      dragStartRef.current = { x: e.clientX, y: e.clientY };
+      initialPanRef.current = { ...pan };
+    },
+    [pan]
+  );
 
   useEffect(() => {
     if (!isDragging) return;
@@ -120,58 +116,67 @@ export function InteractiveCanvas({
   }, [minZoom, maxZoom]);
 
   // Touch handlers for mobile & pinch-zoom
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    const target = e.target as HTMLElement;
-    if (
-      target.closest("button") ||
-      target.closest("input") ||
-      target.closest("select") ||
-      target.closest("a") ||
-      target.closest("[data-no-pan]")
-    ) {
-      return;
-    }
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.closest("button") ||
+        target.closest("input") ||
+        target.closest("select") ||
+        target.closest("a") ||
+        target.closest("[data-no-pan]")
+      ) {
+        return;
+      }
 
-    if (e.touches.length === 1) {
-      setIsDragging(true);
-      dragStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      initialPanRef.current = { ...pan };
-    } else if (e.touches.length === 2) {
-      setIsDragging(false);
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const dist = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
-      touchesRef.current = {
-        dist,
-        center: {
-          x: (touch1.clientX + touch2.clientX) / 2,
-          y: (touch1.clientY + touch2.clientY) / 2,
-        },
-      };
-    }
-  }, [pan]);
+      if (e.touches.length === 1) {
+        setIsDragging(true);
+        dragStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        initialPanRef.current = { ...pan };
+      } else if (e.touches.length === 2) {
+        setIsDragging(false);
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const dist = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+        touchesRef.current = {
+          dist,
+          center: {
+            x: (touch1.clientX + touch2.clientX) / 2,
+            y: (touch1.clientY + touch2.clientY) / 2,
+          },
+        };
+      }
+    },
+    [pan]
+  );
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (e.touches.length === 1 && isDragging) {
-      const dx = e.touches[0].clientX - dragStartRef.current.x;
-      const dy = e.touches[0].clientY - dragStartRef.current.y;
-      setPan({
-        x: initialPanRef.current.x + dx,
-        y: initialPanRef.current.y + dy,
-      });
-    } else if (e.touches.length === 2 && touchesRef.current) {
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const newDist = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
-      const scaleChange = newDist / touchesRef.current.dist;
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (e.touches.length === 1 && isDragging) {
+        const dx = e.touches[0].clientX - dragStartRef.current.x;
+        const dy = e.touches[0].clientY - dragStartRef.current.y;
+        setPan({
+          x: initialPanRef.current.x + dx,
+          y: initialPanRef.current.y + dy,
+        });
+      } else if (e.touches.length === 2 && touchesRef.current) {
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const newDist = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+        const scaleChange = newDist / touchesRef.current.dist;
 
-      setZoom((prev) => {
-        const next = prev * scaleChange;
-        return Math.min(maxZoom, Math.max(minZoom, Number(next.toFixed(2))));
-      });
-      touchesRef.current.dist = newDist;
-    }
-  }, [isDragging, maxZoom, minZoom]);
+        setZoom((prev) => {
+          const next = prev * scaleChange;
+          return Math.min(maxZoom, Math.max(minZoom, Number(next.toFixed(2))));
+        });
+        touchesRef.current.dist = newDist;
+      }
+    },
+    [isDragging, maxZoom, minZoom]
+  );
 
   const handleTouchEnd = useCallback(() => {
     setIsDragging(false);
@@ -199,10 +204,7 @@ export function InteractiveCanvas({
       aria-label={`${name} interactive canvas. Drag to pan, scroll to zoom.`}
     >
       {/* 1. Dot Grid Canvas Background (Matches ReactFlow BackgroundVariant.Dots) */}
-      <svg
-        className="absolute inset-0 h-full w-full pointer-events-none"
-        aria-hidden="true"
-      >
+      <svg className="absolute inset-0 h-full w-full pointer-events-none" aria-hidden="true">
         <defs>
           <pattern
             id={patternId}
