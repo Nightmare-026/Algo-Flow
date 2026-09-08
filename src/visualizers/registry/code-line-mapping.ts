@@ -17,8 +17,13 @@ export function resolvePhysicalCodeLine(
   logicalLine: number | undefined,
   language: CodeLanguage
 ) {
-  if (!logicalLine) return undefined;
+  if (logicalLine == null || logicalLine <= 0) return undefined;
   if (!mappings) return logicalLine;
-  if (!isRequiredCodeLanguage(language)) return undefined;
-  return mappings.find((mapping) => mapping.logicalLine === logicalLine)?.lines[language];
+  const targetLanguage = isRequiredCodeLanguage(language)
+    ? language
+    : language === "typescript"
+      ? "javascript"
+      : undefined;
+  if (!targetLanguage) return undefined;
+  return mappings.find((mapping) => mapping.logicalLine === logicalLine)?.lines[targetLanguage];
 }

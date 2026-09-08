@@ -47,7 +47,7 @@ export function coordinateArraySteps(slug: string, steps: VisualStep[]) {
   const mapping = mappings[slug];
   if (!mapping) return steps;
   return steps.map((step) => {
-    if (!step.codeLine) return step;
+    if (step.codeLine == null) return step;
     const line = mapping[`${step.codeLine}:${step.actionType}`] ?? mapping[String(step.codeLine)];
     return line ? { ...step, pseudocodeLine: line } : step;
   });

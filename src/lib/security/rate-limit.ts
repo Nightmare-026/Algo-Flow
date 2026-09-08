@@ -24,10 +24,18 @@ export function checkInMemoryRateLimit(
   const now = Date.now();
   const record = inMemoryStore.get(key);
 
-  // Clean up stale keys periodically
+  // Clean up stale keys periodically, and enforce hard cap to prevent unbounded growth
   if (inMemoryStore.size > 5000) {
     for (const [k, rec] of inMemoryStore.entries()) {
       if (rec.resetAt < now) {
+        inMemoryStore.delete(k);
+      }
+    }
+    // Hard cap: if still too large after expiry cleanup, evict oldest entries
+    if (inMemoryStore.size > 10000) {
+      const entries = [...inMemoryStore.entries()].sort((a, b) => a[1].resetAt - b[1].resetAt);
+      const toRemove = entries.slice(0, inMemoryStore.size - 8000);
+      for (const [k] of toRemove) {
         inMemoryStore.delete(k);
       }
     }

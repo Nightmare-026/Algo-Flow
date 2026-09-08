@@ -11,7 +11,7 @@ export function coordinateQueueSteps(slug: string, steps: VisualStep[]) {
   const mapping = mappings[slug];
   if (!mapping) return steps;
   return steps.map((step) => {
-    if (!step.codeLine) return step;
+    if (step.codeLine == null) return step;
     const line =
       mapping[`${step.codeLine}:${step.title}`] ??
       mapping[`${step.codeLine}:${step.actionType}`] ??

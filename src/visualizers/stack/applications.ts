@@ -471,7 +471,8 @@ export function generateInfixToPostfixSteps(rawInput?: string | number[]): Visua
                 PoppedOperator: popped.value,
                 PostfixOutput: outputTokens.map((o) => o.label).join(" "),
               },
-              pseudocodeLine: 3,
+              pseudocodeLine: 5,
+              codeLine: 5,
             }
           )
         );
@@ -492,7 +493,8 @@ export function generateInfixToPostfixSteps(rawInput?: string | number[]): Visua
           {
             highlights: { inserted: [newElem.id] },
             variables: { Operator: token, Precedence: currPrec },
-            pseudocodeLine: 3,
+            pseudocodeLine: 5,
+            codeLine: 5,
           }
         )
       );
@@ -522,7 +524,8 @@ export function generateInfixToPostfixSteps(rawInput?: string | number[]): Visua
               RemainingPopped: popped.value,
               PostfixOutput: outputTokens.map((o) => o.label).join(" "),
             },
-            pseudocodeLine: 5,
+            pseudocodeLine: 6,
+            codeLine: 6,
           }
         )
       );
@@ -545,7 +548,8 @@ export function generateInfixToPostfixSteps(rawInput?: string | number[]): Visua
         {
           highlights: { error: [] },
           variables: { Error: "Unclosed '('" },
-          pseudocodeLine: 5,
+          pseudocodeLine: 6,
+          codeLine: 6,
         }
       )
     );
@@ -569,7 +573,8 @@ export function generateInfixToPostfixSteps(rawInput?: string | number[]): Visua
         variables: {
           FinalPostfix: outputTokens.map((o) => o.label).join(" "),
         },
-        pseudocodeLine: 5,
+        pseudocodeLine: 6,
+        codeLine: 6,
       }
     )
   );

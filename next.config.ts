@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
     const isDev = process.env.NODE_ENV === "development";
     const cspHeader = `
       default-src 'self';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;
+      script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://va.vercel-scripts.com;
       style-src 'self' 'unsafe-inline';
       img-src 'self' blob: data: https:;
       font-src 'self' data: https:;

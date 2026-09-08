@@ -52,6 +52,7 @@ export const stackCodeLineMappings = {
     line(3, 5, 6, 5, 5),
     line(4, 6, 7, 6, 6),
     line(5, 9, 12, 9, 9),
+    line(6, 10, 13, 12, 12),
   ],
   "postfix-evaluation": [
     line(1, 1, 1, 1, 1),

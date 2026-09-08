@@ -57,7 +57,7 @@ export function PseudocodePanel({ slug, fallback, isVisible = true }: Pseudocode
               return (
                 <div
                   ref={isActive ? activeLineRef : undefined}
-                  key={`${line}-${index}`}
+                  key={`${slug}-${index}`}
                   data-pseudocode-line={lineNum}
                   aria-current={isActive ? "step" : undefined}
                   className={cn(
