@@ -320,7 +320,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                 <Mail className="h-3.5 w-3.5 text-text-muted" />
                 Email
                 <span className="font-normal normal-case tracking-normal text-text-muted">
-                  (optional — if you'd like a response)
+                  (optional — if you&apos;d like a response)
                 </span>
               </label>
               <input
