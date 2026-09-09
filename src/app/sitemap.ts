@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/terms",
     "/license",
     "/cookies",
+    "/feedback",
     "/mental-math",
     "/mental-math/practice",
     "/mental-math/speed",

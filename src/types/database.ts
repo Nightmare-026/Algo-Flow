@@ -56,6 +56,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      feedback: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          type: Database["public"]["Enums"]["feedback_type"];
+          subject: string;
+          message: string;
+          rating: number | null;
+          email: string | null;
+          page_url: string | null;
+          user_agent: string | null;
+          status: Database["public"]["Enums"]["feedback_status"];
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          type: Database["public"]["Enums"]["feedback_type"];
+          subject: string;
+          message: string;
+          rating?: number | null;
+          email?: string | null;
+          page_url?: string | null;
+          user_agent?: string | null;
+          status?: Database["public"]["Enums"]["feedback_status"];
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          type?: Database["public"]["Enums"]["feedback_type"];
+          subject?: string;
+          message?: string;
+          rating?: number | null;
+          email?: string | null;
+          page_url?: string | null;
+          user_agent?: string | null;
+          status?: Database["public"]["Enums"]["feedback_status"];
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       daily_challenges: {
         Row: {
           algorithm_id: string;
@@ -491,7 +533,8 @@ export type Database = {
       };
     };
     Enums: {
-      [_ in never]: never;
+      feedback_type: "bug_report" | "feature_request" | "rating" | "general";
+      feedback_status: "new" | "reviewed" | "resolved" | "dismissed";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -612,6 +655,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      feedback_type: ["bug_report", "feature_request", "rating", "general"] as const,
+      feedback_status: ["new", "reviewed", "resolved", "dismissed"] as const,
+    },
   },
 } as const;

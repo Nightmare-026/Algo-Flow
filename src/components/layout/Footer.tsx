@@ -38,6 +38,7 @@ const footerSections = [
       { label: "Terms of Service", href: "/terms" },
       { label: "License Agreement", href: "/license" },
       { label: "Cookie Policy", href: "/cookies" },
+      { label: "Feedback", href: "/feedback" },
     ],
   },
 ];
