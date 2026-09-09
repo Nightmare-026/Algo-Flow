@@ -115,8 +115,8 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
           Thank You for Your Feedback!
         </h2>
         <p className="mt-3 text-sm text-text-secondary leading-relaxed max-w-md mx-auto">
-          Your {activeType?.label.toLowerCase() ?? "feedback"} has been submitted successfully.
-          We read every piece of feedback and use it to improve Algo Flow.
+          Your {activeType?.label.toLowerCase() ?? "feedback"} has been submitted successfully. We
+          read every piece of feedback and use it to improve Algo Flow.
         </p>
         <button
           type="button"
@@ -160,7 +160,9 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border shadow-xs transition-colors duration-150"
                   style={{
                     background: isActive ? type.mutedColor : "var(--bg-surface-inset)",
-                    borderColor: isActive ? `color-mix(in srgb, ${type.color} 30%, transparent)` : "var(--border)",
+                    borderColor: isActive
+                      ? `color-mix(in srgb, ${type.color} 30%, transparent)`
+                      : "var(--border)",
                     color: isActive ? type.color : "var(--text-muted)",
                   }}
                 >
@@ -190,10 +192,15 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
           {/* Subject */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="feedback-subject" className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary">
+              <label
+                htmlFor="feedback-subject"
+                className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary"
+              >
                 Subject
               </label>
-              <span className={`text-xs font-mono tabular-nums ${subject.length > 180 ? "text-error" : "text-text-muted"}`}>
+              <span
+                className={`text-xs font-mono tabular-nums ${subject.length > 180 ? "text-error" : "text-text-muted"}`}
+              >
                 {subject.length}/200
               </span>
             </div>
@@ -271,10 +278,15 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
           {/* Message */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="feedback-message" className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary">
+              <label
+                htmlFor="feedback-message"
+                className="text-xs font-bold font-mono uppercase tracking-wider text-text-primary"
+              >
                 {selectedType === "bug_report" ? "Steps to Reproduce" : "Details"}
               </label>
-              <span className={`text-xs font-mono tabular-nums ${message.length > 4800 ? "text-error" : "text-text-muted"}`}>
+              <span
+                className={`text-xs font-mono tabular-nums ${message.length > 4800 ? "text-error" : "text-text-muted"}`}
+              >
                 {message.length}/5000
               </span>
             </div>
@@ -301,10 +313,15 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
           {/* Email (only for non-authenticated users) */}
           {!isAuthenticated && (
             <div>
-              <label htmlFor="feedback-email" className="flex items-center gap-1.5 text-xs font-bold font-mono uppercase tracking-wider text-text-primary mb-2">
+              <label
+                htmlFor="feedback-email"
+                className="flex items-center gap-1.5 text-xs font-bold font-mono uppercase tracking-wider text-text-primary mb-2"
+              >
                 <Mail className="h-3.5 w-3.5 text-text-muted" />
                 Email
-                <span className="font-normal normal-case tracking-normal text-text-muted">(optional — if you'd like a response)</span>
+                <span className="font-normal normal-case tracking-normal text-text-muted">
+                  (optional — if you'd like a response)
+                </span>
               </label>
               <input
                 id="feedback-email"

@@ -59,10 +59,16 @@ function validatePayload(payload: FeedbackPayload): string | null {
   if (payload.message.trim().length > 5000) {
     return "Message must be 5,000 characters or fewer.";
   }
-  if (payload.type === "rating" && (payload.rating == null || payload.rating < 1 || payload.rating > 5)) {
+  if (
+    payload.type === "rating" &&
+    (payload.rating == null || payload.rating < 1 || payload.rating > 5)
+  ) {
     return "Please select a star rating between 1 and 5.";
   }
-  if (payload.rating != null && (payload.rating < 1 || payload.rating > 5 || !Number.isInteger(payload.rating))) {
+  if (
+    payload.rating != null &&
+    (payload.rating < 1 || payload.rating > 5 || !Number.isInteger(payload.rating))
+  ) {
     return "Rating must be an integer between 1 and 5.";
   }
   if (payload.email && !EMAIL_RE.test(payload.email)) {

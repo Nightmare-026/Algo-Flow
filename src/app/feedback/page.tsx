@@ -35,8 +35,8 @@ export default async function FeedbackPage() {
             Send Us Feedback
           </h1>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-2xl">
-            Found a bug? Have an idea for a new feature? Want to share your experience?
-            We read every piece of feedback and use it to make Algo Flow better for everyone.
+            Found a bug? Have an idea for a new feature? Want to share your experience? We read
+            every piece of feedback and use it to make Algo Flow better for everyone.
           </p>
         </div>
 
@@ -53,8 +53,8 @@ export default async function FeedbackPage() {
               Private & Secure
             </p>
             <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-              Your feedback is stored securely in our database with row-level security.
-              Guest submissions remain anonymous.
+              Your feedback is stored securely in our database with row-level security. Guest
+              submissions remain anonymous.
             </p>
           </div>
 
@@ -64,8 +64,8 @@ export default async function FeedbackPage() {
               Every Submission Read
             </p>
             <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-              Our team reviews every piece of feedback. Bug reports are prioritized and
-              feature requests shape our roadmap.
+              Our team reviews every piece of feedback. Bug reports are prioritized and feature
+              requests shape our roadmap.
             </p>
           </div>
 
@@ -75,8 +75,8 @@ export default async function FeedbackPage() {
               No Account Required
             </p>
             <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-              You can submit feedback without signing in. Optionally provide your email
-              if you&apos;d like us to follow up.
+              You can submit feedback without signing in. Optionally provide your email if
+              you&apos;d like us to follow up.
             </p>
           </div>
         </div>
