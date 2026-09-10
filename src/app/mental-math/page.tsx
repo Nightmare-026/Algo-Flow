@@ -1,16 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import {
-  Trophy,
-  Play,
-  ArrowRight,
-  Zap,
-  Target,
-  BrainCircuit,
-  Sparkles,
-  Layers,
-  BarChart3,
-} from "lucide-react";
+import { ArrowRight, BarChart3 } from "lucide-react";
 import { ModeSelector } from "@/features/mental-math/components/ModeSelector";
 import { OperationsExplorer } from "@/features/mental-math/components/OperationsExplorer";
 
@@ -22,118 +12,14 @@ export const metadata = {
 
 export default function MentalMathHubPage() {
   return (
-    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-14 pb-24">
-      {/* Hero Section: Studio & Curriculum Introduction */}
-      <section className="neu-float relative overflow-hidden rounded-3xl p-6 sm:p-10 lg:p-12 border border-border bg-surface flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 shadow-[var(--shadow-raised)]">
-        <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-
-        <div className="max-w-2xl">
-          <div className="inline-flex min-h-7 items-center gap-2 rounded-full border border-border bg-surface px-3.5 text-[11px] font-bold font-mono uppercase tracking-wider text-primary shadow-[var(--shadow-raised-sm)] mb-4">
-            Mental Math Studio & Curriculum
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-text-primary tracking-tight">
-            Train Arithmetic Reflexes. <span className="text-primary">Master Decomposition.</span>
-          </h1>
-
-          <p className="text-sm sm:text-base leading-relaxed text-text-secondary mt-3 max-w-xl">
-            Develop lightning mental calculation fluency, intuitive number sense, and high-precision
-            arithmetic speed through structured multi-digit drills, 60-second speed sprints, and
-            deterministic daily benchmarks.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3 mt-8">
-            <Link
-              href="/mental-math/practice"
-              className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-2xl bg-primary px-6 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
-            >
-              <Play className="w-4 h-4 fill-current" />
-              <span>Open Practice Studio</span>
-            </Link>
-
-            <Link
-              href="/mental-math/speed"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-border bg-surface px-5 text-xs font-bold font-display text-text-primary hover:text-primary hover:bg-surface-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer"
-            >
-              <Zap className="w-4 h-4 text-primary" />
-              <span>60s Speed Sprint</span>
-            </Link>
-
-            <Link
-              href="/mental-math/daily"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-border bg-surface px-5 text-xs font-bold font-display text-text-primary hover:text-primary hover:bg-surface-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer"
-            >
-              <Trophy className="w-4 h-4 text-primary" />
-              <span>Today&apos;s Challenge</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Studio Platform Specifications Grid (100% Real Architectural Capabilities) */}
-        <div className="grid grid-cols-2 gap-3.5 w-full lg:w-84 shrink-0">
-          <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
-            <div className="flex items-center justify-between text-text-muted mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
-                Operations
-              </span>
-              <BrainCircuit className="w-4 h-4 text-primary" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold font-display text-text-primary">9 Domains</p>
-              <p className="text-[11px] font-sans text-text-muted mt-0.5">
-                Addition, roots, cubes & %
-              </p>
-            </div>
-          </div>
-
-          <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
-            <div className="flex items-center justify-between text-text-muted mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
-                Range Control
-              </span>
-              <Target className="w-4 h-4 text-primary" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold font-display text-text-primary">1–4 Digits</p>
-              <p className="text-[11px] font-sans text-text-muted mt-0.5">Strict operand bounds</p>
-            </div>
-          </div>
-
-          <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
-            <div className="flex items-center justify-between text-text-muted mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
-                Training Modes
-              </span>
-              <Layers className="w-4 h-4 text-primary" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold font-display text-text-primary">6 Formats</p>
-              <p className="text-[11px] font-sans text-text-muted mt-0.5">Sandbox, sprint & test</p>
-            </div>
-          </div>
-
-          <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col justify-between">
-            <div className="flex items-center justify-between text-text-muted mb-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
-                Telemetry
-              </span>
-              <Sparkles className="w-4 h-4 text-primary" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold font-display text-text-primary">Sub-second</p>
-              <p className="text-[11px] font-sans text-text-muted mt-0.5">Real-time QPM tracking</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
+    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-12 pt-4 pb-24">
       {/* Curriculum & Operations Explorer Catalog */}
       <section className="flex flex-col gap-5">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-text-primary tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-text-primary tracking-tight">
               Explore Arithmetic Operations
-            </h2>
+            </h1>
             <p className="text-xs sm:text-sm text-text-secondary mt-1">
               Browse all 9 calculation domains. Click any card to launch an instant practice drill.
             </p>

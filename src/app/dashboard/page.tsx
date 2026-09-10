@@ -133,9 +133,6 @@ export default async function DashboardPage() {
         {/* Welcome Header Bar */}
         <DashboardHeaderAnimation>
           <div>
-            <div className="inline-flex min-h-7 items-center gap-2 rounded-full border border-border bg-surface px-3 text-[11px] font-bold uppercase tracking-wider text-primary shadow-[var(--shadow-raised-sm)] mb-2">
-              Student Command Center
-            </div>
             <h1 className="text-2xl md:text-3xl font-extrabold font-display text-text-primary tracking-tight">
               Welcome back, {(profile?.username as string) || "Learner"}
             </h1>

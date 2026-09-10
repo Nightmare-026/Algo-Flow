@@ -319,13 +319,8 @@ export function HeroSection({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Eyebrow Badge */}
-          <div className="inline-flex min-h-9 items-center gap-2 rounded-full border border-border bg-surface px-3.5 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)]">
-            Interactive CS Visualizer &amp; Learning Workstation
-          </div>
-
           {/* Main Headline */}
-          <h1 className="mt-6 max-w-3xl text-4xl font-extrabold font-display leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl text-text-primary">
+          <h1 className="max-w-3xl text-4xl font-extrabold font-display leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl text-text-primary">
             Master Data Structures &amp; Algorithms{" "}
             <span className="text-gradient-primary">Step by Step.</span>
           </h1>

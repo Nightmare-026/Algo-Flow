@@ -78,10 +78,6 @@ export default function LeaderboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-muted border border-primary/20 text-primary text-xs font-mono font-bold uppercase tracking-wider mb-2 shadow-[var(--shadow-raised-sm)]">
-            <Trophy className="w-3.5 h-3.5" />
-            <span>Global Benchmarks</span>
-          </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold font-display text-text-primary tracking-tight">
             Mental Math <span className="text-primary">Leaderboards</span>
           </h1>
