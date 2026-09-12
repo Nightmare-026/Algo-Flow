@@ -691,3 +691,126 @@
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
 }
+
+/* ==========================================================================
+   DSA LEARNINGS CURRICULUM PROSE TYPOGRAPHY
+   ========================================================================== */
+.prose-learnings {
+  color: var(--text-primary);
+  line-height: 1.8;
+  font-size: 1.0625rem;
+}
+
+.prose-learnings p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose-learnings strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.prose-learnings em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.prose-learnings hr {
+  margin: 2.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.prose-learnings ul {
+  list-style-type: disc;
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1.75rem;
+}
+
+.prose-learnings ol {
+  list-style-type: decimal;
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1.75rem;
+}
+
+.prose-learnings li {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.prose-learnings li::marker {
+  color: var(--primary);
+}
+
+.prose-learnings a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
+}
+
+.prose-learnings a:hover {
+  color: var(--primary-hover);
+}
+
+.prose-learnings code:not(pre code) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+  padding: 0.2em 0.4em;
+  border-radius: 0.375rem;
+  background-color: var(--bg-surface-inset);
+  color: var(--primary);
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+.prose-learnings table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.prose-learnings th {
+  background-color: var(--bg-surface-inset);
+  color: var(--text-primary);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.prose-learnings td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.prose-learnings tr:hover td {
+  background-color: var(--bg-surface-hover);
+}
+
+/* ==========================================================================
+   CUSTOM SLIM SCROLLBAR FOR CARDS
+   ========================================================================== */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}

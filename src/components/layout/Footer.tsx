@@ -26,6 +26,7 @@ const footerSections = [
   {
     title: "Learning",
     links: [
+      { label: "DSA Curriculum", href: "/learnings" },
       { label: "How it works", href: "/#how-it-works" },
       { label: "Multi-Language Code", href: "/#code-languages" },
       { label: "Study Features", href: "/#features" },

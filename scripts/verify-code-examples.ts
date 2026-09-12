@@ -204,11 +204,9 @@ function run(
 }
 
 function runFreshExecutable(programPath: string, cwd: string) {
+  const targetExecutable = join(cwd, programPath);
   const invoke = () => {
-    if (process.platform === "win32" && !programPath.includes("\\") && !programPath.includes("/")) {
-      return run(`.\\${programPath}`, [], cwd);
-    }
-    return run(programPath, [], cwd);
+    return run(targetExecutable, [], cwd);
   };
 
   let result = invoke();

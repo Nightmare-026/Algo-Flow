@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LogOut, Menu, X, LayoutDashboard, Compass, BrainCircuit } from "lucide-react";
+import { LogOut, Menu, X, LayoutDashboard, Compass, BrainCircuit, BookOpen } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
@@ -15,6 +15,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const navLinks = [
   { label: "Visualizers", href: "/visualizers", icon: Compass },
+  { label: "Learnings", href: "/learnings", icon: BookOpen },
   { label: "Mental Math", href: "/mental-math", icon: BrainCircuit },
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
 ];
