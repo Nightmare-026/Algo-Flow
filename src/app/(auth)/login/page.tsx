@@ -55,7 +55,8 @@ export default async function LoginPage({
         <Callout variant="error" title="Sign in failed" dismissible className="mb-6">
           <p>{params.error}</p>
           <p className="mt-0.5 text-[11px] text-error/80">
-            Check your credentials and try again, or reset your password if you forgot it.
+            Check your credentials and try again, or reset your password. If you originally signed
+            up with Google or GitHub, use the social sign-in options below.
           </p>
         </Callout>
       ) : null}

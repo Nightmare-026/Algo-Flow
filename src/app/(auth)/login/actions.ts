@@ -67,35 +67,6 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    try {
-      const { createAdminClient } = await import("@/lib/supabase/admin");
-      const admin = createAdminClient();
-      if (admin) {
-        const { data: userList } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-        const matched = userList?.users.find(
-          (u) => u.email?.toLowerCase() === data.email.toLowerCase()
-        );
-        if (matched) {
-          const providers = (matched.app_metadata?.providers as string[]) || [];
-          if (providers.includes("google")) {
-            redirect(
-              `/login?oauth_hint=google&email=${encodeURIComponent(data.email)}&next=${encodeURIComponent(nextUrl)}`
-            );
-          }
-        }
-      }
-    } catch (checkErr) {
-      if (
-        checkErr &&
-        typeof checkErr === "object" &&
-        "digest" in checkErr &&
-        typeof (checkErr as { digest?: unknown }).digest === "string" &&
-        (checkErr as { digest: string }).digest.startsWith("NEXT_REDIRECT")
-      ) {
-        throw checkErr;
-      }
-    }
-
     redirect(
       `/login?error=${encodeURIComponent("Email or password is incorrect.")}&next=${encodeURIComponent(nextUrl)}`
     );
@@ -225,12 +196,6 @@ export async function signup(formData: FormData) {
     );
   }
   if (!data.session) {
-    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
-      redirect(
-        `/login?oauth_hint=google&email=${encodeURIComponent(email)}&error=${encodeURIComponent("An account with this email already exists via Google. Please sign in using 'Continue with Google'.")}&next=${encodeURIComponent(nextUrl)}`
-      );
-    }
-
     redirect(
       `/signup?success=${encodeURIComponent("Please check your email to verify your account.")}&next=${encodeURIComponent(nextUrl)}`
     );
