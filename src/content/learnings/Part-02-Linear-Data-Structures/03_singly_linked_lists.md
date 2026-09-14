@@ -5,412 +5,317 @@
 
 ---
 
-# TOPIC 24: SINGLY LINKED LIST
+Unlike contiguous arrays that rely on physical hardware adjacency for element ordering, linked lists build logical sequences through explicit directional pointers scattered across heap memory. This architectural decoupling enables true $O(1)$ dynamic insertions and deletions at the list boundary without memory reallocations or element shifts, but trades away constant-time indexing and hardware cache locality. This chapter details non-contiguous node topologies, memory alignment overheads, boundary-pointer manipulation invariants, the three-pointer in-place reversal state machine, and the mathematical proof underpinning Floyd's Tortoise and Hare cycle detection algorithm.
 
-### 1. Topic Title
-**Singly Linked List (One-Way Node-Chained Dynamic Linear Structure)**
-
-### 2. Category
-Linear Data Structures — Non-Contiguous Node-Pointer Linked Allocation.
-
-### 3. Difficulty
-Beginner to Intermediate.
-
-### 4. Prerequisites
-- Part 01: Foundations (Pointers, Heap Memory Allocation, Dynamic References).
-- Part 02: Static & Dynamic Arrays (Contiguous vs Non-Contiguous Memory trade-offs).
+### Learning Objectives
+- Contrast the physical heap allocation and CPU cache-line miss rates of linked nodes against contiguous memory arrays.
+- Calculate pointer memory overhead and 64-bit alignment padding for node-based data structures.
+- Implement head, tail, and arbitrary position insertions and deletions with strict boundary-condition checks.
+- Formulate the loop invariant for canonical three-pointer in-place list reversal and trace state transitions step-by-step.
+- Formulate the mathematical proof of Floyd's Cycle-Finding Algorithm and derive why resetting one pointer to `head` guarantees collision at the cycle entrance.
+- Apply fast-and-slow two-pointer patterns to find list midpoints and the $k$-th element from the end in a single pass.
 
 ---
 
-### 5. Definition & Intuitive Mental Model
+## Topic 24: Singly Linked List Architecture & Operations
 
-### Concept
-A **Singly Linked List** is a linear collection of data elements called **Nodes**, where the linear sequence is maintained not by physical adjacency in hardware memory, but by explicit unidirectional address pointers embedded within each node.
+### 1. Conceptual & Physical Memory Foundations
 
-### Intuition: The Scavenger Hunt Analogy
-Think of an Array as a row of numbered lockers placed side-by-side in a corridor ($0, 1, 2, 3$). To inspect locker 3, you simply walk directly to it in $O(1)$ time because its address is physically contiguous.
+A **Singly Linked List** is a linear data structure composed of self-contained **Nodes**, where each node encapsulates a data payload and a forward reference (pointer) to the next node in the sequence. The list begins with an external pointer called `HEAD` and terminates when a node's pointer references `NULL`.
 
-A Singly Linked List, by contrast, is a **treasure hunt / scavenger hunt**:
-- You are given a clue to find the first location (`HEAD`).
-- At the first location, you find a prize (`data`) and a slip of paper giving you the exact address of the next clue (`next`).
-- You cannot jump directly to the 5th clue without physically visiting clues 1, 2, 3, and 4 in sequence.
-- The final clue points to nowhere (`NULL`), marking the end of the journey.
+#### Node Architecture in 64-Bit Memory
 
----
-
-### 6. Node Anatomy & Memory Layout
-
-Each node consists of two distinct fields:
-1. **Data Payload**: Stores the actual value (primitive integer, string, complex object).
-2. **Next Pointer (`next`)**: Stores the 64-bit virtual memory heap address of the subsequent node.
-
-```text
-┌───────────────────────────────────────────────┐
-│                     NODE                      │
-├───────────────────────┬───────────────────────┤
-│         data          │         next          │
-│       (Value)         │       (Pointer)       │
-│     e.g., 4 bytes     │     e.g., 8 bytes     │
-└───────────────────────┴───────────┬───────────┘
-                                    │
-                                    ▼ Points to next Node's Heap Address
+```
+┌───────────────────────────────────────────────────────────────┐
+│                      64-BIT NODE LAYOUT                       │
+├───────────────────────────────┬───────────────────────────────┤
+│       Data Payload (4 bytes)  │    Next Pointer (8 bytes)     │
+│       + 4 bytes padding       │    Points to Heap Address     │
+└───────────────────────────────┴───────────────────────────────┘
 ```
 
-#### Physical Heap Allocation Reality:
-Unlike arrays, which demand a single contiguous block of physical RAM, linked list nodes are scattered across the heap at non-contiguous locations created by individual dynamic memory allocations (`malloc` / `new`).
+| Field Name | Type | Size (64-Bit OS) | Alignment / Offset | Semantic Function |
+| :--- | :--- | :---: | :---: | :--- |
+| **`data`** | Value / Primitive | $4\text{ bytes}$ | Offset $+0$ | Holds client payload (e.g., 32-bit integer) |
+| **`padding`** | System Alignment | $4\text{ bytes}$ | Offset $+4$ | Structure padding to satisfy 8-byte pointer alignment |
+| **`next`** | Memory Address | $8\text{ bytes}$ | Offset $+8$ | Stores virtual heap address of subsequent node |
 
-```text
-HEAP MEMORY ADDRESS SPACE:
-Address 0x10A0: [ Data: 10 │ Next: 0x20F4 ]  (Node 1 - HEAD)
-Address 0x18B2: [ Unrelated Process Data  ]
-Address 0x20F4: [ Data: 20 │ Next: 0x15C8 ]  (Node 2)
-Address 0x15C8: [ Data: 30 │ Next: NULL   ]  (Node 3 - TAIL)
-```
+#### Physical Heap Allocation Reality
+While an array requires an unbroken contiguous block of memory, linked list nodes are allocated dynamically at arbitrary, dispersed addresses across the heap.
 
-**Memory Overhead**: On modern 64-bit operating systems, pointers consume 8 bytes. Storing a 4-byte integer in a linked list requires $4 + 8 = 12$ bytes (padded to 16 bytes due to memory alignment), representing a **300% memory overhead** compared to flat arrays!
+| Logical Sequence | Virtual Heap Address | Node Payload | `next` Pointer Target | Target Node Description |
+| :---: | :--- | :---: | :--- | :--- |
+| **Node 1 (`HEAD`)** | `0x10A0` | `10` | `0x20F4` | Points to Node 2 |
+| *(Intervening Heap)* | `0x10B0..0x20F0` | — | — | Used by unrelated system allocations |
+| **Node 2** | `0x20F4` | `20` | `0x15C8` | Points to Node 3 |
+| **Node 3 (`TAIL`)** | `0x15C8` | `30` | `NULL` (`0x0`) | Terminal Sentinel (End of List) |
 
----
-
-### 7. Structural Diagram (ASCII)
-
-```text
-  HEAD (Pointer)
-   │
-   ▼
-┌──────┬──────┐        ┌──────┬──────┐        ┌──────┬──────┐
-│  10  │  ●───┼───────►│  20  │  ●───┼───────►│  30  │ NULL │
-└──────┴──────┘        └──────┴──────┘        └──────┴──────┘
-  Node 1                 Node 2                 Node 3 (TAIL)
-  Addr: 0x10A0           Addr: 0x20F4           Addr: 0x15C8
-```
+> ⚠️ **Memory Overhead & Cache Penalty**:  
+> Storing a 4-byte integer in a linked list node consumes $16\text{ bytes}$ in physical RAM due to pointer storage ($8\text{ bytes}$) and 64-bit alignment padding ($4\text{ bytes}$), representing a **$300\%$ memory penalty** over a flat array. Furthermore, because adjacent logical nodes reside at distant heap addresses, traversing links causes frequent CPU L1/L2 cache misses.
 
 ---
 
-### 8. Operations & Asymptotic Complexities
+### 2. Operations & Asymptotic Complexities
 
-| Operation | Best Case Time | Worst Case Time | Auxiliary Space | Key Condition / Notes |
-| :--- | :---: | :---: | :---: | :--- |
-| **InsertAtHead($x$)** | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Update new node's next to head, update head |
-| **InsertAtTail($x$)** (with tail pointer) | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | `tail.next ← newNode; tail ← newNode` |
-| **InsertAtTail($x$)** (no tail pointer) | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | Must traverse entire list to find last node |
-| **InsertAtPosition($k, x$)** | $\Theta(1)$ | $\Theta(n)$ | $O(1)$ | $O(1)$ if $k=0$; requires $k-1$ traversals |
-| **DeleteHead()** | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Advance head pointer to `head.next` |
-| **DeleteTail()** | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | Even with tail pointer, must find predecessor! |
-| **DeleteByValue($x$)** | $\Theta(1)$ | $\Theta(n)$ | $O(1)$ | $\Theta(1)$ if at head; $\Theta(n)$ if at end or missing |
-| **Search($x$)** | $\Theta(1)$ | $\Theta(n)$ | $O(1)$ | Linear scan from head |
-| **AccessByIndex($i$)** | $\Theta(1)$ | $\Theta(n)$ | $O(1)$ | No pointer arithmetic possible; must step $i$ times |
-| **ReverseInPlace()** | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | 3-pointer sliding window |
+| Operation | Best Case | Average Case | Worst Case | Auxiliary Space | Operational Invariants & Mechanism |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **InsertAtHead($x$)** | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | `newNode.next = head; head = newNode;` |
+| **InsertAtTail($x$)** *(with `tail` ptr)* | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | `tail.next = newNode; tail = newNode;` |
+| **InsertAtTail($x$)** *(no `tail` ptr)* | $\Theta(n)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | Must traverse $n-1$ nodes to find terminal node |
+| **InsertAtPosition($k, x$)** | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | $O(1)$ if $k=0$; otherwise requires $k-1$ steps |
+| **DeleteHead()** | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Advance `head` to `head.next`; free old node |
+| **DeleteTail()** *(even with `tail`)* | $\Theta(n)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | Must scan from `head` to locate $(n-1)$-th predecessor |
+| **DeleteByValue($x$)** | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | $\Theta(1)$ if target is head; $\Theta(n)$ linear scan |
+| **Search($x$)** | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | Sequential scan from `head` |
+| **AccessByIndex($i$)** | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | Pointer arithmetic impossible; requires $i$ pointer hops |
+| **ReverseInPlace()** | $\Theta(n)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | 3-pointer sliding window reassignment |
+
+> **Interactive Simulation**:  
+> Step through pointer links, insertions, and traversals live in the [Interactive Linked List Visualizer](/visualizer/sll-traversal).
 
 ---
 
-### 9. Detailed Operation Visualizations
+### 3. Step-by-Step Pointer Transitions
 
-#### A. Insertion at Head ($O(1)$)
-```text
-BEFORE:
-  HEAD ────────► [ 20 │ ● ] ──► [ 30 │ NULL ]
+#### A. Head Insertion ($O(1)$)
+Inserting a new node with value `10` before existing head node `20`:
 
-ACTION:
-  1. Allocate new node with value 10:    [ 10 │ ? ]
-  2. Assign newNode.next ← HEAD:         [ 10 │ ● ] ──► [ 20 │ ● ]
-  3. Reassign HEAD ← newNode
-
-AFTER:
-  HEAD ────────► [ 10 │ ● ] ──► [ 20 │ ● ] ──► [ 30 │ NULL ]
-```
+| Step | Action Taken | Target Link Modified | Pointer State Result |
+| :---: | :--- | :--- | :--- |
+| **1** | Allocate `newNode` | `newNode.data = 10` | `newNode -> [10 \| ?]` |
+| **2** | Link `newNode` to current head | `newNode.next = HEAD` | `newNode -> [10] -> [20] -> [30] -> NULL` |
+| **3** | Reassign `HEAD` pointer | `HEAD = newNode` | `HEAD -> [10] -> [20] -> [30] -> NULL` |
 
 #### B. Insertion at Arbitrary Position $k$ ($O(n)$)
+Inserting node `25` between node `20` (index 1) and node `30` (index 2):
+
+| Step | Action Taken | Target Link Modified | Critical Pointer Safety Rule |
+| :---: | :--- | :--- | :--- |
+| **1** | Traverse to predecessor `curr` | `curr = Node(20)` | Stop traversal at index $k-1$ |
+| **2** | Connect new node forward | `newNode.next = curr.next` | **Connect forward first!** If `curr.next` is overwritten first, tail is lost forever |
+| **3** | Connect predecessor forward | `curr.next = newNode` | List integrity restored: `... -> [20] -> [25] -> [30] -> ...` |
+
+#### C. The Tail Deletion Bottleneck in Singly Linked Lists
+Even if an implementation maintains an explicit `tail` pointer to the final node, **`DeleteTail` remains strictly $\Theta(n)$**.
+
 ```text
-Goal: Insert 25 between Node 20 (pos 1) and Node 30 (pos 2).
+HEAD -> [10] -> [20] -> [30] -> NULL (tail points to [30])
 
-STEP 1: Traverse to predecessor (Node 20):
-  curr ──► [ 20 │ ● ] ──────────────► [ 30 │ NULL ]
-                   \                 ▲
-                    \               /
-STEP 2: newNode.next ← curr.next   /
-        newNode: [ 25 │ ● ] ──────┘
-
-STEP 3: curr.next ← newNode
-  [ 20 │ ● ] ──► [ 25 │ ● ] ──► [ 30 │ NULL ]
-```
-
-#### C. Deletion at Tail ($O(n)$ — Why Singly Linked Lists Struggle Here)
-```text
-Even if we have a direct TAIL pointer to Node 30:
-  HEAD ──► [ 10 │ ● ] ──► [ 20 │ ● ] ──► [ 30 │ NULL ] ◄── TAIL
-
-To delete Node 30:
-- We must update Node 20's next pointer to NULL.
-- But Singly Linked Nodes only point FORWARD! There is NO `prev` pointer!
-- Therefore, we must traverse all the way from HEAD to Node 20 ($n-1$ steps)
-  just to find the predecessor!
+To delete [30], the tail pointer must become [20], and [20].next must become NULL.
+Because singly linked nodes lack backward (prev) pointers, there is no direct way
+to inspect the predecessor of tail. The algorithm must traverse n - 1 nodes from HEAD
+simply to discover that [20] precedes [30].
 ```
 
 ---
 
-### 10. Complete Language-Independent Pseudocode
+### 4. Comprehensive Production Specification
 
 ```text
-STRUCTURE Node
-    data: ValueType
-    next: Node pointer
+CLASS Node:
+    field data: ValueType
+    field next: Node Pointer <- NULL
 
-STRUCTURE SinglyLinkedList
-    head: Node pointer ← NULL
-    tail: Node pointer ← NULL
-    size: integer ← 0
+    CONSTRUCTOR(val: ValueType):
+        this.data <- val
+        this.next <- NULL
 
-    OPERATION InsertAtHead(val):
-        newNode ← allocate Node
-        newNode.data ← val
-        newNode.next ← head
-        head ← newNode
-        if size = 0:
-            tail ← newNode
-        size ← size + 1
+CLASS SinglyLinkedList:
+    field head: Node Pointer <- NULL
+    field tail: Node Pointer <- NULL
+    field size: Integer <- 0
 
-    OPERATION InsertAtTail(val):
-        newNode ← allocate Node
-        newNode.data ← val
-        newNode.next ← NULL
-        if size = 0:
-            head ← newNode
-            tail ← newNode
+    FUNCTION InsertAtHead(val: ValueType) -> Void:
+        newNode <- new Node(val)
+        newNode.next <- this.head
+        this.head <- newNode
+        if this.size == 0:
+            this.tail <- newNode
+        this.size <- this.size + 1
+
+    FUNCTION InsertAtTail(val: ValueType) -> Void:
+        newNode <- new Node(val)
+        if this.size == 0:
+            this.head <- newNode
+            this.tail <- newNode
         else:
-            tail.next ← newNode
-            tail ← newNode
-        size ← size + 1
+            this.tail.next <- newNode
+            this.tail <- newNode
+        this.size <- this.size + 1
 
-    OPERATION InsertAtPosition(index, val):
-        if index < 0 or index > size:
-            error "Index out of bounds"
-        if index = 0:
-            InsertAtHead(val)
-            return
-        if index = size:
-            InsertAtTail(val)
-            return
-        
-        curr ← head
-        for i ← 0 to index - 2:
-            curr ← curr.next
-        
-        newNode ← allocate Node
-        newNode.data ← val
-        newNode.next ← curr.next
-        curr.next ← newNode
-        size ← size + 1
+    FUNCTION DeleteHead() -> ValueType:
+        if this.head == NULL:
+            raise UnderflowException("List is empty")
+        temp <- this.head
+        val <- temp.data
+        this.head <- this.head.next
+        if this.head == NULL:
+            this.tail <- NULL
+        this.size <- this.size - 1
+        free(temp)
+        return val
 
-    OPERATION DeleteHead():
-        if head = NULL:
-            error "Underflow: List is empty"
-        temp ← head
-        head ← head.next
-        deallocate temp
-        size ← size - 1
-        if size = 0:
-            tail ← NULL
-
-    OPERATION DeleteTail():
-        if head = NULL:
-            error "Underflow: List is empty"
-        if head = tail:
-            deallocate head
-            head ← NULL
-            tail ← NULL
-            size ← 0
-            return
+    FUNCTION DeleteTail() -> ValueType:
+        if this.head == NULL:
+            raise UnderflowException("List is empty")
+        if this.head == this.tail:
+            val <- this.head.data
+            free(this.head)
+            this.head <- NULL
+            this.tail <- NULL
+            this.size <- 0
+            return val
         
-        curr ← head
-        while curr.next ≠ tail:
-            curr ← curr.next
+        // Traverse to second-to-last node
+        curr <- this.head
+        while curr.next != this.tail:
+            curr <- curr.next
         
-        deallocate tail
-        tail ← curr
-        tail.next ← NULL
-        size ← size - 1
-
-    OPERATION DeleteByValue(target):
-        if head = NULL:
-            return false
-        if head.data = target:
-            DeleteHead()
-            return true
-        
-        curr ← head
-        while curr.next ≠ NULL and curr.next.data ≠ target:
-            curr ← curr.next
-        
-        if curr.next = NULL:
-            return false   // Target not found
-        
-        temp ← curr.next
-        curr.next ← curr.next.next
-        if temp = tail:
-            tail ← curr
-        deallocate temp
-        size ← size - 1
-        return true
-
-    OPERATION Search(target):
-        curr ← head
-        index ← 0
-        while curr ≠ NULL:
-            if curr.data = target:
-                return index
-            curr ← curr.next
-            index ← index + 1
-        return -1
+        val <- this.tail.data
+        free(this.tail)
+        this.tail <- curr
+        this.tail.next <- NULL
+        this.size <- this.size - 1
+        return val
 ```
 
 ---
 
-### 11. In-Place 3-Pointer Reversal
+### 5. In-Place 3-Pointer List Reversal
 
-Reversing a linked list without allocating new nodes is a classic fundamental technique requiring three sliding pointer variables: `prev`, `curr`, and `nextNode`.
+Reversing a singly linked list in-place without allocating auxiliary nodes requires a sliding window of three pointers: `prev`, `curr`, and `nextNode`.
 
-#### Algorithmic Invariant & State Machine:
-At the start of every iteration:
-- The sublist strictly before `curr` has already been fully reversed, with `prev` pointing to its new head.
-- `curr` points to the unreversed remainder of the list.
+#### Invariant & Execution Loop
+- **Loop Invariant**: At the start of each iteration, the sublist preceding `curr` is fully reversed with `prev` referencing its new head. `curr` references the head of the unreversed remaining sublist.
 
 ```text
-ALGORITHM ReverseList(head)
-    Input: Pointer to list head
-    Output: Pointer to new reversed head
-
-1.  prev ← NULL
-2.  curr ← head
-3.  while curr ≠ NULL:
-4.      nextNode ← curr.next    // 1. Preserve forward reference
-5.      curr.next ← prev        // 2. Reverse link to point backward
-6.      prev ← curr             // 3. Slide prev one step forward
-7.      curr ← nextNode         // 4. Slide curr one step forward
-8.  return prev                 // prev now points to new head
+FUNCTION ReverseList(head: Node Pointer) -> Node Pointer:
+    prev <- NULL
+    curr <- head
+    while curr != NULL:
+        nextNode <- curr.next     // 1. Preserve forward link
+        curr.next <- prev         // 2. Invert link to point backwards
+        prev <- curr              // 3. Advance prev window
+        curr <- nextNode          // 4. Advance curr window
+    return prev                   // prev points to new reversed head
 ```
 
-#### Step-by-Step Dry Run Table: Reversing $[10 \to 20 \to 30 \to \text{NULL}]$
+#### Step-by-Step State Trace: Reversing $[10 \to 20 \to 30 \to \text{NULL}]$
 
-| Step | `prev` | `curr` | `nextNode` (`curr.next`) | Link Action (`curr.next ← prev`) | Next `prev` | Next `curr` |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Init** | `NULL` | Node(10) | — | — | — | — |
-| **Iteration 1** | `NULL` | Node(10) | Node(20) | Node(10).next $\leftarrow$ `NULL` | Node(10) | Node(20) |
-| **Iteration 2** | Node(10) | Node(20) | Node(30) | Node(20).next $\leftarrow$ Node(10) | Node(20) | Node(30) |
-| **Iteration 3** | Node(20) | Node(30) | `NULL` | Node(30).next $\leftarrow$ Node(20) | Node(30) | `NULL` |
-| **Termination** | Node(30) | `NULL` | — | Loop ends (`curr = NULL`). Return `prev` = Node(30) | — | — |
+| Step / Iteration | `prev` | `curr` | `nextNode` (`curr.next`) | Link Mutation (`curr.next <- prev`) | Next `prev` | Next `curr` |
+| :---: | :---: | :---: | :---: | :--- | :---: | :---: |
+| **Initialization** | `NULL` | `Node(10)` | — | — | — | — |
+| **Iteration 1** | `NULL` | `Node(10)` | `Node(20)` | `Node(10).next = NULL` | `Node(10)` | `Node(20)` |
+| **Iteration 2** | `Node(10)` | `Node(20)` | `Node(30)` | `Node(20).next = Node(10)` | `Node(20)` | `Node(30)` |
+| **Iteration 3** | `Node(20)` | `Node(30)` | `NULL` | `Node(30).next = Node(20)` | `Node(30)` | `NULL` |
+| **Termination** | `Node(30)` | `NULL` | — | Loop terminates (`curr == NULL`). Return `prev` = `Node(30)`. | — | — |
 
-**Final State**: $\text{HEAD} \to [30] \to [20] \to [10] \to \text{NULL}$. Time: $O(n)$, Auxiliary Space: $O(1)$.
+**Final Reconstructed State**: $\text{HEAD} \to [30] \to [20] \to [10] \to \text{NULL}$.  
+**Complexity**: Strictly $\Theta(n)$ time, $O(1)$ auxiliary space.
 
 ---
 
-### 12. Floyd's Cycle-Finding Algorithm (Tortoise and Hare)
+### 6. Floyd's Cycle-Finding Algorithm (Tortoise & Hare)
 
-### Concept
-Given a linked list, determine if it contains a closed loop (cycle) and identify the exact node where the cycle begins, using only $O(1)$ auxiliary space.
+Floyd's algorithm determines whether a linked list contains a cycle and identifies the exact entry node of that cycle using two pointers moving at different speeds, requiring only $O(1)$ auxiliary memory.
 
-```text
-CYCLE TOPOLOGY:
-HEAD
- │
- ▼
-[ 1 ] ──► [ 2 ] ──► [ 3 ] ──► [ 4 ] ──► [ 5 ]
-                       ▲                   │
-                       │                   ▼
-                     [ 8 ] ◄── [ 7 ] ◄── [ 6 ]
+#### Mathematical Proof of Detection & Entry Derivation
+
+```
+List Topology:
+HEAD -> [Node 1] -> [Node 2] -> [Cycle Entry: Node 3] -> [Node 4] -> [Node 5]
+                                        ^                               |
+                                        |                               v
+                                  [Node 8] <-------- [Node 7] <------ [Node 6]
 ```
 
-#### Mathematical Proof of Detection & Meeting Point:
 Let:
-- $L$ = Distance from `HEAD` to the cycle entry node ($[1] \to [3] \implies L = 2$).
-- $C$ = Length of the cycle ($[3, 4, 5, 6, 7, 8] \implies C = 6$).
-- $d$ = Distance from cycle entry to the point where `slow` and `fast` collide.
+- $L$ = Distance from `HEAD` to the cycle entry node ($L = 2$ in the diagram above: links $1 \to 2$ and $2 \to 3$).
+- $C$ = Number of nodes in the cycle ($C = 6$: nodes $3, 4, 5, 6, 7, 8$).
+- $d$ = Distance from the cycle entry node to the meeting point where `slow` and `fast` collide.
 
-1. `slow` moves at speed $1$; `fast` moves at speed $2$.
-2. Relative speed of `fast` relative to `slow` is $2 - 1 = 1$ node per step.
-3. Once both pointers are inside the cycle of length $C$, `fast` reduces the distance between them by $1$ in each step. Therefore, `fast` is guaranteed to catch `slow` within at most $C$ steps! **No infinite loop can occur.**
-4. At the meeting moment, let total steps taken be $k$:
-   $$\text{Distance}(\text{slow}) = k = L + m_1 C + d$$
-   $$\text{Distance}(\text{fast}) = 2k = L + m_2 C + d$$
-   Subtracting the two equations:
-   $$k = (m_2 - m_1) C = n \cdot C$$
-   *The total number of steps $k$ is an exact integer multiple of the cycle length $C$!*
+#### Step 1: Detection Proof
+- `slow` advances $1$ node per step; `fast` advances $2$ nodes per step.
+- The relative velocity is $2 - 1 = 1$ node per step.
+- Once both pointers enter the cycle, `fast` reduces the gap by $1$ node on every iteration. Since the maximum possible gap is $C - 1$, `fast` must collide with `slow` within at most $C$ iterations inside the cycle. An infinite loop is mathematically impossible.
 
-5. Therefore:
-   $$L + d = k = n \cdot C \implies L = n \cdot C - d = (n - 1) C + (C - d)$$
-   Notice what $(C - d)$ represents: it is the remaining distance from the collision point to the cycle entry!
-   **Fundamental Insight**: The distance from `HEAD` to cycle entry ($L$) equals the distance from the meeting point to cycle entry ($C - d$, plus optional full loops).
+#### Step 2: Cycle Entry Equation Derivation
+Let $k$ be the total steps taken by `slow` when the collision occurs. Because `fast` travels at double speed, its total distance is $2k$:
 
-6. **Algorithm to Find Cycle Start**:
-   - Move `slow` back to `HEAD`.
-   - Keep `fast` at the collision point.
-   - Advance **both** pointers at the same speed of $1$ step.
-   - They will collide at the exact cycle entry node!
+$$\text{Distance}(\text{slow}) = k = L + m_1 \cdot C + d$$
+
+$$\text{Distance}(\text{fast}) = 2k = L + m_2 \cdot C + d$$
+
+Subtracting the first equation from the second:
+
+$$k = (m_2 - m_1) \cdot C = m \cdot C$$
+
+The total steps $k$ is an exact integer multiple of the cycle length $C$.
+
+Substituting $k = m \cdot C$ into the `slow` distance formula:
+
+$$L + d = m \cdot C \implies L = m \cdot C - d = (m - 1) \cdot C + (C - d)$$
+
+#### The Critical Identity:
+The term $(C - d)$ is the exact distance remaining from the collision point to the cycle entry node.  
+Therefore, **the distance from `HEAD` to the cycle entry ($L$) equals the distance from the collision point to the cycle entry ($(C - d)$)**, modulo full loops.
+
+#### Algorithmic Resolution:
+1. When `slow` and `fast` meet at the collision point, leave `fast` at the collision point.
+2. Reset `slow` to `HEAD`.
+3. Advance both `slow` and `fast` at a uniform speed of **1 step per iteration**.
+4. Both pointers will collide at the exact cycle entry node!
 
 ```text
-ALGORITHM FindCycleEntry(head)
-    Input: List head pointer
-    Output: Pointer to cycle entry node, or NULL if acyclic
+FUNCTION DetectAndFindCycleEntry(head: Node Pointer) -> Node Pointer:
+    slow <- head
+    fast <- head
+    hasCycle <- False
 
-1.  slow ← head
-2.  fast ← head
-3.  hasCycle ← false
-4.  while fast ≠ NULL and fast.next ≠ NULL:
-5.      slow ← slow.next
-6.      fast ← fast.next.next
-7.      if slow = fast:
-8.          hasCycle ← true
-9.          break
-10. if not hasCycle:
-11.     return NULL
-12. 
-13. // Phase 2: Locate Entry
-14. slow ← head
-15. while slow ≠ fast:
-16.     slow ← slow.next
-17.     fast ← fast.next
-18. return slow
+    // Phase 1: Detect cycle
+    while fast != NULL and fast.next != NULL:
+        slow <- slow.next
+        fast <- fast.next.next
+        if slow == fast:
+            hasCycle <- True
+            break
+
+    if not hasCycle:
+        return NULL
+
+    // Phase 2: Find cycle entry node
+    slow <- head
+    while slow != fast:
+        slow <- slow.next
+        fast <- fast.next
+    return slow
 ```
 
 ---
 
-### 13. Fast & Slow Pointer Variations
+### 7. Fast & Slow Pointer Paradigms
 
-1. **Find Middle Node of List**:
-   - `slow` moves 1 step, `fast` moves 2 steps.
-   - When `fast` reaches tail or `NULL`, `slow` is guaranteed to be at $\lfloor n/2 \rfloor$ (the exact middle).
-   - Crucial for **Merge Sort on Linked Lists**.
-2. **Find $k$-th Node from End**:
-   - Advance `fast` pointer $k$ steps ahead first.
-   - Then advance both `slow` and `fast` by 1 step together until `fast = NULL`.
-   - `slow` lands precisely at the $k$-th node from the end.
+| Application | Pointer Initialization | Movement Rule | Termination Condition & Result |
+| :--- | :--- | :--- | :--- |
+| **Find Midpoint of List** | `slow = head`, `fast = head` | `slow += 1`, `fast += 2` | When `fast.next == NULL` or `fast == NULL`, `slow` is at $\lfloor n/2 \rfloor$ (essential for Merge Sort) |
+| **Find $k$-th Node from End** | `fast` advances $k$ steps ahead of `slow` | `slow += 1`, `fast += 1` | When `fast == NULL`, `slow` points to exactly the $k$-th node from the tail |
+| **Palindrome Verification** | Find midpoint via fast/slow | Reverse second half in-place | Compare first half and reversed second half; restore list before returning |
 
 ---
 
-### 14. Array vs Singly Linked List: Hardware Reality
+### 8. Key Takeaways
 
-| Metric | Array / Dynamic Array | Singly Linked List |
-| :--- | :--- | :--- |
-| **Physical Memory Layout** | Strictly contiguous | Dispersed across heap |
-| **Random Access ($A[i]$)** | $O(1)$ direct hardware arithmetic | $O(n)$ linear traversal |
-| **Insert / Delete at Head** | $O(n)$ due to shifting | $O(1)$ pointer reassignment |
-| **Insert / Delete at Middle** | $O(n)$ element copying | $O(1)$ after reaching location ($O(n)$ search) |
-| **CPU Cache Performance** | **Optimal**: Spatial locality enables prefetching | **Poor**: Frequent L1/L2 cache misses |
-| **Memory Overhead** | Minimal (capacity buffer padding) | Heavy (8 bytes pointer per node) |
-| **Memory Fragmentation** | Requires large contiguous free blocks | Eliminates external fragmentation |
+1. **Trade-offs vs. Arrays**: Linked lists eliminate the need for large contiguous memory blocks and achieve true $O(1)$ head insertions, but forfeit $O(1)$ random indexing and suffer from poor CPU cache locality.
+2. **Pointer Overhead**: 64-bit systems impose an 8-byte pointer cost and 4-byte padding per node, causing up to a $300\%$ memory footprint increase for 32-bit payloads.
+3. **Tail Deletion Vulnerability**: Even with an explicit `tail` reference, `DeleteTail` on a singly linked list requires $\Theta(n)$ time to scan for the penultimate node.
+4. **Three-Pointer Reversal**: Inverting link references requires holding `nextNode` before mutating `curr.next`, advancing `prev` and `curr` in lockstep.
+5. **Floyd's Mathematical Harmony**: The distance from `HEAD` to the cycle entrance equals the distance from the collision point to the entrance, enabling $O(n)$ time, $O(1)$ space cycle entrance discovery.
 
 ---
 
-## Module 03 Summary & Key Takeaways
+## Academic Attribution & References
 
-1. **Singly Linked Lists** excel at constant-time insertion and deletion at the head ($O(1)$), but cannot support $O(1)$ random indexing.
-2. In-place reversal uses **3 sliding pointers** (`prev`, `curr`, `nextNode`) in $O(n)$ time and $O(1)$ memory.
-3. **Floyd's Tortoise and Hare** detects cycles in $O(n)$ time and proves that resetting one pointer to `head` and advancing both at speed 1 finds the cycle entry.
-4. Linked lists incur non-trivial pointer memory overhead (8 bytes per node) and poor CPU cache locality compared to contiguous arrays.
-
----
-
-## References & Academic Attribution
-
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
-2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
-3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: *Elementary Data Structures*. MIT Press.
+2. **Floyd, R. W.** (1967). *Non-deterministic Algorithms*. Journal of the ACM, 14(4), 636-644.
+3. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: *Bags, Queues, and Stacks*. Addison-Wesley.
+4. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: *Linear Lists*. Addison-Wesley.

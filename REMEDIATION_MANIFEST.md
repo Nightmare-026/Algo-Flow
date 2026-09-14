@@ -11,7 +11,7 @@
 ## Part 02 — Linear Data Structures
 - [x] linear-data-structures/arrays-and-dynamic-arrays — status: done
 - [x] linear-data-structures/strings-and-matrices — status: done
-- [ ] linear-data-structures/singly-linked-lists — status: not-started
+- [x] linear-data-structures/singly-linked-lists — status: done
 - [ ] linear-data-structures/doubly-and-circular-linked-lists — status: not-started
 - [ ] linear-data-structures/specialized-linked-lists — status: not-started
 - [ ] linear-data-structures/stacks — status: not-started
