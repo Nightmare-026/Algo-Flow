@@ -1,260 +1,310 @@
 # Part 02: Linear Data Structures — Module 06: Stacks
 
 > **Topics Covered:**  
-> 27. Stack Abstract Data Type (LIFO) & Core Operations &bull; Static & Dynamic Array Stack Implementations (Amortized Analysis) &bull; Linked List Stack &bull; Hardware Call Stack & Activation Records &bull; Expression Evaluation (Infix, Prefix, Postfix, Shunting-Yard Algorithm) &bull; Balanced Delimiter Matching
+> 30. Stack Abstract Data Type (LIFO) & Core Operations &bull; Static & Dynamic Array Stack Implementations (Amortized Analysis) &bull; Linked List Stack &bull; Hardware Call Stack & Activation Records &bull; Expression Evaluation (Infix, Prefix, Postfix, Shunting-Yard Algorithm) &bull; Balanced Delimiter Matching
 
 ---
 
-# TOPIC 27: STACK (LIFO)
+The stack is one of computing's most fundamental restricted-access linear abstractions, operating under the strict Last-In, First-Out (LIFO) principle. All element insertions and removals occur at a single designated boundary: the top. Beyond its utility as a software container, the stack is embedded directly into computer architecture as the CPU execution call stack, powering subroutine invocation, local variable scoping, and recursion. This chapter examines array and pointer-linked stack implementations, activation record lifecycles, balanced bracket validation, postfix expression evaluation, and Dijkstra's Shunting-Yard parsing algorithm.
 
-### 1. Topic Title
-**Stack (Last-In, First-Out Restricted-Access Linear Container)**
-
-### 2. Category
-Linear Data Structures — Restricted Access Container (LIFO).
-
-### 3. Difficulty
-Beginner to Intermediate.
-
-### 4. Prerequisites
-- Module 01: Arrays & Dynamic Arrays.
-- Module 03: Singly Linked Lists.
+### Learning Objectives
+- Formalize the Stack Abstract Data Type (ADT) interface and enforce strict Last-In, First-Out (LIFO) invariants.
+- Compare contiguous dynamic-array stack backing buffers against heap pointer-linked implementations in terms of allocation latency and memory overhead.
+- Trace hardware activation records, frame pointers, and return addresses on the physical CPU call stack to diagnose stack overflow conditions.
+- Implement linear-time balanced delimiter matching with nested state verification.
+- Implement postfix (Reverse Polish Notation) arithmetic evaluation and Dijkstra's Shunting-Yard algorithm for converting infix expressions to postfix.
 
 ---
 
-### 5. Definition & Intuitive Mental Model
+## Topic 30: Stacks (LIFO) & Applications
 
-### Concept
-A **Stack** is a linear data structure governed by the **LIFO (Last-In, First-Out)** principle: the most recently inserted element is always the first one to be removed. Access to elements is strictly restricted to one single boundary known as the **Top**.
+### 1. Conceptual Architecture & The LIFO Invariant
 
-### Intuition: The Cafeteria Tray Dispenser
-Imagine a spring-loaded stack of trays in a cafeteria:
-- When a dishwasher cleans a tray, they place it on **Top** (`Push`).
-- When a customer needs a tray, they take the one on **Top** (`Pop`).
-- You cannot pull a tray out from the bottom or middle without collapsing the stack. The tray placed last is taken first!
+A **Stack** restricts element access to a single boundary called **Top**:
+- **Push**: Places an element onto the top of the container.
+- **Pop**: Removes and returns the element currently residing at the top.
+- **Peek / Top**: Inspects the value of the top element without mutating state.
 
-```text
-       ┌───────────┐
- PUSH  │  Item D   │  ▲ POP (Extracts Item D)
-   │   └───────────┘  │
-   ▼   ┌───────────┐  │
-       │  Item C   │ ── TOP pointer
-       ├───────────┤
-       │  Item B   │
-       ├───────────┤
-       │  Item A   │  (Inserted first, extracted last)
-       └───────────┘
-         BOTTOM
+```
++-------------------------------------------------------------+
+|                       LIFO CONTAINER                        |
+|                                                             |
+|   PUSH Item D --------+            +-------> POP Item D     |
+|                       |            |                        |
+|                       v            |                        |
+|                 +--------------------+                      |
+|      TOP -----> |       Item D       |                      |
+|                 +--------------------+                      |
+|                 |       Item C       |                      |
+|                 +--------------------+                      |
+|                 |       Item B       |                      |
+|                 +--------------------+                      |
+|   BOTTOM -----> |       Item A       | (Inserted 1st,       |
+|                 +--------------------+  Extracted Last)     |
++-------------------------------------------------------------+
 ```
 
----
-
-### 6. The Stack Abstract Data Type (ADT) Interface
-
-| Operation | Description | Target Time | Space |
-| :--- | :--- | :---: | :---: |
-| **Push($x$)** | Places element $x$ on top of the stack. | $\Theta(1)$ | $O(1)$ |
-| **Pop()** | Removes and returns the top-most element. | $\Theta(1)$ | $O(1)$ |
-| **Peek() / Top()** | Returns top element without removing it. | $\Theta(1)$ | $O(1)$ |
-| **IsEmpty()** | Returns `true` if stack contains zero elements. | $\Theta(1)$ | $O(1)$ |
-| **IsFull()** | Returns `true` if capacity limit is reached. | $\Theta(1)$ | $O(1)$ |
-| **Size()** | Returns count of currently stored elements. | $\Theta(1)$ | $O(1)$ |
+> **Interactive Simulations**:  
+> Experiment with LIFO dynamics live in the [Interactive Stack Push Simulator](/visualizer/stack-push) and the [Interactive Stack Pop Simulator](/visualizer/stack-pop).
 
 ---
 
-### 7. Implementation Architecture 1: Array-Based Stack
+### 2. The Stack Abstract Data Type (ADT) Interface
 
-In an array-based stack, elements are stored in a contiguous array `arr[]`, and an integer index `top` tracks the index of the highest occupied slot.
-- **Empty State**: `top = -1`.
-- **Push($x$)**: Check if `top == capacity - 1` (Overflow). If not, `top ← top + 1`, `arr[top] ← x`.
-- **Pop()**: Check if `top == -1` (Underflow). If not, `val ← arr[top]`, `top ← top - 1`, return `val`.
+| Operation | Description | Array Best | Array Worst | Array Amortized | Linked List | Auxiliary Space |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **`Push(x)`** | Insert element $x$ at `TOP` | $\Theta(1)$ | $O(n)$ *(resize)* | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+| **`Pop()`** | Remove and return element at `TOP` | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+| **`Peek()`** | Read value at `TOP` without removing | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+| **`IsEmpty()`** | Returns `true` if size is 0 | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+| **`Size()`** | Return current count of elements | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+
+---
+
+### 3. Implementation Paradigms: Contiguous Array vs. Linked List
+
+#### Paradigm A: Contiguous Array Implementation
+Maintains a backing array `storage[]` and an integer offset `topIndex`:
+- **Empty State**: `topIndex = -1`.
+- **Push($x$)**: Check bounds; `topIndex += 1; storage[topIndex] = x;`.
+- **Pop()**: Check for underflow (`topIndex == -1`); `val = storage[topIndex]; topIndex -= 1; return val;`.
+
+| Array Index | `0` | `1` | `2` | `3` | `4` |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Stored Value** | `10` | `20` | `30` | `[EMPTY]` | `[EMPTY]` |
+| **Role / Marker** | Bottom | Interior | **`topIndex = 2` (TOP)** | Available | Available |
+
+*Amortized Cost*: When backed by a geometrically doubling dynamic array, `Push` incurs occasional $O(n)$ reallocations, but achieves $O(1)$ amortized cost across any sequence of $n$ operations while maintaining exceptional CPU cache locality.
+
+#### Paradigm B: Linked-List-Based Stack
+Maintains a pointer to the head node:
+- **`Push(x)`**: Allocate new node, set `newNode.next = top`, `top = newNode`.
+- **`Pop()`**: Retrieve `top.data`, advance `top = top.next`, free old node.
+
+| Node Position | Virtual Heap Address | Node Payload | `next` Pointer Target | Architectural Role |
+| :---: | :--- | :---: | :--- | :--- |
+| **Node 3** | `0x30A0` | `30` | `0x2050` | **`top` (Head of List)** |
+| **Node 2** | `0x2050` | `20` | `0x1010` | Intermediate Frame |
+| **Node 1** | `0x1010` | `10` | `NULL` | Bottom of Stack |
+
+*Guaranteed Strict Bound*: Every single operation executes in guaranteed worst-case $\Theta(1)$ time without memory reallocation pauses, but consumes $16\text{ bytes}$ of pointer and padding overhead per element.
+
+---
+
+### 4. Canonical Specification
 
 ```text
-ARRAY SLOTS:   [ 10 │ 20 │ 30 │ __ │ __ ]
-INDEX:           0    1    2    3    4
-                           ▲
-                           │
-                          top = 2 (Capacity = 5)
-```
+CLASS ArrayStack:
+    field storage: Array of ValueType
+    field topIndex: Integer <- -1
+    field capacity: Integer
 
-#### Amortized Analysis of Dynamic Array Stack:
-When the array becomes full (`top == capacity - 1`), allocating a new array of double capacity ($2 \times$) takes $O(n)$ time. However, by the **Accounting / Potential Method** established in Part 01:
-- A sequence of $n$ pushes costs total $O(n)$ work.
-- The amortized time per `Push` is strictly **$O(1)$**.
+    CONSTRUCTOR(cap: Integer = 16):
+        assert cap > 0
+        this.capacity <- cap
+        this.storage <- allocate_memory(cap * sizeof(ValueType))
+        this.topIndex <- -1
 
----
+    FUNCTION Push(x: ValueType) -> Void:
+        if this.topIndex == this.capacity - 1:
+            // Dynamic doubling
+            this.Resize(2 * this.capacity)
+        this.topIndex <- this.topIndex + 1
+        this.storage[this.topIndex] <- x
 
-### 8. Implementation Architecture 2: Linked-List-Based Stack
-
-To guarantee strict $O(1)$ worst-case time for every individual operation without dynamic array reallocation spikes:
-- Maintain a Singly Linked List where `top` points to the list's **Head**.
-- **Push($x$)**: Insert node at head ($O(1)$).
-- **Pop()**: Delete node at head ($O(1)$).
-- **No Overflow**: The stack grows dynamically until system RAM is exhausted.
-
-```text
-TOP (Head)
- │
- ▼
-[ 30 │ ● ] ──► [ 20 │ ● ] ──► [ 10 │ NULL ]
-```
-
----
-
-### 9. Complete Language-Independent Pseudocode
-
-```text
-DATA STRUCTURE ArrayStack
-    Fields:
-        storage: Array of ValueType
-        topIndex: integer ← -1
-        capacity: integer
-
-    OPERATION Initialize(cap):
-        capacity ← cap
-        storage ← allocate Array of size capacity
-        topIndex ← -1
-
-    OPERATION Push(x):
-        if topIndex = capacity - 1:
-            error "Stack Overflow"
-        topIndex ← topIndex + 1
-        storage[topIndex] ← x
-
-    OPERATION Pop():
-        if topIndex = -1:
-            error "Stack Underflow"
-        val ← storage[topIndex]
-        topIndex ← topIndex - 1
+    FUNCTION Pop() -> ValueType:
+        if this.IsEmpty():
+            raise UnderflowException("Stack is empty")
+        val <- this.storage[this.topIndex]
+        this.topIndex <- this.topIndex - 1
         return val
 
-    OPERATION Peek():
-        if topIndex = -1:
-            error "Stack is empty"
-        return storage[topIndex]
+    FUNCTION Peek() -> ValueType:
+        if this.IsEmpty():
+            raise UnderflowException("Stack is empty")
+        return this.storage[this.topIndex]
 
-    OPERATION IsEmpty():
-        return (topIndex = -1)
+    FUNCTION IsEmpty() -> Boolean:
+        return (this.topIndex == -1)
 
-    OPERATION Size():
-        return (topIndex + 1)
+    FUNCTION Size() -> Integer:
+        return (this.topIndex + 1)
+
+    PRIVATE FUNCTION Resize(newCap: Integer) -> Void:
+        newStorage <- allocate_memory(newCap * sizeof(ValueType))
+        for i from 0 to this.topIndex:
+            newStorage[i] <- this.storage[i]
+        free_memory(this.storage)
+        this.storage <- newStorage
+        this.capacity <- newCap
 ```
 
 ---
 
-### 10. Hardware Call Stack & Activation Records
+### 5. Hardware Symbiosis: CPU Call Stack & Activation Records
 
-### THE HARDWARE FOUNDATION
-Every running software process allocates a dedicated block of RAM called the **Execution Call Stack**:
-- When a function is called, the CPU pushes an **Activation Record (Stack Frame)** containing:
-  1. Return address in machine code instructions.
-  2. Input arguments and parameters.
-  3. Local function variables.
-  4. Saved register states.
-- When the function executes `return`, the CPU pops the top activation record and jumps execution back to the caller's return address.
+Every running program thread is assigned an operating-system-level **Execution Call Stack**:
 
-```text
+```
 HIGH MEMORY ADDRESS
 ┌────────────────────────────────────────────────────────┐
-│ Main Function Frame (args, local vars)                 │
+│ Main Function Activation Record                        │
+│ - Return Address to Operating System Runtime           │
+│ - Local Variables: argc, argv, config                  │
 ├────────────────────────────────────────────────────────┤
-│ HelperA Frame (return address to Main, local vars)     │
+│ ProcessData() Frame                                    │
+│ - Return Address to Main instruction line 42           │
+│ - Parameters: bufferPtr, dataLength                    │
 ├────────────────────────────────────────────────────────┤
-│ Factorial(3) Frame                                     │
+│ ComputeFactorial(n = 3) Frame                          │
 ├────────────────────────────────────────────────────────┤
-│ Factorial(2) Frame                                     │
+│ ComputeFactorial(n = 2) Frame                          │
 ├────────────────────────────────────────────────────────┤
-│ Factorial(1) Frame  ◄── TOP OF STACK (Active Frame)    │
+│ ComputeFactorial(n = 1) Frame ◄── CPU Stack Pointer RSP│
+│ (Active Execution Context)                             │
 └────────────────────────────────────────────────────────┘
-LOW MEMORY ADDRESS (Grows downward toward Heap)
+LOW MEMORY ADDRESS (Grows downward on x86-64)
 ```
 
-**Stack Overflow**: If a recursive function lacks a valid base case, it endlessly pushes new activation records until it breaches the OS stack limit (typically 1 MB to 8 MB), triggering a segmentation fault / crash.
+| Frame Component | Hardware Register | Architectural Function |
+| :--- | :---: | :--- |
+| **Return Address** | Instruction Pointer (`RIP`) | Machine instruction address the CPU jumps to upon `RET` |
+| **Frame Pointer** | Base Pointer (`RBP`) | Fixed anchor address used to offset and read local variables |
+| **Stack Pointer** | Stack Pointer (`RSP`) | Points to current top of stack; adjusted by `PUSH` and `POP` |
+| **Local Variables** | Stack Segment RAM | Stack-allocated primitive values and pointer handles |
+
+> ⚠️ **Stack Overflow**:  
+> In unbounded or deep recursion without a reachable base case, successive function calls push activation records until the allocated stack boundary (typically 1 MB to 8 MB) is exceeded, triggering an immediate OS memory fault (segmentation violation).
 
 ---
 
-### 11. Application 1: Balanced Delimiters & Parentheses
-
-Given a string containing brackets `()`, `{}`, `[]`, determine if all opening brackets are closed in valid nested order.
+### 6. Application 1: Balanced Delimiter & Parentheses Matching
 
 ```text
-ALGORITHM IsBalanced(expression)
-    Input: String s
-    Output: true if brackets are balanced, else false
+FUNCTION IsBalanced(expression: String) -> Boolean:
+    stk <- new ArrayStack()
+    matching <- Map(')' -> '(', '}' -> '{', ']' -> '[')
 
-1.  stk ← new EmptyStack()
-2.  for each char c in expression:
-3.      if c is '(' or c is '{' or c is '[':
-4.          stk.Push(c)
-5.      else if c is ')' or c is '}' or c is ']':
-6.          if stk.IsEmpty():
-7.              return false    // Closing bracket has no matching opener
-8.          topChar ← stk.Pop()
-9.          if (c is ')' and topChar ≠ '(') or
-10.            (c is '}' and topChar ≠ '{') or
-11.            (c is ']' and topChar ≠ '['):
-12.             return false    // Mismatched bracket type
-13. return stk.IsEmpty()        // Any unclosed openers left?
+    for each char c in expression:
+        if c in ['(', '{', '[']:
+            stk.Push(c)
+        else if c in [')', '}', ']']:
+            if stk.IsEmpty():
+                return False     // Unmatched closing bracket
+            topChar <- stk.Pop()
+            if topChar != matching[c]:
+                return False     // Mismatched bracket types
+    return stk.IsEmpty()         // True if zero unclosed brackets remain
 ```
 
-#### Dry-Run Table: Testing `{[()]}`
+#### Step-by-Step Trace: Validating `{[()]}`
 
-| Step | Current Char `c` | Stack Action | Stack State (Bottom $\to$ Top) | Match Verification |
-| :---: | :---: | :---: | :---: | :---: |
-| 1 | `{` | `Push('{')` | `['{']` | Opening bracket |
-| 2 | `[` | `Push('[')` | `['{', '[']` | Opening bracket |
-| 3 | `(` | `Push('(')` | `['{', '[', '(']` | Opening bracket |
-| 4 | `)` | `Pop()` $\to$ `'('` | `['{', '[']` | `')'` matches `'('` ✅ |
-| 5 | `]` | `Pop()` $\to$ `'['` | `['{']` | `']'` matches `'['` ✅ |
-| 6 | `}` | `Pop()` $\to$ `'{'` | `[]` (Empty) | `'}'` matches `'{'` ✅ |
-| **End** | End of string | `stk.IsEmpty()` | `[]` | **True (Valid Balanced Expression)** |
+| Step | Scanned Token | Action | Stack State (Bottom $\to$ Top) | Evaluation Result |
+| :---: | :---: | :--- | :--- | :--- |
+| **1** | `{` | `Push('{')` | `['{']` | Opening bracket recorded |
+| **2** | `[` | `Push('[')` | `['{', '[']` | Opening bracket recorded |
+| **3** | `(` | `Push('(')` | `['{', '[', '(']` | Opening bracket recorded |
+| **4** | `)` | `Pop()` $\to$ `'('` | `['{', '[']` | `matching[')'] == '('` ✅ |
+| **5** | `]` | `Pop()` $\to$ `'['` | `['{']` | `matching[']'] == '['` ✅ |
+| **6** | `}` | `Pop()` $\to$ `'{'` | `[]` (Empty) | `matching['}'] == '{'` ✅ |
+| **End** | End of string | Inspect `stk.IsEmpty()` | `[]` | **Expression is Balanced (True)** |
 
 ---
 
-### 12. Application 2: Expression Parsing & The Shunting-Yard Algorithm
+### 7. Application 2: Expression Parsing & Dijkstra's Shunting-Yard Algorithm
 
-Mathematical expressions can be represented in three notations:
-1. **Infix** (Human-readable): $A + B * C$ (requires operator precedence and parentheses).
-2. **Prefix / Polish**: $+ A * B C$ (operator precedes operands).
-3. **Postfix / Reverse Polish (RPN)**: $A B C * +$ (operands precede operator; **zero parentheses required!**).
+Mathematical expressions can be formalized in three distinct notations:
+1. **Infix**: $A + B \times C$ (human-readable; requires operator precedence and parentheses).
+2. **Prefix (Polish)**: $+ A \times B C$ (operator precedes operands).
+3. **Postfix (Reverse Polish Notation / RPN)**: $A B C \times +$ (operands precede operator; **zero parentheses required**).
 
-#### Postfix Evaluation Algorithm ($O(n)$ Time):
-Postfix expressions are trivially evaluated using a single operand stack:
-- Scan token by token from left to right:
-  - If operand: `Push(value)`.
-  - If operator $\odot$: Pop two operands $B \leftarrow \text{Pop}()$, $A \leftarrow \text{Pop}()$. Compute $R \leftarrow A \odot B$. `Push(R)`.
-- At the end, the stack contains the final result.
+#### A. Postfix Expression Evaluation ($O(n)$ Time)
+Using a single operand stack:
+- Operands are pushed directly onto the stack.
+- Operators pop the two top operands $B$ and $A$, compute $A \odot B$, and push the result.
 
 ```text
-ALGORITHM EvaluatePostfix(tokens)
-1.  stk ← new EmptyStack()
-2.  for each token in tokens:
-3.      if token is number:
-4.          stk.Push(token)
-5.      else:  // token is operator
-6.          b ← stk.Pop()
-7.          a ← stk.Pop()
-8.          res ← ApplyOperator(token, a, b)
-9.          stk.Push(res)
-10. return stk.Pop()
+FUNCTION EvaluatePostfix(tokens: List of String) -> Number:
+    stk <- new ArrayStack()
+    for each token in tokens:
+        if IsNumber(token):
+            stk.Push(ParseNumber(token))
+        else:
+            b <- stk.Pop()
+            a <- stk.Pop()
+            result <- ApplyOperator(token, a, b)
+            stk.Push(result)
+    return stk.Pop()
 ```
 
-#### Dijkstra's Shunting-Yard Algorithm (Infix $\to$ Postfix):
-Uses an operator stack to convert infix expressions respecting operator precedence ($* , / > + , -$) and associativity (Left-to-Right).
+#### B. Dijkstra's Shunting-Yard Algorithm (Infix $\to$ Postfix)
+Uses an operator stack to convert standard infix expressions into postfix notation:
+
+| Operator | Precedence Level | Associativity |
+| :---: | :---: | :---: |
+| `^` (Power) | 3 | Right-to-Left |
+| `*`, `/` | 2 | Left-to-Right |
+| `+`, `-` | 1 | Left-to-Right |
+
+```text
+FUNCTION ShuntingYard(infixTokens: List of String) -> List of String:
+    outputQueue <- empty Queue
+    operatorStack <- new ArrayStack()
+
+    for each token in infixTokens:
+        if IsNumber(token):
+            outputQueue.Enqueue(token)
+        else if token == "(":
+            operatorStack.Push(token)
+        else if token == ")":
+            while not operatorStack.IsEmpty() and operatorStack.Peek() != "(":
+                outputQueue.Enqueue(operatorStack.Pop())
+            if not operatorStack.IsEmpty():
+                operatorStack.Pop() // Discard '('
+        else: // Token is operator
+            while (not operatorStack.IsEmpty() and operatorStack.Peek() != "(" and
+                   (Precedence(operatorStack.Peek()) > Precedence(token) or
+                   (Precedence(operatorStack.Peek()) == Precedence(token) and IsLeftAssociative(token)))):
+                outputQueue.Enqueue(operatorStack.Pop())
+            operatorStack.Push(token)
+
+    while not operatorStack.IsEmpty():
+        outputQueue.Enqueue(operatorStack.Pop())
+
+    return outputQueue
+```
+
+#### Conversion Trace: `3 + 4 * 2 / ( 1 - 5 )`
+
+| Token | Operator Stack Action | Operator Stack (Bottom $\to$ Top) | Postfix Output Queue |
+| :---: | :--- | :--- | :--- |
+| `3` | None (Operand) | `[]` | `3` |
+| `+` | `Push('+')` | `['+']` | `3` |
+| `4` | None (Operand) | `['+']` | `3, 4` |
+| `*` | `Push('*')` ($* > +$) | `['+', '*']` | `3, 4` |
+| `2` | None (Operand) | `['+', '*']` | `3, 4, 2` |
+| `/` | Pop `*` (equal precedence), then `Push('/')` | `['+', '/']` | `3, 4, 2, *` |
+| `(` | `Push('(')` | `['+', '/', '(']` | `3, 4, 2, *` |
+| `1` | None (Operand) | `['+', '/', '(']` | `3, 4, 2, *, 1` |
+| `-` | `Push('-')` | `['+', '/', '(', '-']` | `3, 4, 2, *, 1` |
+| `5` | None (Operand) | `['+', '/', '(', '-']` | `3, 4, 2, *, 1, 5` |
+| `)` | Pop until `(` | `['+', '/']` | `3, 4, 2, *, 1, 5, -` |
+| **End** | Pop remaining operators | `[]` | `3, 4, 2, *, 1, 5, -, /, +` |
 
 ---
 
-## Module 06 Summary & Key Takeaways
+### 8. Key Takeaways
 
-1. **Stacks** enforce strict **LIFO** discipline with $O(1)$ operations at `TOP`.
-2. Dynamic array stacks achieve **amortized $O(1)$** push, while linked list stacks guarantee **worst-case $O(1)$** at the cost of pointer overhead.
-3. The **Hardware Call Stack** manages function execution, parameters, and return addresses; unbounded recursion causes **Stack Overflow**.
-4. Stacks are the fundamental engine behind **bracket balancing**, **DFS traversal**, and **Reverse Polish Notation (RPN) compilers**.
+1. **LIFO Discipline**: Stacks enforce restricted access where all operations occur in $O(1)$ time at the `TOP` boundary.
+2. **Array vs. Linked List**: Contiguous dynamic arrays achieve superior CPU cache locality with amortized $O(1)$ push; linked lists guarantee strict $O(1)$ worst-case push with pointer overhead.
+3. **Execution Call Stack**: The CPU utilizes an internal stack to manage activation records, return pointers, and local scoping during function execution.
+4. **Parsing Foundations**: Stacks are the core computational engine driving syntax tree generation, delimiter balancing, and Reverse Polish Notation (RPN) compilers via the Shunting-Yard algorithm.
 
 ---
 
-## References & Academic Attribution
+## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
-2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
-3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: *Elementary Data Structures*. MIT Press.
+2. **Dijkstra, E. W.** (1961). *Making a Translator for ALGOL 60*. ALGOL Bulletin, 10, 10-11.
+3. **Aho, A. V., Lam, M. S., Sethi, R., & Ullman, J. D.** (2006). *Compilers: Principles, Techniques, and Tools* (2nd ed.), Chapter 4: *Syntax Analysis*. Addison-Wesley.
+4. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: *Bags, Queues, and Stacks*. Addison-Wesley.

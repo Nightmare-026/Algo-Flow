@@ -14,7 +14,7 @@
 - [x] linear-data-structures/singly-linked-lists — status: done
 - [x] linear-data-structures/doubly-and-circular-linked-lists — status: done
 - [x] linear-data-structures/specialized-linked-lists — status: done
-- [ ] linear-data-structures/stacks — status: not-started
+- [x] linear-data-structures/stacks — status: done
 - [ ] linear-data-structures/queues-and-circular-queues — status: not-started
 - [ ] linear-data-structures/deques-and-priority-queues — status: not-started
 ## Part 03 — Hashing & Constant-Time Lookups
