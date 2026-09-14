@@ -44,7 +44,7 @@
 - [x] trees/spatial-and-specialized-trees — status: done
 ## Part 07 — Graph Theory & Network Algorithms
 - [x] graphs/graph-types-and-taxonomy — status: done
-- [ ] graphs/graph-storage-architectures — status: not-started
+- [x] graphs/graph-storage-architectures — status: done
 - [ ] graphs/traversals-and-cycles — status: not-started
 - [ ] graphs/topological-sort-and-dags — status: not-started
 - [ ] graphs/shortest-paths — status: not-started
