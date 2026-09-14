@@ -89,6 +89,7 @@ export function MobileCurriculumNav({
                   modules={modules}
                   currentModuleSlug={currentModuleSlug}
                   currentChapterSlug={currentChapterSlug}
+                  currentTableOfContents={tableOfContents}
                   onNavigate={() => setActiveDrawer(null)}
                   className="border-0 shadow-none p-0 bg-transparent"
                 />

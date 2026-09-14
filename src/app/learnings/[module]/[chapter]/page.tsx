@@ -183,6 +183,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             modules={allModules}
             currentModuleSlug={mod.slug}
             currentChapterSlug={ch.slug}
+            currentTableOfContents={content.tableOfContents}
             className="h-full"
           />
         </aside>
