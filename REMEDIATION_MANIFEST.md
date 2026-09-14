@@ -6,7 +6,7 @@
 ## Part 01 — Algorithmic Foundations
 - [x] foundations/data-and-algorithms — status: done
 - [x] foundations/problem-solving-methodology — status: done
-- [ ] foundations/asymptotic-analysis — status: not-started
+- [x] foundations/asymptotic-analysis — status: done
 - [ ] foundations/recursion-and-recurrences — status: not-started
 ## Part 02 — Linear Data Structures
 - [ ] linear-data-structures/arrays-and-dynamic-arrays — status: not-started
