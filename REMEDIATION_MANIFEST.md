@@ -28,7 +28,7 @@
 - [x] searching/search-space-and-rotated — status: done
 ## Part 05 — Sorting Algorithms & Theory
 - [x] sorting/elementary-sorts — status: done
-- [ ] sorting/divide-and-conquer-sorts — status: not-started
+- [x] sorting/divide-and-conquer-sorts — status: done
 - [ ] sorting/linear-time-sorts — status: not-started
 - [ ] sorting/sorting-theory-comparison — status: not-started
 ## Part 06 — Trees & Hierarchical Structures
