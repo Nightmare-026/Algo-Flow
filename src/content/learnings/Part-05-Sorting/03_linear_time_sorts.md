@@ -5,146 +5,290 @@
 
 ---
 
-# TOPIC 56: COUNTING SORT
+Comparison-based sorting algorithms are fundamentally bound by the $\Omega(n \log n)$ decision tree lower bound. Non-comparison sorting algorithms—Counting Sort, Radix Sort, and Bucket Sort—bypass this mathematical barrier by exploiting algebraic and structural properties of the input keys rather than comparing relative magnitudes. By leveraging bounded integer ranges, positional digit decompositions, and continuous probability distributions, these algorithms achieve linear $\Theta(n)$ execution time. This chapter explores frequency histograms, prefix sum address calculation, multi-pass positional stability, bitwise radix extraction, and probabilistic scatter-gather architectures.
 
-### 1. Problem Statement & Key Concept
-Counting Sort breaks the $\Omega(n \log n)$ lower bound by **avoiding comparisons entirely**. It assumes the input keys are non-negative integers lying within a bounded range $[0, k]$.
-
-### 2. Algorithm Mechanics
-1. **Count Frequencies**: Create an array $C$ of size $k + 1$. Record how many times each integer occurs in input array $A$.
-2. **Compute Prefix Sums**: Transform $C$ such that $C[i]$ contains the count of elements $\le i$. This indicates the exact final index in the output array!
-3. **Stable Placement**: Iterate backwards through $A$ from $n - 1$ down to 0, placing elements into output array $B$ at index $C[A[i]] - 1$, and decrementing $C[A[i]]$.
+### Learning Objectives
+- Formulate how frequency histograms and cumulative prefix sums establish exact target indices in Counting Sort.
+- Implement backward stable array reconstruction in Counting Sort and prove why backward traversal is mandatory for stability.
+- Differentiate Least Significant Digit (LSD) from Most Significant Digit (MSD) Radix Sort, proving why LSD requires a stable sub-sorter.
+- Analyze Radix Sort base selection trade-offs ($b = 10$ vs $b = 2^8 = 256$) for high-throughput 32-bit and 64-bit integer sorting.
+- Formulate the scatter-sort-gather pipeline of Bucket Sort and prove its expected linear runtime under a continuous uniform distribution $U[0, 1)$.
 
 ---
 
-### 3. Pseudocode: Stable Counting Sort
+## Topic 56: Counting Sort (Frequency Hashing & Cumulative Prefix Sums)
+
+### 1. The Direct-Indexing Paradigm
+
+Counting Sort assumes that each of the $n$ input elements is an integer in the bounded range $[0, k]$. Rather than performing comparisons, it determines for each input element $x$ how many elements in the input are strictly smaller than $x$. With this count in hand, $x$ can be placed directly into its final position in the output array.
+
+The algorithm operates in three distinct phases:
+1. **Histogram Construction:** Compute a frequency histogram array $C[0 \dots k]$ where $C[v]$ records the occurrences of value $v$ in input array $A$.
+2. **Cumulative Prefix Sums:** Transform $C$ in place such that each cell $C[v]$ stores $\sum_{j=0}^{v} C[j]$. The value $C[v]$ indicates the total count of elements $\le v$, which defines the upper boundary of index positions where value $v$ belongs in the output.
+3. **Backward Stable Placement:** Traverse the original array $A$ backwards from index $n - 1$ down to $0$. For each element $A[i]$, place it at index $C[A[i]] - 1$ in output buffer $B$, and decrement $C[A[i]]$.
+
+---
+
+### 2. Frequency & Cumulative Prefix Trace
+
+Consider sorting the array $A = [4, 2, 2, 8, 3, 3, 1]$ of size $n = 7$ with maximum key $k = 8$:
+
+| Key Value ($v$) | Raw Frequency ($C[v]$) | Cumulative Count ($\sum_{j=0}^v C[j]$) | Reserved Output Indices in $B$ | Algorithmic Significance |
+| :---: | :---: | :---: | :---: | :--- |
+| **`0`** | `0` | `0` | None | No zero elements |
+| **`1`** | `1` | `1` | Index `0` | Single instance of 1 |
+| **`2`** | `2` | `3` | Indices `1, 2` | Two instances of 2 |
+| **`3`** | `2` | `5` | Indices `3, 4` | Two instances of 3 |
+| **`4`** | `1` | `6` | Index `5` | Single instance of 4 |
+| **`5`** | `0` | `6` | None | Value absent |
+| **`6`** | `0` | `6` | None | Value absent |
+| **`7`** | `0` | `6` | None | Value absent |
+| **`8`** | `1` | `7` | Index `6` | Single instance of 8 |
+
+---
+
+### 3. Backward Stable Placement Trace
+
+Traversing $A = [4, 2_a, 2_b, 8, 3_a, 3_b, 1]$ from right to left ($i = 6$ down to $0$):
+
+| Step $i$ | Inspected Value $A[i]$ | Current $C[A[i]]$ | Output Index ($C[A[i]] - 1$) | Updated $C[A[i]]$ | Output Array State $B$ |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| **`6`** | `1` | `1` | $1 - 1 = \mathbf{0}$ | $0$ | $[1, \_, \_, \_, \_, \_, \_]$ |
+| **`5`** | $3_b$ | `5` | $5 - 1 = \mathbf{4}$ | $4$ | $[1, \_, \_, \_, 3_b, \_, \_]$ |
+| **`4`** | $3_a$ | `4` | $4 - 1 = \mathbf{3}$ | $3$ | $[1, \_, \_, 3_a, 3_b, \_, \_]$ |
+| **`3`** | `8` | `7` | $7 - 1 = \mathbf{6}$ | $6$ | $[1, \_, \_, 3_a, 3_b, \_, 8]$ |
+| **`2`** | $2_b$ | `3` | $3 - 1 = \mathbf{2}$ | $2$ | $[1, \_, 2_b, 3_a, 3_b, \_, 8]$ |
+| **`1`** | $2_a$ | `2` | $2 - 1 = \mathbf{1}$ | $1$ | $[1, 2_a, 2_b, 3_a, 3_b, \_, 8]$ |
+| **`0`** | `4` | `6` | $6 - 1 = \mathbf{5}$ | $5$ | $[1, 2_a, 2_b, 3_a, 3_b, 4, 8]$ |
+
+> **Why Backward Traversal is Mandatory for Stability:**  
+> In step 5, duplicate $3_b$ (appearing later in $A$) was assigned output index 4. In step 4, duplicate $3_a$ (appearing earlier in $A$) was assigned output index 3. Because $3_a$ occupies a smaller index than $3_b$, their relative original order is strictly preserved. Traversing forward would place $3_a$ at 4 and $3_b$ at 3, inverting their order and destroying stability.
+
+---
+
+### 4. Canonical Algorithm: Stable Counting Sort
 
 ```text
-ALGORITHM CountingSort(A, n, k)
-    Input: Array A of n integers, where each element 0 ≤ A[i] ≤ k
-    Output: Array B containing sorted elements
+FUNCTION CountingSort(A: Array of Integer, n: Integer, k: Integer) -> Array of Integer:
+    // Allocate count buffer of size k + 1 and output buffer of size n
+    count <- Array of size (k + 1) initialized to 0
+    output <- Array of size n
 
-1.  allocate count[0...k] initialized to 0
-2.  allocate output[0...n - 1]
-3.  // Step 1: Frequency histogram
-4.  for i ← 0 to n - 1:
-5.      count[A[i]] ← count[A[i]] + 1
-6.  // Step 2: Cumulative prefix sums
-7.  for i ← 1 to k:
-8.      count[i] ← count[i] + count[i - 1]
-9.  // Step 3: Build output array backwards to guarantee STABILITY
-10. for i ← n - 1 down to 0:
-11.     output[count[A[i]] - 1] ← A[i]
-12.     count[A[i]] ← count[A[i]] - 1
-13. return output
+    // Phase 1: Build frequency histogram
+    FOR i <- 0 TO n - 1 DO
+        count[A[i]] <- count[A[i]] + 1
+    END FOR
+
+    // Phase 2: Compute cumulative prefix sums
+    FOR j <- 1 TO k DO
+        count[j] <- count[j] + count[j - 1]
+    END FOR
+
+    // Phase 3: Place elements backwards into output buffer
+    FOR i <- n - 1 DOWNTO 0 DO
+        val <- A[i]
+        targetIdx <- count[val] - 1
+        output[targetIdx] <- val
+        count[val] <- count[val] - 1
+    END FOR
+
+    RETURN output
+```
+
+#### Complexity & Domain Constraints:
+- **Time Complexity:** $\Theta(n + k)$ across all cases (best, average, worst). Building histogram takes $\Theta(n)$, prefix sums take $\Theta(k)$, and output placement takes $\Theta(n)$.
+- **Auxiliary Space:** $\Theta(n + k)$ for the count array of size $k + 1$ and output buffer of size $n$.
+- **Operational Boundary:** Counting Sort is asymptotically optimal when $k = O(n)$, yielding $\Theta(n)$ time. If $k = \Omega(n^2)$ (e.g., sorting 10 integers where maximum value is $10^9$), the $\Theta(k)$ memory and runtime overhead makes it far worse than standard $O(n \log n)$ algorithms.
+
+---
+
+## Topic 57: Radix Sort (Positional Digit Sorting)
+
+### 1. Positional Decomposition & The Stability Invariant
+
+When integer keys span a wide numerical range $[0, k]$ where $k \gg n$, Counting Sort becomes impractical. **Radix Sort** overcomes this by decomposing each key into $d$ digits evaluated in a specific positional numerical base $b$:
+
+$$x = \sum_{j=0}^{d-1} \text{digit}_j(x) \cdot b^j, \quad \text{where } 0 \le \text{digit}_j(x) < b$$
+
+- **LSD (Least Significant Digit) Radix Sort:** Sorts keys starting from the least significant digit (units position) toward the most significant digit (highest power of $b$).
+- **MSD (Most Significant Digit) Radix Sort:** Sorts keys starting from the highest power of $b$ toward the units digit, recursively partitioning elements into sub-buckets (similar to a Trie or QuickSort).
+
+> **The Fundamental LSD Theorem:**  
+> If an array is sorted by digit $j$ using an **unconditionally stable** sorting subroutine, then for any two keys whose digits at positions $\ge j$ are identical, their relative sorted order from previous digit passes $< j$ is strictly preserved. Therefore, sorting passes from least significant digit ($j = 0$) to most significant digit ($j = d - 1$) yields a globally sorted array.
+
+---
+
+### 2. Multi-Pass LSD State Progression
+
+Consider sorting eight 3-digit decimal numbers ($b = 10, d = 3$):  
+$A = [170, 045, 075, 090, 002, 024, 802, 066]$
+
+| Key Identifier | Pass 1: Units Digit ($d_0 = x \bmod 10$) | Pass 1 Sorted State | Pass 2: Tens Digit ($d_1 = \lfloor x/10 \rfloor \bmod 10$) | Pass 2 Sorted State | Pass 3: Hundreds ($d_2 = \lfloor x/100 \rfloor \bmod 10$) | Final Globally Sorted State |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **$170$** | `0` | `170` | `7` | `002` | `1` | **`002` (2)** |
+| **$045$** | `5` | `090` | `4` | `802` | `0` | **`024` (24)** |
+| **$075$** | `5` | `002` | `7` | `024` | `0` | **`045` (45)** |
+| **$090$** | `0` | `802` | `9` | `045` | `0` | **`066` (66)** |
+| **$002$** | `2` | `024` | `0` | `066` | `0` | **`075` (75)** |
+| **$024$** | `4` | `045` | `2` | `170` | `0` | **`090` (90)** |
+| **$802$** | `2` | `075` | `0` | `075` | `8` | **`170`** |
+| **$066$** | `6` | `066` | `6` | `090` | `0` | **`802`** |
+
+Notice that in Pass 2, $002$ and $802$ both have tens digit $0$. Because the digit sort is stable, $002$ remains before $802$ as established in Pass 1. In Pass 3, sorting by the hundreds digit places all numbers beginning with $0$ in front, perfectly ordered by their lower digits.
+
+---
+
+### 3. Canonical Algorithm: LSD Radix Sort
+
+```text
+FUNCTION RadixSort(A: Array of Integer, n: Integer):
+    maxVal <- FindMaximum(A, n)
+
+    // Execute stable counting sort for each digit position: 1, 10, 100...
+    exp <- 1
+    WHILE FLOOR(maxVal / exp) > 0 DO
+        CountingSortByDigit(A, n, exp)
+        exp <- exp * 10
+    END WHILE
+
+FUNCTION CountingSortByDigit(A: Array of Integer, n: Integer, exp: Integer):
+    output <- Array of size n
+    count <- Array of size 10 initialized to 0
+
+    // Count occurrences of current digit: (A[i] / exp) % 10
+    FOR i <- 0 TO n - 1 DO
+        digit <- FLOOR(A[i] / exp) MOD 10
+        count[digit] <- count[digit] + 1
+    END FOR
+
+    // Prefix sums
+    FOR j <- 1 TO 9 DO
+        count[j] <- count[j] + count[j - 1]
+    END FOR
+
+    // Build output array backwards to guarantee stability
+    FOR i <- n - 1 DOWNTO 0 DO
+        digit <- FLOOR(A[i] / exp) MOD 10
+        output[count[digit] - 1] <- A[i]
+        count[digit] <- count[digit] - 1
+    END FOR
+
+    // Copy sorted output back to array A
+    FOR i <- 0 TO n - 1 DO
+        A[i] <- output[i]
+    END FOR
 ```
 
 ---
 
-### 4. Complexity & Constraints
-- **Time Complexity**: Strictly $\mathbf{\Theta(n + k)}$ in all cases.
-- **Auxiliary Space**: $\mathbf{\Theta(n + k)}$ (For the count array of size $k$ and output array of size $n$).
-- **Stability**: **Stable** (Iterating from $n-1$ down to 0 guarantees elements with equal keys maintain their relative order).
-- **Limitation**: If $k \gg n$ (e.g., sorting 10 numbers where max value is $10^9$), Counting Sort wastes immense memory and runs slower than QuickSort. It is optimal only when $k = O(n)$.
+### 4. Asymptotic Complexity & High-Performance Radix Choice
 
----
----
+The total runtime of LSD Radix Sort across $n$ keys with maximum value $k$ in base $b$ is:
 
-# TOPIC 57: RADIX SORT
+$$T(n) = \Theta(d \cdot (n + b)), \quad \text{where } d = \left\lceil \log_b(k + 1) \right\rceil$$
 
-### 1. Problem Statement & Paradigm
-When the maximum integer value $k$ is large, Counting Sort is impractical. **Radix Sort** solves this by breaking each key into $d$ individual digits and sorting digit-by-digit.
+#### Hardware-Optimized Base Selection:
+When sorting 32-bit unsigned integers:
+- Choosing decimal base $b = 10$ requires $d = 10$ passes, and integer division/modulo instructions (`/` and `%`) which are computationally expensive on CPUs.
+- Choosing base $b = 2^8 = 256$ (1 byte per digit) allows digits to be extracted using instant bitwise shifts and bitmasks:
+  $$\text{digit}_j(x) = (x \gg (8 \cdot j)) \ \& \ \text{0xFF}$$
+- Number of passes: $d = 32 / 8 = 4$ passes.
+- Frequency buffer size per pass: $b = 256$ integers (fits effortlessly into L1 CPU cache).
+- Total runtime: $4 \times (n + 256) = \mathbf{\Theta(n)}$.
 
-### 2. LSD (Least Significant Digit) vs MSD (Most Significant Digit)
-- **LSD (Recommended)**: Sorts from right to left (ones digit $\to$ tens $\to$ hundreds).  
-  **Mandatory Requirement**: Every pass **MUST BE STABLE** (Counting Sort is used as the stable digit sorter).
-- **MSD**: Sorts from left to right (most significant digit first). Requires recursive bucket partitioning.
-
-```text
-LSD RADIX SORT PASS-BY-PASS ON [ 170, 045, 075, 090, 002, 024, 802, 066 ]
-
-Pass 1 (Units Digit):   17[0], 09[0] ──► 00[2], 80[2] ──► 02[4] ──► 04[5], 07[5] ──► 06[6]
-Array becomes:         [ 170, 090, 002, 802, 024, 045, 075, 066 ]
-
-Pass 2 (Tens Digit):    0[0]2, 8[0]2 ──► 0[2]4 ──► 0[4]5 ──► 0[6]6 ──► 1[7]0, 0[7]5 ──► 0[9]0
-Array becomes:         [ 002, 802, 024, 045, 066, 170, 075, 090 ]
-
-Pass 3 (Hundreds):     [0]02, [0]24, [0]45, [0]66, [0]75, [0]90 ──► [1]70 ──► [8]02
-Final Sorted Array:    [ 2, 24, 45, 66, 75, 90, 170, 802 ]
-```
+On modern hardware, a 4-pass 8-bit Radix Sort routinely outperforms Quicksort by a factor of $2\times$ to $3\times$ when sorting millions of 32-bit integers.
 
 ---
 
-### 3. Pseudocode: LSD Radix Sort
+## Topic 58: Bucket Sort (Uniform Scatter-Gather Partitioning)
 
-```text
-ALGORITHM RadixSort(A, n)
-    Input: Array A of n non-negative integers
-    Output: Array A sorted in-place
+### 1. The Scatter-Gather Architecture
 
-1.  maxVal ← Maximum(A, n)
-2.  exp ← 1                     // 1, 10, 100, 1000...
-3.  while ⌊maxVal / exp⌋ > 0:
-4.      CountingSortByDigit(A, n, exp)
-5.      exp ← exp * 10
-6.  return A
-```
+Bucket Sort assumes that the input data is generated by a random process that distributes elements **uniformly and independently** over the continuous real interval $[0.0, 1.0)$.
+
+The algorithm proceeds through three phases:
+1. **Scatter:** Divide $[0.0, 1.0)$ into $n$ equal-width sub-intervals (buckets) of size $1/n$. For each element $A[i]$, map it to bucket index $b = \lfloor n \cdot A[i] \rfloor$ and insert it into a dynamic linked list or resizable array at `buckets[b]`.
+2. **Sort:** Sort each individual bucket independently using Insertion Sort.
+3. **Gather:** Concatenate all sorted buckets in order from bucket $0$ to $n - 1$ to form the final sorted array.
 
 ---
 
-### 4. Complexity Analysis
-- **Time Complexity**: $\mathbf{\Theta(d \cdot (n + b))}$
-  - $d$: Number of digits in maximum element ($\approx \log_b(\text{maxVal})$).
-  - $b$: Numerical base (radix) used (e.g., $b = 10$ for decimal, $b = 256$ for byte-level sorting).
-  - For standard 32-bit integers, using base $b = 256 = 2^8$, $d = 4$ passes are sufficient. Total time is $4 \times (n + 256) = \mathbf{O(n)}$!
-- **Auxiliary Space**: $O(n + b)$.
-- **Stability**: **Stable**.
+### 2. State Progression: Distributing Keys into Buckets
 
----
----
+Consider sorting $n = 10$ floating-point values:  
+$A = [0.78, 0.17, 0.39, 0.26, 0.72, 0.94, 0.21, 0.12, 0.23, 0.68]$
 
-# TOPIC 58: BUCKET SORT
+| Bucket Index ($b$) | Continuous Range | Raw Scattered Elements ($A[i]$) | Sorted Bucket State (Insertion Sort) | Gather Order |
+| :---: | :---: | :---: | :---: | :---: |
+| **`0`** | $[0.0, 0.1)$ | $\emptyset$ | $\emptyset$ | — |
+| **`1`** | $[0.1, 0.2)$ | $[0.17, 0.12]$ | $[0.12, 0.17]$ | Indices `0, 1` |
+| **`2`** | $[0.2, 0.3)$ | $[0.26, 0.21, 0.23]$ | $[0.21, 0.23, 0.26]$ | Indices `2, 3, 4` |
+| **`3`** | $[0.3, 0.4)$ | $[0.39]$ | $[0.39]$ | Index `5` |
+| **`4`** | $[0.4, 0.5)$ | $\emptyset$ | $\emptyset$ | — |
+| **`5`** | $[0.5, 0.6)$ | $\emptyset$ | $\emptyset$ | — |
+| **`6`** | $[0.6, 0.7)$ | $[0.68]$ | $[0.68]$ | Index `6` |
+| **`7`** | $[0.7, 0.8)$ | $[0.78, 0.72]$ | $[0.72, 0.78]$ | Indices `7, 8` |
+| **`8`** | $[0.8, 0.9)$ | $\emptyset$ | $\emptyset$ | — |
+| **`9`** | $[0.9, 1.0)$ | $[0.94]$ | $[0.94]$ | Index `9` |
 
-### 1. Problem Statement & Mathematical Preconditions
-Bucket Sort assumes input values are drawn from a **uniform probability distribution** over the real interval $[0.0, 1.0)$.
-
-### 2. Algorithm Mechanics
-1. Divide the interval $[0, 1)$ into $n$ equal-sized sub-intervals called **Buckets**.
-2. **Scatter**: Distribute each element $A[i]$ into bucket index $\lfloor n \cdot A[i] \rfloor$.
-3. **Sort**: Sort each individual bucket using Insertion Sort.
-4. **Gather**: Concatenate all buckets in order into the final array.
-
-```text
-SCATTER PHASE:
-Element 0.78 ──► Bucket ⌊10 × 0.78⌋ = Bucket 7
-Element 0.17 ──► Bucket ⌊10 × 0.17⌋ = Bucket 1
-Element 0.12 ──► Bucket ⌊10 × 0.12⌋ = Bucket 1
-
-BUCKET 1: [ 0.17 ] ──► [ 0.12 ]  ──(Sort)──► [ 0.12, 0.17 ]
-BUCKET 7: [ 0.78 ]
-```
+Final concatenated array: $[0.12, 0.17, 0.21, 0.23, 0.26, 0.39, 0.68, 0.72, 0.78, 0.94]$.
 
 ---
 
-### 3. Complexity Under Uniform Distribution
-- If elements are uniformly distributed, the expected number of elements per bucket is $O(1)$.
-- Sorting each bucket of size $k$ via Insertion Sort takes $O(k^2)$ time. The expected value $E[k^2] = O(1)$.
-- Summing across all $n$ buckets gives an **Average Case Time Complexity of $\mathbf{\Theta(n)}$**.
-- **Worst Case**: If all elements cluster into a single bucket, runtime degrades to $\Theta(n^2)$.
-- **Auxiliary Space**: $\Theta(n)$.
+### 3. Mathematical Proof: Expected Linear Runtime
+
+Let $n_i$ be a random variable denoting the number of elements placed into bucket $i$. Since each element has an equal probability $p = 1/n$ of landing in any given bucket, $n_i$ follows a Binomial distribution $B(n, 1/n)$.
+
+The time required to sort bucket $i$ via Insertion Sort is $O(n_i^2)$. The total time across all buckets is:
+
+$$E[T(n)] = \Theta(n) + \sum_{i=0}^{n-1} O(E[n_i^2])$$
+
+For a Binomial random variable $n_i \sim B(n, p)$ with $p = 1/n$:
+- Mean: $E[n_i] = n \cdot p = n \cdot (1/n) = 1$
+- Variance: $\text{Var}(n_i) = n p (1 - p) = 1 - 1/n$
+- Second Moment:
+  $$E[n_i^2] = \text{Var}(n_i) + (E[n_i])^2 = \left(1 - \frac{1}{n}\right) + 1^2 = 2 - \frac{1}{n}$$
+
+Substituting this into the total expected time summation:
+
+$$E[T(n)] = \Theta(n) + \sum_{i=0}^{n-1} O\left(2 - \frac{1}{n}\right) = \Theta(n) + n \cdot O(1) = \mathbf{\Theta(n)} \quad \blacksquare$$
+
+Under the assumption of uniform distribution, the expected runtime of Bucket Sort is strictly **linear $\Theta(n)$**.
+
+#### Failure Mode & Degeneracy:
+If the input data is severely skewed (e.g., all $n$ elements share identical values and collapse into a single bucket), Insertion Sort must process all $n$ elements in that single bucket, degrading total runtime to $\Theta(n^2)$.
+
+---
+
+## Master Comparison Matrix: Non-Comparison Linear Sorts
+
+| Metric | Counting Sort | Radix Sort (LSD) | Bucket Sort |
+| :--- | :---: | :---: | :---: |
+| **Domain Constraint** | Small bounded integers $[0, k]$ | Integers / fixed-length strings | Uniform floating-point numbers $[0, 1)$ |
+| **Best-Case Time** | $\Theta(n + k)$ | $\Theta(d(n + b))$ | $\Theta(n)$ |
+| **Average-Case Time** | $\Theta(n + k)$ | $\Theta(d(n + b))$ | $\mathbf{\Theta(n)}$ (under uniform distribution) |
+| **Worst-Case Time** | $\Theta(n + k)$ | $\Theta(d(n + b))$ | $\Theta(n^2)$ (skewed inputs) |
+| **Auxiliary Space** | $\Theta(n + k)$ | $\Theta(n + b)$ | $\Theta(n)$ |
+| **Stability** | **Stable** (backward pass) | **Stable** (mandatory) | **Stable** (if bucket sorter is stable) |
+| **Comparison-Based?** | No | No | Hybrid (Insertion Sort within buckets) |
+| **Primary Industry Role** | Small key alphabets, sub-sorter | 32/64-bit integers, suffix arrays | Geospatial coordinates, probability floats |
 
 ---
 
 ## Module 03 Summary & Key Takeaways
 
-1. **Counting Sort** sorts bounded integers $[0, k]$ in $O(n + k)$ time via prefix frequency counts.
-2. **Radix Sort** breaks large integers into $d$ digits, sorting from least significant to most significant in $O(d(n+b))$ time using a stable sub-sorter.
-3. **Bucket Sort** delivers expected $O(n)$ runtime for uniformly distributed floating-point data by scattering into $n$ sub-intervals.
+1. **Circumventing Comparison Bounds:** Non-comparison sorts bypass the $\Omega(n \log n)$ information-theoretic lower bound by using direct address indexing, digit extraction, or statistical partitioning.
+2. **Counting Sort Invariant:** Cumulative prefix sums translate element frequencies into exact output array address bounds. Backward traversal from $n - 1$ down to $0$ is strictly required to preserve stability.
+3. **Radix Sort Multi-Pass Stability:** LSD Radix Sort requires an unconditionally stable sub-sorter so that decisions made on lower-significance digits remain intact during higher-significance passes.
+4. **Byte-Level Radix Efficiency:** Configuring Radix Sort with base $b = 256$ processes 32-bit integers in exactly 4 passes using efficient bitwise shifts and bitmasks without floating-point division.
+5. **Bucket Sort Distribution Dependence:** Bucket Sort achieves average-case linear time only when keys follow a uniform probability distribution over continuous intervals; clustering or skewed distributions degrades performance to quadratic $O(n^2)$.
 
 ---
 
 ## References & Academic Attribution
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 6–8 (Heapsort, Quicksort, Linear-Time Sorting). MIT Press.
-2. **Hoare, C. A. R.** (1962). Quicksort. *The Computer Journal*, 5(1), 10–16.
-3. **Sedgewick, R.** (1978). Implementing Quicksort programs. *Communications of the ACM*, 21(10), 847–857.
+1. **Seward, H. H.** (1954). *Information sorting in the application of electronic digital computers to business operations* (First formal description of Counting Sort and Radix Sort). Master's thesis, Massachusetts Institute of Technology.
+2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 5.2.5: Sorting by Distribution. Addison-Wesley.
+3. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 8: Sorting in Linear Time (Counting Sort, Radix Sort, Bucket Sort). MIT Press.
+4. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 5.1: String Sorts (LSD and MSD Radix Sorting). Addison-Wesley.
+

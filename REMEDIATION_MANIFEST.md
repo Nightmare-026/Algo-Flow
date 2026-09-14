@@ -29,7 +29,7 @@
 ## Part 05 — Sorting Algorithms & Theory
 - [x] sorting/elementary-sorts — status: done
 - [x] sorting/divide-and-conquer-sorts — status: done
-- [ ] sorting/linear-time-sorts — status: not-started
+- [x] sorting/linear-time-sorts — status: done
 - [ ] sorting/sorting-theory-comparison — status: not-started
 ## Part 06 — Trees & Hierarchical Structures
 - [ ] trees/tree-fundamentals — status: not-started
