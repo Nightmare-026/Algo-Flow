@@ -48,7 +48,7 @@
 - [x] graphs/traversals-and-cycles — status: done
 - [x] graphs/topological-sort-and-dags — status: done
 - [x] graphs/shortest-paths — status: done
-- [ ] graphs/spanning-trees-and-dsu — status: not-started
+- [x] graphs/spanning-trees-and-dsu — status: done
 ## Part 08 — Algorithm Design Paradigms
 - [ ] algorithm-design-techniques/brute-force-and-divide-conquer — status: not-started
 - [ ] algorithm-design-techniques/greedy-algorithms — status: not-started
