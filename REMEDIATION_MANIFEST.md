@@ -19,7 +19,7 @@
 - [x] linear-data-structures/deques-and-priority-queues — status: done
 ## Part 03 — Hashing & Constant-Time Lookups
 - [x] hashing/hashing-foundations — status: done
-- [ ] hashing/collision-resolution — status: not-started
+- [x] hashing/collision-resolution — status: done
 - [ ] hashing/hash-table-hash-map-hash-set — status: not-started
 - [ ] hashing/advanced-hashing-and-probabilistic — status: not-started
 ## Part 04 — Searching Paradigms
