@@ -45,7 +45,7 @@
 ## Part 07 — Graph Theory & Network Algorithms
 - [x] graphs/graph-types-and-taxonomy — status: done
 - [x] graphs/graph-storage-architectures — status: done
-- [ ] graphs/traversals-and-cycles — status: not-started
+- [x] graphs/traversals-and-cycles — status: done
 - [ ] graphs/topological-sort-and-dags — status: not-started
 - [ ] graphs/shortest-paths — status: not-started
 - [ ] graphs/spanning-trees-and-dsu — status: not-started
