@@ -24,7 +24,7 @@
 - [x] hashing/advanced-hashing-and-probabilistic — status: done
 ## Part 04 — Searching Paradigms
 - [x] searching/linear-and-binary-search — status: done
-- [ ] searching/bounds-and-occurrences — status: not-started
+- [x] searching/bounds-and-occurrences — status: done
 - [ ] searching/search-space-and-rotated — status: not-started
 ## Part 05 — Sorting Algorithms & Theory
 - [ ] sorting/elementary-sorts — status: not-started

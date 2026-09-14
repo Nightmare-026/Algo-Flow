@@ -1,183 +1,205 @@
 # Part 04: Searching — Module 02: Lower Bound, Upper Bound & Element Occurrences
 
 > **Topics Covered:**  
-> 44. Binary Search Invariants & Interval Models &bull; 45. Lower Bound Algorithm &bull; 46. Upper Bound Algorithm &bull; 47. First and Last Occurrences & Frequency Counting
+> 51. Binary Search Invariants & Interval Models &bull; 52. Lower Bound Algorithm ($A[i] \ge \text{target}$) &bull; Upper Bound Algorithm ($A[i] > \text{target}$) &bull; 53. First and Last Occurrences & Frequency Counting in $O(\log n)$
 
 ---
 
-# TOPIC 44: BINARY SEARCH INVARIANTS & INTERVAL MODELS
+Beyond locating exact single-element matches, binary search serves as a precision tool for locating boundaries in sorted sequences. Standard binary search halts unpredictably on any arbitrary instance of a duplicate target. In production algorithms, standard libraries (such as C++ `std::lower_bound` and `std::upper_bound`, Java `Arrays.binarySearch`, and Python `bisect_left`/`bisect_right`) rely on invariant-preserving predicates to find the exact boundaries of duplicate runs. This chapter formalizes binary search interval models, strict versus non-strict monotonic boundary predicates, candidate-tracking state machines, and $O(\log n)$ frequency range evaluations.
 
-### 1. The Three Interval Models of Binary Search
-Most bugs in Binary Search arise from mixing up interval models. Master these three consistent paradigms:
+### Learning Objectives
+- Differentiate the three fundamental binary search interval paradigms (Closed $[low, high]$, Half-Open $[low, high)$, and Open $(low, high)$).
+- Formulate the exact mathematical predicates defining Lower Bound ($A[i] \ge \text{target}$) and Upper Bound ($A[i] > \text{target}$).
+- Prove why the total frequency of any element in a sorted array equals $\text{UpperBound} - \text{LowerBound}$ in guaranteed $O(\log n)$ time.
+- Implement dedicated `FirstOccurrence` and `LastOccurrence` variants using candidate-retention variables and directional interval compression.
+- Trace boundary conditions where the search key is strictly smaller than $A[0]$, strictly greater than $A[n-1]$, or present across contiguous duplicate spans.
 
-| Model | Search Interval | Loop Condition | Left Update | Right Update | Terminating State |
+---
+
+## Topic 51: Binary Search Interval Invariants
+
+### 1. The Three Interval Paradigms
+
+A significant portion of binary search bugs—including infinite loops, off-by-one errors, and array boundary violations—stem from mixing interval models. A production implementation must maintain strict consistency across its loop condition and pointer updates:
+
+| Interval Model | Mathematical Window | Loop Invariant Condition | Left Pointer Update | Right Pointer Update | Post-Loop Termination State |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Model 1: Closed Interval** | $[low, high]$ | `while low ≤ high:` | `low ← mid + 1` | `high ← mid - 1` | `low = high + 1` |
-| **Model 2: Half-Open Interval**| $[low, high)$ | `while low < high:` | `low ← mid + 1` | `high ← mid` | `low = high` |
-| **Model 3: Open Interval** | $(low, high)$ | `while low + 1 < high:`| `low ← mid` | `high ← mid` | `low + 1 = high` |
+| **Model 1: Closed Interval** | $[low, high]$ | `while low <= high:` | $low \leftarrow mid + 1$ | $high \leftarrow mid - 1$ | $low = high + 1$ |
+| **Model 2: Half-Open Interval**| $[low, high)$ | `while low < high:` | $low \leftarrow mid + 1$ | $high \leftarrow mid$ | $low = high$ |
+| **Model 3: Open Interval** | $(low, high)$ | `while low + 1 < high:`| $low \leftarrow mid$ | $high \leftarrow mid$ | $low + 1 = high$ |
 
-*Throughout this textbook, we standardize on **Model 1 (Closed Interval)** and **Model 2 (Half-Open for bounds)**.*
+*Standardization Note*: Throughout this chapter, algorithms are formulated under **Model 1 (Closed Interval with Candidate Retention)**, which guarantees safe convergence without boundary-pointer underflow.
 
 ---
----
 
-# TOPIC 45: LOWER BOUND
+## Topic 52: Lower Bound & Upper Bound Mathematics
 
-### 1. Problem Statement & Mathematical Definition
-Given a sorted array $A$ of $n$ elements, find the **first (smallest) index $i$** such that:
+### 1. Lower Bound: Mathematical Definition & Mechanics
+
+Given a sorted array $A$ of $n$ elements in non-decreasing order, the **Lower Bound** of `target` is the **smallest index $i$** such that:
 
 $$A[i] \ge \text{target}$$
 
-If all elements in $A$ are strictly smaller than `target`, return $n$ (the insertion point at the end).
+If all elements in $A$ are strictly smaller than `target`, the lower bound returns $n$ (representing the theoretical insertion index at the end of the array).
 
+#### Lower Bound Query Matrix ($A = [2, 4, 6, 8, 8, 8, 10, 12]$, $n = 8$)
+
+| Query Target | Evaluated Predicate ($A[i] \ge \text{target}$) | First Qualifying Element | Resulting Index | Algorithmic Rationale |
+| :---: | :---: | :---: | :---: | :--- |
+| **`8`** | $A[i] \ge 8$ | `8` | **`3`** | First duplicate instance of 8 |
+| **`7`** | $A[i] \ge 7$ | `8` | **`3`** | Value 7 absent; 8 is the smallest element $\ge 7$ |
+| **`2`** | $A[i] \ge 2$ | `2` | **`0`** | First element satisfies condition |
+| **`15`** | $A[i] \ge 15$ | None | **`8` ($n$)** | All elements $< 15$; returns array length |
+
+#### Canonical Lower Bound Implementation:
 ```text
-ARRAY:        [ 2,  4,  6,  8,  8,  8, 10, 12 ]
-INDEX:          0   1   2   3   4   5   6   7
+FUNCTION LowerBound(A: Array of Element, n: Integer, target: Element) -> Integer:
+    low <- 0
+    high <- n - 1
+    ans <- n                    // Default if all elements < target
 
-Lower Bound of 8:  Index 3  (First element ≥ 8)
-Lower Bound of 7:  Index 3  (First element ≥ 7, which is 8)
-Lower Bound of 15: Index 8  (All elements < 15, returns n)
+    while low <= high:
+        mid <- low + (high - low) / 2
+        if A[mid] >= target:
+            ans <- mid          // Candidate found; search left for earlier occurrence
+            high <- mid - 1
+        else:
+            low <- mid + 1      // A[mid] too small; search right half
+
+    return ans
 ```
 
 ---
 
-### 2. Pseudocode: Lower Bound
+### 2. Upper Bound: Mathematical Definition & Mechanics
 
-```text
-ALGORITHM LowerBound(A, n, target)
-    Input: Sorted array A of length n, target value
-    Output: Smallest index i where A[i] ≥ target, or n if none
-
-1.  low ← 0
-2.  high ← n - 1
-3.  ans ← n                     // Default if all elements < target
-4.  while low ≤ high:
-5.      mid ← low + ⌊(high - low) / 2⌋
-6.      if A[mid] ≥ target:
-7.          ans ← mid           // Candidate answer found; try to find an earlier one
-8.          high ← mid - 1
-9.      else:
-10.         low ← mid + 1       // A[mid] is too small; look in right half
-11. return ans
-```
-
----
----
-
-# TOPIC 46: UPPER BOUND
-
-### 1. Problem Statement & Mathematical Definition
-Given a sorted array $A$ of $n$ elements, find the **first (smallest) index $i$** such that:
+Given a sorted array $A$ of $n$ elements in non-decreasing order, the **Upper Bound** of `target` is the **smallest index $i$** such that:
 
 $$A[i] > \text{target}$$
 
-If no element in $A$ is strictly greater than `target`, return $n$.
+If no element in $A$ is strictly greater than `target`, the upper bound returns $n$.
 
+#### Upper Bound Query Matrix ($A = [2, 4, 6, 8, 8, 8, 10, 12]$, $n = 8$)
+
+| Query Target | Evaluated Predicate ($A[i] > \text{target}$) | First Qualifying Element | Resulting Index | Algorithmic Rationale |
+| :---: | :---: | :---: | :---: | :--- |
+| **`8`** | $A[i] > 8$ | `10` | **`6`** | First element strictly greater than 8 |
+| **`5`** | $A[i] > 5$ | `6` | **`2`** | Smallest element strictly greater than 5 |
+| **`12`** | $A[i] > 12$ | None | **`8` ($n$)** | No elements $> 12$; returns array length |
+
+#### Canonical Upper Bound Implementation:
 ```text
-ARRAY:        [ 2,  4,  6,  8,  8,  8, 10, 12 ]
-INDEX:          0   1   2   3   4   5   6   7
+FUNCTION UpperBound(A: Array of Element, n: Integer, target: Element) -> Integer:
+    low <- 0
+    high <- n - 1
+    ans <- n                    // Default if no element > target
 
-Upper Bound of 8:  Index 6  (First element strictly > 8, which is 10)
-Upper Bound of 5:  Index 2  (First element strictly > 5, which is 6)
-Upper Bound of 12: Index 8  (No element > 12, returns n)
+    while low <= high:
+        mid <- low + (high - low) / 2
+        if A[mid] > target:
+            ans <- mid          // Candidate found; search left for smaller index
+            high <- mid - 1
+        else:
+            low <- mid + 1      // A[mid] <= target; search right half
+
+    return ans
 ```
 
 ---
 
-### 2. Pseudocode: Upper Bound
+## Topic 53: Element Occurrences & Frequency Counting
+
+### 1. The $O(\log n)$ Range Extraction Theorem
+
+In an unsorted array, counting the occurrences of a value requires a full linear scan ($\Theta(n)$ time). In a sorted array, duplicate elements form an unbroken contiguous subarray:
+
+$$\text{First Occurrence Index} = \text{LowerBound}(A, n, \text{target})$$
+
+$$\text{Last Occurrence Index} = \text{UpperBound}(A, n, \text{target}) - 1$$
+
+$$\text{Total Count}(\text{target}) = \text{UpperBound}(A, n, \text{target}) - \text{LowerBound}(A, n, \text{target})$$
+
+#### Existence Verification Rule:
+The target exists in array $A$ if and only if:
+$$\text{firstIdx} < n \quad \text{and} \quad A[\text{firstIdx}] == \text{target}$$
+
+---
+
+### 2. Step-by-Step Range Trace: Target $= 8$ in $A = [2, 4, 6, 8, 8, 8, 10, 12]$
+
+| Sub-Algorithm | `low` | `high` | `mid` | $A[\text{mid}]$ | Predicate Evaluation | Window Update |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Lower Bound Pass** | `0` | `7` | `3` | `8` | $8 \ge 8$ (True) $\implies \text{ans} = 3$ | $\text{high} \leftarrow 3 - 1 = 2$ |
+| | `0` | `2` | `1` | `4` | $4 \ge 8$ (False) | $\text{low} \leftarrow 1 + 1 = 2$ |
+| | `2` | `2` | `2` | `6` | $6 \ge 8$ (False) | $\text{low} \leftarrow 2 + 1 = 3$ |
+| | **Terminates** | | | | **LowerBound Result** | **`ans = 3`** |
+| **Upper Bound Pass** | `0` | `7` | `3` | `8` | $8 > 8$ (False) | $\text{low} \leftarrow 3 + 1 = 4$ |
+| | `4` | `7` | `5` | `8` | $8 > 8$ (False) | $\text{low} \leftarrow 5 + 1 = 6$ |
+| | `6` | `7` | `6` | `10` | $10 > 8$ (True) $\implies \text{ans} = 6$ | $\text{high} \leftarrow 6 - 1 = 5$ |
+| | **Terminates** | | | | **UpperBound Result** | **`ans = 6`** |
+
+#### Operational Output:
+- **First Occurrence**: Index $3$ ($A[3] = 8$)
+- **Last Occurrence**: $\text{UpperBound} - 1 = 6 - 1 = 5$ ($A[5] = 8$)
+- **Total Frequency**: $6 - 3 = 3$ instances of value 8!
+- **Total Time**: Two binary searches $\implies 2 \times O(\log n) = \mathbf{O(\log n)}$.
+
+---
+
+### 3. Dedicated First and Last Occurrence Functions
+
+When only one boundary is required, dedicated functions avoid invoking two separate passes:
 
 ```text
-ALGORITHM UpperBound(A, n, target)
-    Input: Sorted array A of length n, target value
-    Output: Smallest index i where A[i] > target, or n if none
+FUNCTION FirstOccurrence(A: Array of Element, n: Integer, target: Element) -> Integer:
+    low <- 0
+    high <- n - 1
+    ans <- -1
 
-1.  low ← 0
-2.  high ← n - 1
-3.  ans ← n                     // Default if no element > target
-4.  while low ≤ high:
-5.      mid ← low + ⌊(high - low) / 2⌋
-6.      if A[mid] > target:
-7.          ans ← mid           // Candidate answer found; look for smaller index
-8.          high ← mid - 1
-9.      else:
-10.         low ← mid + 1       // A[mid] ≤ target; look in right half
-11. return ans
+    while low <= high:
+        mid <- low + (high - low) / 2
+        if A[mid] == target:
+            ans <- mid
+            high <- mid - 1    // Contract right boundary to search earlier indices
+        else if A[mid] < target:
+            low <- mid + 1
+        else:
+            high <- mid - 1
+
+    return ans
+
+FUNCTION LastOccurrence(A: Array of Element, n: Integer, target: Element) -> Integer:
+    low <- 0
+    high <- n - 1
+    ans <- -1
+
+    while low <= high:
+        mid <- low + (high - low) / 2
+        if A[mid] == target:
+            ans <- mid
+            low <- mid + 1     // Contract left boundary to search later indices
+        else if A[mid] < target:
+            low <- mid + 1
+        else:
+            high <- mid - 1
+
+    return ans
 ```
 
 ---
----
 
-# TOPIC 47: FIRST & LAST OCCURRENCE OF AN ELEMENT
+### 4. Key Takeaways
 
-### 1. Finding the Bounding Range in $O(\log n)$ Time
-Using Lower Bound and Upper Bound, any repeated range can be found instantly:
-- **First Occurrence Index**: $\text{First} = \text{LowerBound}(A, n, \text{target})$
-  - If $\text{First} = n$ or $A[\text{First}] \ne \text{target}$, target does not exist.
-- **Last Occurrence Index**: $\text{Last} = \text{UpperBound}(A, n, \text{target}) - 1$
-- **Total Frequency (Count)**:
-$$\text{Count}(\text{target}) = \text{UpperBound}(A, n, \text{target}) - \text{LowerBound}(A, n, \text{target})$$
+1. **Predicate Distinction**: Lower Bound uses a non-strict inequality ($A[i] \ge \text{target}$); Upper Bound uses a strict inequality ($A[i] > \text{target}$).
+2. **Fallback Index**: If no element satisfies the predicate, both Lower and Upper Bound return $n$ (the valid insertion position).
+3. **Range Counting**: The exact frequency of any element in a sorted array is computed in $O(\log n)$ time as $\text{UpperBound} - \text{LowerBound}$.
+4. **Candidate Tracking**: Initializing `ans = n` and contracting the active window when a candidate is identified guarantees safe convergence without off-by-one errors.
 
 ---
 
-### 2. Complete Dry Run: First & Last Occurrence of 8 in $[2, 4, 6, 8, 8, 8, 10, 12]$
-
-```text
-Step 1: LowerBound(A, 8)
-- Discovers first index where A[i] ≥ 8 ──► Index 3
-
-Step 2: UpperBound(A, 8)
-- Discovers first index where A[i] > 8 ──► Index 6
-
-Step 3: Calculate Range & Frequency:
-- First Occurrence = Index 3
-- Last Occurrence  = 6 - 1 = Index 5
-- Total Count      = 6 - 3 = 3 elements!
-```
-
----
-
-### 3. Dedicated First Occurrence Algorithm (Without Full UB)
-
-```text
-ALGORITHM FirstOccurrence(A, n, target)
-1.  low ← 0, high ← n - 1, ans ← -1
-2.  while low ≤ high:
-3.      mid ← low + ⌊(high - low) / 2⌋
-4.      if A[mid] = target:
-5.          ans ← mid
-6.          high ← mid - 1      // Keep searching left for earlier occurrence!
-7.      else if A[mid] < target:
-8.          low ← mid + 1
-9.      else:
-10.         high ← mid - 1
-11. return ans
-
-ALGORITHM LastOccurrence(A, n, target)
-1.  low ← 0, high ← n - 1, ans ← -1
-2.  while low ≤ high:
-3.      mid ← low + ⌊(high - low) / 2⌋
-4.      if A[mid] = target:
-5.          ans ← mid
-6.          low ← mid + 1       // Keep searching right for later occurrence!
-7.      else if A[mid] < target:
-8.          low ← mid + 1
-9.      else:
-10.         high ← mid - 1
-11. return ans
-```
-
----
-
-## Module 02 Summary & Key Takeaways
-
-1. **Lower Bound** finds the first index where $A[i] \ge \text{target}$; **Upper Bound** finds the first index where $A[i] > \text{target}$.
-2. Both run in strictly $O(\log n)$ time and $O(1)$ space.
-3. Total occurrences of any value in a sorted array is calculated in $O(\log n)$ as $\text{UB} - \text{LB}$.
-
----
-
-## References & Academic Attribution
+## Academic Attribution & References
 
 1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Section 2.3 & Chapter 12. MIT Press.
-2. **Bentley, J.** (2000). *Programming Pearls* (2nd ed.), Column 4: Writing Correct Programs. Addison-Wesley.
-3. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.2: Searching by Comparison of Keys. Addison-Wesley.
+2. **Bentley, J.** (2000). *Programming Pearls* (2nd ed.), Column 4: *Writing Correct Programs*. Addison-Wesley.
+3. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.2: *Searching by Comparison of Keys*. Addison-Wesley.
+4. **Stepanov, A., & Lee, M.** (1995). *The Standard Template Library (STL)*. HP Laboratories Technical Report.
