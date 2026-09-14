@@ -5,7 +5,7 @@
 - [x] front-matter/complexity-quick-ref — status: done
 ## Part 01 — Algorithmic Foundations
 - [x] foundations/data-and-algorithms — status: done
-- [ ] foundations/problem-solving-methodology — status: not-started
+- [x] foundations/problem-solving-methodology — status: done
 - [ ] foundations/asymptotic-analysis — status: not-started
 - [ ] foundations/recursion-and-recurrences — status: not-started
 ## Part 02 — Linear Data Structures

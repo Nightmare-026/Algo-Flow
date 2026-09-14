@@ -1,211 +1,126 @@
 # Part 01: Foundations — Module 02: Problem-Solving Methodology, Pseudocode & Flowcharts
 
-> **Topics Covered:**  
-> 7. Problem-Solving Methodology & Framework &bull; 8. Pseudocode Standards & Control Flow &bull; 9. Flowchart Architecture & ISO Symbols
+Confronting an unseen algorithmic challenge without a systematic process leads to trial-and-error debugging and brittle solutions. A structured engineering methodology decomposes ambiguity into concrete constraints, establishes a verified brute-force baseline, and applies targeted optimizations before writing production code.
+
+### Learning Objectives
+By the end of this chapter, you will be able to:
+- Apply the 6-Step Problem-Solving Pipeline to systematically decompose unseen algorithmic problems.
+- Use the B.U.D. (Bottlenecks, Unnecessary work, Duplicated work) optimization framework to reduce asymptotic complexity.
+- Author standardized line-numbered algorithmic pseudocode adhering to universal mathematical conventions.
+- Map algorithm control flow to standardized ISO flowchart symbols.
+- Validate algorithm logic using dry-run execution tables prior to language-specific coding.
 
 ---
 
-## 7. Problem-Solving Methodology: The 6-Step Engineering Framework
+## 1. The 6-Step Engineering Problem-Solving Framework
 
-When confronting an unseen algorithmic problem in an interview, competitive programming contest, or production system, undisciplined trial-and-error leads directly to bugs and wasted time. Master the **Universal 6-Step Problem-Solving Pipeline**:
+Professional software engineers follow an intentional 6-step pipeline when solving computational problems:
 
-```text
-  STEP 1: Clarify & Constrain   ──► Read carefully, identify constraints, define input/output
-            │
-  STEP 2: Manual Simulation      ──► Solve small test cases by hand with paper and pencil
-            │
-  STEP 3: Brute Force Baseline   ──► Formulate the obvious O(n!) or O(n²) solution first
-            │
-  STEP 4: Optimize & Pattern     ──► Spot bottlenecks, redundancies; apply DSA patterns
-            │
-  STEP 5: Formalize & Dry Run    ──► Draft line-numbered pseudocode; trace state table
-            │
-  STEP 6: Code & Stress Test     ──► Implement cleanly; test extreme edge cases (null, empty)
-```
+| Step | Phase | Key Action | Critical Artifact |
+| :---: | :--- | :--- | :--- |
+| **1** | **Clarify & Constrain** | Identify value bounds ($n$), edge cases, memory limits, and data types | Constraint checklist ($n \le 10^5 \implies O(n \log n)$) |
+| **2** | **Manual Simulation** | Trace 2–3 concrete examples manually on paper | Input/output state transition sketches |
+| **3** | **Brute Force Baseline** | Formulate the simplest working solution (even if $O(n^2)$ or $O(2^n)$) | Verified baseline correctness proof |
+| **4** | **Optimize via B.U.D.** | Eliminate bottlenecks, unnecessary operations, and repeated work | Target complexity model ($O(n)$ or $O(\log n)$) |
+| **5** | **Pseudocode & Dry Run** | Draft line-numbered logic and trace variables in a state table | Step-by-step state verification table |
+| **6** | **Implement & Stress Test** | Code in the target language and test edge cases (empty, single, duplicates) | Production code with unit test suite |
 
-### Deep Dive into Each Step
+### Extracting Constraints & Runtime Targets
 
-#### Step 1: Clarify & Extract Constraints
-- **What is the range of $n$?**
-  - If $n \le 10$: $O(n!)$ or $O(2^n)$ backtracking is acceptable.
-  - If $n \le 10^3$: $O(n^2)$ nested loops are viable ($10^6$ operations).
-  - If $n \le 10^5$: Must be $O(n \log n)$ or $O(n)$ ($10^5$ to $10^6$ operations).
-  - If $n \ge 10^9$: Must be $O(\log n)$ or $O(1)$.
-- **What are the data types?** Can integer overflow occur ($> 2^{31} - 1$)? Are inputs sorted? Are there negative numbers? Are duplicates allowed?
+Input scale immediately dictates the target algorithmic complexity under a standard 1-second CPU budget ($\approx 10^8$ operations):
 
-#### Step 2: Manual Simulation with Concrete Cases
-Never write a single line of pseudocode until you have manually simulated 2–3 inputs on paper. Track what your eyes and brain naturally do to find the answer: your human intuition is often an intuitive greedy or two-pointer algorithm in disguise.
-
-#### Step 3: The Brute Force Baseline
-Always establish a working, provably correct baseline first (even if $O(n^3)$). It serves two vital functions:
-1. It validates that the problem statement is fully understood.
-2. It provides an oracle against which to verify the optimized solution during fuzz testing.
-
-#### Step 4: Optimization via the B.U.D. Framework
-To optimize from brute force, look for:
-- **B — Bottlenecks**: Which single step dominates the runtime (e.g., an internal linear search that could be a hash lookup)?
-- **U — Unnecessary Work**: Are you sorting when you only need the top 3 elements?
-- **D — Duplicated Work**: Are you recalculating subproblems that were already evaluated (memoization / prefix sums)?
+- $n \le 10$: $O(n!)$ or $O(2^n)$ backtracking / permutations
+- $n \le 25$: $O(2^n)$ bitmask dynamic programming or meet-in-the-middle
+- $n \le 500$: $O(n^3)$ cubic algorithms (Floyd-Warshall, matrix operations)
+- $n \le 5,000$: $O(n^2)$ quadratic algorithms (nested loops, dynamic programming)
+- $n \le 10^5$: $O(n \log n)$ or $O(n)$ (sorting, divide and conquer, two pointers)
+- $n \ge 10^9$: $O(\log n)$ binary search or $O(1)$ closed-form mathematical formula
 
 ---
 
-## 8. Pseudocode Basics & Universal Standards
+## 2. Optimization Strategy: The B.U.D. Method
 
-### Concept
-**Pseudocode** is an artificial, informal, high-level description of an algorithm. It uses the structural conventions of modern programming languages but omits language-specific syntax, type declarations, and memory-management boilerplate to emphasize the mathematical logic.
+When optimizing a working brute-force solution, systematically inspect the logic for three performance killers:
 
-### Universal Syntax Rules
+1. **B — Bottlenecks**: Identify which single phase dominates the total runtime.
+   - *Example*: In an algorithm that sorts an array in $O(n \log n)$ and then performs an $O(n^2)$ verification loop, the nested loop is the bottleneck. Optimizing the sorting phase yields zero asymptotic gain until the bottleneck is eliminated.
+2. **U — Unnecessary Work**: Avoid executing steps whose results are never consumed or could be bypassed.
+   - *Example*: Finding the $k$ smallest elements by fully sorting an entire array ($O(n \log n)$) when maintaining a size-$k$ heap requires only $O(n \log k)$.
+3. **D — Duplicated Work**: Eliminate recalculating identical state or subproblems.
+   - *Example*: Repeatedly summing array ranges $A[i \dots j]$ in $O(n)$ time rather than precomputing a prefix sum array in $O(n)$ space for $O(1)$ queries.
+
+---
+
+## 3. Universal Pseudocode Specification Standard
+
+Pseudocode provides a language-agnostic blueprint that highlights mathematical invariants while omitting memory-management boilerplate.
+
+### Core Formatting Rules
+
+- **Line Numbers**: Every statement is numbered to facilitate dry-run references.
+- **Assignment**: Left-arrow `←` denotes assignment; `=` is reserved for mathematical equality.
+- **Comparisons**: Relational operators `<`, `≤`, `>`, `≥`, and inequality `≠`.
+- **Logic**: Bold lowercase English words: `and`, `or`, `not`.
+- **Scoping**: 4-space indentation defines nested execution blocks without braces.
+- **Returns**: Explicit `return <value>` designates subroutine exit points.
+
+### Reference Control Structures
 
 ```text
-Rule 1: Line Numbers       Every instruction line is numbered (1., 2., 3...)
-Rule 2: Assignment         Always use the left-arrow: variable ← expression
-Rule 3: Comparisons        Equality is '=' and inequality is '≠'
-Rule 4: Logical Operators  Written as bold English: and, or, not
-Rule 5: Blocks & Scope     4-space indentation defines nested execution
-Rule 6: Return Values      Explicit 'return <value>' at exit points
-```
+ALGORITHM LinearSearch(A, target)
+    Input: Array A of length n, value target
+    Output: Index of target in A, or -1 if not found
 
-### Standard Control Structures in Pseudocode
-
-#### 1. Sequential Statements
-```text
-1. total ← 0
-2. count ← count + 1
-3. average ← total / count
-```
-
-#### 2. Conditional Branching
-```text
-1. if score ≥ 90:
-2.     grade ← "A"
-3. else if score ≥ 80:
-4.     grade ← "B"
-5. else:
-6.     grade ← "C"
-```
-
-#### 3. Count-Controlled Loop (For)
-```text
-1. sum ← 0
-2. for i ← 0 to n - 1:
-3.     sum ← sum + A[i]
-```
-
-#### 4. Condition-Controlled Loop (While)
-```text
-1. low ← 0
-2. high ← n - 1
-3. while low ≤ high:
-4.     mid ← low + ⌊(high - low) / 2⌋
-5.     // process midpoint
-```
-
-#### 5. Collection Traversal (For Each)
-```text
-1. for each vertex v in Graph.vertices:
-2.     visited[v] ← false
+1.  for i ← 0 to length(A) - 1:
+2.      if A[i] = target:
+3.          return i
+4.  return -1
 ```
 
 ---
 
-## 9. Flowchart Basics & ISO Standards
+## 4. Flowchart Architecture & ISO Standard Symbols
 
-### Concept
-A **Flowchart** is a diagrammatic, graphical representation of an algorithm displaying the sequential flow of control, decisions, and data transformations using standardized ISO geometric symbols.
+A flowchart diagrams the sequential flow of control, branching conditions, and state transitions using standardized ISO geometric shapes:
 
-### ISO Flowchart Symbol Legend
-
-```text
-   SYMBOL SHAPE             NAME                     PURPOSE / FUNCTION
-   ─────────────────────────────────────────────────────────────────────────────
-     ╭────────╮
-     │  START │          TERMINATOR               Represents Start, End, or Halt
-     ╰────────╯                                   of the algorithm.
-         │
-         ▼
-   ┌──────────┐
-   │ Read A,B │          INPUT / OUTPUT           Data input from user or output
-   └──────────┘          (Parallelogram)          displayed to screen.
-         │
-         ▼
-   ┌──────────┐
-   │ x ← A + B│          PROCESS                  Arithmetic operation, assignment,
-   └──────────┘          (Rectangle)              or internal memory computation.
-         │
-         ▼
-        /\
-       /  \
-      <x > 0>            DECISION                 Conditional evaluation yielding
-       \  /              (Diamond)                binary branches (True / False).
-        \/
-       /  \
-     Yes   No
-```
-
-### Comprehensive Flowchart Example: Linear Search
-
-The following diagram illustrates the complete control flow for searching target $K$ in array $A$ of size $n$:
-
-```text
-                  ╭───────────────╮
-                  │     START     │
-                  ╰───────┬───────╯
-                          │
-                          ▼
-                  ┌───────────────┐
-                  │ Read A, n, K  │
-                  └───────┬───────┘
-                          │
-                          ▼
-                  ┌───────────────┐
-                  │    idx ← 0    │
-                  └───────┬───────┘
-                          │
-                          ▼
-                  /───────────────\
-                 /                 \      No
-                <     idx < n?      > ───────────┐
-                 \                 /             │
-                  \───────┬───────/              │
-                          │ Yes                  │
-                          ▼                      │
-                  /───────────────\              │
-                 /                 \             │
-                <   A[idx] = K?     > ───┐       │
-                 \                 /     │       │
-                  \───────┬───────/      │       │
-                       No │              │ Yes   │
-                          ▼              │       │
-                  ┌───────────────┐      │       │
-                  │ idx ← idx + 1 │      │       │
-                  └───────┬───────┘      │       │
-                          │              │       │
-                          └──────►───────┼───────┤
-                                         │       │
-                                         ▼       ▼
-                                  ┌──────────┐ ┌──────────┐
-                                  │ Return   │ │ Return   │
-                                  │   idx    │ │    -1    │
-                                  └────┬─────┘ └────┬─────┘
-                                       │            │
-                                       ▼            ▼
-                                    ╭──────────────────╮
-                                    │       END        │
-                                    ╰──────────────────╯
-```
+| Shape | ISO Designation | Control Function | Example Usage |
+| :--- | :--- | :--- | :--- |
+| **Oval / Capsule** | **Terminator** | Algorithm initiation or termination | `START`, `END`, `RETURN` |
+| **Parallelogram** | **Input / Output** | Receiving external input or emitting results | `Read A, target`, `Print result` |
+| **Rectangle** | **Process** | Arithmetic calculation or variable assignment | `i ← 0`, `sum ← sum + A[i]` |
+| **Diamond** | **Decision** | Conditional evaluation producing boolean branches | `i < n?`, `A[i] == target?` |
+| **Arrows** | **Flowline** | Direction of control progression | Sequential or loop-back transitions |
 
 ---
 
-## Module 02 Summary & Key Takeaways
+## 5. Control Flow Case Study: Linear Search
 
-1. **Structured Problem Solving**: Clarify constraints first $\rightarrow$ simulate manually $\rightarrow$ build brute force baseline $\rightarrow$ optimize via B.U.D. $\rightarrow$ dry run with state tables $\rightarrow$ code.
-2. **Pseudocode** eliminates syntactic noise and emphasizes universal mathematical logic with unambiguous line numbering.
-3. **Flowcharts** make branch conditions, loop cycles, and termination boundaries visually unmistakable.
+To inspect live step-by-step pointer progression, explore our interactive [Linear Search Visualizer](/visualizer/linear-search).
+
+### Step-by-Step State Dry Run Table
+Tracing `LinearSearch(A, 30)` on input $A = [10, 20, 30, 40]$:
+
+| Step | Line | Loop Index $i$ | Current Value $A[i]$ | Condition $A[i] = 30$ | State Transition |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| 1 | 1 | $0$ | $10$ | False ($10 \ne 30$) | Increment $i \leftarrow 1$ |
+| 2 | 1 | $1$ | $20$ | False ($20 \ne 30$) | Increment $i \leftarrow 2$ |
+| 3 | 2 | $2$ | $30$ | **True** ($30 = 30$) | Execute line 3: `return 2` |
+
+- **Early Exit**: The search terminates in 3 iterations rather than completing the full scan of length 4.
+- **Worst-Case Invariant**: If target is absent or at index $n-1$, exactly $n$ comparisons are performed ($O(n)$).
+
+---
+
+## 6. Key Takeaways
+
+- **Constraint Discipline**: Extract input constraints first to immediately determine your target complexity class before drafting algorithms.
+- **The B.U.D. Filter**: Accelerate brute force by systematically identifying and eliminating bottlenecks, unnecessary work, and duplicated calculations.
+- **Traceability**: Pair pseudocode with variable trace tables to catch edge cases (such as off-by-one errors and null references) before implementation.
 
 ---
 
 ## References & Academic Attribution
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 3: Characterizing Running Times. MIT Press.
-2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.4: Analysis of Algorithms. Addison-Wesley.
-3. **Sipser, M.** (2012). *Introduction to the Theory of Computation* (3rd ed.). Cengage Learning.
+1. **Pólya, G.** (1945). *How to Solve It: A New Aspect of Mathematical Method*. Princeton University Press.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 2: Getting Started. MIT Press.
+3. **McDowell, G. L.** (2015). *Cracking the Coding Interview* (6th ed.), Chapter 6: Big-O. CareerCup.
