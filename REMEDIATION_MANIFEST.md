@@ -21,7 +21,7 @@
 - [x] hashing/hashing-foundations — status: done
 - [x] hashing/collision-resolution — status: done
 - [x] hashing/hash-table-hash-map-hash-set — status: done
-- [ ] hashing/advanced-hashing-and-probabilistic — status: not-started
+- [x] hashing/advanced-hashing-and-probabilistic — status: done
 ## Part 04 — Searching Paradigms
 - [ ] searching/linear-and-binary-search — status: not-started
 - [ ] searching/bounds-and-occurrences — status: not-started

@@ -1,258 +1,213 @@
 # Part 03: Hashing — Module 04: Advanced Collision Resolution & Probabilistic Hashing
 
 > **Topics Covered:**  
-> Cuckoo Hashing (Two Independent Hash Functions & Guaranteed $O(1)$ Worst-Case Lookup) &bull; Robin Hood Hashing (Probe Sequence Length Variance Minimization) &bull; 2-Level Perfect Hashing (FKS Scheme with Zero Collisions & $O(n)$ Space Proof) &bull; Bloom Filters (Zero False Negatives Probabilistic Membership) &bull; Count-Min Sketch & Merkle Trees
+> 45. Cuckoo Hashing (Two Independent Hash Functions & Guaranteed $O(1)$ Worst-Case Lookup) &bull; 46. Robin Hood Hashing (Probe Sequence Length Variance Minimization) &bull; 47. 2-Level Perfect Hashing (FKS Scheme with Zero Collisions & $O(n)$ Space Proof) &bull; 48. Probabilistic Streaming Hashing (Bloom Filters & Count-Min Sketch)
 
 ---
 
-# TOPIC 01: CUCKOO HASHING
+Standard hashing algorithms achieve $O(1)$ average-case latency, but suffer from potential $O(n)$ degradation under adversarial inputs or high load factors. Advanced hashing architectures conquer these performance limits through two distinct paradigms: deterministic worst-case guarantees and sublinear probabilistic approximation. This chapter analyzes Cuckoo Hashing's multi-choice displacement eviction, Robin Hood probe sequence length variance reduction, Fredman-Komlós-Szemerédi (FKS) two-level perfect hashing with $O(n)$ space proofs, Bloom filter dimensioning equations, and Count-Min sketch streaming frequency estimation.
 
-### 1. Topic Title
-**Cuckoo Hashing (Worst-Case Constant Time Lookup via Displacement Eviction)**
-
-### 2. Category
-Advanced Collision Resolution — Multiple-Choice Hashing.
-
-### 3. Difficulty
-Advanced.
-
-### 4. Prerequisites
-- Module 02: Open Addressing & Separate Chaining.
-- Part 01: Universal Hash Families.
+### Learning Objectives
+- Formulate Cuckoo Hashing's displacement eviction algorithm and prove its guaranteed $O(1)$ worst-case lookup in at most two memory reads.
+- Implement Robin Hood Hashing and evaluate how probe sequence length (PSL) variance reduction enables early search termination.
+- Formalize the FKS (Fredman-Komlós-Szemerédi) two-level perfect hashing scheme and prove why expected total space is strictly $O(n)$ despite quadratic secondary buckets.
+- Size and dimension Bloom Filters using optimal bit-array size ($m \approx -1.44 n \log_2 p$) and hash function count ($k \approx 0.7 m/n$) formulas to achieve zero false negatives.
+- Implement the Count-Min Sketch frequency estimator and explain why the $\min$ operation across independent hash rows filters out collision noise.
 
 ---
 
-### 5. Motivation: Escaping the $O(n)$ Worst-Case Lookup
+## Topic 45: Cuckoo Hashing
 
-In standard open addressing or separate chaining:
-- Average lookup time is $O(1)$.
-- **Worst-case lookup time is $O(n)$** (or $O(\log n)$ with treeification). If multiple keys collide, you must step through a chain or probe sequence.
+### 1. Conceptual Architecture & The Cuckoo Invariant
 
-### THE CUCKOO PRINCIPLE (Pagh & Rodler, 2001):
-Named after the European cuckoo bird, which lays its eggs in the nests of other birds, kicking out existing eggs to make room.
+In standard open addressing or separate chaining, worst-case lookup latency degrades to $O(n)$. **Cuckoo Hashing** (Pagh & Rodler, 2001) guarantees that every lookup executes in **strictly $O(1)$ worst-case time**, requiring at most **two memory accesses**.
 
-In Cuckoo Hashing:
-- We use **two independent hash functions**, $h_1(k)$ and $h_2(k)$, and either two separate tables $T_1, T_2$ or two possible locations in a single table.
-- A key $k$ can **ONLY EVER RESIDE** in one of two exact locations:
-$$\text{Location 1} = h_1(k) \quad \text{OR} \quad \text{Location 2} = h_2(k)$$
-- **Lookup Superpower**: To find key $k$, we check slot $h_1(k)$ and slot $h_2(k)$. If neither slot contains $k$, **it does not exist!**
-$$\text{Worst-Case Lookup Time} = \mathbf{O(1)} \text{ (At most 2 memory reads, strictly!)}$$
+#### The Core Invariant:
+Cuckoo Hashing utilizes two independent hash functions $h_1(k)$ and $h_2(k)$ operating over two distinct tables $T_1$ and $T_2$ (or two partitions of a single table). A key $k$ is permitted to reside **only** in one of two specific locations:
+
+$$\text{Valid Location}(k) \in \{ T_1[h_1(k)], \, T_2[h_2(k)] \}$$
+
+#### The Lookup Superpower:
+To locate key $k$, the algorithm inspects $T_1[h_1(k)]$ and $T_2[h_2(k)]$. If neither slot contains $k$, **the key is guaranteed not to exist**. Lookup never probes a third slot!
+
+$$\text{Worst-Case Lookup Time} = \Theta(1) \quad (\le 2\text{ memory reads})$$
 
 ---
 
-### 6. Insertion Mechanics & Displacement Loops
+### 2. Insertion Mechanics & The Displacement Cascade
+
+Like the European cuckoo bird that evicts eggs from other nests to claim territory, when an incoming key $X$ hashes to an occupied slot, it **evicts the resident key** and steals its position:
 
 ```text
-INSERTION ALGORITHM:
-1. Attempt to place new key X at h₁(X) in Table 1.
-2. If slot h₁(X) is EMPTY:
-     Place X there. Done!
-3. If slot h₁(X) is OCCUPIED by existing key Y:
-     - KICK Y OUT of Table 1!
-     - Place X into Table 1.
-     - Move displaced key Y to its alternative location h₂(Y) in Table 2!
-4. If Table 2's slot h₂(Y) was occupied by Z:
-     - KICK Z OUT of Table 2!
-     - Move Z back to its alternative slot in Table 1!
-5. Continue this chain of displacements until an empty slot is found.
+Cuckoo Displacement Cascade:
+Insert X ---> [ T1: Slot h1(X) ]
+                    | (Evicts Y)
+                    v
+              [ T2: Slot h2(Y) ]
+                    | (Evicts Z)
+                    v
+              [ T1: Slot h1(Z) ] (Lands in empty slot -> Cascade halts!)
 ```
 
-```text
-CUCKOO DISPLACEMENT CASCADE:
-  Insert X ──► [ Table 1: Slot h₁(X) ]
-                     │ (Kicks out Y)
-                     ▼
-               [ Table 2: Slot h₂(Y) ]
-                     │ (Kicks out Z)
-                     ▼
-               [ Table 1: Slot h₁(Z) ]  (Lands in empty slot: Cascade terminates!)
-```
+#### Step-by-Step Displacement Trace: Inserting Key $X$
 
-#### Cycle Detection & Rehashing:
-If a displacement chain enters an infinite loop (e.g., $X \to Y \to Z \to X$), we detect the cycle (when displacement count exceeds a threshold $\text{MAX\_DISPLACEMENTS} \approx 2 \log n$). If a cycle occurs, we allocate new tables with fresh hash functions and **Rehash** the entire dataset.
+| Cascade Step | Active Key | Target Table & Slot | Prior Slot Occupant | Resolution Action |
+| :---: | :---: | :---: | :---: | :--- |
+| **1** | Key $X$ | $T_1[h_1(X)]$ | Key $Y$ | $X$ claims slot; $Y$ is evicted from $T_1$ |
+| **2** | Key $Y$ | $T_2[h_2(Y)]$ | Key $Z$ | $Y$ claims slot; $Z$ is evicted from $T_2$ |
+| **3** | Key $Z$ | $T_1[h_1(Z)]$ | `EMPTY` | $Z$ claims empty slot; **Cascade successfully halts!** |
 
----
----
-
-# TOPIC 02: ROBIN HOOD HASHING
-
-### 1. Topic Title
-**Robin Hood Hashing (Probe Sequence Length Variance Minimization)**
-
-### 2. Category
-High-Performance Open Addressing Optimization.
-
-### 3. Difficulty
-Intermediate to Advanced.
-
-### 4. Motivation: The Curse of Long Probe Chains
-In standard Linear Probing, some lucky keys land directly in their home slot (Probe Sequence Length $\text{PSL} = 0$), while unlucky keys that arrived later get pushed $20$ or $30$ slots down the table ($\text{PSL} = 30$). This huge variance causes sluggish worst-case queries and cache thrashing.
-
-### THE ROBIN HOOD MOTTO:
-*"Take from the rich (keys with small PSL) and give to the poor (keys with large PSL)!"*
+#### Cycle Detection & Full Table Rehashing
+If keys form a closed dependency loop ($A \to B \to C \to A$), the displacement cascade could cycle indefinitely. The algorithm detects loops when displacement steps exceed a threshold:
+$$\text{MaxDisplacements} \approx \lceil 2 \log n \rceil$$
+If the threshold is exceeded, the table halts the insertion, allocates fresh tables with two newly drawn hash functions from a universal family, and rehashes all elements.
 
 ---
 
-### 5. Architectural Invariant & Stealing Rule
+## Topic 46: Robin Hood Hashing
 
-Every stored slot records two items: the key-value pair and its **Probe Sequence Length (PSL)** — the number of steps it has traveled away from its ideal home slot $h(k)$.
+### 1. The Curse of Probe Sequence Variance
 
-#### The Insertion Steal Invariant:
-When probing to insert a key:
-- Track the current key's `currentPSL`.
-- If we encounter an occupied slot storing key $Y$ with `existingPSL`:
-  - If `currentPSL > existingPSL`:
-    - The incoming key is **poorer** (has traveled further) than the resident key!
-    - **SWAP THEM!** The incoming key steals the slot.
-    - We now continue probing down the table with key $Y$, incrementing its PSL!
+In classical Linear Probing, some keys land in their home slot on the first attempt (Probe Sequence Length $\text{PSL} = 0$), while other keys inserted later are pushed down the table, suffering $\text{PSL} \ge 30$. This high variance degrades worst-case search latency and causes cache thrashing.
 
-```text
-SLOT INSPECTION:
-Incoming Key: [ Key: "Delta", PSL: 4 ] (Very poor!)
-Resident Key: [ Key: "Alpha", PSL: 1 ] (Rich! Close to home)
+### 2. The Robin Hood Invariant: "Steal from the Rich to Give to the Poor"
 
-ACTION:
-"Delta" takes the slot!
-"Alpha" is evicted and continues probing with PSL = 2!
-```
+Every occupied slot records both the key-value pair and its **Probe Sequence Length (PSL)**—the distance in slots that the key has traveled away from its ideal home bucket $h(k)$.
 
----
+#### The Stealing Rule:
+When probing to insert key $X$:
+1. If an empty slot is encountered, store $X$ with its current PSL.
+2. If an occupied slot holding key $Y$ is encountered:
+   - Compare $X$'s current PSL against $Y$'s stored PSL:
+   - **If $\text{PSL}(X) > \text{PSL}(Y)$**: $X$ has traveled further from home than $Y$ ($X$ is "poorer" than $Y$). **$X$ evicts $Y$ and takes the slot!**
+   - $Y$ becomes the new displaced key and continues probing with its PSL incremented by 1.
 
-### 6. Why Robin Hood Hashing Outperforms Classical Probing
+#### State Transition Table: Robin Hood Slot Dispute
 
-1. **Drastic Variance Reduction**: Instead of a few keys suffering catastrophic probe lengths, all keys cluster around a very tight, predictable average PSL (typically $1$ to $3$).
-2. **Early Search Termination**: When searching for a key $k$, we track our search PSL. If we reach an occupied slot whose `residentPSL < searchPSL`, we can **INSTANTLY STOP AND RETURN NOT FOUND**!
-   - Why? Because if $k$ were in the table, the Robin Hood stealing rule would have swapped it into this slot or an earlier one!
-
----
----
-
-# TOPIC 03: 2-LEVEL PERFECT HASHING (FKS SCHEME)
-
-### 1. Topic Title
-**Fredman-Komlós-Szemerédi (FKS) Perfect Hashing (Guaranteed Zero Collisions in $O(n)$ Space)**
-
-### 2. Category
-Deterministic Search Structures for Static Dictionaries.
-
-### 3. Difficulty
-Advanced.
-
-### 4. Prerequisites
-- The Birthday Paradox (Collision probability in hash tables).
-- Universal Hash Function Families.
+| Evaluated Slot | Resident Key & PSL | Incoming Key & PSL | PSL Comparison | Execution Outcome |
+| :---: | :---: | :---: | :---: | :--- |
+| **Slot 5** | `("Alpha", PSL = 1)` | `("Delta", PSL = 4)` | $4 > 1$ (Incoming is poorer!) | `"Delta"` steals Slot 5; `"Alpha"` evicted with $\text{PSL} \leftarrow 2$ |
+| **Slot 6** | `("Beta", PSL = 3)` | `("Alpha", PSL = 2)` | $2 < 3$ (Resident is poorer!) | `"Beta"` retains Slot 6; `"Alpha"` continues probing with $\text{PSL} \leftarrow 3$ |
+| **Slot 7** | `EMPTY` | `("Alpha", PSL = 3)` | Vacant slot | `"Alpha"` stored at Slot 7 with $\text{PSL} = 3$ |
 
 ---
 
-### 5. The Birthday Paradox Dilemma
-If you hash $n$ keys into a single hash table of size $m$:
-- To guarantee **zero collisions** with probability $\ge 0.5$, the table size must be quadratic:
+### 3. Early Search Termination Superpower
+
+In standard open addressing, searching for an absent key must continue until an `EMPTY` slot is reached. In Robin Hood Hashing, the search terminates significantly earlier:
+
+> 💡 **Early Termination Theorem**:  
+> While searching for key $k$, track the search probe length `searchPSL`. If you encounter an occupied slot whose resident key has $\text{residentPSL} < \text{searchPSL}$, **immediately halt and return "Not Found"!**  
+> *Proof*: If key $k$ existed in the table, the Robin Hood stealing rule would have displaced that resident key because $k$ was poorer at that slot!
+
+---
+
+## Topic 47: FKS Two-Level Perfect Hashing
+
+### 1. Conceptual Architecture & The Quadratic Dilemma
+
+For static datasets (where all $n$ keys are known in advance, such as dictionary lookups, compiler keyword tables, and CD-ROM search indices), Fredman, Komlós, and Szemerédi (1984) developed a scheme achieving **guaranteed zero collisions** in **$O(1)$ worst-case lookup time** using **$O(n)$ linear total memory**.
+
+By the Birthday Paradox, guaranteeing zero collisions in a single table requires quadratic memory:
 $$m = \Theta(n^2)$$
-- Storing $1,000,000$ keys would require a table of size $1,000,000^2 = 10^{12}$ slots (Terabytes of RAM!), which is completely impractical.
+Storing $10^6$ keys in a single collision-free table would require $10^{12}$ slots (terabytes of RAM), which is impossible.
 
-### THE FKS 2-LEVEL SOLUTION (Fredman, Komlós, Szemerédi, 1984):
-Achieves **guaranteed zero collisions** and **$O(1)$ worst-case lookup** using only **$O(n)$ total linear memory**!
+#### The FKS Two-Level Solution
+1. **Level 1 (Primary Table)**: Allocate an array of size $M = n$ using a primary hash function $h(k)$. Collisions are allowed at Level 1!
+2. **Level 2 (Secondary Tables)**: If $c_i$ keys collide at Level 1 slot $i$, allocate a dedicated secondary hash table $S_i$ of **quadratic size**:
+   $$m_i = c_i^2$$
+   Because $m_i = c_i^2$, a secondary hash function $h_i(k)$ chosen from a universal family has zero collisions with probability $\ge 0.5$.
 
----
+#### Structural Hierarchy
 
-### 6. Architectural Topology
-
-```text
-LEVEL 1 (Primary Hash Table):
-Size M = n slots. Uses primary hash function h(k).
-Key collisions ARE allowed at Level 1!
-Slot i stores a pointer to a dedicated secondary hash table S_i.
-
-LEVEL 2 (Secondary Hash Tables):
-If slot i has c_i keys colliding into it:
-Allocate secondary table S_i of QUADRATIC size:
-  Size(S_i) = (c_i)² slots!
-Use a dedicated secondary hash function h_i(k) that has ZERO COLLISIONS!
-
-LEVEL 1 TABLE (Size = n):
-Index 0: [ Pointer ──► Secondary Table S₀ of size 1² = 1 (Zero collisions!) ]
-Index 1: [ Pointer ──► NULL (0 items) ]
-Index 2: [ Pointer ──► Secondary Table S₂ of size 3² = 9 (Zero collisions!) ]
-```
+| Level 1 Slot Index | Colliding Keys Count ($c_i$) | Secondary Table Allocation Size ($m_i = c_i^2$) | Secondary Collision Rate | Worst-Case Lookup Cost |
+| :---: | :---: | :---: | :---: | :---: |
+| **`Slot 0`** | $c_0 = 1$ | $1^2 = 1\text{ slot}$ | Zero collisions | 2 memory reads |
+| **`Slot 1`** | $c_1 = 0$ | $0\text{ slots}$ (`NULL`) | No keys | 1 memory read |
+| **`Slot 2`** | $c_2 = 3$ | $3^2 = 9\text{ slots}$ | Zero collisions | 2 memory reads |
+| **`Slot 3`** | $c_3 = 2$ | $2^2 = 4\text{ slots}$ | Zero collisions | 2 memory reads |
 
 ---
 
-### 7. Mathematical Proof of $O(n)$ Linear Total Space
+### 2. Mathematical Proof of $O(n)$ Linear Total Space
 
 #### Theorem:
-If the primary hash function $h$ is chosen uniformly at random from a 2-universal hash family, the expected sum of squares of collisions across all buckets is strictly bounded:
+If the Level 1 hash function $h$ is chosen from a 2-universal hash family, the expected sum of secondary table sizes is strictly bounded:
+
 $$\mathbb{E}\left[ \sum_{i=0}^{n-1} c_i^2 \right] < 2n$$
 
 #### Proof:
-1. For any pair of distinct keys $x, y \in S$, let indicator variable $I_{x, y} = 1$ if $h(x) = h(y)$, else $0$.
-2. By the definition of a universal hash family:
-$$\Pr[h(x) = h(y)] \le \frac{1}{m} = \frac{1}{n}$$
-3. The number of keys in bucket $i$ is $c_i$. The number of colliding pairs in bucket $i$ is $\binom{c_i}{2} = \frac{c_i(c_i - 1)}{2}$.
-4. Expanding the sum of squares:
-$$\sum_{i=0}^{n-1} c_i^2 = \sum_{i=0}^{n-1} \left( c_i + 2 \binom{c_i}{2} \right) = n + 2 \sum_{x < y} I_{x, y}$$
-5. Taking the expectation:
-$$\mathbb{E}\left[ \sum_{i=0}^{n-1} c_i^2 \right] = n + 2 \sum_{x < y} \mathbb{E}[I_{x, y}] \le n + 2 \binom{n}{2} \frac{1}{n} = n + 2 \frac{n(n - 1)}{2n} = n + (n - 1) < 2n$$
+1. For any pair of distinct keys $x, y \in S$, define indicator random variable $I_{x, y} = 1$ if $h(x) = h(y)$, and $0$ otherwise.
+2. By the definition of a 2-universal hash family:
+   $$\Pr[h(x) = h(y)] \le \frac{1}{M} = \frac{1}{n}$$
+3. The number of colliding pairs in bucket $i$ containing $c_i$ elements is $\binom{c_i}{2} = \frac{c_i(c_i - 1)}{2}$.
+4. Rewriting the sum of squares:
+   $$\sum_{i=0}^{n-1} c_i^2 = \sum_{i=0}^{n-1} \left( c_i + 2 \binom{c_i}{2} \right) = \sum_{i=0}^{n-1} c_i + 2 \sum_{x < y} I_{x, y} = n + 2 \sum_{x < y} I_{x, y}$$
+5. Taking the mathematical expectation:
+   $$\mathbb{E}\left[ \sum_{i=0}^{n-1} c_i^2 \right] = n + 2 \sum_{x < y} \mathbb{E}[I_{x, y}] \le n + 2 \binom{n}{2} \frac{1}{n} = n + 2 \frac{n(n - 1)}{2n} = n + n - 1 < 2n \quad \blacksquare$$
 
-$\blacksquare$
-
-**Conclusion**: The total memory consumed across all secondary tables $\sum c_i^2$ is less than $2n$, proving that 2-level perfect hashing achieves **zero collisions** and **$O(1)$ guaranteed worst-case search in $O(n)$ space**!
+**Result**: Even though individual secondary tables allocate quadratic capacity $c_i^2$, their total sum across all buckets is strictly bounded by $2n$, proving that 2-level perfect hashing achieves **zero collisions and guaranteed $O(1)$ search in $O(n)$ space**!
 
 ---
----
 
-# TOPIC 04: PROBABILISTIC HASHING STRUCTURES
+## Topic 48: Probabilistic Streaming Hashing: Bloom Filters & Count-Min Sketch
 
 ### 1. The Bloom Filter: Probabilistic Membership
 
-A **Bloom Filter** (Burton Howard Bloom, 1970) is an exceptionally space-efficient bit-array data structure used to test set membership:
-- **Possible Query Answers**:
-  1. *"Definitely NOT in the set"* $\implies$ **100% Guaranteed Correct (Zero False Negatives)**.
-  2. *"Possibly in the set"* $\implies$ **Small, mathematically controllable False Positive probability ($p$)**.
+A **Bloom Filter** (Bloom, 1970) is a space-efficient bit-array data structure used to test set membership:
+- **"Definitely NOT in the set"**: $100\%$ guaranteed correct (**Zero False Negatives**).
+- **"Possibly in the set"**: Correct with a small, tunable **False Positive probability ($p$)**.
 
-```text
-Bit Array of m = 10 bits:
-Index:   0   1   2   3   4   5   6   7   8   9
-Bits:  [ 0 │ 1 │ 0 │ 1 │ 0 │ 0 │ 1 │ 0 │ 1 │ 0 ]
-             ▲       ▲           ▲       ▲
-             │       │           │       │
-          h₁(x)    h₂(x)       h₃(x)   h₄(x)
-```
+#### Physical Layout: Bit-Array of $m = 10$ bits with $k = 3$ Hash Functions
 
-#### Mathematical Formulas for Optimal Tuning:
-Given $n$ expected items and desired false positive probability $p$:
+| Bit Index | `0` | `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Bit State** | `0` | **`1`** | `0` | **`1`** | `0` | `0` | **`1`** | `0` | **`1`** | `0` |
+| **Mapped Hash Bits** | — | $h_1(x)$ | — | $h_2(x)$ | — | — | $h_3(x)$ | — | $h_1(y)$ | — |
+
+- **Insert($x$)**: Compute $h_1(x), h_2(x), \dots, h_k(x)$ and set all corresponding bit indices to `1`.
+- **Query($y$)**: Compute $h_1(y), \dots, h_k(y)$. If **any** bit is `0`, $y$ was definitively never added! If all bits are `1`, $y$ is probably in the set.
+
+#### Optimal Dimensioning Formulas:
+Given $n$ expected keys and desired false positive tolerance $p$:
 1. **Optimal Bit-Array Size ($m$)**:
-$$m = - \frac{n \ln p}{(\ln 2)^2} \approx -1.44 \cdot n \log_2 p$$
-*(To achieve a 1% false positive rate ($p = 0.01$), you need only **9.6 bits per element**, regardless of how large the elements are!)*
-2. **Optimal Number of Hash Functions ($k$)**:
-$$k = \frac{m}{n} \ln 2 \approx 0.7 \cdot \frac{m}{n}$$
+   $$m = - \frac{n \ln p}{(\ln 2)^2} \approx -1.44 \cdot n \log_2 p$$
+   *(Achieving $p = 0.01$ ($1\%$ false positive rate) requires only **$9.6\text{ bits per element}$**, regardless of whether the stored keys are 10-byte strings or 100-kilobyte documents!)*
+2. **Optimal Hash Function Count ($k$)**:
+   $$k = \frac{m}{n} \ln 2 \approx 0.693 \cdot \frac{m}{n}$$
 
 ---
 
-### 2. Count-Min Sketch: Frequency Estimation in High-Speed Data Streams
+### 2. Count-Min Sketch: Frequency Estimation in High-Volume Streams
 
-In big data streaming (e.g., network packet analysis, trending hashtags on Twitter/X), data arrives at millions of events per second. Storing exact counters for every key in a hash map would consume gigabytes of RAM.
+In massive streaming architectures (e.g., tracking DDoS attack packet signatures or trending hashtags), maintaining exact counters in a hash map consumes gigabytes of memory.
 
-A **Count-Min Sketch** is a 2D array of counters of size $d \times w$ with $d$ independent hash functions:
-- **Update($x, c$)**: For each row $i \in [0, d-1]$, compute column $j = h_i(x)$ and increment counter:
-$$\text{table}[i][j] \leftarrow \text{table}[i][j] + c$$
-- **Estimate($x$)**: To estimate the frequency of $x$, return the **minimum** across all rows:
-$$\hat{f}(x) = \min_{0 \le i < d} \text{table}[i][h_i(x)]$$
+A **Count-Min Sketch** is a 2D array of counters of dimension $d \times w$ with $d$ pairwise independent hash functions:
+- **Update($x, c$)**: For each row $i \in [0, d-1]$, compute column $j = h_i(x)$ and increment:
+  $$\text{table}[i][j] \leftarrow \text{table}[i][j] + c$$
+- **Estimate($x$)**: Return the **minimum** across all rows:
+  $$\hat{f}(x) = \min_{0 \le i < d} \text{table}[i][h_i(x)]$$
 
-**Why Minimum?** Because hash collisions can only *inflate* counter values, never reduce them! Taking the minimum across independent rows filters out collision noise with provable mathematical error bounds $(\epsilon, \delta)$.
-
----
-
-## Module 04 Summary & Key Takeaways
-
-1. **Cuckoo Hashing** guarantees **$O(1)$ worst-case lookup** with at most 2 memory probes by using displacement eviction and cycle-detecting rehashing.
-2. **Robin Hood Hashing** balances probe sequence lengths by letting "poor" keys steal slots from "rich" keys, slashing variance and enabling early search termination.
-3. **FKS 2-Level Perfect Hashing** guarantees zero collisions in $O(n)$ space by pairing an $O(n)$ primary table with quadratic secondary tables of size $c_i^2$.
-4. **Bloom Filters** achieve massive RAM savings ($< 10$ bits/item) with guaranteed zero false negatives; **Count-Min Sketches** provide sublinear frequency estimation for massive data streams.
+#### Why the Minimum Operator Filters Noise:
+Because hash collisions can only **inflate** counter values (by adding unrelated counts into the same slot) and can never decrease them, every slot represents an upper bound on true frequency:
+$$\text{table}[i][h_i(x)] \ge f(x)$$
+Taking the minimum across $d$ independent hash functions filters out collision noise, yielding estimates with provable $(\epsilon, \delta)$ mathematical accuracy bounds.
 
 ---
 
-## References & Academic Attribution
+### 3. Key Takeaways
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: Hash Tables. MIT Press.
-2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: Hashing. Addison-Wesley.
-3. **Mitzenmacher, M., & Upfal, E.** (2017). *Probability and Computing: Randomization and Probabilistic Techniques in Algorithms* (2nd ed.). Cambridge University Press.
+1. **Cuckoo Hashing**: Guarantees $O(1)$ worst-case lookup in $\le 2$ memory reads by allowing incoming keys to displace resident occupants.
+2. **Robin Hood Hashing**: Enforces the invariant that "poor" keys steal slots from "rich" keys, minimizing probe sequence length variance and enabling early search termination.
+3. **FKS Perfect Hashing**: Combines an $O(n)$ primary table with quadratic secondary buckets $c_i^2$, achieving zero collisions in $O(n)$ total expected memory.
+4. **Bloom Filters**: Provide massive space compression ($< 10\text{ bits}$/item for $1\%$ error) with guaranteed zero false negatives.
+5. **Count-Min Sketches**: Enable sublinear memory frequency tracking over high-volume data streams using the minimum estimator to neutralize collision noise.
+
+---
+
+## Academic Attribution & References
+
+1. **Pagh, R., & Rodler, F. F.** (2004). *Cuckoo Hashing*. Journal of Algorithms, 51(2), 122-144.
+2. **Fredman, M. L., Komlós, J., & Szemerédi, E.** (1984). *Storing a Sparse Table with O(1) Worst Case Access Time*. Journal of the ACM, 31(3), 538-544.
+3. **Bloom, B. H.** (1970). *Space/Time Trade-offs in Hash Coding with Allowable Errors*. Communications of the ACM, 13(7), 422-426.
+4. **Cormode, G., & Muthukrishnan, S.** (2005). *An Improved Data Stream Summary: The Count-Min Sketch and its Applications*. Journal of Algorithms, 55(1), 58-75.
