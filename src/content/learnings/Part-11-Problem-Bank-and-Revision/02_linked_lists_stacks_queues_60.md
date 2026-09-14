@@ -1,7 +1,29 @@
 # Part 11: Problem Bank — Volume 02: Linked Lists, Stacks, Queues & Monotonic Structures (60 Problems)
 
-> **Problems Covered:** Q101 to Q160  
-> **Patterns:** Fast & Slow Pointers &bull; In-Place List Reversal &bull; Dummy Head Sentinel &bull; Monotonic Stack &bull; Monotonic Deque &bull; Parentheses & Expression Parsing &bull; LRU/LFU Cache Architecture
+
+Pointer-based dynamic allocations and linear abstract data types constitute the foundation of operating system kernels, compilers, and memory management subsystems. This volume compiles 60 signature interview problems covering pointer rewiring, sentinel nodes, monotonic order maintenance, and LIFO/FIFO buffer mechanics with optimal asymptotic profiles.
+
+---
+
+## 1. Executive Summary & Learning Objectives
+
+This problem bank codifies 60 essential challenges spanning linked list manipulation, stack evaluation, queue buffering, and monotonic pruning.
+
+By completing this problem set, you will be able to:
+1. **Master In-Place Pointer Manipulation**: Reverse, partition, and reorder linked nodes with $\mathcal{O}(1)$ auxiliary memory using dummy head sentinels.
+2. **Apply Two-Pointer Traversal Protocols**: Detect cycles, locate intersection nodes, and identify middle elements using Floyd's Tortoise and Hare algorithm.
+3. **Enforce Monotonic Stack & Deque Invariants**: Solve range-boundary lookups, sliding window extrema, and histogram area maximizations in amortized $\mathcal{O}(n)$ time.
+4. **Architect Composite Cache Structures**: Coordinate doubly linked lists and hash maps to implement LRU and LFU cache eviction policies in $\mathcal{O}(1)$ time.
+
+---
+
+## 2. Problem Taxonomy & Architecture Guide
+
+| Section | Problem Range | Primary Patterns Covered | Target Complexity Range |
+| :--- | :--- | :--- | :--- |
+| **Section 1** | Q101 – Q130 | Linked List Mastery & Sentinel Node Traversal | $\mathcal{O}(n)$ Time, $\mathcal{O}(1)$ Auxiliary Space |
+| **Section 2** | Q131 – Q145 | Stacks, Expression Parsing & Parentheses Matching | $\mathcal{O}(n)$ Time, $\mathcal{O}(n)$ Stack Space |
+| **Section 3** | Q146 – Q160 | Monotonic Data Structures & Cache Architectures | $\mathcal{O}(n)$ Time, $\mathcal{O}(1)$ to $\mathcal{O}(k)$ Space |
 
 ---
 

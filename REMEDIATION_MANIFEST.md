@@ -64,7 +64,7 @@
 - [x] advanced-dsa/tree-decompositions — status: done
 ## Part 11 — 525+ Problem Bank & Master Revision
 - [x] problem-bank-and-revision/arrays-strings-pointers-100 — status: done
-- [ ] problem-bank-and-revision/linked-lists-stacks-queues-60 — status: not-started
+- [x] problem-bank-and-revision/linked-lists-stacks-queues-60 — status: done
 - [ ] problem-bank-and-revision/hashing-and-search-80 — status: not-started
 - [ ] problem-bank-and-revision/trees-bst-tries-heaps-100 — status: not-started
 - [ ] problem-bank-and-revision/graphs-and-networks-70 — status: not-started
