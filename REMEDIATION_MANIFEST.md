@@ -2,7 +2,7 @@
 - [x] front-matter/cover-and-purpose — status: done
 - [x] front-matter/dsa-roadmap — status: done
 - [x] front-matter/notation-and-symbols — status: done
-- [ ] front-matter/complexity-quick-ref — status: not-started
+- [x] front-matter/complexity-quick-ref — status: done
 ## Part 01 — Algorithmic Foundations
 - [ ] foundations/data-and-algorithms — status: not-started
 - [ ] foundations/problem-solving-methodology — status: not-started
