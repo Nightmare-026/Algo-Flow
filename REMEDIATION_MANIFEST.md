@@ -7,7 +7,7 @@
 - [x] foundations/data-and-algorithms — status: done
 - [x] foundations/problem-solving-methodology — status: done
 - [x] foundations/asymptotic-analysis — status: done
-- [ ] foundations/recursion-and-recurrences — status: not-started
+- [x] foundations/recursion-and-recurrences — status: done
 ## Part 02 — Linear Data Structures
 - [ ] linear-data-structures/arrays-and-dynamic-arrays — status: not-started
 - [ ] linear-data-structures/strings-and-matrices — status: not-started
