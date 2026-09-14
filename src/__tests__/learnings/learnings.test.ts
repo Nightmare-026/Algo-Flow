@@ -130,6 +130,6 @@ More details.
     expect(parsed?.wordCount).toBeGreaterThan(500);
     expect(parsed?.readingTimeMinutes).toBeGreaterThan(0);
     expect(parsed?.htmlContent).toContain("<h2");
-    expect(parsed?.htmlContent).toContain('id="1-what-is-data"');
+    expect(parsed?.htmlContent).toContain('id="1-data-vs-information"');
   });
 });
