@@ -1,270 +1,288 @@
 # Part 02: Linear Data Structures — Module 05: Specialized & Advanced Linked Lists
 
 > **Topics Covered:**  
-> Skip Lists (Probabilistic Multi-Level Search Towers, $O(\log n)$ Lookups & Range Queries) &bull; Unrolled Linked Lists (Cache-Conscious Chunked Array Nodes & CPU L1/L2 Locality) &bull; XOR Linked Lists (Memory-Efficient Doubly Linked Lists via Bitwise Pointer Arithmetic)
+> 27. Skip Lists (Probabilistic Multi-Level Search Towers, $O(\log n)$ Lookups & Range Queries) &bull; 28. Unrolled Linked Lists (Cache-Conscious Chunked Array Nodes & CPU L1/L2 Locality) &bull; 29. XOR Linked Lists (Memory-Efficient Doubly Linked Lists via Bitwise Pointer Arithmetic)
 
 ---
 
-# TOPIC 01: SKIP LISTS
+Standard linked lists suffer from two major architectural shortcomings: the inability to perform binary search over sorted data due to lack of random indexing, and severe CPU cache-line underutilization caused by scattered heap allocations. Specialized linked list variants resolve these limitations through mathematical and hardware co-design. Skip Lists introduce probabilistic geometric multi-level towers to deliver $O(\log n)$ search and range queries without tree rotations; Unrolled Linked Lists bundle small contiguous arrays into nodes to saturate CPU cache lines; and XOR Linked Lists halve pointer storage by multiplexing bidirectional links through bitwise arithmetic. This chapter analyzes the mathematics, invariants, and systems implementations of these three advanced linear structures.
 
-### 1. Topic Title
-**Skip List (Probabilistic Multi-Level Express-Lane Ordered Linked Structure)**
-
-### 2. Category
-Specialized Linear / Multi-Level Linked Data Structures — Probabilistic Balanced Indexing.
-
-### 3. Difficulty
-Advanced.
-
-### 4. Prerequisites
-- Module 03: Singly Linked Lists.
-- Part 01: Foundations (Probability, Geometric Distribution, Amortized Expectation).
+### Learning Objectives
+- Explain why standard sorted linked lists cannot execute binary search and how Skip List express lanes restore $O(\log n)$ expected search time.
+- Derive the geometric probability distribution governing Skip List level promotion and bound maximum tower heights.
+- Model Unrolled Linked List node sizing ($B$-factor) to align node footprints with 64-byte or 128-byte hardware CPU cache lines.
+- Apply bitwise XOR cancellation properties $(A \oplus B) \oplus A = B$ to traverse XOR linked lists bidirectionally using a single pointer field.
+- Contrast the concurrency and maintenance advantages of Skip Lists against Red-Black trees in production engines like Redis and RocksDB.
 
 ---
 
-### 5. Motivation: The Curse of Linked List Search
+## Topic 27: Skip Lists (Probabilistic Multi-Level Indexing)
 
-In a balanced Binary Search Tree or Sorted Array:
-- Searching takes $O(\log n)$ time because we can cut the search space in half at each step.
+### 1. Conceptual Architecture & Express Lane Hierarchy
 
-In a standard Sorted Linked List:
-- Even though the elements are in strict ascending order, binary search is **impossible** because we cannot access the midpoint in $O(1)$ time. Searching is condemned to $\Theta(n)$ sequential stepping.
+In a sorted static array or balanced binary search tree, search operations take $O(\log n)$ time by halving the search space at each comparison. In a standard sorted linked list, even though elements appear in strict ascending order, **binary search is impossible** because finding the middle node requires $\Theta(n)$ sequential pointer steps.
 
-### THE INGENIOUS SOLUTION (William Pugh, 1989):
-What if we build **express train tracks** (hierarchy of index lanes) over our regular local train track?
-- Track 0 (Bottom): Visits every single station ($1, 2, 3, 4, 5, 6, 7, 8$).
-- Track 1 (Express): Skips every 2nd station ($2, 4, 6, 8$).
-- Track 2 (Super Express): Skips every 4th station ($4, 8$).
-- Track 3 (Bullet): Skips every 8th station ($8$).
+#### The William Pugh Express Lane Solution (1989)
+A **Skip List** layers a hierarchy of express-lane forward pointer chains over a base sorted linked list:
+- **Level 0 (Base Track)**: Contains every element in the dataset.
+- **Level 1 (Express Track)**: Probabilistically includes roughly $1/2$ of the elements.
+- **Level 2 (Super Express)**: Includes roughly $1/4$ of the elements.
+- **Level $k$**: Includes roughly $(1/2)^k$ of the elements.
 
-To search for an item, we start on the top express track. When we overshoot, we drop down one level and resume scanning forward. This achieves **$O(\log n)$ expected search, insertion, and deletion** without complex tree rebalancing rotations!
+#### Multi-Level Structural Mapping
+
+| Level | Station Coverage | Relative Node Density | Expected Step Distance |
+| :---: | :--- | :---: | :---: |
+| **Level 3** | `[-∞] ---------------------------------------------> [30] ----------> [+∞]` | $12.5\%$ ($1/8$) | Skips $8$ base elements |
+| **Level 2** | `[-∞] -------------------------> [17] -------------> [30] ----------> [+∞]` | $25\%$ ($1/4$) | Skips $4$ base elements |
+| **Level 1** | `[-∞] -------------> [10] -----> [17] -----> [25] -> [30] -> [55] -> [+∞]` | $50\%$ ($1/2$) | Skips $2$ base elements |
+| **Level 0** | `[-∞] -> [3] ------> [10] -----> [17] -----> [25] -> [30] -> [55] -> [+∞]` | $100\%$ | Base contiguous sequence |
 
 ---
 
-### 6. Architectural Diagram (ASCII Search Towers)
+### 2. Search Navigation & Step-by-Step Trace
+
+Searching begins at the highest active level of the head sentinel (`-∞`):
+1. Walk forward horizontally along the current level as long as the succeeding node's value is **strictly less than** the target.
+2. When the forward node's value is greater than or equal to the target (or is `+∞`), **drop down vertically by one level**.
+3. Repeat until reaching Level 0. If the adjacent node on Level 0 equals the target, the element is found; otherwise, it does not exist.
+
+#### Trace: Searching for Target Value $25$
+
+| Step | Current Position | Current Level | Inspected Forward Node | Comparison vs Target ($25$) | Action Taken |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| **1** | `[-∞]` | Level 3 | `[30]` | $30 > 25$ | Overshot target $\implies$ Drop to Level 2 |
+| **2** | `[-∞]` | Level 2 | `[17]` | $17 < 25$ | Advance horizontally to `[17]` |
+| **3** | `[17]` | Level 2 | `[30]` | $30 > 25$ | Overshot target $\implies$ Drop to Level 1 |
+| **4** | `[17]` | Level 1 | `[25]` | $25 == 25$ | Candidate found $\implies$ Drop to Level 0 to verify |
+| **5** | `[17]` | Level 0 | `[25]` | $25 == 25$ | **Target Located! Return Success** |
+
+**Expected Number of Comparisons**: At each level, the search traverses at most $1/p = 2$ nodes before dropping. With $O(\log n)$ levels, total expected search time is $O(\log n)$.
+
+---
+
+### 3. Probabilistic Promotion & Height Invariants
+
+Unlike self-balancing binary search trees (AVL or Red-Black trees) that enforce strict deterministic height invariants through complex tree rotations, Skip Lists achieve balance **probabilistically**:
+
+1. Every newly inserted node is guaranteed a Level 0 presence.
+2. A random coin-flip generator generates a geometric random variable:
+   - With probability $p = 0.5$, the node is promoted to Level 1.
+   - If promoted, a second coin is flipped. With probability $p^2 = 0.25$, it is promoted to Level 2.
+   - Promotion halts upon the first failure (`Tails`) or upon reaching $L_{\max} = \lceil \log_{1/p} n \rceil$.
+
+$$\Pr(\text{Height} = k) = p^k (1 - p)$$
+
+$$\mathbb{E}[\text{Total Levels}] = \log_{1/p} n = O(\log n)$$
+
+$$\mathbb{E}[\text{Pointers per Node}] = \sum_{k=0}^\infty p^k = \frac{1}{1 - p} = \frac{1}{1 - 0.5} = 2 \text{ pointers}$$
+
+The expected memory overhead is strictly $2$ forward pointers per node, identical to a standard doubly linked list!
+
+---
+
+### 4. Canonical Implementation
 
 ```text
-Level 3: [ -∞ ] ────────────────────────────────────────► [ 30 ] ─────────────► [ +∞ ]
-           │                                                │                      │
-Level 2: [ -∞ ] ──────────────────────► [ 17 ] ───────────► [ 30 ] ─────────────► [ +∞ ]
-           │                              │                 │                      │
-Level 1: [ -∞ ] ──────────► [ 10 ] ───► [ 17 ] ───► [ 25 ] ─► [ 30 ] ───► [ 55 ] ─► [ +∞ ]
-           │                  │           │           │     │           │      │
-Level 0: [ -∞ ] ──► [ 3 ] ─► [ 10 ] ─► [ 17 ] ─► [ 25 ] ─► [ 30 ] ─► [ 55 ] ─► [ +∞ ]
-```
+CLASS SkipNode:
+    field val: ValueType
+    field forward: Array of SkipNode Pointers
 
----
+    CONSTRUCTOR(val: ValueType, level: Integer):
+        this.val <- val
+        this.forward <- new Array of size (level + 1) filled with NULL
 
-### 7. Probabilistic Level Promotion: The Coin-Flip Rule
+CLASS SkipList:
+    field head: SkipNode
+    field maxLevel: Integer <- 16
+    field currentLevel: Integer <- 0
+    field p: Float <- 0.5
 
-Unlike B-Trees or AVL Trees, which use deterministic structural balance invariants, a Skip List determines the height of a newly inserted node **probabilistically**:
-- Every node has at least level 0.
-- Flip a fair coin ($p = 0.5$):
-  - If Heads, promote to level 1 and flip again.
-  - If Heads again, promote to level 2 and flip again.
-  - Stop at the first Tails or when reaching maximum level $L_{max} = \lceil \log_{1/p} n \rceil$.
+    CONSTRUCTOR():
+        this.head <- new SkipNode(-INFINITY, this.maxLevel)
 
-**Mathematical Property**:
-The probability that a node reaches level $k$ is $p^k = (1/2)^k$. The expected number of nodes at level $k$ is $n / 2^k$. The total number of levels is expected $O(\log n)$.
+    FUNCTION Search(target: ValueType) -> Boolean:
+        curr <- this.head
+        for lvl from this.currentLevel down to 0:
+            while curr.forward[lvl] != NULL and curr.forward[lvl].val < target:
+                curr <- curr.forward[lvl]
+        curr <- curr.forward[0]
+        return (curr != NULL and curr.val == target)
 
----
+    FUNCTION Insert(val: ValueType) -> Void:
+        update <- new Array of SkipNode Pointers of size this.maxLevel
+        curr <- this.head
 
-### 8. Complete Skip List Search Pseudocode
+        // Phase 1: Record drop-down predecessors
+        for lvl from this.currentLevel down to 0:
+            while curr.forward[lvl] != NULL and curr.forward[lvl].val < val:
+                curr <- curr.forward[lvl]
+            update[lvl] <- curr
 
-```text
-STRUCTURE SkipNode
-    val: ValueType
-    forward: Array of SkipNode pointers (size = height)
+        // Phase 2: Generate random node height
+        nodeLevel <- this.RandomLevel()
+        if nodeLevel > this.currentLevel:
+            for lvl from this.currentLevel + 1 to nodeLevel:
+                update[lvl] <- this.head
+            this.currentLevel <- nodeLevel
 
-DATA STRUCTURE SkipList
-    head: SkipNode
-    maxLevel: integer ← 16
-    currentLevel: integer ← 0
-    p: float ← 0.5
+        // Phase 3: Splice new node into multi-level links
+        newNode <- new SkipNode(val, nodeLevel)
+        for lvl from 0 to nodeLevel:
+            newNode.forward[lvl] <- update[lvl].forward[lvl]
+            update[lvl].forward[lvl] <- newNode
 
-    OPERATION Search(target):
-        curr ← head
-        // Start from top-most active level and traverse down
-        for level ← currentLevel down to 0:
-            while curr.forward[level] ≠ NULL and curr.forward[level].val < target:
-                curr ← curr.forward[level]
-        
-        // Drop to level 0 and inspect immediate candidate
-        curr ← curr.forward[0]
-        if curr ≠ NULL and curr.val = target:
-            return true
-        return false
-
-    OPERATION Insert(val):
-        update ← array of SkipNode pointers of size maxLevel
-        curr ← head
-        
-        // Phase 1: Track where we drop down at each level
-        for level ← currentLevel down to 0:
-            while curr.forward[level] ≠ NULL and curr.forward[level].val < val:
-                curr ← curr.forward[level]
-            update[level] ← curr
-        
-        // Phase 2: Generate random height
-        nodeLevel ← RandomLevel()
-        if nodeLevel > currentLevel:
-            for level ← currentLevel + 1 to nodeLevel:
-                update[level] ← head
-            currentLevel ← nodeLevel
-        
-        // Phase 3: Splice new node into pointers
-        newNode ← allocate SkipNode with height (nodeLevel + 1)
-        newNode.val ← val
-        for level ← 0 to nodeLevel:
-            newNode.forward[level] ← update[level].forward[level]
-            update[level].forward[level] ← newNode
-
-    FUNCTION RandomLevel():
-        lvl ← 0
-        while RandomFloat(0, 1) < p and lvl < maxLevel - 1:
-            lvl ← lvl + 1
+    FUNCTION RandomLevel() -> Integer:
+        lvl <- 0
+        while random() < this.p and lvl < this.maxLevel - 1:
+            lvl <- lvl + 1
         return lvl
 ```
 
-### Real-World Production Use:
-- **Redis (Sorted Sets - ZSET)**: Uses Skip Lists internally instead of Red-Black trees because Skip Lists are vastly simpler to implement, easier to make concurrent/lock-free, and support blazing fast range queries ($O(\log n + k)$).
-- **LevelDB / RocksDB (MemTable)**: Uses concurrent Skip Lists for memory-resident write buffers.
-
----
 ---
 
-# TOPIC 02: UNROLLED LINKED LISTS
+### 5. Systems Applications: Why Redis Prefers Skip Lists over Trees
 
-### 1. Topic Title
-**Unrolled Linked List (Cache-Conscious Chunked-Array Node Hybrid Structure)**
+| Feature | Skip List (Redis Sorted Sets `ZSET`) | Self-Balancing BST (Red-Black / AVL) |
+| :--- | :--- | :--- |
+| **Range Queries (`ZRANGEBYSCORE`)** | Blazing fast: walk to start node in $O(\log n)$, then traverse Level 0 horizontally | Requires in-order tree traversal ($O(\log n + k)$ with high constant factors) |
+| **Concurrency / Lock-Free** | Simpler: mutations touch only local forward pointers; lock-free CAS algorithms exist | Highly complex: tree rotations alter distant parent/sibling links, requiring coarse locks |
+| **Implementation Complexity** | Simple: ~150 lines of clean code; zero rotation cases | High: multiple rotation rebalancing cases (left-left, left-right, color changes) |
+| **Memory Footprint** | $1 / (1 - p) \approx 2$ pointers per node (customizable via $p = 0.25$) | Fixed 3 pointers (`parent`, `left`, `right`) $+ 1$ byte color flag |
 
-### 2. Category
-Memory-Optimized Linear Data Structures — Cache-Conscious Hardware Engineering.
+---
 
-### 3. Difficulty
-Advanced.
+## Topic 28: Unrolled Linked Lists
 
-### 4. The Hardware Reality: Cache Misses in Node Lists
-In a standard linked list, every node holds a single element. Traversing $n$ elements means reading $n$ non-contiguous heap addresses. Modern CPUs fetch data from RAM in **64-byte Cache Lines**. When you access a 4-byte integer in a standard node, 60 bytes of fetched cache line are wasted, causing constant L1/L2 cache misses!
+### 1. The Hardware Reality: Cache Misses in Node Lists
 
-### THE CONCEPT
-An **Unrolled Linked List** groups multiple elements into a small contiguous array inside each node:
+In a standard singly linked list, each node stores a single 4-byte value and an 8-byte pointer ($16$ bytes with padding). When the CPU reads a node, the memory bus transfers an entire **64-byte Cache Line** into L1 data cache. Because nodes are non-contiguous, the remaining $48$ bytes of the fetched cache line are wasted. Traversing $n$ elements triggers nearly $n$ separate CPU cache misses.
 
-```text
+### 2. Chunked Array Architecture
+
+An **Unrolled Linked List** combines the dynamic insertion flexibility of linked lists with the CPU cache locality of arrays. Each node contains a small, contiguous array capable of holding up to $B$ elements:
+
+```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                            UNROLLED NODE (Chunk)                            │
+│                       64-BYTE UNROLLED NODE (CHUNK)                         │
 ├───────────────────────────────────────┬───────────────┬─────────────────────┤
-│             elements[]                │   numElements │        next         │
-│   [ 10 │ 20 │ 30 │ 40 │ __ │ __ ]     │       4       │      (Pointer)      │
-│          Contiguous Array             │               │                     │
-└───────────────────────────────────────┴───────────────┴──────────┬──────────┘
-                                                                   │
-                                                                   ▼
+│         elements array [B]            │  numElements  │    next pointer     │
+│       [ 10 | 20 | 30 | 40 | _ | _ ]   │   count = 4   │      (8 bytes)      │
+│         Contiguous Memory Buffer      │   (4 bytes)   │  Points to next node│
+└───────────────────────────────────────┴───────────────┴─────────────────────┘
 ```
 
-### Architectural Sizing ($B$-Factor):
-The array capacity $B$ is intentionally chosen so that the total node size matches a multiple of the hardware CPU cache line (e.g., 64 bytes or 128 bytes).
+#### Node Layout & Hardware Alignment ($B = 12$ for 4-byte integers)
 
-### Advantages:
-1. **Dramatic Cache Miss Reduction**: Stepping through $B$ elements inside a single node produces zero cache misses.
-2. **Pointer Overhead Elimination**: Instead of $n$ pointer fields, there are only $n / B$ pointer fields (reducing pointer RAM overhead by a factor of $B$).
-3. **Fast Arbitrary Insertion**: When inserting, we only shift elements within a tiny local array of size $B$ (very fast in CPU cache).
-4. **Node Splitting & Merging**: If an insertion overflows a full node, it is split into two half-full nodes. If deletions cause adjacent nodes to fall below $B/2$, they are merged.
-
----
----
-
-# TOPIC 03: XOR LINKED LISTS
-
-### 1. Topic Title
-**XOR Linked List (Memory-Efficient Doubly Linked List via Bitwise Pointer Arithmetic)**
-
-### 2. Category
-Low-Level Systems Data Structures — Pointer-Arithmetic Optimization.
-
-### 3. Difficulty
-Advanced.
-
-### 4. Motivation: Cutting DLL Pointer Memory in Half
-A standard Doubly Linked List requires **two pointers per node** (`prev` and `next`), consuming 16 bytes of pointer storage per node.
-
-**The XOR Insight**: By utilizing the mathematical properties of the bitwise XOR operation ($\oplus$), we can store bidirectional navigation information using **only ONE pointer field per node**!
+| Field | Size | Hardware Alignment Role |
+| :--- | :---: | :--- |
+| **`elements[B]`** | $12 \times 4 = 48\text{ bytes}$ | Contiguous payload buffer filling cache line body |
+| **`numElements`** | $4\text{ bytes}$ | Active elements counter ($0 \le \text{count} \le B$) |
+| **`padding`** | $4\text{ bytes}$ | Structural padding to preserve 8-byte alignment |
+| **`next`** | $8\text{ bytes}$ | Virtual address pointer to succeeding unrolled node |
+| **Total Node Footprint** | **$64\text{ bytes}$** | **Exact match for one hardware CPU Cache Line!** |
 
 ---
 
-### 5. Mathematical Foundations of XOR ($\oplus$)
+### 3. Operations & Node Split/Merge Dynamics
 
-For any bit-patterns $A$, $B$, $C$:
-1. $X \oplus X = 0$ (Self-inverse)
-2. $X \oplus 0 = X$ (Identity)
-3. Commutative & Associative: $A \oplus B = B \oplus A$, $(A \oplus B) \oplus C = A \oplus (B \oplus C)$
-4. **Cancellation Property**:
+1. **Sequential Traversal**: Iterating through all $B$ elements within a chunk produces **zero additional cache misses** because the entire node resides within L1 cache.
+2. **Insertion with Overflow**:
+   - If target chunk has space ($\text{numElements} < B$), shift local elements in cache in $O(B)$ time.
+   - If chunk is full ($\text{numElements} == B$), **split** the chunk into two nodes, distributing $B/2$ elements into each, and update pointers.
+3. **Deletion with Underflow**:
+   - When deletions cause adjacent chunks to contain fewer than $B/2$ elements, **merge** them into a single chunk or borrow elements to maintain high density.
+
+---
+
+## Topic 29: XOR Linked Lists
+
+### 1. The Mathematical Foundation of XOR ($\oplus$)
+
+A standard doubly linked list requires two pointer fields per node (`prev` and `next`), consuming $16$ bytes of pointer memory per node. An **XOR Linked List** stores bidirectional navigation state using **only ONE pointer field per node**, cutting pointer memory overhead in half.
+
+#### Fundamental Algebraic Properties of Bitwise XOR:
+1. **Self-Inverse**: $X \oplus X = 0$
+2. **Identity**: $X \oplus 0 = X$
+3. **Commutative & Associative**: $A \oplus B = B \oplus A$, $(A \oplus B) \oplus C = A \oplus (B \oplus C)$
+4. **The Cancellation Identity**:
    $$(A \oplus B) \oplus A = B$$
    $$(A \oplus B) \oplus B = A$$
 
 ---
 
-### 6. Node Anatomy & Memory Encoding
+### 2. Memory Encoding: The `npx` Field
 
-Each node contains:
-- `data`: Payload value.
-- `npx`: A single pointer/address field computed as:
+Each node contains client data and a single composite address field `npx` (Next-Previous XOR):
+
 $$\text{npx} = \text{address}(\text{prev}) \oplus \text{address}(\text{next})$$
 
-```text
-HEAD                                                                    TAIL
- │                                                                       │
- ▼                                                                       ▼
-[ A ] ◄─────────────────────────► [ B ] ◄─────────────────────────► [ C ]
-npx = 0 ⊕ addr(B)                npx = addr(A) ⊕ addr(C)           npx = addr(B) ⊕ 0
-    = addr(B)                                                          = addr(B)
+#### Three-Node XOR Chain Example
+
 ```
+Virtual Addresses: Node A (0x1000), Node B (0x2000), Node C (0x3000)
+
+[ Node A ] <=======================> [ Node B ] <=======================> [ Node C ]
+prev = 0x0000                        prev = 0x1000                        prev = 0x2000
+next = 0x2000                        next = 0x3000                        next = 0x0000
+--------------------------------------------------------------------------------------
+npx = 0x0000 ^ 0x2000                npx = 0x1000 ^ 0x3000                npx = 0x2000 ^ 0x0000
+    = 0x2000                             = 0x2000 (hex XOR result)            = 0x2000
+```
+
+| Node | Physical Address | Logical Predecessor | Logical Successor | Stored `npx` Equation |
+| :---: | :---: | :---: | :---: | :--- |
+| **A** | `0x1000` | `0x0000` (`NULL`) | `0x2000` (Node B) | $\text{npx} = 0 \oplus \text{0x2000} = \text{0x2000}$ |
+| **B** | `0x2000` | `0x1000` (Node A) | `0x3000` (Node C) | $\text{npx} = \text{0x1000} \oplus \text{0x3000}$ |
+| **C** | `0x3000` | `0x2000` (Node B) | `0x0000` (`NULL`) | $\text{npx} = \text{0x2000} \oplus 0 = \text{0x2000}$ |
 
 ---
 
-### 7. Bidirectional Traversal Mechanics
+### 3. Bidirectional Traversal Mechanics
 
-#### Forward Traversal (from Head to Tail):
-To find the next node, XOR the current node's `npx` with the address of the `prev` node:
+Because `npx` holds $\text{prev} \oplus \text{next}$, knowing the address of one neighbor allows instant decoding of the other neighbor using the cancellation identity!
+
+#### Forward Traversal (Head to Tail):
 $$\text{next} = \text{curr.npx} \oplus \text{prev} = (\text{prev} \oplus \text{next}) \oplus \text{prev} = \text{next}$$
 
 ```text
-ALGORITHM TraverseForwardXOR(head)
-    curr ← head
-    prev ← 0 (NULL)
-    while curr ≠ NULL:
-        print curr.data
-        nextAddr ← curr.npx ⊕ prev
-        prev ← curr
-        curr ← nextAddr
+FUNCTION TraverseForward(head: Node Pointer) -> Void:
+    curr <- head
+    prev <- 0 (NULL)
+    while curr != NULL:
+        print(curr.data)
+        nextAddress <- curr.npx XOR prev
+        prev <- curr
+        curr <- nextAddress
 ```
 
-#### Backward Traversal (from Tail to Head):
-To find the predecessor, XOR the current node's `npx` with the address of the `next` node:
+#### Backward Traversal (Tail to Head):
 $$\text{prev} = \text{curr.npx} \oplus \text{next} = (\text{prev} \oplus \text{next}) \oplus \text{next} = \text{prev}$$
 
 ---
 
-### 8. Engineering Trade-Offs of XOR Linked Lists
+### 4. Critical Engineering Trade-offs
 
-| Advantage | Critical Disadvantage |
+| Systems Advantage | Severe Practical Disadvantage |
 | :--- | :--- |
-| **50% Pointer Memory Reduction**: Consumes exactly the same pointer storage as a singly linked list while providing full two-way traversal. | **No Arbitrary Node Access**: You *cannot* delete or traverse starting from an arbitrary node pointer alone, because you MUST know the address of at least one adjacent neighbor to decode `npx`! |
-| Elegant low-level embedded systems optimization. | **Garbage Collection Incompatibility**: Automatic garbage collectors (Java JVM, Go runtime, .NET CLR) cannot trace XOR-encoded pointers because they look like arbitrary integer masks, causing memory leaks or premature collection. |
-| Supported in C/C++ via `uintptr_t` casting. | **Debugging Nightmare**: Memory debuggers (Valgrind, AddressSanitizer) and IDE inspection tools cannot traverse encoded links. |
+| **50% Pointer Memory Reduction**: Consumes only 8 bytes of pointer storage per node while supporting two-way traversal. | **Loss of Arbitrary Node References**: Given a raw pointer to interior node $B$ alone, you **cannot traverse** forward or backward because you do not know either neighbor's address to decode `npx`. |
+| Ideal for memory-constrained embedded systems and microcontrollers. | **Garbage Collector Incompatibility**: Modern garbage collectors (Go, Java, .NET) cannot trace XOR-encoded pointers because `npx` does not contain a valid memory address, triggering memory corruption. |
+| Eliminates pointer asymmetry. | **Debugging Invisibility**: Valgrind, AddressSanitizer, and IDE memory inspection tools cannot inspect XOR chains. |
 
 ---
 
-## Module 05 Summary & Key Takeaways
+### 5. Key Takeaways
 
-1. **Skip Lists** provide probabilistic multi-level indexing, delivering expected $O(\log n)$ search, insert, and delete with simpler concurrency than balanced trees (used in Redis ZSET).
-2. **Unrolled Linked Lists** pack contiguous arrays into nodes to maximize CPU cache line locality ($64$ bytes) and slash pointer overhead.
-3. **XOR Linked Lists** encode `prev ^ next` into a single field using the bitwise cancellation property $(A \oplus B) \oplus A = B$, cutting DLL pointer memory by 50% in embedded environments.
+1. **Skip Lists**: Provide probabilistic $O(\log n)$ search, insertion, and deletion by layering geometric express tracks ($p = 0.5$) over a base linked list.
+2. **Concurrency Dominance**: Skip Lists are preferred over balanced trees in high-throughput database systems (Redis ZSET, RocksDB MemTable) due to trivial concurrent updates without tree rotations.
+3. **Unrolled Lists**: Packing arrays of size $B$ inside linked nodes aligns node allocations with hardware CPU cache lines (64 bytes), dramatically reducing L1 cache miss penalties.
+4. **XOR Pointer Compression**: Exploits the cancellation property $(A \oplus B) \oplus A = B$ to achieve bidirectional traversal with a single pointer field per node, though requiring sequential traversal context.
 
 ---
 
-## References & Academic Attribution
+## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
-2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
-3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.
+1. **Pugh, W.** (1990). *Skip Lists: A Probabilistic Alternative to Balanced Trees*. Communications of the ACM, 33(6), 668-676.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+3. **Sinha, R.** (2004). *A Memory-Efficient Doubly Linked List*. ACM SIGPLAN Notices, 39(8), 24-27.
+4. **Hennessy, J. L., & Patterson, D. A.** (2019). *Computer Architecture: A Quantitative Approach* (6th ed.), Chapter 2: Memory Hierarchy Design. Morgan Kaufmann.
