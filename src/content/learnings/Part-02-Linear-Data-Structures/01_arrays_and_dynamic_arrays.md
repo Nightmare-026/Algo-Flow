@@ -5,507 +5,339 @@
 
 ---
 
-# TOPIC 20: STATIC ARRAYS
+Contiguous memory allocation is the foundational building block of computing systems, establishing a direct bridge between physical hardware addressing and high-level algorithmic abstractions. This chapter examines the mechanics of static arrays and dynamically resizable vectors, detailing memory bus addressing equations, CPU cache-line spatial locality, algorithmic invariants for in-place shifts, amortized complexity proofs via the accounting method, and anti-thrashing memory policies.
 
-### 1. Topic Title
-**Static Arrays (Fixed-Size Contiguous Sequential Containers)**
-
-### 2. Category
-Linear Data Structures — Contiguous Physical Memory Layout.
-
-### 3. Difficulty
-Beginner.
-
-### 4. Prerequisites
-Part 01: Foundations (Primitive data types, RAM addressing model, Asymptotic complexity).
-
-### 5. Definition
-A **Static Array** is a fixed-size, homogeneous, contiguous sequence of elements stored at consecutively numbered physical memory addresses, accessible directly via zero-based arithmetic indexing in $O(1)$ constant time.
-
-### 6. Simple Explanation
-Think of an egg carton with exactly 12 numbered slots. Every slot holds an item of identical size. Because each slot has a known physical spacing, your hand can reach directly into slot #7 without touching slots 0 through 6.
-
-### 7. Why Do We Need It?
-Computers need a way to store multiple items of the same type such that any item can be retrieved instantly ($O(1)$) using its numerical sequence number (index), without scanning prior elements.
-
-### 8. Real-World Analogy
-Numbered street addresses on a straight avenue where every house lot has identical frontage width ($W$). If house 0 is at mile marker $B$, house $i$ is exactly at mile marker $B + (i \times W)$.
-
-### 9. Core Intuition
-$$\text{Address}(A[i]) = \text{Base Address} + (i \times \text{sizeof}(\text{Element}))$$
-Because multiplication and addition are single-cycle CPU instructions, lookup requires no searching.
-
-### 10. Key Properties
-1. **Fixed Capacity**: Size $N$ is fixed at allocation time and cannot grow or shrink.
-2. **Homogeneous Elements**: Every element occupies identical byte size $S$.
-3. **Contiguous Allocation**: Elements occupy an unbroken block of physical RAM.
-4. **Random Access**: Any element is accessed in $O(1)$ time via index.
-
-### 11. Terminology
-- **Base Address ($\alpha$)**: The memory address of the first byte of index 0.
-- **Index ($i$)**: Zero-based integer offset from the base address ($0 \le i < N$).
-- **Element Size ($S$)**: Number of bytes allocated per cell (e.g., 4 bytes for 32-bit integer).
-- **Bounds**: Valid index range $[0, N-1]$.
+### Learning Objectives
+- Compute exact physical byte addresses for arbitrary 1D and multi-dimensional array coordinates using base-offset arithmetic.
+- Explain the physical mechanism of CPU L1/L2 cache prefetching and quantify the performance disparity between contiguous arrays and scattered pointer structures.
+- Implement robust boundary-checked insertion, deletion, and search algorithms with formal loop invariants.
+- Derive the $O(1)$ amortized cost of geometric array doubling using both aggregate analysis and the accounting method.
+- Construct memory-efficient resizing policies that prevent allocation hysteresis and resize thrashing during alternating insertions and deletions.
 
 ---
 
-### 12. Structural Diagram (ASCII)
+## Topic 20: Static Arrays
 
-```text
-Logical Index:      0         1         2         3         4
-                ┌─────────┬─────────┬─────────┬─────────┬─────────┐
-Array A:        │   42    │   17    │   89    │   05    │   63    │
-                └─────────┴─────────┴─────────┴─────────┴─────────┘
-RAM Address:      0x1000    0x1004    0x1008    0x100C    0x1010
-                (Base α)  (α + 1·4) (α + 2·4) (α + 3·4) (α + 4·4)
+### 1. Conceptual & Architectural Foundations
+
+A **Static Array** is a fixed-size, homogeneous sequence of elements stored consecutively in physical memory. Its defining algorithmic trait is $O(1)$ constant-time random access: any element can be read or mutated in a single step using its integer index.
+
+#### The Physical Memory Model
+Modern computer memory (RAM) is organized as a linear array of byte-addressable cells. When a program requests a static array of $N$ elements where each element requires $S$ bytes, the runtime environment requests an unbroken contiguous segment of $N \times S$ bytes from the operating system.
+
+The hardware relies on the **Base-Offset Memory Formula**:
+
+$$\text{Address}(A[i]) = \alpha + (i \times S)$$
+
+where:
+- $\alpha$ is the **Base Address** (physical address of the first byte of $A[0]$).
+- $i$ is the **Zero-Based Index** ($0 \le i < N$).
+- $S$ is the **Element Size** in bytes (e.g., $S = 4$ for a 32-bit integer, $S = 8$ for a 64-bit pointer or float).
+
+Because integer multiplication and pointer addition execute in a single CPU cycle, calculating $\text{Address}(A[i])$ does not require scanning intermediate elements $A[0 \dots i-1]$. This is why array indexing is strictly $O(1)$.
+
+```
+Physical Layout in RAM:
++---------------------------------------------------------------------------------+
+|  Base α (0x1000)  |  α + 4 (0x1004)   |  α + 8 (0x1008)   |  α + 12 (0x100C)  |
+|      A[0] = 42    |      A[1] = 17    |      A[2] = 89    |      A[3] = 05    |
++---------------------------------------------------------------------------------+
 ```
 
----
+#### Physical Memory Mapping Table
 
-### 13. Memory Representation & Cache Locality
-Because elements sit adjacent in physical memory:
-- **Spatial Locality**: When the CPU accesses $A[0]$, the hardware memory controller fetches an entire 64-byte **Cache Line** into L1 CPU cache. Subsequent accesses to $A[1], A[2], \dots, A[15]$ result in ultra-fast L1 cache hits ($\approx 1\text{ ns}$) rather than main memory RAM latency ($\approx 100\text{ ns}$).
-
----
-
-### 14. Types / Variants
-- **1D Static Array**: Flat linear sequence.
-- **Multi-Dimensional Static Array**: Matrix layout (Row-Major vs Column-Major).
-- **Static Buffer**: Fixed array used as a FIFO ring buffer.
-
----
-
-### 15. Supported Operations
-
-| Operation | Description | Worst Case Time | Space |
-| :--- | :--- | :---: | :---: |
-| **Access($i$)** | Read element at index $i$ | $O(1)$ | $O(1)$ |
-| **Update($i, x$)** | Overwrite element at index $i$ with $x$ | $O(1)$ | $O(1)$ |
-| **Search($x$)** | Locate index containing value $x$ | $O(n)$ | $O(1)$ |
-| **InsertAt($i, x$)**| Shift right to insert (requires spare capacity) | $O(n)$ | $O(1)$ |
-| **DeleteAt($i$)** | Shift left to fill hole | $O(n)$ | $O(1)$ |
-
----
-
-### 16. Operation-by-Operation Explanation
-
-#### Insertion at Index $i$
-To insert a new element at index $i$ in an array with $n$ elements and capacity $C > n$:
-1. Check bounds ($0 \le i \le n$) and capacity ($n < C$).
-2. Shift all elements from index $n-1$ down to $i$ one position to the right.
-3. Place element at index $i$.
-4. Increment size counter $n \leftarrow n + 1$.
-
-#### Deletion at Index $i$
-1. Check bounds ($0 \le i < n$).
-2. Shift all elements from index $i+1$ up to $n-1$ one position to the left.
-3. Decrement size counter $n \leftarrow n - 1$.
-
----
-
-### 17. Operation Diagrams (Before / Action / After)
-
-```text
-INSERTION OF VALUE 99 AT INDEX 2:
-
-BEFORE:
-Index:     0      1      2      3
-Value:   [ 10 ] [ 20 ] [ 30 ] [ 40 ] [    ]  (size = 4, capacity = 5)
-
-ACTION (Shift right from right to left):
-Step 1: Move 40 to index 4:   [ 10 ] [ 20 ] [ 30 ] [ 40 ] [ 40 ]
-Step 2: Move 30 to index 3:   [ 10 ] [ 20 ] [ 30 ] [ 30 ] [ 40 ]
-Step 3: Insert 99 at index 2: [ 10 ] [ 20 ] [ 99 ] [ 30 ] [ 40 ]
-
-AFTER:
-Index:     0      1      2      3      4
-Value:   [ 10 ] [ 20 ] [ 99 ] [ 30 ] [ 40 ]  (size = 5)
-```
-
----
-
-### 18. Pseudocode
-
-```text
-ALGORITHM InsertAt(A, n, capacity, index, value)
-    Input: Array A, current size n, capacity, target index, value
-    Output: Updated size n, or error if full/out-of-bounds
-
-1.  if n ≥ capacity:
-2.      error "Array capacity exceeded"
-3.  if index < 0 or index > n:
-4.      error "Index out of bounds"
-5.  for j ← n - 1 down to index:
-6.      A[j + 1] ← A[j]
-7.  A[index] ← value
-8.  return n + 1
-
-ALGORITHM DeleteAt(A, n, index)
-    Input: Array A, current size n, target index to remove
-    Output: Updated size n
-
-1.  if index < 0 or index ≥ n:
-2.      error "Index out of bounds"
-3.  for j ← index to n - 2:
-4.      A[j] ← A[j + 1]
-5.  return n - 1
-```
-
----
-
-### 19. Worked Example
-Given array $A = [5, 8, 2, 9]$, delete element at index $1$ (value 8):
-- Shift $A[2]$ (2) to $A[1]$. Array becomes $[5, 2, 2, 9]$.
-- Shift $A[3]$ (9) to $A[2]$. Array becomes $[5, 2, 9, 9]$.
-- Decrement size to 3. Active array is $[5, 2, 9]$.
-
----
-
-### 20. Step-by-Step Dry Run Table
-
-Deleting index 1 from $A = [5, 8, 2, 9]$ ($n=4$):
-
-| Step | Loop Var $j$ | Action | Array State | Effective Size |
-| :---: | :---: | :--- | :--- | :---: |
-| 0 | — | Initial state | $[5, 8, 2, 9]$ | 4 |
-| 1 | $j = 1$ | $A[1] \leftarrow A[2]$ ($2$) | $[5, 2, 2, 9]$ | 4 |
-| 2 | $j = 2$ | $A[2] \leftarrow A[3]$ ($9$) | $[5, 2, 9, 9]$ | 4 |
-| 3 | Loop ends | Return $n - 1$ | $[5, 2, 9, \text{ignored}]$ | 3 |
-
----
-
-### 21. Correctness / Why It Works
-**Loop Invariant for Deletion**: At the start of iteration $j$, elements $A[0 \dots \text{index}-1]$ remain in their original positions, and elements $A[\text{index} \dots j-1]$ have each been shifted left by 1. When $j = n-1$, all trailing elements are shifted left by 1, preserving their relative order without gaps.
-
----
-
-### 22. Time Complexity
-- **Access**: Best $\Theta(1)$, Average $\Theta(1)$, Worst $\Theta(1)$
-- **Search (Unsorted)**: Best $\Theta(1)$ (at head), Worst $\Theta(n)$ (not found)
-- **Insert / Delete at End**: $\Theta(1)$
-- **Insert / Delete at Head**: $\Theta(n)$ (all $n$ elements shifted)
-
-### 23. Space Complexity
-- **Auxiliary Space**: $O(1)$ (in-place operations)
-- **Total Space**: $O(N)$ where $N$ is static capacity
-
----
-
-### 24–26. Case Analyses
-- **Best Case Insertion**: Inserting at index $n$ (end) $\implies 0$ elements shifted $\implies O(1)$.
-- **Worst Case Insertion**: Inserting at index $0$ (head) $\implies n$ elements shifted $\implies O(n)$.
-- **Average Case**: Random index $\implies n/2$ shifts $\implies O(n)$.
-
----
-
-### 27. Edge Cases
-1. Empty array ($n=0$): Deletion raises underflow.
-2. Full array ($n = \text{capacity}$): Insertion raises overflow.
-3. Index $= 0$: Maximum shift cost.
-4. Index $= n$: Insertion requires 0 shifts; deletion invalid.
-
----
-
-### 28. Advantages
-- Instant $O(1)$ random access.
-- Minimal memory overhead (zero pointer overhead).
-- Maximum CPU cache efficiency due to contiguous layout.
-
-### 29. Limitations
-- Fixed capacity cannot grow dynamically.
-- Costly $O(n)$ insertions and deletions due to shifting.
-- Can waste memory if capacity is over-allocated.
-
-### 30. Applications
-- Lookup tables, mathematical matrices.
-- Buffer pools and image pixel buffers.
-- Foundation for stacks, circular queues, and heaps.
-
-### 31. Common Mistakes
-- **Off-by-One in Shift Loop**: Overwriting values before reading them during insertion (must shift *right-to-left*, not left-to-right).
-- **Out of Bounds Indexing**: Accessing $A[N]$ instead of $A[N-1]$.
-
----
-
-### 32. Comparison: Static Array vs Singly Linked List
-
-| Feature | Static Array | Singly Linked List |
-| :--- | :--- | :--- |
-| **Size** | Fixed at compile/allocation time | Dynamic, grows node-by-node |
-| **Memory Layout** | Contiguous physical block | Scattered heap nodes |
-| **Access Time** | $O(1)$ via index arithmetic | $O(n)$ sequential pointer traversal |
-| **Insert at Head**| $O(n)$ shift | $O(1)$ pointer redirection |
-| **Per-Element Overhead**| 0 extra bytes | 8 bytes pointer overhead (64-bit) |
-| **Cache Performance**| Exceptional (L1/L2 cache prefetching) | Poor (frequent cache misses) |
-
----
-
-### 33. Complete Implementation (Language-Independent Pseudocode)
-
-```text
-DATA STRUCTURE StaticArray
-    Fields:
-        data: contiguous memory block of fixed size CAPACITY
-        size: integer, initially 0
-        capacity: integer CAPACITY
-
-    OPERATION Initialize(cap):
-        capacity ← cap
-        size ← 0
-        allocate data[0 ... cap - 1]
-
-    OPERATION Get(index):
-        if index < 0 or index ≥ size:
-            error "Index out of bounds"
-        return data[index]
-
-    OPERATION Set(index, val):
-        if index < 0 or index ≥ size:
-            error "Index out of bounds"
-        data[index] ← val
-
-    OPERATION PushBack(val):
-        if size = capacity:
-            error "Array full"
-        data[size] ← val
-        size ← size + 1
-
-    OPERATION PopBack():
-        if size = 0:
-            error "Array empty"
-        size ← size - 1
-        return data[size]
-```
-
----
-
-### 34. Practice Problems
-1. Reverse an array in-place with $O(1)$ auxiliary space.
-2. Rotate an array by $k$ positions.
-3. Remove duplicates from a sorted array in-place.
-
-### 35. Interview Questions
-- *Q: Why is indexing $O(1)$ in arrays?*  
-  **A**: Because memory is a linear address space and the address is calculated in $O(1)$ via $\alpha + i \times S$.
-- *Q: Why are arrays faster than linked lists for sequential reads?*  
-  **A**: Hardware prefetchers load contiguous memory blocks into CPU L1/L2 cache lines automatically.
-
-### 36. Exam Questions
-- *Derive the memory location of element $A[i][j]$ stored in row-major order with base address $\alpha$, row dimension $R$, column dimension $C$, and element size $S$.*  
-  $$\text{Address}(A[i][j]) = \alpha + (i \times C + j) \times S$$
-
-### 37. One-Minute Revision
-- Static array = contiguous, fixed size, homogeneous data.
-- Access: $O(1)$ &bull; Search: $O(n)$ &bull; Insert/Delete at end: $O(1)$ &bull; Insert/Delete at head: $O(n)$.
-- Unmatched cache locality; rigid sizing.
-
-### 38. Final Key Takeaways
-Always use static arrays when the upper bound on data size is known in advance and random access speed or minimal memory overhead is paramount.
-
----
----
-
-# TOPIC 21: DYNAMIC ARRAYS
-
-### 1. Topic Title
-**Dynamic Arrays (Vectors, ArrayLists, Resizable Contiguous Sequences)**
-
-### 2. Category
-Linear Data Structures — Geometric Growth Resizable Containers.
-
-### 3. Difficulty
-Beginner to Intermediate.
-
-### 4. Prerequisites
-Topic 20: Static Arrays, Amortized Complexity Analysis.
-
-### 5. Definition
-A **Dynamic Array** is an abstraction over a static array that automatically grows and shrinks its underlying physical capacity as elements are inserted or deleted, providing **Amortized $O(1)$** insertions at the back while preserving $O(1)$ random indexing.
-
-### 6. Simple Explanation
-Imagine a concert hall that starts with 4 seats. When a 5th person arrives, the management builds an entirely new hall with double the seats (8 seats), moves the first 4 people over, and seats the 5th. Because doubling happens exponentially less frequently, the average cost per person remains constant ($O(1)$).
-
-### 7. Why Do We Need It?
-In real-world applications, the number of incoming data items is rarely known beforehand. Static arrays either waste memory (over-allocation) or crash when full (under-allocation). Dynamic arrays provide flexibility without sacrificing indexing speed.
-
-### 8. Real-World Analogy
-A notebook where every time you run out of blank pages, you buy a notebook with twice as many pages and copy your existing notes over.
-
-### 9. Core Intuition: Geometric vs Arithmetic Growth
-- **Arithmetic Growth (+K each time)**: Adding 10 slots each resize costs $\sum_{i=1}^{n/K} i \cdot K \approx O(n^2)$ total work $\implies O(n)$ per insert! ❌
-- **Geometric Growth ($\times 2$ each time)**: Doubling capacity costs $1 + 2 + 4 + 8 + \dots + n = 2n - 1 \approx O(n)$ total work for $n$ inserts $\implies O(1)$ amortized cost per insert! ✅
-
----
-
-### 10. Key Properties
-1. **Dynamic Resizing**: Automatically reallocates physical buffer when full.
-2. **Growth Factor ($g$)**: Typically $2.0$ (C++ `std::vector`, Java `ArrayList`) or $1.5$ (MSVC STL).
-3. **Logical Size ($n$)**: Number of elements currently stored.
-4. **Physical Capacity ($C$)**: Total allocated slots in current underlying static array ($C \ge n$).
-5. **Amortized $O(1)$ PushBack**: Cost of expensive reallocations spread evenly across cheap insertions.
-
----
-
-### 11. Terminology
-- **Size ($n$)**: Active elements.
-- **Capacity ($C$)**: Total available slots before next resize.
-- **Amortized Cost**: Average cost per operation over a worst-case sequence of operations.
-- **Shrinking / Compaction**: Optional capacity reduction when $n \le C/4$ to avoid hysteresis.
-
----
-
-### 12. Structural Diagram (ASCII)
-
-```text
-Dynamic Array Lifecycle: size = 3, capacity = 4
-┌─────────┬─────────┬─────────┬─────────┐
-│   10    │   20    │   30    │ [EMPTY] │
-└─────────┴─────────┴─────────┴─────────┘
-  idx 0     idx 1     idx 2     idx 3
-▲                                       ▲
-└───────────── size = 3 ────────────────┘
-└──────────────────── capacity = 4 ─────┘
-
-INSERTION TRIGGERING RESIZE (PushBack(40), then PushBack(50)):
-Step 1: Insert 40 at index 3. Array is now FULL (size = 4, capacity = 4).
-Step 2: Insert 50. Capacity is full!
-        - Allocate new buffer of capacity = 4 * 2 = 8
-        - Copy 10, 20, 30, 40 to new buffer
-        - Deallocate old buffer
-        - Append 50 at index 4
-
-NEW BUFFER: (size = 5, capacity = 8)
-┌─────┬─────┬─────┬─────┬─────┬───────┬───────┬───────┐
-│ 10  │ 20  │ 30  │ 40  │ 50  │ [EMP] │ [EMP] │ [EMP] │
-└─────┴─────┴─────┴─────┴─────┴───────┴───────┴───────┘
-  0     1     2     3     4       5       6       7
-```
-
----
-
-### 13. Memory Representation
-Stored on the **Heap**. The container object on the stack contains just 3 words:
-```text
-Stack Frame:
-┌───────────────────────────┐
-│ pointer to heap buffer    │ ────► Heap: [ 10 | 20 | 30 | 40 | 50 | ... ]
-│ size: 5                   │
-│ capacity: 8               │
-└───────────────────────────┘
-```
-
----
-
-### 14. Supported Operations
-
-| Operation | Description | Amortized Time | Worst Case Time | Space |
+| Physical RAM Address | Offset Formula | Array Element | Stored Value | Byte Offset ($S = 4$) |
 | :--- | :--- | :---: | :---: | :---: |
-| **Access($i$)** | Read element at index $i$ | $O(1)$ | $O(1)$ | $O(1)$ |
-| **PushBack($x$)** | Append element to the end | $O(1)^*$ | $O(n)$ | $O(1)$ |
-| **PopBack()** | Remove last element | $O(1)$ | $O(1)$ | $O(1)$ |
-| **InsertAt($i, x$)**| Insert at arbitrary index $i$ | $O(n)$ | $O(n)$ | $O(1)$ |
-| **DeleteAt($i$)** | Delete at arbitrary index $i$ | $O(n)$ | $O(n)$ | $O(1)$ |
+| `0x1000` | $\alpha + (0 \times 4)$ | `A[0]` | `42` | $+0\text{ bytes}$ |
+| `0x1004` | $\alpha + (1 \times 4)$ | `A[1]` | `17` | $+4\text{ bytes}$ |
+| `0x1008` | $\alpha + (2 \times 4)$ | `A[2]` | `89` | $+8\text{ bytes}$ |
+| `0x100C` | $\alpha + (3 \times 4)$ | `A[3]` | `05` | $+12\text{ bytes}$ |
+| `0x1010` | $\alpha + (4 \times 4)$ | `A[4]` | `63` | $+16\text{ bytes}$ |
 
 ---
 
-### 15. Formal Proof: Amortized $O(1)$ via Accounting Method
+### 2. Hardware Symbiosis: CPU Cache Lines & Spatial Locality
 
-Let the cost of writing an element into an empty slot be **1 coin**.  
-Charge each inserted element **3 coins**:
-- **1 coin** pays for its own immediate insertion into the array.
-- **1 coin** is stored as credit on its own slot.
-- **1 coin** is stored as credit on a previously inserted element that has already moved once.
+The primary performance advantage of arrays over pointer-linked nodes is **Hardware Spatial Locality**:
 
-When capacity doubles from $N$ to $2N$:
-- Exactly $N$ new elements were inserted since the last resize.
-- Each of these $N$ elements has stored credit.
-- Total accumulated credit $= 2 \times N = 2N$ coins.
-- Copying all $N$ elements to the new buffer costs exactly $N$ operations.
-- The accumulated credit fully finances the copying work with coins to spare!
-$$\text{Amortized Cost per Insertion} = 3 \text{ coins} = O(1) \quad \blacksquare$$
+1. **Cache Lines**: The CPU memory controller does not read individual bytes from RAM. Instead, it transfers memory in fixed blocks called **Cache Lines** (typically 64 bytes on modern x86-64 and ARM architectures).
+2. **L1/L2 Prefetching**: When the processor reads $A[0]$ (4 bytes), the memory controller loads the entire 64-byte block containing $A[0 \dots 15]$ directly into the L1 data cache in a single memory transaction.
+3. **Latency Differential**:
+   - Accessing L1 Cache: $\approx 1\text{ ns}$ ($\approx 4\text{ CPU cycles}$).
+   - Accessing Main Memory (RAM): $\approx 50\text{--}100\text{ ns}$ ($\approx 150\text{--}300\text{ CPU cycles}$).
+
+Consequently, traversing a static array sequentially incurs a cache miss only once every 16 elements (for 4-byte integers), allowing the hardware prefetcher to stream data seamlessly. Pointer-based structures (like linked lists) scatter nodes across the heap, causing nearly every node traversal to incur a full cache miss.
 
 ---
 
-### 16. Pseudocode
+### 3. Supported Operations & Complexity Matrix
+
+| Operation | Description | Best Case | Average Case | Worst Case | Auxiliary Space |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **Access($i$)** | Read element at position $i$ via $\alpha + i \cdot S$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+| **Update($i, x$)** | Overwrite cell at index $i$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+| **Search($x$)** | Linear scan for target value $x$ | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ |
+| **InsertEnd($x$)** | Append to back when size $n < \text{capacity}$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+| **InsertAt($i, x$)**| Shift trailing items right and insert | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ |
+| **DeleteEnd()** | Decrement size counter | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+| **DeleteAt($i$)** | Shift trailing items left over target slot | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ |
+
+> **Interactive Simulation**:  
+> Observe memory addressing and bounds verification live in the [Array Access Visualizer](/visualizer/access).
+
+---
+
+### 4. Algorithmic Mechanics: Insertion & Deletion
+
+#### Right-Shift Insertion Mechanism
+Inserting an element at index $i$ in an array with current size $n$ and capacity $C > n$ requires shifting all elements from index $n-1$ down to $i$ one slot to the right. 
+
+> ⚠️ **Critical Trap: Shift Order**:  
+> Shifting must proceed **right-to-left** (from index $n-1$ down to $i$). If shifted left-to-right, $A[i]$ overwrites $A[i+1]$, duplicating $A[i]$ across all subsequent cells.
+
+#### Insertion State Transition Table ($n = 4$, Capacity $= 5$, Insert $99$ at Index $2$)
+
+| Step | Action | Array State | Active Elements |
+| :---: | :--- | :--- | :---: |
+| **0** | Initial State | `[10, 20, 30, 40, _]` | $n = 4$ |
+| **1** | Shift $A[3] \to A[4]$ | `[10, 20, 30, 40, 40]` | $n = 4$ |
+| **2** | Shift $A[2] \to A[3]$ | `[10, 20, 30, 30, 40]` | $n = 4$ |
+| **3** | Write $A[2] \leftarrow 99$ | `[10, 20, 99, 30, 40]` | $n = 5$ |
+
+#### Deletion State Transition Table (Delete Element at Index $1$ from $[5, 8, 2, 9]$)
+
+| Step | Action | Array State | Effective Size |
+| :---: | :--- | :--- | :---: |
+| **0** | Initial State | `[5, 8, 2, 9]` | $n = 4$ |
+| **1** | Shift $A[2] \to A[1]$ | `[5, 2, 2, 9]` | $n = 4$ |
+| **2** | Shift $A[3] \to A[2]$ | `[5, 2, 9, 9]` | $n = 4$ |
+| **3** | Decrement size ($n \leftarrow 3$) | `[5, 2, 9, (stale)]` | $n = 3$ |
+
+---
+
+### 5. Canonical Specification & Invariants
 
 ```text
-DATA STRUCTURE DynamicArray
-    Fields:
-        buffer: array of elements
-        size: integer ← 0
-        capacity: integer ← 1
+CLASS StaticArray:
+    fields:
+        data: Array[Capacity] of Type
+        size: Integer
+        capacity: Integer
 
-    OPERATION Initialize(initialCapacity ← 1):
-        capacity ← initialCapacity
-        size ← 0
-        buffer ← allocate array of size capacity
+    INVARIANT 0 <= size <= capacity
+    INVARIANT valid indices for elements are in range [0, size - 1]
 
-    OPERATION PushBack(val):
-        if size = capacity:
-            Resize(2 * capacity)
-        buffer[size] ← val
-        size ← size + 1
+    CONSTRUCTOR(cap: Integer):
+        assert cap > 0
+        this.capacity <- cap
+        this.size <- 0
+        this.data <- allocate_memory(cap * sizeof(Type))
 
-    OPERATION Resize(newCapacity):
-        newBuffer ← allocate array of size newCapacity
-        for i ← 0 to size - 1:
-            newBuffer[i] ← buffer[i]
-        deallocate buffer
-        buffer ← newBuffer
-        capacity ← newCapacity
+    FUNCTION Get(i: Integer) -> Type:
+        if i < 0 or i >= this.size:
+            raise IndexOutOfBoundsException()
+        return this.data[i]
 
-    OPERATION PopBack():
-        if size = 0:
-            error "Underflow"
-        size ← size - 1
-        val ← buffer[size]
-        // Optional shrinking to prevent thrashing
-        if size > 0 and size ≤ ⌊capacity / 4⌋:
-            Resize(⌊capacity / 2⌋)
+    FUNCTION Set(i: Integer, val: Type) -> Void:
+        if i < 0 or i >= this.size:
+            raise IndexOutOfBoundsException()
+        this.data[i] <- val
+
+    FUNCTION InsertAt(i: Integer, val: Type) -> Void:
+        if this.size >= this.capacity:
+            raise CapacityExceededException()
+        if i < 0 or i > this.size:
+            raise IndexOutOfBoundsException()
+        // Right-to-left shift
+        for j from this.size - 1 down to i:
+            this.data[j + 1] <- this.data[j]
+        this.data[i] <- val
+        this.size <- this.size + 1
+
+    FUNCTION DeleteAt(i: Integer) -> Type:
+        if i < 0 or i >= this.size:
+            raise IndexOutOfBoundsException()
+        val <- this.data[i]
+        // Left-to-right shift
+        for j from i to this.size - 2:
+            this.data[j] <- this.data[j + 1]
+        this.size <- this.size - 1
         return val
 ```
 
 ---
 
-### 17. Step-by-Step Dry Run Table: Sequence of 5 PushBack Operations
+### 6. Multi-Dimensional Array Addressing (Row-Major vs Column-Major)
 
-Starting with capacity $= 1$:
+A two-dimensional array $M[R][C]$ with $R$ rows and $C$ columns must be linearized into physical 1D RAM:
 
-| Op # | Call | Initial $(n, C)$ | Resize Triggered? | New $C$ | Elements Copied | Final Buffer | Final $(n, C)$ | Cost |
-| :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: |
-| 1 | `PushBack(1)` | $(0, 1)$ | No | 1 | 0 | $[1]$ | $(1, 1)$ | 1 |
-| 2 | `PushBack(2)` | $(1, 1)$ | **Yes (1 $\to$ 2)**| 2 | 1 (copy 1) | $[1, 2]$ | $(2, 2)$ | $1+1=2$ |
-| 3 | `PushBack(3)` | $(2, 2)$ | **Yes (2 $\to$ 4)**| 4 | 2 (copy 1, 2)| $[1, 2, 3, \_]$ | $(3, 4)$ | $2+1=3$ |
-| 4 | `PushBack(4)` | $(3, 4)$ | No | 4 | 0 | $[1, 2, 3, 4]$ | $(4, 4)$ | 1 |
-| 5 | `PushBack(5)` | $(4, 4)$ | **Yes (4 $\to$ 8)**| 8 | 4 (copy 1..4)| $[1, 2, 3, 4, 5, \_, \_, \_]$ | $(5, 8)$ | $4+1=5$ |
+1. **Row-Major Order (C, C++, Python, Java)**: Consecutive elements of a row are stored adjacently.
+   $$\text{Address}(M[i][j]) = \alpha + (i \times C + j) \times S$$
+2. **Column-Major Order (Fortran, MATLAB, R)**: Consecutive elements of a column are stored adjacently.
+   $$\text{Address}(M[i][j]) = \alpha + (j \times R + i) \times S$$
 
-**Total Actual Cost for 5 Operations** $= 1 + 2 + 3 + 1 + 5 = 12$ operations.  
-**Average Cost per Operation** $= 12 / 5 = 2.4 \approx O(1)$.
+> 💡 **Performance Rule**:  
+> In Row-Major languages, always iterate rows in the outer loop and columns in the inner loop (`for i: for j:`). Inverting this order (`for j: for i:`) causes a cache miss on every single memory access, degrading throughput by up to $10\times$ to $20\times$.
 
 ---
 
-### 18. Edge Cases
-- **Initial Capacity = 0**: Must branch to set capacity to at least 1 or 2 during first push.
-- **Shrink Thrashing (Hysteresis)**: If you double at $n = C$ and halve at $n = C/2$, alternating `PushBack` and `PopBack` at the threshold triggers $O(n)$ resize *every single step*.
-  - **Mitigation**: Double when $n = C$; halve only when $n \le C/4$.
+## Topic 21: Dynamic Arrays
+
+### 1. Conceptual Architecture & Geometric Growth
+
+A **Dynamic Array** (such as C++ `std::vector`, Java `ArrayList`, or Python `list`) abstracts the fixed-capacity limitation of static arrays. It maintains an internal static array on the heap, automatically reallocating a larger backing buffer when capacity is exhausted.
+
+#### Geometric vs. Arithmetic Resizing
+How much should a dynamic array grow when it becomes full?
+
+- **Arithmetic Growth (+K slots)**:
+  Suppose capacity increases by a constant $K$ (e.g., $+10$ slots) whenever full. For $n$ total insertions, the array resizes $n/K$ times.
+  $$\text{Total Copies} = \sum_{m=1}^{n/K} m \cdot K = K \cdot \frac{(n/K)(n/K + 1)}{2} = \Theta(n^2)$$
+  Dividing by $n$ operations yields an average cost of $\Theta(n)$ per insertion. Arithmetic growth is catastrophically slow for large collections.
+- **Geometric Growth ($\times g$ factor, $g > 1$)**:
+  Suppose capacity doubles ($g = 2$) whenever full. For $n$ insertions, resizes occur at sizes $1, 2, 4, 8, \dots, 2^k \le n$.
+  $$\text{Total Copies} = 1 + 2 + 4 + 8 + \dots + n/2 = \sum_{j=0}^{k-1} 2^j = 2^k - 1 < n$$
+  The total copy overhead across all $n$ insertions is strictly bounded by $n$. Dividing by $n$ operations gives an average cost of $\Theta(1)$ per insertion.
 
 ---
 
-### 19. Advantages & Limitations
-- **Advantages**: Dynamic sizing; instant $O(1)$ random indexing; great cache locality.
-- **Limitations**: Occasional $O(n)$ spike on resize (unsuitable for hard real-time systems); wasted memory buffer overhead (up to $50\%$ empty space).
+### 2. Formal Proof: Amortized $O(1)$ Complexity
+
+#### Method A: Aggregate Analysis
+Let $c_i$ be the cost of the $i$-th `PushBack` operation:
+- If $i - 1$ is not an exact power of 2: $c_i = 1$ (write element directly).
+- If $i - 1 = 2^k$ (triggering doubling): $c_i = 2^k + 1$ (copy $2^k$ elements, then write the new element).
+
+Summing the cost over $n$ consecutive insertions:
+
+$$\sum_{i=1}^n c_i = \sum_{i=1}^n 1 + \sum_{j=0}^{\lfloor \log_2(n-1) \rfloor} 2^j = n + (2^{\lfloor \log_2(n-1) \rfloor + 1} - 1) < n + 2n = 3n$$
+
+$$\text{Amortized Cost per Insertion} = \frac{\sum_{i=1}^n c_i}{n} < \frac{3n}{n} = 3 = O(1) \quad \blacksquare$$
+
+#### Method B: The Accounting (Banker's) Method
+Assign an amortized charge (fee) of **$3$ credits** to each inserted element:
+1. **$1$ credit** is spent immediately to pay for its own insertion into the array slot.
+2. **$1$ credit** is deposited as savings into the element's bank account.
+3. **$1$ credit** is deposited into the bank account of an earlier element from the first half of the array that has already spent its savings.
+
+When the array doubles from capacity $N$ to $2N$, exactly $N$ new elements have been inserted since the prior resize. Each deposited 2 credits in savings, yielding a total surplus of $2N$ credits. The cost to copy all $N$ existing elements to the new buffer is exactly $N$ units of work. The accumulated credits completely pay for the reallocation with zero deficit remaining.
 
 ---
 
-### 20. One-Minute Revision
-- Dynamic Array = Static array + Geometric doubling + Amortized $O(1)$ append.
-- Doubling factor must be geometric ($>1.0$), never arithmetic ($+K$).
-- Halve at $C/4$ to prevent resize thrashing.
+### 3. Lifecycle Walkthrough & State Tracking
+
+#### Sequence of 5 PushBack Operations (Initial Capacity = 1)
+
+| Operation | Invocation | Pre-Op $(n, C)$ | Doubling Triggered? | New $C$ | Elements Copied | Final Buffer | Post-Op $(n, C)$ | Actual Cost |
+| :---: | :--- | :---: | :---: | :---: | :---: | :--- | :---: | :---: |
+| **1** | `PushBack(10)` | $(0, 1)$ | No | 1 | 0 | `[10]` | $(1, 1)$ | 1 |
+| **2** | `PushBack(20)` | $(1, 1)$ | **Yes ($1 \to 2$)** | 2 | 1 (copy 10) | `[10, 20]` | $(2, 2)$ | $1 + 1 = 2$ |
+| **3** | `PushBack(30)` | $(2, 2)$ | **Yes ($2 \to 4$)** | 4 | 2 (copy 10, 20) | `[10, 20, 30, _]` | $(3, 4)$ | $2 + 1 = 3$ |
+| **4** | `PushBack(40)` | $(3, 4)$ | No | 4 | 0 | `[10, 20, 30, 40]` | $(4, 4)$ | 1 |
+| **5** | `PushBack(50)` | $(4, 4)$ | **Yes ($4 \to 8$)** | 8 | 4 (copy 10..40) | `[10, 20, 30, 40, 50, _, _, _]` | $(5, 8)$ | $4 + 1 = 5$ |
+
+**Total Cumulative Operations**: $1 + 2 + 3 + 1 + 5 = 12$ operations for 5 insertions.  
+**Empirical Amortized Cost**: $12 / 5 = 2.4$ operations per insertion $\approx O(1)$.
 
 ---
 
-## References & Academic Attribution
+### 4. Memory Thrashing & The Hysteresis Principle
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
-2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
-3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.
+A naïve deallocation strategy shrinks the buffer by half whenever $n \le C / 2$. This creates a critical vulnerability known as **Resize Thrashing (Hysteresis)**:
+
+1. Suppose current capacity is $C$ and size is $n = C$.
+2. An insertion triggers a double to $2C$ ($O(n)$ work).
+3. The next operation is a deletion (`PopBack`), dropping size to $n = C = (2C)/2$. The array immediately halves back to $C$ ($O(n)$ work).
+4. Another insertion immediately doubles back to $2C$ ($O(n)$ work).
+
+Alternating `PushBack` and `PopBack` at the threshold forces an $O(n)$ reallocation on *every single operation*, destroying amortized efficiency.
+
+```
+Thrashing Threshold (Anti-Pattern):
+PushBack -> Double to 2C (O(n))
+PopBack  -> Halve to C   (O(n))
+PushBack -> Double to 2C (O(n))
+Result: O(n) worst-case per operation!
+```
+
+#### The Quarter-Capacity Solution
+To prevent thrashing, introduce hysteresis:
+- **Double** capacity when $n = C$.
+- **Halve** capacity only when $n \le C / 4$.
+
+This guarantees that after halving to $C/2$, at least $C/4$ subsequent deletions or $C/2$ insertions are required before another resize can trigger, restoring amortized $O(1)$ bounds across all operations.
+
+---
+
+### 5. Production Dynamic Array Specification
+
+```text
+CLASS DynamicArray:
+    fields:
+        buffer: Array of Type
+        size: Integer
+        capacity: Integer
+
+    CONSTRUCTOR(initialCapacity: Integer = 2):
+        assert initialCapacity > 0
+        this.capacity <- initialCapacity
+        this.size <- 0
+        this.buffer <- allocate_memory(initialCapacity * sizeof(Type))
+
+    FUNCTION PushBack(val: Type) -> Void:
+        if this.size == this.capacity:
+            this.Resize(2 * this.capacity)
+        this.buffer[this.size] <- val
+        this.size <- this.size + 1
+
+    FUNCTION PopBack() -> Type:
+        if this.size == 0:
+            raise UnderflowException("Cannot pop from empty array")
+        this.size <- this.size - 1
+        val <- this.buffer[this.size]
+        // Anti-thrashing shrink condition
+        if this.size > 0 and this.size <= this.capacity / 4 and this.capacity > 4:
+            this.Resize(this.capacity / 2)
+        return val
+
+    PRIVATE FUNCTION Resize(newCapacity: Integer) -> Void:
+        newBuffer <- allocate_memory(newCapacity * sizeof(Type))
+        for i from 0 to this.size - 1:
+            newBuffer[i] <- this.buffer[i]
+        free_memory(this.buffer)
+        this.buffer <- newBuffer
+        this.capacity <- newCapacity
+```
+
+---
+
+### 6. Architectural Trade-offs & Comparisons
+
+| Metric | Static Array | Dynamic Array (`vector`) | Singly Linked List |
+| :--- | :--- | :--- | :--- |
+| **Size Boundary** | Fixed at allocation time | Grows geometrically | Grows element-by-element |
+| **Memory Locality** | Maximum (single block) | Maximum (contiguous heap buffer) | Poor (scattered heap nodes) |
+| **Index Access ($A[i]$)** | $O(1)$ | $O(1)$ | $O(n)$ |
+| **Insert / Delete at End** | $O(1)$ (bounded by cap) | Amortized $O(1)$, Worst $O(n)$ | $O(1)$ with tail pointer |
+| **Insert / Delete at Head**| $O(n)$ shifts | $O(n)$ shifts | $O(1)$ pointer update |
+| **Per-Element Memory Overhead** | $0\text{ bytes}$ | $0\text{ to } 8\text{ bytes}$ (unused capacity) | $8\text{ bytes}$ pointer per node |
+| **Cache Miss Frequency** | Low ($\approx 1$ per 64 bytes) | Low ($\approx 1$ per 64 bytes) | High ($\approx 1$ per node) |
+
+---
+
+### 7. Key Takeaways
+
+1. **Direct Memory Addressing**: Arrays achieve $O(1)$ random access through single-cycle arithmetic: $\text{Address}(A[i]) = \alpha + i \cdot S$.
+2. **Hardware Symbiosis**: Contiguous layouts maximize CPU L1/L2 cache-line prefetching, outperforming node-based structures by orders of magnitude for sequential scans.
+3. **Geometric Doubling**: Reallocating capacity by a geometric multiplier ($g > 1$) yields amortized $O(1)$ insertions; arithmetic growth ($+K$) degrades performance to $O(n)$.
+4. **Hysteresis Prevents Thrashing**: Halving capacity at $C/4$ rather than $C/2$ prevents worst-case $O(n)$ thrashing during alternating insertions and deletions.
+5. **In-Place Shift Discipline**: Array insertions require right-to-left shifts to prevent data corruption; deletions require left-to-right shifts.
+
+---
+
+## Academic Attribution & References
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: *Elementary Data Structures*, Chapter 17: *Amortized Analysis*. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: *Bags, Queues, and Stacks* (Resizing Arrays). Addison-Wesley.
+3. **Hennessy, J. L., & Patterson, D. A.** (2019). *Computer Architecture: A Quantitative Approach* (6th ed.), Chapter 2: *Memory Hierarchy Design*. Morgan Kaufmann.
+4. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: *Linear Lists*. Addison-Wesley.

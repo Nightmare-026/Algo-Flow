@@ -9,7 +9,7 @@
 - [x] foundations/asymptotic-analysis — status: done
 - [x] foundations/recursion-and-recurrences — status: done
 ## Part 02 — Linear Data Structures
-- [ ] linear-data-structures/arrays-and-dynamic-arrays — status: not-started
+- [x] linear-data-structures/arrays-and-dynamic-arrays — status: done
 - [ ] linear-data-structures/strings-and-matrices — status: not-started
 - [ ] linear-data-structures/singly-linked-lists — status: not-started
 - [ ] linear-data-structures/doubly-and-circular-linked-lists — status: not-started
