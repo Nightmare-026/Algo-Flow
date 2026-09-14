@@ -300,9 +300,12 @@ export function ChapterReader({ module, chapter, content, navigation }: ChapterR
               <div className="overflow-hidden">
                 <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                   <span>Previous Chapter</span>
-                  <kbd className="px-1 py-0.2 rounded bg-surface-inset text-[9px] border border-border font-mono">
-                    [
-                  </kbd>
+                  <span
+                    className="px-1.5 py-0.5 rounded bg-surface-inset text-[9px] border border-border font-mono text-muted-foreground/80 inline-flex items-center select-none"
+                    aria-hidden="true"
+                  >
+                    Key: [
+                  </span>
                 </div>
                 <div className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors mt-0.5">
                   {navigation.previous.title}
@@ -320,10 +323,13 @@ export function ChapterReader({ module, chapter, content, navigation }: ChapterR
             >
               <div className="overflow-hidden">
                 <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-end gap-1.5">
+                  <span
+                    className="px-1.5 py-0.5 rounded bg-surface-inset text-[9px] border border-border font-mono text-muted-foreground/80 inline-flex items-center select-none"
+                    aria-hidden="true"
+                  >
+                    Key: ]
+                  </span>
                   <span>Next Chapter</span>
-                  <kbd className="px-1 py-0.2 rounded bg-surface-inset text-[9px] border border-border font-mono">
-                    ]
-                  </kbd>
                 </div>
                 <div className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors mt-0.5">
                   {navigation.next.title}

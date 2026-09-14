@@ -52,8 +52,16 @@ async function main() {
       }
 
       // 4. Check for leaked local filesystem paths (file:///)
-      if (parsed.rawMarkdown.includes("file:///")) {
+      if (parsed.rawMarkdown.includes("file:///") || parsed.htmlContent.includes("file:///")) {
         issues.push(`[ERROR] Leaked local filesystem link file:/// in: ${key}`);
+      }
+
+      // 5. Check for raw MathML or annotation encoding leaking into rendered DOM
+      if (
+        parsed.htmlContent.includes("annotation encoding") ||
+        /<math[\s>]/i.test(parsed.htmlContent)
+      ) {
+        issues.push(`[ERROR] MathML or LaTeX annotation source leaked into rendered HTML in: ${key}`);
       }
 
       // 4. Verify visualizer deep links

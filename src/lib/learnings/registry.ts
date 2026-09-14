@@ -1,4 +1,5 @@
 import type { LearningModule, LearningChapter } from "./types";
+import { CURRICULUM_STATS } from "@/lib/constants/site";
 
 export const LEARNING_MODULES: LearningModule[] = [
   {
@@ -1275,8 +1276,8 @@ export function getCurriculumStats() {
   const totalModules = LEARNING_MODULES.length;
   const totalChapters = LEARNING_MODULES.reduce((acc, m) => acc + m.chapters.length, 0);
   return {
+    ...CURRICULUM_STATS,
     totalModules,
     totalChapters,
-    totalProblems: 525,
   };
 }

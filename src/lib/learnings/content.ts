@@ -94,6 +94,7 @@ export function renderMathInMarkdown(markdown: string): string {
       const rendered = katex.renderToString(math.trim(), {
         displayMode: true,
         throwOnError: false,
+        output: "html",
       });
       return `<div class="katex-display-wrapper my-5 overflow-x-auto text-center py-2.5 neu-inset rounded-2xl bg-surface/40 p-2">${rendered}</div>`;
     } catch {
@@ -107,6 +108,7 @@ export function renderMathInMarkdown(markdown: string): string {
       return katex.renderToString(math.trim(), {
         displayMode: false,
         throwOnError: false,
+        output: "html",
       });
     } catch {
       return `$${math}$`;
@@ -148,9 +150,9 @@ export async function getParsedChapter(
     // Remove leading H1 if present to avoid duplication with page hero header
     let cleanedMarkdown = fileContent.replace(/^#\s+[^\n]+\n+/, "");
 
-    // Sanitize any accidental file:/// links or local drive paths
+    // Sanitize any accidental file:/// links or local drive paths, preserving anchor text
     cleanedMarkdown = cleanedMarkdown
-      .replace(/\[([^\]]+)\]\(file:\/\/\/[^\)]+\)/g, "")
+      .replace(/\[([^\]]+)\]\(file:\/\/\/[^\)]+\)/g, "$1")
       .replace(/file:\/\/\/[^\s\)]+/g, "")
       .replace(/---\s*$/, "");
 
@@ -237,7 +239,8 @@ export async function getParsedChapter(
           const headerHtml = token.header
             .map((cell) => {
               const align = cell.align ? ` text-${cell.align}` : " text-left";
-              return `<th class="p-3.5 font-bold text-foreground border-b-2 border-border/80 bg-surface-raised/70${align}">${this.parser.parseInline(cell.tokens)}</th>`;
+              const cellContent = cell.tokens ? this.parser.parseInline(cell.tokens) : (cell.text || "");
+              return `<th class="p-3.5 font-bold text-foreground border-b-2 border-border/80 bg-surface-raised/70${align}">${cellContent}</th>`;
             })
             .join("");
 
@@ -246,7 +249,8 @@ export async function getParsedChapter(
               const cells = row
                 .map((cell) => {
                   const align = cell.align ? ` text-${cell.align}` : " text-left";
-                  return `<td class="p-3.5 text-muted-foreground border-b border-border/40 font-mono text-xs md:text-sm${align}">${this.parser.parseInline(cell.tokens)}</td>`;
+                  const cellContent = cell.tokens ? this.parser.parseInline(cell.tokens) : (cell.text || "");
+                  return `<td class="p-3.5 text-muted-foreground border-b border-border/40 font-mono text-xs md:text-sm${align}">${cellContent}</td>`;
                 })
                 .join("");
               return `<tr class="hover:bg-surface-raised/50 transition-colors">${cells}</tr>`;

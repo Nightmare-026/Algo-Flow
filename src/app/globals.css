@@ -818,6 +818,13 @@
   border-color: var(--primary);
 }
 
+/* Suppress MathML and annotation text duplication across all browsers */
+.katex-mathml,
+.annotation,
+math {
+  display: none !important;
+}
+
 /* ==========================================================================
    CUSTOM SLIM SCROLLBAR FOR CARDS
    ========================================================================== */
