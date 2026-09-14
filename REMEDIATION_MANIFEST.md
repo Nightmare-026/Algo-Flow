@@ -53,7 +53,7 @@
 - [x] algorithm-design-techniques/brute-force-and-divide-conquer — status: done
 - [x] algorithm-design-techniques/greedy-algorithms — status: done
 - [x] algorithm-design-techniques/backtracking — status: done
-- [ ] algorithm-design-techniques/dynamic-programming — status: not-started
+- [x] algorithm-design-techniques/dynamic-programming — status: done
 ## Part 09 — Interview & Competitive Patterns
 - [ ] problem-solving-patterns/array-and-pointer-patterns — status: not-started
 - [ ] problem-solving-patterns/monotonic-data-structures — status: not-started

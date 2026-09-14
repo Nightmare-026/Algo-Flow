@@ -1,108 +1,86 @@
 # Part 08: Algorithm Design Techniques — Module 04: Dynamic Programming
 
-> **Curriculum Milestone:** Part 08 &bull; Module 04 &bull; Chapter 46 of 62  
-> **Topic Competencies:** Bellman's Principle of Optimality &bull; Optimal Substructure & Overlapping Subproblems &bull; Memoization vs. Tabulation &bull; 4-Step State Formulation &bull; 0/1 Knapsack Matrix &bull; LCS 2D Grid Trace &bull; Space Optimization Proof &bull; Pseudo-Polynomial Complexity  
-> **Primary Academic References:** CLRS 4th Ed. Chapter 14 &bull; Bellman (1957) *Dynamic Programming* &bull; Kleinberg & Tardos Chapter 6
+Dynamic Programming (DP) resolves combinatorial explosions by decomposing complex optimization problems into a directed acyclic graph of overlapping subproblems, computing each state exactly once and reusing tabular results. From compiler instruction scheduling and relational query planners to sequence alignment in computational genomics, DP bridges mathematical induction and cached tabular execution.
 
 ---
 
 ## 1. Executive Summary & Learning Objectives
 
-Dynamic Programming (DP) is an algorithm design paradigm for solving optimization problems by decomposing them into overlapping subproblems, computing each subproblem solution exactly once, and storing the results in a table.
+Dynamic Programming is an algorithmic paradigm designed to optimize recursive search spaces by identifying shared subproblems, imposing a topological evaluation order, and caching intermediate states in memory.
 
 By the end of this chapter, you will be able to:
-1. Formulate formal state definitions $(i, w)$ and derive recurrence equations satisfying Bellman's Principle of Optimality.
-2. Differentiate between Top-Down Memoization (demand-driven recursion) and Bottom-Up Tabulation (topological table fill).
-3. Manually trace multi-dimensional DP state matrices step-by-step and reconstruct optimal solution subsets via backwards path reconstruction.
-4. Prove why rolling buffer space optimization requires reverse iteration in 0/1 knapsack problems.
-5. Identify pseudo-polynomial time constraints and avoid integer overflow in optimization recurrences.
+1. **Formulate Formal State Definitions**: Isolate the minimal tuple $(i, w)$ capturing sufficient history and derive recurrences conforming to Bellman's Principle of Optimality.
+2. **Evaluate Architecture Trade-Offs**: Contrast Top-Down Memoization (lazy recursion) with Bottom-Up Tabulation (eager iteration) across memory overhead, recursion limits, and cache locality.
+3. **Trace Multi-Dimensional State Matrices**: Manually construct tabular matrices for 0/1 Knapsack and Longest Common Subsequence (LCS) and reconstruct optimal solution subsets via backwards pointer tracking.
+4. **Prove Space-Optimization Invariants**: Mathematically prove why compressing a 2D state matrix to a 1D buffer requires strictly descending capacity iteration to enforce 0/1 single-use constraints.
+5. **Analyze Pseudo-Polynomial Complexity**: Differentiate between polynomial and pseudo-polynomial time complexities, analyzing the impact of numeric input magnitudes on bit-length complexity.
 
 ---
 
 ## 2. Theoretical Foundations: The Two Pillars of Dynamic Programming
 
-Formulated by Richard Bellman in 1957, dynamic programming applies strictly to problems exhibiting two structural properties:
+Formulated by Richard Bellman in 1957, dynamic programming applies strictly to problems exhibiting two core structural properties:
 
-```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    THE TWO PILLARS OF DYNAMIC PROGRAMMING                   │
-├──────────────────────────────────────┬──────────────────────────────────────┤
-│ 1. OPTIMAL SUBSTRUCTURE              │ 2. OVERLAPPING SUBPROBLEMS           │
-│                                      │                                      │
-│ An optimal solution to the overall   │ A naive recursive decomposition      │
-│ problem contains within it optimal   │ evaluates the exact same state       │
-│ solutions to subproblems.            │ multiple times across the call tree. │
-│                                      │                                      │
-│ Theorem: If a shortest path from u   │ Example: Fib(5) computes Fib(3)      │
-│ to v passes through w, the sub-path  │ twice, Fib(2) three times, and       │
-│ from u to w must also be a shortest  │ Fib(1) five times in O(2^n) time.    │
-│ path between u and w.                │ Memoization collapses this to O(n).  │
-└──────────────────────────────────────┴──────────────────────────────────────┘
-```
+| Pillar | Theoretical Definition | Algorithmic Consequence | Canonical Counterexample |
+| :--- | :--- | :--- | :--- |
+| **1. Optimal Substructure** | An optimal solution to the overall problem contains within it optimal solutions to its constituent subproblems. | Enables computing global optima directly from subproblem optima via recurrence equations. | **Longest Simple Path**: A longest simple path from $u$ to $v$ does not decompose into independent longest simple sub-paths because vertices cannot be revisited. |
+| **2. Overlapping Subproblems** | A naive recursive tree recomputes the exact same subproblem states multiple times across branches. | Caching states in a memo table or matrix reduces exponential $\mathcal{O}(2^n)$ branching to polynomial $\mathcal{O}(n)$ table fills. | **Merge Sort**: Subproblems ($L[0 \dots n/2]$ and $R[n/2 \dots n]$) are completely disjoint; memoization provides zero reuse. |
 
-### Contrast with Other Paradigms
+### Contrast with Alternative Paradigms
 
-- **Divide and Conquer (e.g., Merge Sort)**: Decomposes problems into **independent** (disjoint) subproblems. Subproblems do not overlap; memoization provides no benefit.
-- **Greedy Algorithms (e.g., Dijkstra, Kruskal)**: Makes a locally optimal choice at each step without reconsidering previous choices. Requires the matroid greedy-choice property. When greedy choice fails to guarantee global optimality, DP is required.
+- **Divide and Conquer (e.g., Merge Sort, Strassen Matrix Multiplication)**: Partitions problems into **independent, non-overlapping** subproblems, solves each independently, and combines their solutions.
+- **Greedy Algorithms (e.g., Dijkstra, Kruskal, Huffman Coding)**: Commits irrevocably to a locally optimal choice at each step without exploring alternative branches, requiring the greedy-choice property and optimal substructure. When greedy decisions can lead to suboptimal dead ends, dynamic programming explores all candidate state transitions.
 
 ---
 
 ## 3. Memoization (Top-Down) vs. Tabulation (Bottom-Up)
 
-```text
-TOP-DOWN (MEMOIZATION):
-Starts at the root problem S(n), explores branches recursively on demand,
-and records answers in a memo table (array or hash map).
+Every dynamic programming problem can be operationalized through two complementary execution strategies:
 
-BOTTOM-UP (TABULATION):
-Constructs a Topological Ordering of the subproblem dependency DAG.
-Iteratively computes states starting from base cases up to the target state.
-```
-
-### Architectural Trade-Off Matrix
+### Architectural Comparison Matrix
 
 | Dimension | Top-Down (Memoization) | Bottom-Up (Tabulation) |
 | :--- | :--- | :--- |
-| **Control Flow** | Recursive function invocation | Iterative nested loops (`for` / `while`) |
-| **State Storage** | Lookup array or hash table | Pre-allocated matrix (`dp[]` or `dp[][]`) |
-| **Subproblem Evaluation** | Lazy evaluation (computes only reachable states) | Eager evaluation (computes all table entries in order) |
-| **Call Stack Overhead** | $\Theta(D)$ stack frames where $D$ is recursion depth | $\Theta(1)$ call stack overhead (zero recursion) |
-| **Cache Locality** | Random/scattered memory access patterns | Sequential, cache-friendly array traversals |
-| **Space Optimization** | Difficult to eliminate state dimensions | Straightforward reduction via rolling buffers |
+| **Execution Model** | Demand-driven recursive traversal from target state down to base cases | Topological iteration starting from base cases up to the target state |
+| **Data Structure** | Hash map (`Map<string, number>`) or sparse lookup array | Pre-allocated contiguous matrix (`number[]` or `number[][]`) |
+| **State Exploration** | **Lazy**: Only explores states strictly reachable from the initial state | **Eager**: Computes all valid states within the grid bounds |
+| **Call Stack Overhead** | $\Theta(D)$ stack frames where $D$ is recursion depth (risk of stack overflow) | $\Theta(1)$ call stack overhead (pure nested loops) |
+| **Hardware Cache Locality** | Poor (non-contiguous memory jumps, pointer indirection) | Optimal (sequential array traversal friendly to CPU L1/L2 caches) |
+| **Space Optimization** | Difficult to discard historical states | Straightforward state compression (e.g., rolling buffers, 2-row swapping) |
 
 ---
 
 ## 4. The 4-Step Systematic DP Design Method
 
-Every dynamic programming algorithm must be developed through this four-step engineering sequence:
+Every dynamic programming algorithm is engineered through a disciplined four-step protocol:
 
-1. **State Definition**: Identify the minimal tuple of independent parameters $(i, j, \dots)$ that fully captures the subproblem state.
-2. **Recurrence Relation**: Express state $dp[\dots]$ mathematically in terms of strictly smaller subproblems.
-3. **Base Cases**: Establish trivial boundary conditions that terminate the recurrence without lookups.
-4. **Evaluation Order**: Determine the topological iteration order ensuring all prerequisite subproblems are resolved prior to computing the current state.
+1. **State Characterization**: Define the state tuple $dp[i][j \dots]$ precisely, specifying the exact subproblem it models and ensuring it satisfies the Markovian property (past transitions do not affect future options beyond the state variables).
+2. **Transition Recurrence**: Derive a mathematical relation expressing the target state as an aggregate ($\min$, $\max$, or $\sum$) of strictly smaller prerequisite subproblems.
+3. **Base Cases & Boundaries**: Identify trivial edge conditions that terminate the recursion or populate row/column zero of the table.
+4. **Topological Evaluation Order**: Determine loop iteration directions such that whenever computing $dp[\text{state}]$, all required dependent states have already been resolved.
 
 ---
 
 ## 5. Canonical Problem 1: The 0/1 Knapsack Problem
 
 ### Problem Specification
-Given $N$ items, each with a positive integer weight $w_i$ and value $v_i$, determine the maximum value subset of items that fits within a knapsack of capacity $W$. Each item can be selected at most once ($x_i \in \{0, 1\}$).
+Given $N$ items, each characterized by weight $w_i \in \mathbb{Z}^+$ and value $v_i \in \mathbb{Z}^+$, determine the subset of items maximizing total value subject to total weight not exceeding knapsack capacity $W$. Each item can be chosen at most once ($x_i \in \{0, 1\}$).
 
 ### Recurrence Formulation
 
-Let $dp[i][w]$ denote the maximum value obtainable using a subset of the first $i$ items with remaining weight capacity $w$, for $0 \le i \le N$ and $0 \le w \le W$:
+Let $dp[i][w]$ represent the maximum value attainable considering a subset of the first $i$ items with remaining weight capacity $w$, where $0 \le i \le N$ and $0 \le w \le W$:
 
-$$\text{dp}[i][w] = \begin{cases} 
+$$dp[i][w] = \begin{cases} 
 0 & \text{if } i = 0 \text{ or } w = 0 \\
-\text{dp}[i-1][w] & \text{if } w_i > w \quad (\text{Item exceeds capacity}) \\
-\max\Big(\text{dp}[i-1][w], \, v_i + \text{dp}[i-1][w - w_i]\Big) & \text{if } w_i \le w \quad (\text{Exclude vs. Include})
+dp[i-1][w] & \text{if } w_i > w \\
+\max\Big(dp[i-1][w], \, v_i + dp[i-1][w - w_i]\Big) & \text{if } w_i \le w
 \end{cases}$$
 
 ---
 
-### Complete Worked Example & 2D State Trace Table
+### Worked Trace & 2D State Table
 
-Consider $N = 3$ items and capacity $W = 5$:
+Consider $N = 3$ items and knapsack capacity $W = 5$:
 - Item 1: $w_1 = 1$, $v_1 = 6$
 - Item 2: $w_2 = 2$, $v_2 = 10$
 - Item 3: $w_3 = 3$, $v_3 = 12$
@@ -122,35 +100,33 @@ Consider $N = 3$ items and capacity $W = 5$:
 - $w = 4$: $\max(dp[2][4], v_3 + dp[2][4-3]) = \max(16, 12 + 6) = 18$.
 - $w = 5$: $\max(dp[2][5], v_3 + dp[2][5-3]) = \max(16, 12 + 10) = \mathbf{22}$.
 
-#### Optimal Subset Backtracking:
-Starting at $dp[3][5] = 22$:
-1. Compare $dp[3][5]$ with $dp[2][5]$ ($22 \ne 16$) $\implies$ **Item 3 included**. Remaining capacity $= 5 - 3 = 2$.
-2. Compare $dp[2][2]$ with $dp[1][2]$ ($10 \ne 6$) $\implies$ **Item 2 included**. Remaining capacity $= 2 - 2 = 0$.
-3. Capacity is 0. Selected items: **Item 2 and Item 3** (Total weight $= 2 + 3 = 5$, Total value $= 10 + 12 = \mathbf{22}$).
+#### Optimal Subset Reconstruction
+To identify the exact items chosen, backtrack from cell $dp[3][5] = 22$:
+1. Compare $dp[3][5]$ with $dp[2][5]$ ($22 \ne 16$) $\implies$ **Item 3 selected**. Remaining capacity $= 5 - 3 = 2$.
+2. Compare $dp[2][2]$ with $dp[1][2]$ ($10 \ne 6$) $\implies$ **Item 2 selected**. Remaining capacity $= 2 - 2 = 0$.
+3. Capacity reached $0$. Selected set: **{Item 2, Item 3}** with total weight $2 + 3 = 5$ and maximum value $10 + 12 = \mathbf{22}$.
 
 ---
 
 ## 6. Space Optimization: 2D Table to 1D Rolling Buffer
 
-Observe that computing row $i$ requires access only to row $i-1$. Rows $0 \dots i-2$ are never read again.
+Notice that computing row $i$ relies exclusively on values in row $i-1$. Rows $0 \dots i-2$ are never revisited. This observation allows compressing the table from $\Theta(N \cdot W)$ space to a single array of size $W + 1$.
 
 ### The Reverse-Iteration Invariant
 
-When compressing $dp[i][w]$ to a 1D array $dp[w]$, we must iterate capacity $w$ in **strictly descending order** from $W$ down to $w_i$:
+When collapsing $dp[i][w]$ into a 1D array $dp[w]$, the capacity iteration order determines problem semantics:
 
-```text
-FORWARD LOOP (w from w_i to W):
-dp[w] = max(dp[w], v_i + dp[w - w_i])
-ERROR: dp[w - w_i] was ALREADY overwritten in the current iteration!
-Result: Item i is used multiple times (Unbounded Knapsack behavior).
-
-REVERSE LOOP (w from W down to w_i):
-dp[w] = max(dp[w], v_i + dp[w - w_i])
-CORRECT: dp[w - w_i] contains the value from the PREVIOUS row (i - 1).
-Result: Guarantees 0/1 single-use item semantics in O(W) space.
-```
+| Capacity Iteration Order | Overwrite Behavior | Semantic Result |
+| :--- | :--- | :--- |
+| **Ascending ($w = w_i \to W$)** | $dp[w - w_i]$ has already been updated in the current outer loop pass. | **Unbounded Knapsack**: Item $i$ can be selected multiple times. |
+| **Descending ($w = W \to w_i$)** | $dp[w - w_i]$ still retains the value from the previous outer loop pass ($i-1$). | **0/1 Knapsack**: Guarantees Item $i$ is used at most once. |
 
 ```typescript
+/**
+ * Computes the 0/1 Knapsack maximum value using a space-optimized 1D array.
+ * Time Complexity:  O(N * W)
+ * Space Complexity: O(W)
+ */
 export function knapsack01SpaceOptimized(
   weights: number[],
   values: number[],
@@ -161,7 +137,7 @@ export function knapsack01SpaceOptimized(
   for (let i = 0; i < weights.length; i++) {
     const wt = weights[i];
     const val = values[i];
-    // Traverse backwards to preserve previous row states
+    // Traverse backwards to preserve previous-row subproblem solutions
     for (let w = capacity; w >= wt; w--) {
       dp[w] = Math.max(dp[w], val + dp[w - wt]);
     }
@@ -176,16 +152,16 @@ export function knapsack01SpaceOptimized(
 ## 7. Canonical Problem 2: Longest Common Subsequence (LCS)
 
 ### Problem Specification
-Given two sequences $S_1$ of length $m$ and $S_2$ of length $n$, find the length of the longest subsequence present in both. A subsequence maintains relative left-to-right order without requiring contiguity.
+Given two sequences $S_1$ of length $m$ and $S_2$ of length $n$, find the length of the longest subsequence present in both. A subsequence preserves relative order without requiring contiguity.
 
 ### Mathematical Recurrence
 
 Let $dp[i][j]$ represent the length of the LCS between prefixes $S_1[0 \dots i-1]$ and $S_2[0 \dots j-1]$:
 
-$$\text{dp}[i][j] = \begin{cases} 
+$$dp[i][j] = \begin{cases} 
 0 & \text{if } i = 0 \text{ or } j = 0 \\
-1 + \text{dp}[i-1][j-1] & \text{if } S_1[i-1] = S_2[j-1] \quad (\text{Character Match}) \\
-\max\Big(\text{dp}[i-1][j], \, \text{dp}[i][j-1]\Big) & \text{if } S_1[i-1] \ne S_2[j-1] \quad (\text{Character Mismatch})
+1 + dp[i-1][j-1] & \text{if } S_1[i-1] = S_2[j-1] \\
+\max\Big(dp[i-1][j], \, dp[i][j-1]\Big) & \text{if } S_1[i-1] \ne S_2[j-1]
 \end{cases}$$
 
 ---
@@ -203,7 +179,7 @@ Dimensions: $(m+1) \times (n+1) = 6 \times 4$:
 | **D** ($i=4$) | 0 | 1 $\uparrow$ | 2 $\uparrow$ | 2 |
 | **E** ($i=5$) | 0 | 1 $\uparrow$ | 2 $\uparrow$ | **3** $\nwarrow$ |
 
-#### Solution Reconstruction:
+#### Solution Reconstruction
 Follow diagonal match arrows ($\nwarrow$):
 - $dp[5][3] = 3 \implies S_1[4] == S_2[2] == \text{'E'}$ $\nwarrow$ move to $(4, 2)$.
 - $dp[4][2] == dp[3][2] \implies$ move up to $(3, 2)$.
@@ -219,51 +195,51 @@ Reconstructed string: **"ACE"** of length **3**.
 
 ### Time Complexity
 - **0/1 Knapsack**: $\Theta(N \cdot W)$ operations.
-  - **Pseudo-Polynomial Time**: The parameter $W$ is a numeric value whose representation requires $k = \lceil \log_2 W \rceil$ bits. Relative to input size in bits, the time complexity is $\Theta(N \cdot 2^k)$, which is **exponential** in the length of $W$. 0/1 Knapsack is weakly NP-complete.
-- **LCS**: $\Theta(m \cdot n)$ operations, strictly polynomial in input string lengths.
+  - **Pseudo-Polynomial Nature**: The capacity $W$ is a numeric input whose binary encoding length is $k = \lceil \log_2 W \rceil$ bits. Relative to the input size in bits, the runtime is $\Theta(N \cdot 2^k)$, which is **exponential** in the length of $W$. 0/1 Knapsack is weakly NP-complete.
+- **LCS**: $\Theta(m \cdot n)$ operations, which is strictly polynomial in terms of input sequence lengths.
 
 ### Space Complexity
 - **2D Tabulation**: $\Theta(N \cdot W)$ or $\Theta(m \cdot n)$ auxiliary space.
-- **Optimized 1D Rolling Buffer**: $\Theta(W)$ or $\Theta(\min(m, n))$ auxiliary space.
+- **Optimized 1D Rolling Buffer**: $\Theta(W)$ auxiliary space for Knapsack, or $\Theta(\min(m, n))$ auxiliary space for LCS length computation.
 
 ---
 
 ## 9. Common Traps, Edge Cases & Implementation Pitfalls
 
 1. **Integer Overflow in Minimization Recurrences**:
-   - In problems like Coin Change ($dp[w] = \min(dp[w], 1 + dp[w - c])$), initializing unreachable states to `INT_MAX` causes signed integer overflow when adding 1.
-   - *Mitigation*: Initialize unreachable states to a sentinel upper bound (e.g., `1e9` or $W + 1$) rather than `INT_MAX`.
+   - In minimization problems such as Coin Change ($dp[w] = \min(dp[w], 1 + dp[w - c])$), initializing unreachable states to `Number.MAX_SAFE_INTEGER` causes signed overflow when evaluating $1 + dp[w - c]$.
+   - *Mitigation*: Initialize unreachable states to a sentinel upper bound (e.g., $W + 1$ or `1e9`).
 
-2. **Index Off-by-One Mismatch**:
-   - State index $i \in [0 \dots N]$ maps to item index $i - 1$ in zero-indexed collections.
-   - *Mitigation*: Consistently use $dp[i]$ to denote decisions on the prefix of length $i$.
+2. **Zero-Indexing vs. DP Table Offset**:
+   - Row $i$ in a $1$-indexed DP table corresponds to item $i - 1$ in zero-indexed input arrays `weights` and `values`.
+   - *Mitigation*: Standardize on $dp[i]$ representing decisions on the prefix of length $i$, referencing `array[i - 1]`.
 
-3. **Direction of Capacity Iteration**:
-   - In 1D arrays, iterating $w$ forward from $0 \to W$ solves **Unbounded Knapsack** (items can be reused).
-   - Iterating $w$ backward from $W \to 0$ enforces **0/1 Knapsack** (items used at most once).
+3. **Direction of Capacity Iteration in 1D Arrays**:
+   - Forward iteration ($0 \to W$) introduces uncontrolled state aliasing, transforming the 0/1 problem into Unbounded Knapsack.
+   - *Mitigation*: Strictly enforce reverse iteration ($W \to w_i$) for single-use item constraints.
 
-4. **Floating Point State Coordinates**:
-   - DP tables require discrete, integer-addressable states. If continuous values are present, discretize via scaling or apply branch-and-bound.
+4. **Continuous State Coordinates**:
+   - Dynamic programming tables require discrete, integer-addressable states. Continuous domains must be discretized via scaling or solved via alternative techniques such as branch-and-bound or numerical optimization.
 
 ---
 
 ## 10. Curated Practice Problems & Real-World Systems Applications
 
 ### Real-World Production Systems
-- **Version Control (`git diff`)**: Uses Myers' diff algorithm, an optimized variant of the Longest Common Subsequence DP on an edit graph.
-- **Relational Query Planners**: The System R dynamic programming algorithm optimizes multi-table database JOIN orders in $O(3^n)$ time compared to $O(n!)$ brute force.
-- **Speech Recognition & Bioinformatics**: The Viterbi algorithm uses dynamic programming over Hidden Markov Models (HMMs) to find the most probable sequence of hidden states.
+- **Version Control (`git diff`)**: Implements Eugene Myers' $\mathcal{O}(ND)$ diff algorithm, a greedy and dynamic programming exploration of the edit graph between two file versions.
+- **Relational Query Optimizers**: The System R dynamic programming algorithm optimizes multi-table database join orderings in $\mathcal{O}(3^n)$ time compared to the $\mathcal{O}(n!)$ brute force permutation space.
+- **Speech Recognition & Bioinformatics**: The Viterbi algorithm utilizes dynamic programming across Hidden Markov Models (HMMs) to extract the maximum likelihood path of hidden states.
 
 ### Standard Practice Roadmap
-1. **Coin Change (LeetCode 322)** — Unbounded Knapsack variant with minimization recurrence.
-2. **Partition Equal Subset Sum (LeetCode 416)** — Reduction to 0/1 Knapsack with target sum $= \text{TotalSum} / 2$.
-3. **Edit Distance / Levenshtein Distance (LeetCode 72)** — 2D DP with insertion, deletion, and substitution operations.
-4. **Longest Increasing Subsequence (LeetCode 300)** — $\Theta(n^2)$ tabulation transitioning to $\Theta(n \log n)$ via patience sorting.
+1. **Coin Change (LeetCode 322)** — Unbounded Knapsack variant with minimization recurrence and sentinel initialization.
+2. **Partition Equal Subset Sum (LeetCode 416)** — Reduction to 0/1 Knapsack with target weight capacity $W = \text{TotalSum} / 2$.
+3. **Edit Distance / Levenshtein Distance (LeetCode 72)** — 2D prefix DP handling insertion, deletion, and character replacement costs.
+4. **Longest Increasing Subsequence (LeetCode 300)** — Transitions from $\mathcal{O}(n^2)$ standard tabulation to $\mathcal{O}(n \log n)$ via patience sorting with binary search.
 
 ---
 
 ## References & Academic Attribution
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 4, 14, 15, & 16. MIT Press.
-2. **Kleinberg, J., & Tardos, É.** (2006). *Algorithm Design*. Pearson / Addison-Wesley.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 14 & 15. MIT Press.
+2. **Kleinberg, J., & Tardos, É.** (2006). *Algorithm Design*, Chapter 6: Dynamic Programming. Pearson / Addison-Wesley.
 3. **Bellman, R.** (1957). *Dynamic Programming*. Princeton University Press.
