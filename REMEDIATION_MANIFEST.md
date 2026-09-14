@@ -55,7 +55,7 @@
 - [x] algorithm-design-techniques/backtracking — status: done
 - [x] algorithm-design-techniques/dynamic-programming — status: done
 ## Part 09 — Interview & Competitive Patterns
-- [ ] problem-solving-patterns/array-and-pointer-patterns — status: not-started
+- [x] problem-solving-patterns/array-and-pointer-patterns — status: done
 - [ ] problem-solving-patterns/monotonic-data-structures — status: not-started
 - [ ] problem-solving-patterns/core-interview-patterns — status: not-started
 ## Part 10 — Advanced Data Structures & Algorithms
