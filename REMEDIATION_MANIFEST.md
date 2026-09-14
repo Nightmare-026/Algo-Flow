@@ -18,7 +18,7 @@
 - [x] linear-data-structures/queues-and-circular-queues — status: done
 - [x] linear-data-structures/deques-and-priority-queues — status: done
 ## Part 03 — Hashing & Constant-Time Lookups
-- [ ] hashing/hashing-foundations — status: not-started
+- [x] hashing/hashing-foundations — status: done
 - [ ] hashing/collision-resolution — status: not-started
 - [ ] hashing/hash-table-hash-map-hash-set — status: not-started
 - [ ] hashing/advanced-hashing-and-probabilistic — status: not-started
