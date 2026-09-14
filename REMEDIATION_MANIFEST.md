@@ -38,7 +38,7 @@
 - [x] trees/avl-trees — status: done
 - [x] trees/red-black-trees — status: done
 - [x] trees/splay-trees-and-treaps — status: done
-- [ ] trees/heaps-and-priority-queues — status: not-started
+- [x] trees/heaps-and-priority-queues — status: done
 - [ ] trees/multiway-trees-b-trees — status: not-started
 - [ ] trees/tries-and-string-trees — status: not-started
 - [ ] trees/spatial-and-specialized-trees — status: not-started

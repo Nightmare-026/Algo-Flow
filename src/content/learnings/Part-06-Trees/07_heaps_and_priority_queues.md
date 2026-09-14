@@ -1,193 +1,256 @@
 # Part 06: Trees — Module 07: Heaps & Priority Queues
 
-> **Topics Covered:**  
-> 89. Heap Structure & Dual Invariants &bull; 90. Min-Heap & Max-Heap &bull; 91. Array Mapping Arithmetic ($2i+1, 2i+2$) &bull; 92. Core Operations: Sift-Up & Sift-Down &bull; 93. Mathematical Proof: $O(n)$ Linear Build-Heap &bull; 94. Priority Queue ADT Implementation &bull; 94b. Advanced Heaps: D-ary Heaps, Binomial Heaps & Fibonacci Heaps
+> Binary Heaps exploit complete binary tree geometry to pack a priority queue into a flat, cache-friendly array with zero pointer overhead. By restricting structural depth to $\lfloor \log_2 n \rfloor$ and maintaining partial ordering, heaps guarantee $O(\log n)$ updates and enable Floyd's bottom-up linear-time $O(n)$ heap construction.
 
 ---
 
-# TOPICS 89–91: HEAP DEFINITION & DUAL INVARIANTS
+## 1. Executive Summary & Learning Objectives
 
-### 1. Topic Title
-**Binary Heap (Complete Binary Tree Priority Structure)**
+Invented by J. W. J. Williams in 1964 for Heapsort and optimized by Robert Floyd in 1964, the Binary Heap is an array-backed data structure that implements the Priority Queue Abstract Data Type (ADT). Rather than enforcing a total global ordering across all keys, a heap enforces a local partial order: every parent key dominates its children.
 
-### 2. Category
-Non-Linear Data Structures — Partially Ordered Complete Trees.
-
-### 3. Difficulty
-Intermediate.
-
-### 4. Definition & The Two Inviolable Heap Invariants
-A **Binary Heap** is a specialized binary tree that satisfies two strict invariants:
-1. **Shape Invariant (Complete Binary Tree)**: All levels are completely filled except possibly the last level, which is filled strictly from left to right without any holes.
-2. **Heap-Order Invariant**:
-   - **Max-Heap**: For every node $u$ (except root), $\text{val}(\text{parent}(u)) \ge \text{val}(u)$. The maximum element is permanently at the root!
-   - **Min-Heap**: For every node $u$ (except root), $\text{val}(\text{parent}(u)) \le \text{val}(u)$. The minimum element is permanently at the root!
+By the end of this chapter, you will be able to:
+1. **Define** the Shape and Heap-Order invariants and map tree parent-child relationships to 0-indexed array arithmetic.
+2. **Implement** the fundamental `siftUp` and `siftDown` restoration primitives with exact index arithmetic.
+3. **Reproduce** the geometric series proof demonstrating that Floyd's bottom-up `buildHeap` algorithm executes in strictly linear $O(n)$ time.
+4. **Trace** priority queue insertions, extracts, and in-place array transformations through a structured dry-run trace table.
+5. **Compare** advanced heap architectures (Binary, $D$-ary, Binomial, and Fibonacci heaps) across amortized time complexities and real-world cache locality.
 
 ---
 
-### 5. Array Mapping Arithmetic (Pointerless Structure)
+## 2. Heap Invariants & Array Mapping Arithmetic
 
-Because a binary heap is a complete binary tree, it can be packed into a flat contiguous 1D array without storing any pointers:
+A Binary Heap is a specialized binary tree that strictly satisfies two simultaneous invariants:
 
-```text
-LOGICAL MAX-HEAP TREE:                       FLAT CONTIGUOUS ARRAY STORAGE:
-                 [ 90 ]                       Index:    0    1    2    3    4    5    6
-               /        \                     Array: [ 90 │ 80 │ 70 │ 30 │ 40 │ 50 │ 10 ]
-           [ 80 ]      [ 70 ]
-          /      \    /      \                Parent Index:  ⌊(i - 1) / 2⌋
-       [ 30 ]  [ 40 ][ 50 ]  [ 10 ]           Left Child:    2 · i + 1
-                                              Right Child:   2 · i + 2
+| Invariant | Formal Specification | Architectural Purpose |
+| :--- | :--- | :--- |
+| **1. Shape Invariant** | The tree is a **Complete Binary Tree**: every level is fully populated, except possibly the bottom level, which is filled strictly from left to right. | Eliminates structural holes, allowing the tree to be mapped to a flat array without null gaps. |
+| **2. Heap-Order Invariant** | **Max-Heap**: For every node $u \ne \text{root}$, $\text{val}(\text{parent}(u)) \ge \text{val}(u)$.<br>**Min-Heap**: For every node $u \ne \text{root}$, $\text{val}(\text{parent}(u)) \le \text{val}(u)$. | Guarantees that the global extremum (maximum or minimum) resides permanently at the root index $0$. |
+
+---
+
+### Pointerless Contiguous Array Storage
+
+Because of the complete binary tree shape invariant, child and parent references are calculated arithmetically without storing explicit left, right, or parent pointers:
+
+| Node Index $i$ | Formula (0-Indexed) | Formula (1-Indexed) | Boundary Condition Check |
+| :--- | :--- | :--- | :--- |
+| **Parent Node** | $\lfloor (i - 1) / 2 \rfloor$ | $\lfloor i / 2 \rfloor$ | Valid for all $i > 0$ (Root at index 0 has no parent) |
+| **Left Child** | $2i + 1$ | $2i$ | Valid if $2i + 1 < n$ |
+| **Right Child** | $2i + 2$ | $2i + 1$ | Valid if $2i + 2 < n$ |
+| **First Internal Node** | $\lfloor n / 2 \rfloor - 1$ | $\lfloor n / 2 \rfloor$ | Nodes from $\lfloor n / 2 \rfloor$ to $n - 1$ are guaranteed leaves |
+
+### Sample Array-Tree Correspondence
+
+Consider a Max-Heap containing $n = 7$ elements: `[90, 80, 70, 30, 40, 50, 10]`:
+
+| Array Index $i$ | Element Value | Logical Tree Level | Left Child (Index / Val) | Right Child (Index / Val) | Parent (Index / Val) | Node Role |
+| :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **0** | **90** | Level 0 | Index 1 (80) | Index 2 (70) | `null` | Root (Global Maximum) |
+| **1** | **80** | Level 1 | Index 3 (30) | Index 4 (40) | Index 0 (90) | Internal Node |
+| **2** | **70** | Level 1 | Index 5 (50) | Index 6 (10) | Index 0 (90) | Internal Node |
+| **3** | **30** | Level 2 | `null` | `null` | Index 1 (80) | Leaf Node |
+| **4** | **40** | Level 2 | `null` | `null` | Index 1 (80) | Leaf Node |
+| **5** | **50** | Level 2 | `null` | `null` | Index 2 (70) | Leaf Node |
+| **6** | **10** | Level 2 | `null` | `null` | Index 2 (70) | Leaf Node |
+
+---
+
+## 3. Core Heap Restoration Primitives: Sift-Up & Sift-Down
+
+### Sift-Up (`heapifyUp`) — Insertion ($O(\log n)$)
+When inserting an element, append it to the end of the array (at index $n$). If it violates the heap invariant with its parent, swap it with its parent and propagate upward:
+
+```typescript
+function siftUp<T>(arr: T[], index: number): void {
+  let curr = index;
+  while (curr > 0) {
+    const parent = Math.floor((curr - 1) / 2);
+    if (arr[curr] > arr[parent]) {
+      // Swap with parent in Max-Heap
+      [arr[curr], arr[parent]] = [arr[parent], arr[curr]];
+      curr = parent;
+    } else {
+      break;
+    }
+  }
+}
 ```
 
-```text
-INDEXING RULES (0-Indexed Array):
-- Parent of node at index i:      Parent(i) = ⌊(i - 1) / 2⌋
-- Left child of node at index i:  Left(i)   = 2 · i + 1
-- Right child of node at index i: Right(i)  = 2 · i + 2
-- First non-leaf node:            ⌊n / 2⌋ - 1
+### Sift-Down (`heapifyDown`) — Extraction ($O(\log n)$)
+When extracting the root, replace `arr[0]` with the last element (`arr[n-1]`), shrink the array size, and sift the new root down by swapping it with its dominant child until the invariant is restored:
+
+```typescript
+function siftDown<T>(arr: T[], n: number, index: number): void {
+  let curr = index;
+  while (true) {
+    let largest = curr;
+    const left = 2 * curr + 1;
+    const right = 2 * curr + 2;
+
+    if (left < n && arr[left] > arr[largest]) {
+      largest = left;
+    }
+    if (right < n && arr[right] > arr[largest]) {
+      largest = right;
+    }
+
+    if (largest !== curr) {
+      [arr[curr], arr[largest]] = [arr[largest], arr[curr]];
+      curr = largest;
+    } else {
+      break;
+    }
+  }
+}
 ```
 
 ---
 
-# TOPICS 92–93: CORE HEAP OPERATIONS & $O(n)$ BUILD-HEAP
+## 4. Mathematical Proof: Floyd's Linear-Time $O(n)$ Build-Heap
 
-### 1. Sift-Up (Heapify-Up) — Used on Insertion ($O(\log n)$)
-1. Append the new element to the end of the array (at index $n$).
-2. Compare the element with its parent ($\lfloor (i-1)/2 \rfloor$).
-3. If the element violates heap order, swap it with its parent.
-4. Repeat upward until the heap property is satisfied or the root is reached.
+A naive approach to building a heap from an unsorted array of size $n$ inserts elements one by one via `siftUp`, consuming $\sum_{i=1}^n O(\log i) = O(n \log n)$ time.
 
-```text
-ALGORITHM SiftUp(A, i):
-1.  while i > 0 and A[Parent(i)] < A[i]:
-2.      Swap(A[i], A[Parent(i)])
-3.      i ← Parent(i)
+**Floyd's Algorithm** (1964) instead processes the array bottom-up, calling `siftDown` starting from the first non-leaf node ($\lfloor n/2 \rfloor - 1$) down to index $0$:
+
+```typescript
+export function buildHeap<T>(arr: T[]): void {
+  const n = arr.length;
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    siftDown(arr, n, i);
+  }
+}
 ```
 
----
-
-### 2. Sift-Down (Heapify-Down) — Used on Extract ($O(\log n)$)
-1. Replace the root with the last element of the array, decrement size by 1.
-2. Compare the new root with its children (both left and right).
-3. Swap with the largest (for Max-Heap) or smallest (for Min-Heap) child.
-4. Repeat downward until the heap property is satisfied or a leaf is reached.
-
-```text
-ALGORITHM SiftDown(A, n, i):
-1.  largest ← i
-2.  left ← 2 · i + 1
-3.  right ← 2 · i + 2
-4.  if left < n and A[left] > A[largest]:
-5.      largest ← left
-6.  if right < n and A[right] > A[largest]:
-7.      largest ← right
-8.  if largest ≠ i:
-9.      Swap(A[i], A[largest])
-10.     SiftDown(A, n, largest)
-```
-
----
-
-### 3. Formal Mathematical Proof: Build-Heap is Strictly $O(n)$ Linear Time
-
-A common misconception is that building a heap of $n$ elements takes $O(n \log n)$ time (as if calling `Insert` $n$ times).  
-Instead, **Floyd's Build-Heap Algorithm** runs `SiftDown` bottom-up from index $\lfloor n/2 \rfloor - 1$ down to 0:
-
-```text
-ALGORITHM BuildHeap(A, n):
-1.  for i ← ⌊n / 2⌋ - 1 down to 0:
-2.      SiftDown(A, n, i)
-```
-
-#### The Mathematical Proof
-In an $n$-element binary heap of height $H = \lfloor \log_2 n \rfloor$:
-- At height $h$, there are at most $\lceil \frac{n}{2^{h+1}} \rceil$ nodes.
+### Formal Mathematical Proof
+In an $n$-element complete binary tree of height $H = \lfloor \log_2 n \rfloor$:
+- At height $h$ (where leaves have height $h = 0$ and the root has height $h = H$), there are at most $\lceil \frac{n}{2^{h+1}} \rceil$ nodes.
 - A node at height $h$ can sift down at most $h$ levels.
-- The total number of swap operations is:
+- Total comparisons and swaps across all nodes is bounded by:
 
-$$S = \sum_{h=0}^{H} \left\lceil \frac{n}{2^{h+1}} \right\rceil \cdot h \le \frac{n}{2} \sum_{h=0}^\infty \frac{h}{2^h}$$
+$$S = \sum_{h=0}^{H} \left\lceil \frac{n}{2^{h+1}} \right\rceil \cdot h \le \frac{n}{2} \sum_{h=0}^{\infty} \frac{h}{2^h}$$
 
-Let $X = \sum_{h=0}^\infty \frac{h}{2^h} = \frac{0}{1} + \frac{1}{2} + \frac{2}{4} + \frac{3}{8} + \frac{4}{16} + \dots$  
+Let $X = \sum_{h=0}^\infty \frac{h}{2^h} = \frac{0}{1} + \frac{1}{2} + \frac{2}{4} + \frac{3}{8} + \frac{4}{16} + \dots$
+
 Multiplying by $\frac{1}{2}$:
-$$\frac{1}{2}X = \frac{1}{4} + \frac{2}{8} + \frac{3}{16} + \dots$$
-Subtracting the two series:
-$$X - \frac{1}{2}X = \frac{1}{2} + \frac{1}{4} + \frac{1}{8} + \frac{1}{16} + \dots = \sum_{k=1}^\infty \frac{1}{2^k} = 1$$
+
+$$\frac{1}{2}X = \frac{1}{4} + \frac{2}{8} + \frac{3}{16} + \frac{4}{32} + \dots$$
+
+Subtracting the two infinite series:
+
+$$X - \frac{1}{2}X = \frac{1}{2} + \frac{1}{4} + \frac{1}{8} + \frac{1}{16} + \dots = \sum_{k=1}^\infty \left(\frac{1}{2}\right)^k = 1$$
+
 $$\frac{1}{2}X = 1 \implies X = 2$$
 
-Substituting back:
+Substituting $X = 2$ back into our summation:
+
 $$S \le \frac{n}{2} \cdot 2 = \mathbf{n}$$
 
-$$\therefore \text{Build-Heap runs in strictly } \mathbf{O(n)} \text{ linear time! } \blacksquare$$
+$$\therefore \text{Floyd's Build-Heap runs in strictly } \mathbf{O(n)} \text{ linear time!} \quad \blacksquare$$
 
 ---
 
-# TOPIC 94: COMPLETE PRIORITY QUEUE ADT
+## 5. Complete Implementation: Priority Queue ADT
 
-```text
-DATA STRUCTURE PriorityQueue
-    Fields:
-        data: dynamic array
-        size: integer
+```typescript
+export class MaxPriorityQueue<T> {
+  private heap: T[] = [];
 
-    OPERATION Insert(val):
-        data.Append(val)
-        size ← size + 1
-        SiftUp(data, size - 1)
+  constructor(initialItems?: T[]) {
+    if (initialItems && initialItems.length > 0) {
+      this.heap = [...initialItems];
+      buildHeap(this.heap);
+    }
+  }
 
-    OPERATION Peek():
-        if size = 0: error "Queue Underflow"
-        return data[0]
+  public get size(): number {
+    return this.heap.length;
+  }
 
-    OPERATION ExtractMax():
-        if size = 0: error "Queue Underflow"
-        maxVal ← data[0]
-        data[0] ← data[size - 1]
-        data.RemoveLast()
-        size ← size - 1
-        if size > 0:
-            SiftDown(data, size, 0)
-        return maxVal
+  public isEmpty(): boolean {
+    return this.heap.length === 0;
+  }
 
-    OPERATION IncreaseKey(i, newVal):
-        if newVal < data[i]: error "New key is smaller"
-        data[i] ← newVal
-        SiftUp(data, i)
+  public peek(): T {
+    if (this.isEmpty()) throw new Error("PriorityQueue Underflow");
+    return this.heap[0];
+  }
+
+  public insert(value: T): void {
+    this.heap.push(value);
+    siftUp(this.heap, this.heap.length - 1);
+  }
+
+  public extractMax(): T {
+    if (this.isEmpty()) throw new Error("PriorityQueue Underflow");
+
+    const maxVal = this.heap[0];
+    const last = this.heap.pop()!;
+
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      siftDown(this.heap, this.heap.length, 0);
+    }
+
+    return maxVal;
+  }
+}
 ```
 
 ---
 
-# TOPIC 94b: ADVANCED HEAP VARIATIONS
+## 6. Step-by-Step Dry Run State Trace Table
 
-```text
-┌────────────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
-│ Heap Type          │ Insert       │ Extract-Min  │ Decrease-Key │ Merge/Meld   │
-├────────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
-│ Binary Heap        │ O(log n)     │ O(log n)     │ O(log n)     │ O(n)         │
-│ D-ary Heap (d=4)   │ O(log_d n)   │ O(d log_d n) │ O(log_d n)   │ O(n)         │
-│ Binomial Heap      │ O(1) amort   │ O(log n)     │ O(log n)     │ O(log n)     │
-│ Fibonacci Heap     │ O(1) amort   │ O(log n) am  │ O(1) amort   │ O(1) worst   │
-└────────────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
-```
+Consider executing Floyd's `buildHeap` on the unsorted input array: `[4, 10, 3, 5, 1]`, with $n = 5$.  
+First non-leaf node: $\lfloor 5/2 \rfloor - 1 = 1$. Iteration runs from $i = 1$ down to $i = 0$.
 
-1. **D-ary Heap**: Generalizes binary heap to $d$ children per node.
-   - For $d = 4$, tree height shrinks to $\log_4 n$, reducing memory latency and maximizing CPU L1/L2 cache line hits.
-2. **Fibonacci Heap**:
-   - Uses a collection of heap-ordered trees with lazy consolidation.
-   - Achieves amortized **$O(1)$ `Decrease-Key`**, speeding up Dijkstra's algorithm from $O(E \log V)$ to $O(E + V \log V)$ in dense graphs.
+| Step | Subtree Root Index $i$ | Subtree Root Val | Children ($2i+1, 2i+2$) | Condition Check | Swap Action | Array State After Step |
+| :---: | :---: | :---: | :---: | :--- | :--- | :--- |
+| **1** | $i = 1$ | $10$ | Left: `arr[3] = 5`<br>Right: `arr[4] = 1` | $\max(10, 5, 1) = 10$. Invariant holds. | No swap. | `[4, 10, 3, 5, 1]` |
+| **2** | $i = 0$ | $4$ | Left: `arr[1] = 10`<br>Right: `arr[2] = 3` | $\max(4, 10, 3) = 10$ at index $1$. Violation! | Swap `arr[0]` ($4$) with `arr[1]` ($10$). | `[10, 4, 3, 5, 1]` |
+| **3** | $i = 1$ (sift-down) | $4$ | Left: `arr[3] = 5`<br>Right: `arr[4] = 1` | $\max(4, 5, 1) = 5$ at index $3$. Violation! | Swap `arr[1]` ($4$) with `arr[3]` ($5$). | `[10, 5, 3, 4, 1]` |
+| **4** | $i = 3$ (leaf) | $4$ | No children ($2(3)+1 = 7 \ge 5$) | Leaf reached. Algorithm terminates. | None. | **`[10, 5, 3, 4, 1]`** (Valid Max-Heap!) |
 
 ---
 
-## Module 07 Summary & Key Takeaways
+## 7. Comparative Analysis: Advanced Heap Architectures
 
-1. **Binary Heap** enforces Shape (complete binary tree) and Order (parent $\ge$ or $\le$ children) invariants.
-2. Array arithmetic ($2i+1, 2i+2, \lfloor(i-1)/2\rfloor$) eliminates pointer overhead.
-3. Bottom-up `BuildHeap` runs in strictly **$O(n)$ time** because the vast majority of nodes are near the leaves and only sift down 0 or 1 levels.
-4. For high-performance caches, $d$-ary heaps ($d=4$) provide superior real-world throughput due to cache alignment.
+| Heap Architecture | Find-Min/Max | Insert | Extract-Min/Max | Decrease-Key | Merge / Meld | Primary Real-World Application |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Binary Heap** | $\Theta(1)$ | $O(\log n)$ | $O(\log n)$ | $O(\log n)$ | $\Theta(n)$ | General Priority Queues, Heapsort, Event Schedulers |
+| **$D$-ary Heap ($d=4$)** | $\Theta(1)$ | $O(\log_d n)$ | $O(d \log_d n)$ | $O(\log_d n)$ | $\Theta(n)$ | Graph shortest paths; optimized for L1/L2 CPU cache lines |
+| **Binomial Heap** | $O(\log n)$ | $O(1)$ amortized | $O(\log n)$ | $O(\log n)$ | $\mathbf{O(\log n)}$ | Meldable priority queues, functional programming |
+| **Fibonacci Heap** | $\Theta(1)$ | $\mathbf{O(1)}$ amortized | $O(\log n)$ amortized | $\mathbf{O(1)}$ amortized | $\mathbf{O(1)}$ worst-case | Theoretical speedup for Dijkstra ($O(E + V \log V)$) & Prim's MST |
 
 ---
 
-## References & Academic Attribution
+## 8. Common Traps, Edge Cases & Implementation Pitfalls
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
-2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
-3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.
+1. **Off-by-One in Child Calculations**:
+   - For 0-indexed arrays, using $2i$ and $2i+1$ leaves the root at index $0$ with identical children ($2(0) = 0$). Always use $2i+1$ and $2i+2$.
+2. **Comparing Against Out-of-Bounds Children**:
+   - In `siftDown`, failing to verify `left < n` and `right < n` causes undefined array index reads or premature loop termination.
+3. **Decrease-Key Without Index Tracking**:
+   - To execute `decreaseKey` in $O(\log n)$ time, the priority queue must maintain an auxiliary inverted index map (`Map<Key, ArrayIndex>`). Without this, finding the node requires an $O(n)$ linear scan.
+
+---
+
+## 9. Real-World Applications & Practice Problems
+
+### Production Systems
+- **Operating System Task Schedulers**: Process runqueues use priority queues to schedule CPU slices based on nice values or deadlines.
+- **Dijkstra's & Prim's Graph Algorithms**: Utilize min-priority queues to repeatedly extract the next closest unvisited vertex in $O(E \log V)$ time.
+- **Top-$K$ Streaming Systems**: A min-heap of fixed size $K$ computes the rolling largest $K$ items across massive data streams in $O(N \log K)$ time and $O(K)$ auxiliary memory.
+
+### Standard Practice Problems
+1. **Kth Largest Element in an Array (LeetCode 215)** — Min-heap of size $K$ or Quickselect.
+2. **Merge k Sorted Lists (LeetCode 23)** — Min-heap tracking the head pointer of each list in $O(N \log k)$ time.
+3. **Find Median from Data Stream (LeetCode 295)** — Dual-heap architecture (Max-Heap for lower half, Min-Heap for upper half).
+
+---
+
+## 10. References & Academic Attribution
+
+1. **Williams, J. W. J.** (1964). Algorithm 232: Heapsort. *Communications of the ACM*, 7(6), 347–348.
+2. **Floyd, R. W.** (1964). Algorithm 245: Treesort 3. *Communications of the ACM*, 7(12), 701.
+3. **Fredman, M. L., & Tarjan, R. E.** (1987). Fibonacci heaps and their uses in improved network optimization algorithms. *Journal of the ACM (JACM)*, 34(3), 596–615.
+4. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 6 (Heapsort) & Chapter 19 (Fibonacci Heaps). MIT Press.
