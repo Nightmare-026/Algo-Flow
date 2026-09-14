@@ -1,7 +1,30 @@
 # Part 11: Problem Bank — Volume 05: Graphs, Traversal, Shortest Paths & MSTs (70 Problems)
 
-> **Problems Covered:** Q341 to Q410  
-> **Patterns:** BFS/DFS on Graphs & 2D Grids &bull; Multi-Source BFS &bull; Topological Sort (Kahn / DFS) &bull; Dijkstra's Min-Heap &bull; Bellman-Ford & Negative Cycles &bull; Floyd-Warshall &bull; 0-1 BFS with Deque &bull; Disjoint Set Union (DSU / Kruskal's) &bull; Prim's MST &bull; Tarjan's Bridges & Articulation Points &bull; Hierholzer Eulerian Paths
+
+Relational topologies and network flows govern routing protocols, distributed consensus, dependency resolution, and geographic path planning. This volume compiles 70 benchmark graph problems spanning grid flood-fills, multi-source breadth-first traversals, single-source and all-pairs shortest paths, minimum spanning trees, and maximum network flows.
+
+---
+
+## 1. Executive Summary & Learning Objectives
+
+This problem bank codifies 70 core challenges exploring structural connectivity and path optimization across sparse and dense graph topologies.
+
+By completing this problem set, you will be able to:
+1. **Traverse Geometric 2D Grids**: Apply BFS and DFS flood fills to compute connected components, enclaves, and shortest boundary escapes in $\mathcal{O}(R \cdot C)$ time.
+2. **Execute Topological Sorts**: Detect directed cycles and compute compilation dependency orders using Kahn's in-degree queue and DFS postorder traversal in $\mathcal{O}(V + E)$ time.
+3. **Optimize Shortest Path Selections**: Select between 0-1 BFS with deques, Dijkstra's min-heap algorithm, Bellman-Ford with negative-cycle detection, and Floyd-Warshall all-pairs matrices.
+4. **Formulate Spanning Trees & Dynamic Partitions**: Apply Disjoint Set Union (DSU) with union-by-rank and path compression in Kruskal's algorithm, alongside Prim's priority queue construction.
+5. **Analyze Network Flows & Critical Components**: Execute Tarjan's low-link algorithm for bridges and articulation points and Edmonds-Karp for maximum network flow.
+
+---
+
+## 2. Problem Taxonomy & Architecture Guide
+
+| Section | Problem Range | Primary Patterns Covered | Target Complexity Range |
+| :--- | :--- | :--- | :--- |
+| **Section 1** | Q341 – Q365 | Grid Graphs, BFS/DFS Flood Fills & Cycle Detection | $\mathcal{O}(R \cdot C)$ Time, $\mathcal{O}(R \cdot C)$ Space |
+| **Section 2** | Q366 – Q385 | Topological Sort, DAGs & Shortest Paths (Dijkstra/Bellman-Ford) | $\mathcal{O}(V + E)$ to $\mathcal{O}(E \log V)$ Time, $\mathcal{O}(V)$ Space |
+| **Section 3** | Q386 – Q410 | Minimum Spanning Trees (DSU/Prim), SCCs & Network Flows | $\mathcal{O}(E \alpha(V))$ to $\mathcal{O}(V \cdot E^2)$ Time, $\mathcal{O}(V + E)$ Space |
 
 ---
 
