@@ -25,7 +25,7 @@
 ## Part 04 — Searching Paradigms
 - [x] searching/linear-and-binary-search — status: done
 - [x] searching/bounds-and-occurrences — status: done
-- [ ] searching/search-space-and-rotated — status: not-started
+- [x] searching/search-space-and-rotated — status: done
 ## Part 05 — Sorting Algorithms & Theory
 - [ ] sorting/elementary-sorts — status: not-started
 - [ ] sorting/divide-and-conquer-sorts — status: not-started
