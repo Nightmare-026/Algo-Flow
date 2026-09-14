@@ -1,88 +1,41 @@
 # Part 00: Front Matter — Complete DSA Roadmap & Study Tracks
 
----
+Navigating the landscape of data structures and algorithms requires an intentional prerequisite graph. Advancing to dynamic programming without mastering call stack physics, or attempting graph shortest paths without understanding priority queues, leads to fragile pattern memorization rather than deep algorithmic engineering.
 
-## 1. Visual End-to-End Progression Graph
-
-The following dependency map charts the required learning path across computer science data structures and algorithms. Arrows indicate strict prerequisite relationships.
-
-```text
-                        ┌────────────────────────────────┐
-                        │   PART 01: FOUNDATIONS         │
-                        │   - Asymptotic Analysis (O,Ω,Θ)│
-                        │   - Recurrences & Call Stack   │
-                        └───────────────┬────────────────┘
-                                        │
-                 ┌──────────────────────┴──────────────────────┐
-                 ▼                                             ▼
-  ┌──────────────────────────────┐              ┌──────────────────────────────┐
-  │ PART 02: LINEAR STRUCTURES   │              │ PART 04: SEARCHING           │
-  │ - Static & Dynamic Arrays    │              │ - Linear & Binary Search     │
-  │ - Strings & Matrices         │              │ - Bound Search (Lower/Upper) │
-  │ - Singly/Doubly Linked Lists │              │ - Search on Answer Space     │
-  │ - Stacks, Queues, Deques     │              └──────────────┬───────────────┘
-  └──────────────┬───────────────┘                             │
-                 │                                             │
-                 ├───────────────────────────────┐             │
-                 ▼                               ▼             ▼
-  ┌──────────────────────────────┐              ┌──────────────────────────────┐
-  │ PART 03: HASHING             │              │ PART 05: SORTING             │
-  │ - Hash Functions & Collisions│              │ - Elementary Sorts (O(n²))   │
-  │ - Chaining vs Open Addressing│              │ - Divide & Conquer (O(nlogn))│
-  │ - Hash Tables & Rehashing    │              │ - Linear Time Sorts (O(n))   │
-  └──────────────┬───────────────┘              └──────────────┬───────────────┘
-                 │                                             │
-                 └──────────────────────┬──────────────────────┘
-                                        ▼
-                        ┌────────────────────────────────┐
-                        │ PART 06: HIERARCHICAL (TREES)  │
-                        │ - Binary Trees & Traversals    │
-                        │ - Binary Search Trees (BST)    │
-                        │ - Self-Balancing (AVL Trees)   │
-                        │ - Priority Queues & Heaps      │
-                        │ - Prefix Trees (Tries)         │
-                        └───────────────┬────────────────┘
-                                        ▼
-                        ┌────────────────────────────────┐
-                        │ PART 07: NETWORKS (GRAPHS)     │
-                        │ - Representations (Adj List)   │
-                        │ - Traversals (BFS & DFS)       │
-                        │ - Topological Sorting (DAGs)   │
-                        │ - Shortest Paths (Dijkstra)    │
-                        │ - MST (Prim/Kruskal) & DSU     │
-                        └───────────────┬────────────────┘
-                                        ▼
-                        ┌────────────────────────────────┐
-                        │ PART 08: ALGORITHM PARADIGMS   │
-                        │ - Divide & Conquer             │
-                        │ - Greedy Choice Property       │
-                        │ - Backtracking & State Space   │
-                        │ - Dynamic Programming (DP)     │
-                        └───────────────┬────────────────┘
-                                        ▼
-                        ┌────────────────────────────────┐
-                        │ PART 09: PROBLEM-SOLVING       │
-                        │ - Two Pointers & Sliding Window│
-                        │ - Monotonic Stack / Queue      │
-                        │ - Intervals & Bit Manipulation │
-                        └───────────────┬────────────────┘
-                                        ▼
-                        ┌────────────────────────────────┐
-                        │ PART 10: ADVANCED DSA          │
-                        │ - Segment Tree & Lazy Prop     │
-                        │ - Fenwick Tree (BIT)           │
-                        │ - Sparse Table (RMQ O(1))      │
-                        │ - SCC (Tarjan / Kosaraju)      │
-                        └────────────────────────────────┘
-```
+### Learning Objectives
+By the end of this chapter, you will be able to:
+- Trace the topological prerequisite order across all 12 modules in the curriculum.
+- Identify how fundamental linear structures unlock non-linear hierarchical trees, networks, and advanced range-query engines.
+- Formulate a personal study plan tracking your progress through all 168 syllabus topics and 525+ practice problems.
+- Benchmark your progress against clear mastery milestones.
 
 ---
 
-## 2. Topic-by-Topic Checklist
+## 1. End-to-End Prerequisite Architecture
 
-Use this checklist to monitor your personal progress through all 168 sections.
+The curriculum is structured as a directed acyclic graph (DAG) of concepts. Each module provides the structural invariants, memory physics, or recurrence relations required by subsequent modules:
 
-### Part 01: Foundations (Topics 1–19)
+| Module | Title | Core Focus | Direct Prerequisites | Unlocks |
+| :---: | :--- | :--- | :--- | :--- |
+| **01** | **Algorithmic Foundations** | Asymptotic bounds ($O, \Omega, \Theta$), recurrences, call stack physics | High school algebra | Linear structures, searching |
+| **02** | **Linear Data Structures** | Arrays, strings, linked lists, stacks, queues, deques | Part 01 | Hashing, sorting, trees |
+| **03** | **Hashing & Constant-Time Lookups** | Hash functions, collision resolution, dynamic rehashing | Part 02 | Graph adjacency, memoization |
+| **04** | **Searching Paradigms** | Binary search, monotonic search spaces, lower/upper bounds | Part 01, Part 02 | Divide & conquer, optimization |
+| **05** | **Sorting Algorithms & Theory** | Comparison vs non-comparison sorts, partition, $\Omega(n \log n)$ bound | Part 02, Part 04 | Trees, two pointers, intervals |
+| **06** | **Trees & Hierarchical Structures** | Binary trees, BSTs, AVL, Red-Black, Heaps, Tries | Part 02, Part 05 | Graphs, priority search, spatial trees |
+| **07** | **Graph Theory & Network Algorithms** | Traversals (BFS/DFS), DAGs, shortest paths, MSTs, DSU | Part 03, Part 06 | Advanced network flow, state space |
+| **08** | **Algorithm Design Paradigms** | Divide & conquer, greedy choices, backtracking, DP | Part 01, Part 06, Part 07 | Competitive patterns, advanced DP |
+| **09** | **Interview & Competitive Patterns** | Two pointers, sliding window, monotonic stacks | Part 02, Part 08 | Problem bank mastery |
+| **10** | **Advanced Data Structures & Algorithms** | Segment trees, Fenwick trees, Sparse Tables, HLD, LCT | Part 06, Part 07 | Systems architecture, contest performance |
+| **11** | **525+ Problem Bank & Master Revision** | Multi-topic synthesis, pattern cheat sheets, revision | Parts 01–10 | Technical interviews & university exams |
+
+---
+
+## 2. Topic-by-Topic Syllabus Checklist
+
+Use this checklist to monitor your personal progress through all 168 syllabus topics.
+
+### Part 01: Algorithmic Foundations (Topics 1–19)
 - [x] 01. What is Data?
 - [x] 02. What is a Data Structure?
 - [x] 03. What is an Algorithm?
@@ -116,9 +69,9 @@ Use this checklist to monitor your personal progress through all 168 sections.
 - [x] 28. Queue (FIFO Principle, Linear Drift / False Overflow Problem)
 - [x] 29. Circular Queue (Modulo Arithmetic Ring Buffers $(i+1)\%C$, Kernel Ring Buffers)
 - [x] 30. Double-Ended Queue (Deque: Input-Restricted, Output-Restricted, Monotonic Sliding Window)
-- [x] 31. Priority Queue Fundamentals (ADT Specification, Unsorted/Sorted Array/List vs Binary Heap Trade-offs)
+- [x] 31. Priority Queue Fundamentals (ADT Specification, Array/List vs Binary Heap Trade-offs)
 
-### Part 03: Hashing (Topics 32–41)
+### Part 03: Hashing & Constant-Time Lookups (Topics 32–41)
 - [x] 32. Hashing Fundamentals & Pigeonhole Principle
 - [x] 33. Hash Functions & Uniform Distribution
 - [x] 34. Collision & Load Factor ($\alpha$)
@@ -128,13 +81,13 @@ Use this checklist to monitor your personal progress through all 168 sections.
 - [x] 38. Quadratic Probing
 - [x] 39. Double Hashing
 - [x] 40. Hash Table Architecture & Dynamic Rehashing ($\alpha \ge 0.75$)
-- [x] 40b. Hash Map Architecture (Unique Key Invariants, Java 8+ Bucket Treeification, Python Compact Dicts)
-- [x] 40c. Hash Set Architecture (Deduplication Engine, Map Backing, Mathematical Set Operations)
-- [x] 41. Advanced Collision Resolution (Cuckoo Hashing $O(1)$ Worst-Case, Robin Hood PSL Variance Reduction)
+- [x] 40b. Hash Map Architecture (Unique Key Invariants, Bucket Treeification, Compact Dicts)
+- [x] 40c. Hash Set Architecture (Deduplication Engine, Map Backing, Set Operations)
+- [x] 41. Advanced Collision Resolution (Cuckoo Hashing $O(1)$ Worst-Case, Robin Hood PSL)
 - [x] 41b. Perfect Hashing (FKS 2-Level Hashing with Guaranteed Zero Collisions in $O(n)$ Space)
 - [x] 41c. Probabilistic Data Structures (Bloom Filters with Zero False Negatives, Count-Min Sketch)
 
-### Part 04: Searching (Topics 42–49)
+### Part 04: Searching Paradigms (Topics 42–49)
 - [x] 42. Linear Search
 - [x] 43. Classical Binary Search
 - [x] 44. Binary Search Invariants & Variants
@@ -144,7 +97,7 @@ Use this checklist to monitor your personal progress through all 168 sections.
 - [x] 48. Search in Rotated Sorted Array
 - [x] 49. Binary Search on Answer / Monotonic Search Space
 
-### Part 05: Sorting (Topics 50–62)
+### Part 05: Sorting Algorithms & Theory (Topics 50–62)
 - [x] 50. Bubble Sort
 - [x] 51. Selection Sort
 - [x] 52. Insertion Sort
@@ -161,17 +114,17 @@ Use this checklist to monitor your personal progress through all 168 sections.
 
 ### Part 06: Trees & Hierarchical Structures (Modules 01–10)
 - [x] 01. Tree Fundamentals (Terminology, Anatomy, Complete/Full/Perfect/Degenerate Trees)
-- [x] 02. Tree Traversals (DFS Pre/In/Post, BFS Level Order, Zigzag, Morris $O(1)$ Space, Top/Bottom/Boundary Views)
+- [x] 02. Tree Traversals (DFS Pre/In/Post, BFS Level Order, Zigzag, Morris $O(1)$ Space, Views)
 - [x] 03. Binary Search Trees (Search, Insert, 3-Case Delete, Successor/Predecessor, Validations)
-- [x] 04. AVL Trees (Balance Factor $BF \in \{-1, 0, 1\}$, Fibonacci Height Proof, LL/RR/LR/RL Rotations)
-- [x] 05. Red-Black Trees (5 Invariants, Height Proof $h \le 2\log_2(n+1)$, 3-Case Insert Fixup, 4-Case Double-Black Delete Fixup)
-- [x] 06. Splay Trees & Treaps (Splay Zig/Zig-Zig/Zig-Zag Rotations, Tarjan Amortized $O(\log n)$ Proof, Treap Cartesian Duality, Split & Merge, Implicit Treap)
-- [x] 07. Binary Heaps & Priority Queues (Min/Max Heap, Sift-Up/Down, $O(n)$ Build-Heap Proof, D-ary, Binomial & Fibonacci Heaps)
-- [x] 08. Multiway Trees, B-Trees & B+ Trees (Disk Page Cache, Proactive Split Insert, Borrow/Merge Delete, Doubly-Linked Leaf Chain, 2-3 & 2-3-4 Trees)
-- [x] 09. Tries, Radix Trees & Bitwise Structures (Standard Trie, Compressed Patricia/Radix Tree, 0-1 Bitwise Trie for Max XOR, Suffix Trees, Aho-Corasick)
-- [x] 10. Spatial & Specialized Trees (Kd-Trees with k-NN Hyperplane Pruning, Quadtrees/Octrees, Cartesian Trees with $O(n)$ Monotonic Stack, Threaded Trees)
+- [x] 04. AVL Trees (Balance Factor $BF \in \{-1, 0, 1\}$, Fibonacci Height Proof, Rotations)
+- [x] 05. Red-Black Trees (5 Invariants, Height Proof $h \le 2\log_2(n+1)$, Insert & Delete Fixup)
+- [x] 06. Splay Trees & Treaps (Splay Rotations, Tarjan Amortized Proof, Cartesian Duality, Split & Merge)
+- [x] 07. Binary Heaps & Priority Queues (Min/Max Heap, Sift-Up/Down, $O(n)$ Build-Heap Proof, Binomial/Fibonacci)
+- [x] 08. Multiway Trees, B-Trees & B+ Trees (Disk Page Cache, Proactive Split, Borrow/Merge, Leaf Chains)
+- [x] 09. Tries, Radix Trees & Bitwise Structures (Standard Trie, Patricia/Radix Tree, 0-1 Bitwise Trie, Aho-Corasick)
+- [x] 10. Spatial & Specialized Trees (Kd-Trees, Quadtrees/Octrees, Cartesian Trees, Threaded Trees)
 
-### Part 07: Graphs & Networks (Topics 98–120)
+### Part 07: Graph Theory & Network Algorithms (Topics 98–120)
 - [x] 98. Graph Terminology, Anatomy & Euler's Handshaking Lemma
 - [x] 99. Directed (Digraphs) vs Undirected Graphs (Degrees, Handshaking for Digraphs)
 - [x] 100. Weighted vs Unweighted Graphs (Metric Distances, Negative Weights, Negative Cycles)
@@ -198,7 +151,7 @@ Use this checklist to monitor your personal progress through all 168 sections.
 - [x] 119. Kruskal's Algorithm (Greedy Edge-Selection via DSU)
 - [x] 120. Disjoint Set Union (DSU / Union-Find with Path Compression & Rank)
 
-### Part 08: Algorithm Design Techniques (Topics 121–133)
+### Part 08: Algorithm Design Paradigms (Topics 121–133)
 - [x] 121. Brute Force & Exhaustive Search
 - [x] 122. Divide and Conquer Paradigm
 - [x] 123. Greedy Paradigm & Greedy-Choice Property
@@ -213,7 +166,7 @@ Use this checklist to monitor your personal progress through all 168 sections.
 - [x] 132. Greedy vs Dynamic Programming Trade-offs
 - [x] 133. Backtracking vs Brute Force vs Branch & Bound
 
-### Part 09: Problem-Solving Patterns (Topics 134–147)
+### Part 09: Interview & Competitive Patterns (Topics 134–147)
 - [x] 134. Prefix Sum Pattern (1D & 2D)
 - [x] 135. Difference Array Pattern (Range Updates)
 - [x] 136. Two Pointers Pattern (Opposite & Same Direction)
@@ -229,7 +182,7 @@ Use this checklist to monitor your personal progress through all 168 sections.
 - [x] 146. Backtracking Search Pattern
 - [x] 147. Bit Manipulation Tricks & Masking
 
-### Part 10: Advanced DSA & Tree Decompositions (Modules 01–03)
+### Part 10: Advanced Data Structures & Algorithms (Modules 01–03)
 - [x] 148. Segment Tree & Range Queries ($O(\log N)$)
 - [x] 149. Segment Tree with Lazy Propagation ($O(\log N)$ Range Updates)
 - [x] 150. Fenwick Tree (Binary Indexed Tree / BIT & `i & (-i)`)
@@ -256,8 +209,24 @@ Use this checklist to monitor your personal progress through all 168 sections.
 
 ---
 
+## 3. Recommended Study Strategies & Milestones
+
+1. **Foundations First**: Never skip Part 01 or Part 02. The amortized doubling physics of dynamic arrays and the pointer mechanics of linked lists form the bedrock of memory awareness.
+2. **Pairs that Synergize**: Study searching (Part 04) alongside sorting (Part 05); study priority queues (Part 06 Module 07) alongside Dijkstra's algorithm (Part 07 Topic 114).
+3. **Trace Before Coding**: Before typing solution code, draw the state transitions and dry-run the sample input against a variable table.
+
+---
+
+## 4. Key Takeaways
+
+- **Prerequisite Discipline**: Progressing through the curriculum in topological order prevents cognitive bottlenecks when encountering hybrid structures like Fenwick trees or heavy-light decomposition.
+- **Syllabus Coverage**: All 168 topics are indexed with stable numerical identifiers matching the curriculum's interactive visualizers and practice problem banks.
+- **Active Tracking**: Use this roadmap as an interactive syllabus checkpoint as you complete each chapter and milestone.
+
+---
+
 ## References & Academic Attribution
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 1–3. MIT Press.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
 2. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.). Addison-Wesley.
-3. **IEEE / ACM Computing Curricula Guidelines** (2020). Curriculum Guidelines for Undergraduate Degree Programs in Computer Science.
+3. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.). Addison-Wesley.
