@@ -1,258 +1,265 @@
 # Part 02: Linear Data Structures — Module 07: Queues & Circular Queues
 
 > **Topics Covered:**  
-> 28. Queue Abstract Data Type (FIFO) & Operations &bull; Linear Array Queue & The "False Overflow / Drift" Problem &bull; Linked List Queue Implementation &bull; 29. Circular Queue (Ring Buffer) & Modulo Arithmetic &bull; Wrap-Around State Tracking & Kernel Ring Buffers
+> 31. Queue Abstract Data Type (FIFO) & Operations &bull; Linear Array Queue & The "False Overflow / Drift" Problem &bull; Linked List Queue Implementation &bull; 32. Circular Queue (Ring Buffer) & Modulo Arithmetic &bull; Wrap-Around State Tracking & Kernel Ring Buffers &bull; Two-Stack Queue Paradigm
 
 ---
 
-# TOPIC 28: QUEUE (FIFO)
+While stacks govern depth-first back-tracking through Last-In, First-Out (LIFO) access, queues enforce fair, sequential scheduling through First-In, First-Out (FIFO) semantics. Elements enter at the rear and exit from the front, mirroring pipeline buffers and operating system task schedulers. However, naive linear array implementations suffer from pointer drift and false capacity exhaustion. This chapter analyzes the FIFO abstraction, diagnoses the false overflow failure mode, formalizes modulo-arithmetic circular ring buffers, details two-stack queue emulation, and explores lock-free kernel buffer architectures.
 
-### 1. Topic Title
-**Queue (First-In, First-Out Restricted-Access Linear Container)**
-
-### 2. Category
-Linear Data Structures — Restricted Access Container (FIFO).
-
-### 3. Difficulty
-Beginner to Intermediate.
-
-### 4. Prerequisites
-- Module 01: Arrays & Dynamic Arrays.
-- Module 03: Singly Linked Lists.
+### Learning Objectives
+- Define the FIFO Queue Abstract Data Type and enforce boundary invariants for `front` and `rear` pointers.
+- Diagnose the "false overflow" (pointer drift) problem in linear array queues and quantify the $O(n)$ latency penalty of element shifting.
+- Implement circular queues (ring buffers) using modulo arithmetic to achieve $O(1)$ wrap-around insertions and deletions.
+- Compare full/empty state disambiguation strategies: explicit counter tracking versus the reserved empty slot invariant.
+- Implement an amortized $O(1)$ FIFO queue using two LIFO stacks and trace batch element transfers.
+- Analyze the architectural role of circular ring buffers in Linux kernel `kfifo` and high-throughput network packet ring buffers.
 
 ---
 
-### 5. Definition & Intuitive Mental Model
+## Topic 31: Queue (FIFO) Architecture & The Linear Drift Problem
 
-### Concept
-A **Queue** is a linear data structure governed by the **FIFO (First-In, First-Out)** principle: the first element added to the queue is the first one to be removed. Elements enter at one end called the **Rear (Tail)** and depart from the opposite end called the **Front (Head)**.
+### 1. Conceptual Foundations & The FIFO Invariant
 
-### Intuition: The Movie Ticket Counter
-Think of a physical line of people waiting to buy tickets at a cinema:
-- New customers arrive and join at the back of the line (`Enqueue`).
-- The ticket agent serves the customer at the front of the line (`Dequeue`).
-- Cutting in line or being served out of order is forbidden. Fairness is preserved!
+A **Queue** is a restricted-access linear sequence governed by the **First-In, First-Out (FIFO)** discipline:
+- Elements are inserted strictly at the **Rear (Tail)** via `Enqueue`.
+- Elements are removed strictly from the **Front (Head)** via `Dequeue`.
+- The element that has spent the longest duration in the queue is always the next one to be serviced.
+
+```
++-----------------------------------------------------------------------------------+
+|                              FIFO PIPELINE CONTAINER                              |
+|                                                                                   |
+|  DEQUEUE <-------- [ Front: Element A ] <--- [ Element B ] <--- [ Rear: Element C ] <--- ENQUEUE
+|  (Departing Head)                                               (Arriving Tail)   |
++-----------------------------------------------------------------------------------+
+```
+
+> **Interactive Simulations**:  
+> Step through FIFO queue behavior live in the [Interactive Queue Enqueue Simulator](/visualizer/queue-enqueue) and the [Interactive Queue Dequeue Simulator](/visualizer/queue-dequeue).
+
+---
+
+### 2. The Queue Abstract Data Type (ADT) Interface
+
+| Operation | Description | Target Time | Auxiliary Space | Invariant / Precondition |
+| :--- | :--- | :---: | :---: | :--- |
+| **`Enqueue(x)`** | Append item $x$ to the `Rear` | $\Theta(1)$ | $O(1)$ | Fails with Overflow if bounded capacity is reached |
+| **`Dequeue()`** | Remove and return item at `Front` | $\Theta(1)$ | $O(1)$ | Fails with Underflow if queue is empty |
+| **`Front() / Peek()`**| Inspect value at `Front` without mutating | $\Theta(1)$ | $O(1)$ | Requires non-empty queue |
+| **`Rear()`** | Inspect value at `Rear` without mutating | $\Theta(1)$ | $O(1)$ | Requires non-empty queue |
+| **`IsEmpty()`** | Returns `true` if element count is zero | $\Theta(1)$ | $O(1)$ | Verified via `count == 0` or `front == -1` |
+| **`Size()`** | Returns current active element count | $\Theta(1)$ | $O(1)$ | Returns non-negative integer |
+
+---
+
+### 3. The Fatal Flaw of Linear Arrays: False Overflow (Pointer Drift)
+
+Consider a static array of capacity $C = 5$ with two pointer offsets: `front` and `rear`.
+
+#### State Progression Demonstrating Drift
+
+| Step | Operation | `front` | `rear` | Array Contents $[0, 1, 2, 3, 4]$ | Status & Operational Diagnostics |
+| :---: | :--- | :---: | :---: | :--- | :--- |
+| **0** | Initial State | `-1` | `-1` | `[ _, _, _, _, _ ]` | Queue is empty |
+| **1** | Enqueue 5 items ($10..50$) | `0` | `4` | `[ 10, 20, 30, 40, 50 ]` | Array is legitimately 100% full |
+| **2** | Dequeue 3 items ($10, 20, 30$) | `3` | `4` | `[ _, _, _, 40, 50 ]` | Slots 0, 1, 2 vacated and available |
+| **3** | **Attempt `Enqueue(60)`** | `3` | `4` | `[ _, _, _, 40, 50 ]` | **CRASH: False Overflow!** |
+
+#### Why Linear Arrays Fail for Queues:
+The condition `rear == capacity - 1` evaluates to `true` ($4 == 4$), so the linear queue reports an **Overflow Error** and rejects the item, even though $60\%$ of the physical array is vacant!
+
+To reuse the vacated slots at the front of a linear array, the implementation would have to shift all remaining elements back to index 0 on every dequeue:
 
 ```text
-       DEQUEUE ◄── [ Front: Person A ] ◄── [ Person B ] ◄── [ Person C : Rear ] ◄── ENQUEUE
-(Departing Head)                                                            (Arriving Tail)
+Shift Remediation (Anti-Pattern):
+[ _, _, _, 40, 50 ]  ---> Shift 40 to index 0, 50 to index 1 ---> [ 40, 50, _, _, _ ]
+Latency: O(n) element moves per Dequeue! Destroying the O(1) performance contract.
 ```
 
 ---
 
-### 6. Queue ADT Specification & Asymptotic Complexities
+### 4. Linked-List-Based Queue Implementation
 
-| Operation | Description | Target Time | Space |
-| :--- | :--- | :---: | :---: |
-| **Enqueue($x$)** | Inserts element $x$ at the **Rear** of the queue. | $\Theta(1)$ | $O(1)$ |
-| **Dequeue()** | Removes and returns the element at the **Front**. | $\Theta(1)$ | $O(1)$ |
-| **Front() / Peek()** | Inspects front element without removing it. | $\Theta(1)$ | $O(1)$ |
-| **Rear()** | Inspects the most recently enqueued element. | $\Theta(1)$ | $O(1)$ |
-| **IsEmpty()** | Returns `true` if queue has no elements. | $\Theta(1)$ | $O(1)$ |
-| **IsFull()** | Returns `true` if bounded capacity is reached. | $\Theta(1)$ | $O(1)$ |
+A pointer-based linked list resolves linear array drift and guarantees strict $O(1)$ time with zero shifting:
+- Maintain a singly linked list with `front` pointing to the head and `rear` pointing to the tail.
+- **`Enqueue(x)`**: `rear.next = new Node(x); rear = rear.next;` ($\Theta(1)$).
+- **`Dequeue()`**: `val = front.data; front = front.next;` ($\Theta(1)$).
 
----
-
-### 7. The Fatal Flaw of Linear Array Queues: The "False Overflow" Problem
-
-Suppose we implement a queue using a static array of size $C = 5$ with two index pointers: `front` and `rear`.
-
-```text
-INITIAL STATE: Queue is Empty
-front = -1, rear = -1
-Array: [ __ │ __ │ __ │ __ │ __ ]
-
-STEP 1: Enqueue 10, 20, 30, 40, 50 (Full)
-front = 0, rear = 4
-Array: [ 10 │ 20 │ 30 │ 40 │ 50 ]
-          ▲                   ▲
-          │                   │
-        front                rear
-
-STEP 2: Dequeue 3 elements (10, 20, 30 removed)
-front = 3, rear = 4
-Array: [ __ │ __ │ __ │ 40 │ 50 ]
-                        ▲    ▲
-                        │    │
-                      front rear
-```
-
-### THE DISASTER (False Overflow):
-Now attempt to `Enqueue(60)`.
-- The code checks: `if rear == capacity - 1` ($4 == 4 \implies$ **Overflow error!**).
-- **The Tragedy**: The queue rejects the new element claiming it is "FULL", even though slots $0, 1, 2$ are completely **empty and wasted**!
-- Shifting all remaining elements left by 3 positions would restore space, but doing so turns every `Dequeue` into an intolerable **$O(n)$ operation**!
+| Pointer Handle | Target Node Address | Stored Value | `next` Pointer Reference | Semantic Role |
+| :--- | :---: | :---: | :---: | :--- |
+| **`front`** | `0x10A0` | `10` | `0x20F4` | **Front of Queue (Next to Dequeue)** |
+| *(Internal Link)* | `0x20F4` | `20` | `0x3500` | Intermediate FIFO Node |
+| **`rear`** | `0x3500` | `30` | `NULL` | **Rear of Queue (Most Recently Enqueued)** |
 
 ---
 
-### 8. Linked-List-Based Queue Implementation
+## Topic 32: Circular Queues (Ring Buffers) & Modulo Arithmetic
 
-To prevent false overflow and guarantee strict $O(1)$ operations with zero shifting:
-- Maintain a Singly Linked List with two pointers: `front` (points to head) and `rear` (points to tail).
-- **Enqueue($x$)**: Append node to `rear.next`, update `rear ← newNode` ($O(1)$).
-- **Dequeue()**: Advance `front ← front.next` ($O(1)$).
+### 1. Conceptual Architecture & The Modulo Ring
 
-```text
- FRONT (Head)                                              REAR (Tail)
-   │                                                           │
-   ▼                                                           ▼
-[ 10 │ ● ] ──────────────► [ 20 │ ● ] ──────────────► [ 30 │ NULL ]
-   ▲                                                           ▲
-   │ Dequeue from here                                         │ Enqueue to here
-```
+Instead of treating backing memory as a finite line that dead-ends at index $C - 1$, a **Circular Queue (Ring Buffer)** bends the array into a continuous logical ring where index $C - 1$ connects directly to index $0$.
 
----
----
+When pointer `rear` or `front` increments past the physical boundary of the array, it wraps around to the beginning using **Modulo Arithmetic**:
 
-# TOPIC 29: CIRCULAR QUEUE (RING BUFFER)
-
-### 1. Topic Title
-**Circular Queue (Ring Buffer via Modulo Arithmetic Optimization)**
-
-### 2. Category
-Linear Data Structures — Space-Efficient Cyclic Array Container.
-
-### 3. Difficulty
-Intermediate.
-
-### 4. Prerequisites
-- Topic 28: Linear Queue (False Overflow problem).
-- Part 01: Foundations (Modular Arithmetic $x \pmod C$).
-
----
-
-### 5. Intuition & Modulo Ring Topology
-
-### THE ELEGANT SOLUTION:
-Instead of treating an array as a straight line that terminates at index $C-1$, mentally bend the array into a **circle** where index $C-1$ wraps seamlessly back around to index $0$!
-
-```text
-                  [ Index 0 ]
-                 /           \
-     [ Index 4 ]               [ Index 1 ]
-          │                         │
-     [ Index 3 ] ───────────── [ Index 2 ]
-```
-
-Every time `rear` or `front` advances, we increment using **Modulo Arithmetic**:
 $$\text{nextIndex} = (\text{currentIndex} + 1) \pmod{\text{Capacity}}$$
 
-When `rear` reaches the end of the physical array (index $4$), its next position is $(4 + 1) \pmod 5 = 0$. If slot $0$ was vacated by an earlier `Dequeue`, `rear` wraps around and claims it without shifting a single byte!
+```
+Logical Ring Buffer (Capacity = 5):
+                  [ Slot 0 ]
+                 /          \
+       [ Slot 4 ]            [ Slot 1 ]
+            |                     |
+       [ Slot 3 ] ------------ [ Slot 2 ]
+```
+
+When slot $4$ is reached, $(4 + 1) \pmod 5 = 0$. If slot $0$ was previously vacated by a `Dequeue`, `rear` immediately claims it without shifting a single byte of memory.
 
 ---
 
-### 6. Full & Empty Boundary Invariants
+### 2. Disambiguating Full vs. Empty States
 
-To distinguish between an **Empty** queue and a **Full** queue in an array of size $C$:
+When `front == rear`, does it signify that the queue is completely empty or completely full? Two distinct architectural patterns resolve this ambiguity:
 
-#### Approach A: Count Tracker (Cleanest & Most Intuitive)
-Maintain an explicit `count` variable tracking the current number of elements:
-- **Empty**: `count = 0`
-- **Full**: `count = capacity`
-- **Enqueue**: `rear ← (rear + 1) mod capacity; count ← count + 1`
-- **Dequeue**: `front ← (front + 1) mod capacity; count ← count - 1`
+#### Strategy A: Explicit Count Variable (Recommended)
+Maintain an internal integer `count` tracking the active element count ($0 \le \text{count} \le \text{Capacity}$):
+- **Empty Condition**: $\text{count} == 0$
+- **Full Condition**: $\text{count} == \text{Capacity}$
+- **Available Slots**: $\text{Capacity} - \text{count}$
 
-#### Approach B: Single Reserved Slot Invariant (Standard Textbook)
-- **Empty**: `front = -1` (or `front = rear`)
-- **Full Condition**: When advancing `rear` by 1 would collide with `front`:
-$$(\text{rear} + 1) \pmod{\text{Capacity}} == \text{front}$$
+#### Strategy B: Reserved Empty Slot (Classic Textbook)
+Sacrifice one array slot permanently. An array of size $C$ holds at most $C - 1$ elements:
+- **Empty Condition**: $\text{front} == \text{rear}$
+- **Full Condition**: $(\text{rear} + 1) \pmod C == \text{front}$
 
 ---
 
-### 7. Complete Language-Independent Pseudocode
+### 3. Canonical Ring Buffer Specification
 
 ```text
-DATA STRUCTURE CircularQueue
-    Fields:
-        buffer: Array of ValueType
-        front: integer ← -1
-        rear: integer ← -1
-        capacity: integer
-        count: integer ← 0
+CLASS CircularQueue:
+    field buffer: Array of ValueType
+    field front: Integer <- 0
+    field rear: Integer <- -1
+    field capacity: Integer
+    field count: Integer <- 0
 
-    OPERATION Initialize(cap):
-        capacity ← cap
-        buffer ← allocate Array of size capacity
-        front ← 0
-        rear ← -1
-        count ← 0
+    CONSTRUCTOR(cap: Integer):
+        assert cap > 0
+        this.capacity <- cap
+        this.buffer <- allocate_memory(cap * sizeof(ValueType))
+        this.front <- 0
+        this.rear <- -1
+        this.count <- 0
 
-    OPERATION Enqueue(x):
-        if count = capacity:
-            error "Circular Queue Overflow"
-        
-        rear ← (rear + 1) mod capacity
-        buffer[rear] ← x
-        count ← count + 1
+    FUNCTION Enqueue(x: ValueType) -> Void:
+        if this.IsFull():
+            raise OverflowException("Circular Queue is full")
+        this.rear <- (this.rear + 1) mod this.capacity
+        this.buffer[this.rear] <- x
+        this.count <- this.count + 1
 
-    OPERATION Dequeue():
-        if count = 0:
-            error "Circular Queue Underflow"
-        
-        val ← buffer[front]
-        front ← (front + 1) mod capacity
-        count ← count - 1
+    FUNCTION Dequeue() -> ValueType:
+        if this.IsEmpty():
+            raise UnderflowException("Circular Queue is empty")
+        val <- this.buffer[this.front]
+        this.front <- (this.front + 1) mod this.capacity
+        this.count <- this.count - 1
         return val
 
-    OPERATION Peek():
-        if count = 0:
-            error "Queue is empty"
-        return buffer[front]
+    FUNCTION Peek() -> ValueType:
+        if this.IsEmpty():
+            raise UnderflowException("Circular Queue is empty")
+        return this.buffer[this.front]
 
-    OPERATION IsEmpty():
-        return (count = 0)
+    FUNCTION IsEmpty() -> Boolean:
+        return (this.count == 0)
 
-    OPERATION IsFull():
-        return (count = capacity)
+    FUNCTION IsFull() -> Boolean:
+        return (this.count == this.capacity)
 
-    OPERATION Size():
-        return count
+    FUNCTION Size() -> Integer:
+        return this.count
 ```
 
 ---
 
-### 8. Step-by-Step Wrap-Around Dry-Run Table
+### 4. Step-by-Step Wrap-Around State Trace
 
-Let Capacity $C = 5$. We perform a sequence of operations illustrating wrap-around:
+Let Capacity $C = 5$. We trace a complete lifecycle demonstrating wrap-around:
 
-| Step | Operation | `front` | `rear` | `count` | Buffer Array State $[0, 1, 2, 3, 4]$ | Event / Notes |
-| :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **0** | `Initialize(5)` | 0 | -1 | 0 | `[ __ , __ , __ , __ , __ ]` | Initialized empty |
-| **1** | `Enqueue(10)` | 0 | 0 | 1 | `[ 10 , __ , __ , __ , __ ]` | Normal insert |
-| **2** | `Enqueue(20)` | 0 | 1 | 2 | `[ 10 , 20 , __ , __ , __ ]` | Normal insert |
-| **3** | `Enqueue(30)` | 0 | 2 | 3 | `[ 10 , 20 , 30 , __ , __ ]` | Normal insert |
-| **4** | `Dequeue()` $\to 10$ | 1 | 2 | 2 | `[ __ , 20 , 30 , __ , __ ]` | Slot 0 vacated! |
-| **5** | `Dequeue()` $\to 20$ | 2 | 2 | 1 | `[ __ , __ , 30 , __ , __ ]` | Slot 1 vacated! |
-| **6** | `Enqueue(40)` | 2 | 3 | 2 | `[ __ , __ , 30 , 40 , __ ]` | Normal insert |
-| **7** | `Enqueue(50)` | 2 | 4 | 3 | `[ __ , __ , 30 , 40 , 50 ]` | Reached end of array! |
-| **8** | **`Enqueue(60)`** | 2 | **0** | 4 | `[ 60 , __ , 30 , 40 , 50 ]` | **WRAP-AROUND! $(4+1)\%5 = 0$!** |
-| **9** | **`Enqueue(70)`** | 2 | **1** | 5 | `[ 60 , 70 , 30 , 40 , 50 ]` | **Queue is now 100% Full!** |
-| **10**| `Enqueue(80)` | 2 | 1 | 5 | — | **Overflow Rejected!** ✅ |
-
----
-
-### 9. Real-World Production Systems Use
-
-1. **Operating System Producer-Consumer IPC**:
-   - A producer thread writes sensor data, while a consumer thread reads it. A lock-free Circular Buffer with atomic read/write pointers enables thread-safe communication without mutex lock contention.
-2. **Audio & Video Streaming Hardware Buffers**:
-   - Sound cards and video capture cards process continuous continuous streams of PCM audio samples via DMA into circular ring buffers.
-3. **Linux Kernel `kfifo` & Network Ring Buffers**:
-   - Network Interface Cards (NICs) transfer incoming Ethernet packets directly into an RX ring buffer using hardware DMA.
+| Step | Operation | `front` | `rear` | `count` | Physical Array $[0, 1, 2, 3, 4]$ | Event / Notes |
+| :---: | :--- | :---: | :---: | :---: | :--- | :--- |
+| **0** | `Init(5)` | `0` | `-1` | `0` | `[ _, _, _, _, _ ]` | Buffer allocated empty |
+| **1** | `Enqueue(10)` | `0` | `0` | `1` | `[ 10, _, _, _, _ ]` | Standard insert |
+| **2** | `Enqueue(20)` | `0` | `1` | `2` | `[ 10, 20, _, _, _ ]` | Standard insert |
+| **3** | `Enqueue(30)` | `0` | `2` | `3` | `[ 10, 20, 30, _, _ ]` | Standard insert |
+| **4** | `Dequeue()` $\to 10$ | `1` | `2` | `2` | `[ (10), 20, 30, _, _ ]` | Slot 0 vacated (`front = 1`) |
+| **5** | `Dequeue()` $\to 20$ | `2` | `2` | `1` | `[ (10), (20), 30, _, _ ]` | Slot 1 vacated (`front = 2`) |
+| **6** | `Enqueue(40)` | `2` | `3` | `2` | `[ _, _, 30, 40, _ ]` | Standard insert |
+| **7** | `Enqueue(50)` | `2` | `4` | `3` | `[ _, _, 30, 40, 50 ]` | Physical boundary reached |
+| **8** | **`Enqueue(60)`** | `2` | **`0`** | `4` | `[ 60, _, 30, 40, 50 ]` | **WRAP-AROUND: $(4+1)\%5 = 0$! Reclaims Slot 0!** |
+| **9** | **`Enqueue(70)`** | `2` | **`1`** | `5` | `[ 60, 70, 30, 40, 50 ]` | **WRAP-AROUND: $(0+1)\%5 = 1$! Queue 100% Full!** |
+| **10**| `Enqueue(80)` | `2` | `1` | `5` | — | **Overflow cleanly rejected!** |
 
 ---
 
-## Module 07 Summary & Key Takeaways
+### 5. Two-Stack Queue Implementation (Amortized Analysis)
 
-1. **Queues** strictly enforce **FIFO** order with insertions at `rear` and removals at `front`.
-2. Linear array queues suffer from **false overflow (drift)**, wasting vacated slots unless shifted at $O(n)$ cost.
-3. **Circular Queues (Ring Buffers)** solve false overflow by wrapping indices around using modulo arithmetic: `(index + 1) % capacity`.
-4. Ring buffers are the undisputed industry standard for **high-throughput real-time systems, audio streaming, and hardware driver buffers**.
+Can a FIFO queue be constructed using only two LIFO stacks?
+
+#### Architecture:
+- `inStack`: Receives incoming items during `Enqueue`.
+- `outStack`: Serves items during `Dequeue`.
+
+```text
+CLASS QueueUsingStacks:
+    field inStack: Stack
+    field outStack: Stack
+
+    FUNCTION Enqueue(x: ValueType) -> Void:
+        this.inStack.Push(x)
+
+    FUNCTION Dequeue() -> ValueType:
+        if this.outStack.IsEmpty():
+            if this.inStack.IsEmpty():
+                raise UnderflowException("Queue is empty")
+            // Batch transfer elements: inverting LIFO into FIFO!
+            while not this.inStack.IsEmpty():
+                this.outStack.Push(this.inStack.Pop())
+        return this.outStack.Pop()
+```
+
+#### Amortized Complexity Proof:
+Each element is pushed to `inStack` once ($1$ op), popped from `inStack` once ($1$ op), pushed to `outStack` once ($1$ op), and popped from `outStack` once ($1$ op).  
+Total lifetime cost per element $= 4$ operations $\implies$ **Amortized $\Theta(1)$ per operation**.
 
 ---
 
-## References & Academic Attribution
+### 6. Systems Engineering: Kernel Ring Buffers & Lock-Free IPC
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
-2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
-3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.
+Circular queues are the industry standard architecture for real-time systems and operating system kernels:
+
+1. **Linux Kernel `kfifo`**: A lock-free ring buffer utilizing a power-of-two capacity $C = 2^k$. Instead of expensive division modulo `(idx % C)`, the kernel optimizes wrap-around using bitwise AND:  
+   $$\text{idx} \pmod{2^k} \equiv \text{idx} \ \& \ (2^k - 1)$$
+   This replaces a multi-cycle hardware integer division instruction with a single-cycle bitwise mask.
+2. **Network Interface Card (NIC) Ring Buffers**: High-speed Ethernet controllers use Direct Memory Access (DMA) to stream network packets straight into circular RX/TX ring buffers in kernel memory without CPU interrupts on every frame.
+3. **Audio PCM Buffers**: Audio playback pipelines use circular buffers to bridge asynchronous audio decoders with real-time digital-to-analog converter (DAC) hardware timers.
+
+---
+
+### 7. Key Takeaways
+
+1. **FIFO Invariant**: Queues enforce First-In, First-Out order, serving as the universal primitive for breadth-first search and pipeline scheduling.
+2. **False Overflow Elimination**: Naive linear array queues suffer from pointer drift; circular ring buffers recycle memory via modulo arithmetic `(idx + 1) % C`.
+3. **Disambiguation Rules**: Full versus empty state in ring buffers is cleanly resolved by maintaining an explicit element `count` tracker.
+4. **Hardware Symbiosis**: Sizing ring buffers to powers of two enables bitwise wrap-around masking `idx & (C - 1)`, a cornerstone optimization in Linux kernel `kfifo` and NIC ring buffers.
+
+---
+
+## Academic Attribution & References
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: *Elementary Data Structures*. MIT Press.
+2. **Corbet, J., Rubini, A., & Kroah-Hartman, G.** (2005). *Linux Device Drivers* (3rd ed.), Chapter 11: *Data Types in the Kernel (kfifo)*. O'Reilly Media.
+3. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: *Bags, Queues, and Stacks*. Addison-Wesley.
+4. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: *Linear Lists*. Addison-Wesley.
