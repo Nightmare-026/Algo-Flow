@@ -1,157 +1,191 @@
 # Part 09: Problem-Solving Patterns — Module 03: Core Interview & Competitive Patterns
 
-> **Topics Covered:**  
-> 141. Interval Merging & Meeting Rooms &bull; 142. Binary Search Patterns &bull; 143. Heap / Top-K & Median Patterns &bull; 144. Hash Map Frequency & Prefix Sum Patterns &bull; 145–146. Recursion & Backtracking Patterns &bull; 147. Bit Manipulation Hacks & Masking Techniques
+Competitive programming and technical interviews center on a core suite of canonical archetype patterns that recur across domains. By mastering interval consolidation, heap selection, prefix-sum hash table invariants, and single-cycle ALU bit manipulation, developers can rapidly classify unstructured problem statements and implement optimal solutions under strict time constraints.
 
 ---
 
-# TOPIC 141: INTERVAL PATTERNS
+## 1. Executive Summary & Learning Objectives
+
+This module synthesizes essential problem-solving patterns frequently encountered in systems design and algorithmic interviews, focusing on invariant preservation and asymptotic efficiency.
+
+By the end of this chapter, you will be able to:
+1. **Consolidate Disjoint & Overlapping Intervals**: Sort time boundaries to merge intervals and allocate minimum resource pools via min-heaps in $\mathcal{O}(n \log n)$ time.
+2. **Track Dynamic Order Statistics**: Maintain the $K$-th largest element in $\mathcal{O}(n \log K)$ time and maintain running medians from real-time streams in $\mathcal{O}(\log n)$ insertion time using dual heaps.
+3. **Exploit Hash Table Invariants**: Formulate prefix sum frequency mappings to count continuous subarrays summing to $K$ in $\mathcal{O}(n)$ time across negative numbers.
+4. **Leverage Single-Cycle Bit Manipulation**: Apply hardware-level bitwise primitives (`n & (n - 1)`, `n & -n`, XOR cancellation) to solve parity, power-of-two, and frequency queries in $\mathcal{O}(1)$ time.
+
+---
+
+## 2. Topic 141: Interval Patterns
 
 ### 1. Merge Overlapping Intervals
-Given a collection of intervals $[s_i, e_i]$, merge all overlapping ranges into contiguous blocks:
-1. Sort intervals ascending by their **start time**: $s_0 \le s_1 \le \dots \le s_{n-1}$.
-2. Iterate through intervals:
-   - If current interval starts **after** the last merged interval ends ($s_i > \text{last}.\text{end}$), add it as a new distinct interval.
-   - Otherwise, they overlap: merge by extending the end time: $\text{last}.\text{end} \leftarrow \max(\text{last}.\text{end}, e_i)$.
+Given an array of intervals $[s_i, e_i]$, combine all overlapping segments into non-overlapping contiguous ranges:
+1. **Sort by Start Time**: Order intervals such that $s_0 \le s_1 \le \dots \le s_{n-1}$.
+2. **Linear Merge Sweep**:
+   - If the current interval starts after the active merged interval ends ($s_i > \text{last}.\text{end}$), append it as a new disjoint interval.
+   - Otherwise, an overlap exists: update $\text{last}.\text{end} \leftarrow \max(\text{last}.\text{end}, e_i)$.
 
-```text
-ALGORITHM MergeIntervals(intervals)
-1.  Sort(intervals by start ascending)
-2.  merged ← empty List
-3.  merged.Append(intervals[0])
-4.  for i ← 1 to intervals.Length - 1:
-5.      last ← merged.Last()
-6.      if intervals[i].start ≤ last.end:
-7.          last.end ← max(last.end, intervals[i].end)  // Merge overlap!
-8.      else:
-9.          merged.Append(intervals[i])
-10. return merged
+```typescript
+export function mergeIntervals(intervals: number[][]): number[][] {
+  if (intervals.length <= 1) return intervals;
+
+  // Sort ascending by start boundary
+  intervals.sort((a, b) => a[0] - b[0]);
+
+  const merged: number[][] = [intervals[0]];
+
+  for (let i = 1; i < intervals.length; i++) {
+    const current = intervals[i];
+    const lastMerged = merged[merged.length - 1];
+
+    if (current[0] <= lastMerged[1]) {
+      // Overlap detected: expand ending boundary
+      lastMerged[1] = Math.max(lastMerged[1], current[1]);
+    } else {
+      // Disjoint: start new interval block
+      merged.push(current);
+    }
+  }
+
+  return merged;
+}
 ```
 
 ---
 
-### 2. Meeting Rooms II (Minimum Conference Rooms Required)
-Given meeting time intervals, find the minimum number of rooms required.
-- **Min-Heap Strategy**: Sort meetings by start time. A Min-Heap stores the **end times** of active meetings.
-- If incoming meeting start $\ge$ heap minimum end time, reuse the room (`ExtractMin()`).
-- Otherwise, allocate a new room (`Push(meeting.end)`).
-- Result = Maximum heap size $= O(n \log n)$ time!
+### 2. Meeting Rooms II (Minimum Resource Allocation)
+Given meeting schedule intervals, calculate the minimum number of rooms required so that no two meetings overlap in the same room.
 
----
----
-
-# TOPIC 143: HEAP PATTERNS (TOP-K & STREAMING MEDIAN)
-
-### 1. Top-K Frequent / Largest Elements in $O(n \log K)$ Time
-To find the $K$ largest elements in an array of size $n$:
-- **Anti-Pattern**: Sort the entire array $\implies O(n \log n)$ time.
-- **Optimal Heap Pattern**: Maintain a **Min-Heap of size $K$**!
-  - Iterate through elements. For each $x$, push to min-heap.
-  - If heap size exceeds $K$, pop the minimum (`ExtractMin()`).
-  - At the end, the heap contains the $K$ largest elements, and the root is the $K$-th largest!
-  - **Time Complexity**: $\mathbf{O(n \log K)}$ (vastly superior when $K \ll n$).
+- **Min-Heap Strategy**: Sort meetings by start time. Maintain a min-heap storing the end times of ongoing meetings.
+- When evaluating meeting $[s_i, e_i]$:
+  - If $s_i \ge \text{heap}.\text{min}()$, the earliest ending meeting has completed $\implies$ reuse the room by popping the root.
+  - Push $e_i$ into the min-heap.
+- **Result**: The peak heap size reflects the minimum rooms needed. Overall time complexity: $\mathcal{O}(n \log n)$.
 
 ---
 
-### 2. Median from a Dynamic Stream (Dual-Heap Pattern)
-To maintain the running median of numbers arriving in real-time in $O(\log n)$ per insert and $O(1)$ lookup:
-- Divide data into two halves:
-  1. **Max-Heap (`low`)**: Stores the smaller half of numbers (root is largest of the small half).
-  2. **Min-Heap (`high`)**: Stores the larger half of numbers (root is smallest of the large half).
-- **Balance Invariant**: Ensure $\text{size}(\text{low}) = \text{size}(\text{high})$ or $\text{size}(\text{low}) = \text{size}(\text{high}) + 1$.
-- **Median Query**:
-  - If odd total count: `low.PeekMax()`
-  - If even total count: $(\text{low}.\text{PeekMax}() + \text{high}.\text{PeekMin}()) / 2.0$
+## 3. Topic 143: Heap Patterns (Top-K & Streaming Median)
+
+### 1. Top-K Frequent / Extreme Elements in $\mathcal{O}(n \log K)$ Time
+To extract the $K$ largest elements from an unsorted stream of $n$ elements:
+- Sorting the full array requires $\mathcal{O}(n \log n)$ time.
+- By maintaining a **Min-Heap of size $K$**, we process each element in $\mathcal{O}(\log K)$ time:
+  - Push incoming element $x$ into the min-heap.
+  - If the heap size exceeds $K$, remove the minimum element ($\text{extractMin}$).
+  - After processing all $n$ items, the heap contains strictly the $K$ largest elements, with the root representing the $K$-th largest element.
+
+### 2. Median from a Dynamic Data Stream (Dual-Heap Pattern)
+To maintain the exact running median of numbers arriving sequentially in $\mathcal{O}(\log n)$ insertion and $\mathcal{O}(1)$ query time:
+- Partition the dataset into two balanced halves:
+  1. **Max-Heap (`low`)**: Holds the smaller half of elements (root is the maximum of the lower partition).
+  2. **Min-Heap (`high`)**: Holds the larger half of elements (root is the minimum of the upper partition).
+
+| Invariant | Specification | Action on Violation |
+| :--- | :--- | :--- |
+| **Order Invariant** | $\max(\text{low}) \le \min(\text{high})$ | If $\text{low}.\text{peek}() > \text{high}.\text{peek}()$, swap the root elements. |
+| **Size Invariant** | $\text{size}(\text{low}) = \text{size}(\text{high})$ or $\text{size}(\text{low}) = \text{size}(\text{high}) + 1$ | If $\text{size}(\text{low}) > \text{size}(\text{high}) + 1$, move $\text{low}.\text{pop}() \to \text{high}$. |
+
+**Median Query**:
+- If total elements is odd: return $\text{low}.\text{peek}()$.
+- If total elements is even: return $(\text{low}.\text{peek}() + \text{high}.\text{peek}()) / 2.0$.
 
 ---
----
 
-# TOPIC 144: HASH MAP PREFIX SUM INVARIANT PATTERN
+## 4. Topic 144: Hash Map Prefix Sum Invariant Pattern
 
-### Subarray Sum Equals $K$ in $O(n)$ Time
-Given an unsorted array containing negative numbers, count the total number of continuous subarrays whose sum equals $K$.
+### Subarray Sum Equals $K$ in Linear Time
+Given an unsorted array containing positive and negative integers, count the total number of continuous subarrays whose sum equals $K$.
 
-#### Mathematical Invariant:
-Let $P[i]$ be the prefix sum up to index $i$.  
-A subarray $A[j \dots i]$ has sum $K$ if and only if:
-$$P[i] - P[j - 1] = K \iff \mathbf{P[j - 1] = P[i] - K}$$
+#### Mathematical Invariant
+Let $P[i]$ denote the prefix sum up to index $i$. A subarray $A[j \dots i]$ evaluates to sum $K$ if and only if:
 
-```text
-ALGORITHM SubarraySumEqualsK(A, n, K)
-1.  prefixMap ← Hash Table mapping (prefixSum ──► frequency count)
-2.  prefixMap[0] ← 1            // Base case: prefix sum of 0 occurs once initially
-3.  currentSum ← 0
-4.  totalSubarrays ← 0
-5.  for i ← 0 to n - 1:
-6.      currentSum ← currentSum + A[i]
-7.      targetPrefix ← currentSum - K
-8.      if targetPrefix in prefixMap:
-9.          totalSubarrays ← totalSubarrays + prefixMap[targetPrefix]
-10.     prefixMap[currentSum] ← prefixMap.GetOrDefault(currentSum, 0) + 1
-11. return totalSubarrays
+$$P[i] - P[j - 1] = K \iff P[j - 1] = P[i] - K$$
+
+By recording the frequencies of prefix sums in a hash table as we iterate, we can query in $\mathcal{O}(1)$ time how many prior prefixes satisfy $P[j - 1] = P[i] - K$.
+
+```typescript
+export function subarraySumEqualsK(nums: number[], k: number): number {
+  const prefixFrequency = new Map<number, number>();
+  // Base case: prefix sum of 0 occurs once initially
+  prefixFrequency.set(0, 1);
+
+  let runningSum = 0;
+  let totalSubarrays = 0;
+
+  for (let i = 0; i < nums.length; i++) {
+    runningSum += nums[i];
+    const targetComplement = runningSum - k;
+
+    if (prefixFrequency.has(targetComplement)) {
+      totalSubarrays += prefixFrequency.get(targetComplement)!;
+    }
+
+    prefixFrequency.set(
+      runningSum,
+      (prefixFrequency.get(runningSum) || 0) + 1
+    );
+  }
+
+  return totalSubarrays;
+}
 ```
-- **Time Complexity**: $\mathbf{\Theta(n)}$ single pass!
-- **Auxiliary Space**: $O(n)$ hash table.
 
 ---
----
 
-# TOPIC 147: BIT MANIPULATION HACKS & MASKING
+## 5. Topic 147: Bit Manipulation Hacks & Masking
 
-Bit operations execute directly inside the CPU Arithmetic Logic Unit (ALU) in a single clock cycle ($\approx 0.3\text{ nanoseconds}$).
+Bitwise operations execute directly in CPU Arithmetic Logic Units (ALUs) in a single clock cycle ($\approx 0.3\text{ ns}$).
 
 ### 1. Fundamental Bitwise Operators
 
-| Operator | Symbol | Operation | Truth Table Rule |
-| :---: | :---: | :--- | :--- |
-| **AND** | `&` | Intersection | 1 only if **both** bits are 1 |
-| **OR** | `\|` | Union | 1 if **either** bit is 1 |
-| **XOR** | `^` | Difference | 1 if bits are **different** ($1 \oplus 0 = 1$, but $1 \oplus 1 = 0$) |
-| **NOT** | `~` | Inversion | Flips all bits ($0 \to 1, 1 \to 0$) |
-| **Left Shift** | `<<` | Multiply by $2^k$ | `x << k` $= x \times 2^k$ |
-| **Right Shift**| `>>` | Divide by $2^k$ | `x >> k` $= \lfloor x / 2^k \rfloor$ |
+| Operator | Syntax | Name | Logic Condition | Arithmetic Equivalence |
+| :---: | :---: | :--- | :--- | :--- |
+| **AND** | `a & b` | Conjunction | 1 only if both operand bits are 1 | Set intersection of active bits |
+| **OR** | `a \| b` | Disjunction | 1 if at least one operand bit is 1 | Set union of active bits |
+| **XOR** | `a ^ b` | Exclusive OR | 1 if operand bits differ | Addition modulo 2 without carry |
+| **NOT** | `~a` | Inversion | Flips all bits ($0 \to 1, 1 \to 0$) | Two's complement negation $-a - 1$ |
+| **Left Shift** | `a << k` | Left Shift | Shifts bits left, fills with zeros | Multiply by $2^k$ |
+| **Right Shift**| `a >> k` | Sign-Extending Shift | Shifts bits right, preserves sign bit | Integer division $\lfloor a / 2^k \rfloor$ |
 
 ---
 
-### 2. The 5 Essential Bit Manipulation Hacks
+### 2. The 5 Essential Bit Manipulation Primitives
 
-#### Hack 1: Brian Kernighan's Bit-Counting Algorithm ($O(\text{set bits})$)
-Clears the lowest set bit in a number:
+#### Primitive 1: Brian Kernighan's Bit-Counting Algorithm
+Clears the lowest set bit in an integer in $\mathcal{O}(\text{number of set bits})$:
 $$n = n \ \& \ (n - 1)$$
 
-```text
-Let n = 12 (binary 1100):
-n - 1 = 11 (binary 1011)
-n & (n - 1) = 1100 & 1011 = 1000 (Cleared lowest set bit in 1 operation!)
-```
+*Proof*: Subtracting 1 flips the lowest set bit to 0 and turns all subsequent trailing zeros into ones. Performing a bitwise AND between $n$ and $n-1$ clears exactly that lowest set bit while keeping all higher bits unchanged.
 
-#### Hack 2: Check if an Integer is a Power of 2
-A power of 2 has exactly one set bit (e.g., $16 = 10000_2$).  
-$$\text{IsPowerOfTwo}(n) \iff (n > 0) \ \mathbf{and} \ ((n \ \& \ (n - 1)) = 0)$$
+#### Primitive 2: Power-of-Two Detection
+A positive integer is a power of 2 if and only if its binary expansion contains exactly one set bit:
+$$\text{isPowerOfTwo}(n) \iff (n > 0) \ \land \ ((n \ \& \ (n - 1)) = 0)$$
 
-#### Hack 3: Find the Only Non-Repeated Element (XOR Cancellation)
-In an array where every element appears twice except one, XOR all elements:
-$$x \oplus x = 0 \quad \text{and} \quad x \oplus 0 = x$$
-All duplicate pairs cancel to zero, leaving strictly the single unique element in $O(n)$ time and $O(1)$ space!
+#### Primitive 3: XOR Cancellation (Single Unique Element)
+Exploiting algebraic properties $x \oplus x = 0$ and $x \oplus 0 = x$:
+When all elements in an array appear twice except for one unique element, XORing every value collapses duplicate pairs to 0, isolating the unique value in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-#### Hack 4: Isolate the Lowest Set Bit
-$$\text{LowestSetBit}(n) = n \ \& \ (-n)$$
-*(Uses Two's Complement representation where $-n = (\sim n) + 1$)*.
+#### Primitive 4: Isolate Lowest Set Bit
+$$L(n) = n \ \& \ (-n)$$
+In Two's Complement representation, $-n = (\sim n) + 1$. Performing a bitwise AND between $n$ and $-n$ isolates the single least-significant set bit.
 
-#### Hack 5: Set, Clear, and Toggle the $k$-th Bit
-- **Check bit $k$**: `(n >> k) & 1`
-- **Set bit $k$**: `n = n | (1 << k)`
-- **Clear bit $k$**: `n = n & ~(1 << k)`
-- **Toggle bit $k$**: `n = n ^ (1 << k)`
+#### Primitive 5: Bitmask Manipulation Primitives
+- **Test bit $k$**: `(n >> k) & 1`
+- **Set bit $k$**: `n | (1 << k)`
+- **Clear bit $k$**: `n & ~(1 << k)`
+- **Toggle bit $k$**: `n ^ (1 << k)`
 
 ---
 
-## Module 03 Summary & Key Takeaways
+## 6. Pattern Selection Matrix
 
-1. **Interval Merging** requires sorting by start time; **Meeting Rooms II** uses a min-heap to track active rooms.
-2. Finding **Top-K elements** uses a Min-Heap of size $K$ to achieve $O(n \log K)$ runtime without sorting the array.
-3. Subarrays with sum $K$ are counted in $O(n)$ using the **Prefix Sum Hash Map** identity $P[j-1] = P[i] - K$.
-4. Bit manipulation executes in 1 CPU cycle; use `n & (n - 1)` to clear the lowest set bit and XOR cancellation to eliminate duplicates.
+| Pattern Archetype | Input Precondition | Key Invariant / Property | Asymptotic Complexity |
+| :--- | :--- | :--- | :--- |
+| **Interval Merging** | Collection of start/end pairs | Sort by start boundary; merge overlapping tails | $\mathcal{O}(n \log n)$ time, $\mathcal{O}(n)$ space |
+| **Min-Heap Top-K** | Stream or large unsorted array | Bounded heap of size $K$ retains top elements | $\mathcal{O}(n \log K)$ time, $\mathcal{O}(K)$ space |
+| **Dual Heap Median** | Continuous dynamic numerical stream | Balanced sizes with $\max(\text{low}) \le \min(\text{high})$ | $\mathcal{O}(\log n)$ insertion, $\mathcal{O}(1)$ query |
+| **Prefix Hash Map** | Linear sequence with negative values | $P[j-1] = P[i] - K$ captures target subarrays | $\mathcal{O}(n)$ time, $\mathcal{O}(n)$ space |
+| **Bit Manipulation** | Integer attributes, boolean flags, sets | ALU single-cycle execution of bitwise algebra | $\mathcal{O}(1)$ time, $\mathcal{O}(1)$ space |
 
 ---
 
@@ -160,3 +194,4 @@ $$\text{LowestSetBit}(n) = n \ \& \ (-n)$$
 1. **Halim, S., Halim, F., & Skiena, S. S.** (2020). *Competitive Programming 4: The Lower Bound of Programming Contests*. CP4 Pte Ltd.
 2. **Laaksonen, A.** (2020). *Guide to Competitive Programming: Learning and Improving Algorithms Through Contests* (2nd ed.). Springer.
 3. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+4. **Warren, H. S.** (2012). *Hacker's Delight* (2nd ed.). Addison-Wesley Professional.

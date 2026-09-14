@@ -57,7 +57,7 @@
 ## Part 09 — Interview & Competitive Patterns
 - [x] problem-solving-patterns/array-and-pointer-patterns — status: done
 - [x] problem-solving-patterns/monotonic-data-structures — status: done
-- [ ] problem-solving-patterns/core-interview-patterns — status: not-started
+- [x] problem-solving-patterns/core-interview-patterns — status: done
 ## Part 10 — Advanced Data Structures & Algorithms
 - [ ] advanced-dsa/range-query-structures — status: not-started
 - [ ] advanced-dsa/advanced-topics — status: not-started
