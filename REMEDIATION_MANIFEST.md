@@ -40,7 +40,7 @@
 - [x] trees/splay-trees-and-treaps — status: done
 - [x] trees/heaps-and-priority-queues — status: done
 - [x] trees/multiway-trees-b-trees — status: done
-- [ ] trees/tries-and-string-trees — status: not-started
+- [x] trees/tries-and-string-trees — status: done
 - [ ] trees/spatial-and-specialized-trees — status: not-started
 ## Part 07 — Graph Theory & Network Algorithms
 - [ ] graphs/graph-types-and-taxonomy — status: not-started
