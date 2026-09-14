@@ -23,7 +23,7 @@
 - [x] hashing/hash-table-hash-map-hash-set — status: done
 - [x] hashing/advanced-hashing-and-probabilistic — status: done
 ## Part 04 — Searching Paradigms
-- [ ] searching/linear-and-binary-search — status: not-started
+- [x] searching/linear-and-binary-search — status: done
 - [ ] searching/bounds-and-occurrences — status: not-started
 - [ ] searching/search-space-and-rotated — status: not-started
 ## Part 05 — Sorting Algorithms & Theory
