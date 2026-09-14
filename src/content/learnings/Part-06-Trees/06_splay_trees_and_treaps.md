@@ -1,213 +1,305 @@
 # Part 06: Trees — Module 06: Splay Trees & Treaps (Randomized Cartesian Trees)
 
-> **Topics Covered:**  
-> 88i. Splay Tree Principles & Self-Adjusting Heuristics &bull; 88j. Splay Rotations: Zig, Zig-Zig & Zig-Zag Mechanics &bull; 88k. Tarjan Potential Function & Amortized $O(\log n)$ Analysis &bull; 88l. Splay Operations: Search, Insert, Delete, Split & Merge &bull; 88m. Treap Duality: BST Key + Heap Priority &bull; 88n. Cartesian Uniqueness Theorem & Expected $O(\log n)$ Height &bull; 88o. Treap Split & Merge Core Primitives &bull; 88p. Implicit Treap: Dynamic Array with Range Reversals in $O(\log n)$
+> Splay Trees and Treaps dispense with rigid deterministic balancing factors in favor of self-adjusting heuristics and randomized priorities. Splay trees exploit temporal locality to guarantee amortized $O(\log n)$ performance with zero metadata overhead, while Treaps combine BST keys with heap priorities to provide expected $O(\log n)$ search times and elegant $O(\log n)$ split-and-merge array slicing.
 
 ---
 
-# TOPICS 88i–88l: SPLAY TREES (SELF-ADJUSTING BST)
+## 1. Executive Summary & Learning Objectives
 
-### 1. Conceptual Motivation
-Invented by Daniel Sleator and Robert Tarjan in 1985, a **Splay Tree** is a self-adjusting Binary Search Tree with a remarkable property: it maintains **no balance factors, no heights, and no node colors**.  
-Instead, every time an element is accessed (searched, inserted, or deleted), it is **splayed** (rotated) all the way to become the **new root** of the tree.
-- **Temporal Locality Heuristic**: In real-world workloads (e.g., caches, network routing tables, memory allocators), 80% of accesses target 20% of items (Pareto 80/20 rule). Splaying naturally places frequently accessed items near the top, giving them near-$O(1)$ access times!
-- **Amortized Guarantee**: Any sequence of $m$ operations on an $n$-node splay tree takes at most $O(m \log n)$ time. The **amortized time per operation is strictly $O(\log n)$**!
+Invented by Daniel Sleator and Robert Tarjan in 1985, the Splay Tree is a self-adjusting binary search tree that moves accessed nodes to the root via splay rotations without storing balance factors, heights, or color bits. Invented by Raimund Seidel and Cecilia Aragon in 1989, the Treap (Tree + Heap) merges binary search ordering on keys with max-heap ordering on randomly assigned priorities to guarantee a unique Cartesian tree with expected logarithmic height.
 
----
-
-### 2. Splay Rotations: Zig, Zig-Zig, and Zig-Zag
-
-When splaying a node $X$ upward, we consider its relationship with its parent $P$ and grandparent $G$:
-
-```text
-ROTATION CASE CLASSIFICATION:
-1. ZIG (Terminal Case):      P is the Root of the tree. Single rotation on P.
-2. ZIG-ZIG (Homogeneous):    X and P are BOTH left children (or BOTH right children).
-                             CRITICAL: ROTATE GRANDPARENT G FIRST, THEN ROTATE P!
-3. ZIG-ZAG (Heterogeneous):  X is right child of P, and P is left child of G (or vice versa).
-                             ROTATE P FIRST, THEN ROTATE G (Standard double rotation).
-```
-
-#### Why Rotate Grandparent First in Zig-Zig?
-If we naively rotated $P$ then $G$ (standard single rotations), a degenerate linear path of length $n$ would simply be inverted, remaining a path of length $n$!  
-By **rotating grandparent $G$ first**, the depth of the entire path is **cut roughly in half**, progressively rebalancing the tree as a side effect!
-
-```text
-THE ZIG-ZIG TRANSFORMATION (X and P both Left Children):
-
-       BEFORE (Zig-Zig):                        AFTER (G rotated first, then P):
-              [ G ]                                            [ X ]
-             /     \                                          /     \
-          [ P ]    [ D ]                                    [ A ]   [ P ]
-         /     \                       ──►                         /     \
-      [ X ]    [ C ]                                             [ B ]   [ G ]
-     /     \                                                            /     \
-   [ A ]   [ B ]                                                      [ C ]   [ D ]
-```
-
-```text
-THE ZIG-ZAG TRANSFORMATION (P is Left child, X is Right child):
-
-       BEFORE (Zig-Zag):                        AFTER (Standard Double Rotation):
-              [ G ]                                            [ X ]
-             /     \                                         /       \
-          [ P ]    [ D ]               ──►               [ P ]       [ G ]
-         /     \                                        /     \     /     \
-       [ A ]   [ X ]                                  [ A ]   [ B ][ C ]  [ D ]
-              /     \
-            [ B ]   [ C ]
-```
+By the end of this chapter, you will be able to:
+1. **Analyze** the self-adjusting mechanics of Splay Trees and prove why rotating the grandparent first in the Zig-Zig configuration cuts tree depth in half.
+2. **Formulate** Tarjan's potential function $\Phi(T)$ and explain the Access Lemma establishing amortized $O(\log n)$ bound per operation.
+3. **Differentiate** between standard Splay rotations: terminal Zig, homogeneous Zig-Zig, and heterogeneous Zig-Zag.
+4. **Prove** the Cartesian Uniqueness Theorem for Treaps and demonstrate why randomized priorities produce expected $O(\log n)$ height.
+5. **Implement** the universal Treap primitives (`Split` and `Merge`) and apply Implicit Treaps to execute $O(\log n)$ dynamic array range reversals.
 
 ---
 
-### 3. Splay Tree Fundamental Operations
+## 2. Splay Tree Principles & Self-Adjusting Heuristics
 
-```text
-ALGORITHM Splay(T, x):
-1.  while x.parent ≠ NULL:
-2.      p ← x.parent
-3.      g ← p.parent
-4.      if g = NULL:
-5.          // Case 1: Zig
-6.          if x = p.left: RightRotate(T, p)
-7.          else:          LeftRotate(T, p)
-8.      else if x = p.left and p = g.left:
-9.          // Case 2a: Zig-Zig (Rotate G first, then P!)
-10.         RightRotate(T, g)
-11.         RightRotate(T, p)
-12.     else if x = p.right and p = g.right:
-13.         // Case 2b: Zig-Zig (Rotate G first, then P!)
-14.         LeftRotate(T, g)
-15.         LeftRotate(T, p)
-16.     else if x = p.right and p = g.left:
-17.         // Case 3a: Zig-Zag
-18.         LeftRotate(T, p)
-19.         RightRotate(T, g)
-20.     else:
-21.         // Case 3b: Zig-Zag
-22.         RightRotate(T, p)
-23.         LeftRotate(T, g)
+A Splay Tree stores no metadata per node beyond its key, left, right, and parent pointers. Whenever any key is accessed (searched, inserted, or deleted), the target node is **splayed** (rotated) through a sequence of local tree rotations until it becomes the new root of the tree.
 
-OPERATION Search(T, key):
-1.  Traverse down via standard BST search.
-2.  If key is found at node x: Splay(T, x); return x.
-3.  If key not found: Splay(T, lastVisitedNode); return NULL.
+### The Temporal Locality Advantage
+In real-world workloads (e.g., caches, memory allocation page tables, network routers), memory access distributions follow the Pareto 80/20 rule: roughly 80% of operations access a working set of 20% of items. Splaying continually pulls accessed items toward the top of the tree, rendering frequent operations near $O(1)$.
 
-OPERATION Insert(T, key):
-1.  Insert node x via standard BST insertion.
-2.  Splay(T, x). // x is now the new root!
+### The Three Splay Rotation Configurations
 
-OPERATION Delete(T, key):
-1.  node ← Search(T, key). // Splays node to root!
-2.  if node = NULL: return // Key not present
-3.  L ← node.left, R ← node.right
-4.  Sever L and R from node.
-5.  if L = NULL: T.root ← R; return
-6.  // Find max in L, splay it to L's root (it will have no right child!)
-7.  curr ← L
-8.  while curr.right ≠ NULL: curr ← curr.right
-9.  Splay(L, curr) // curr is now root of L with curr.right = NULL
-10. curr.right ← R
-11. T.root ← curr
+Let $X$ be the active node being splayed upward, $P$ its parent, and $G$ its grandparent:
+
+| Rotation Configuration | Structural Geometric Pattern | Surgical Action Order | Primary Effect on Path Depth |
+| :--- | :--- | :--- | :--- |
+| **Zig (Terminal Case)** | $P$ is the tree root ($G = \text{null}$). $X$ is either left or right child. | Execute single `RotateRight(P)` or `RotateLeft(P)`. | Moves $X$ into root position. Performed at most once per splay. |
+| **Zig-Zig (Homogeneous)** | $X$ and $P$ are **both left children** or **both right children** (linear chain). | **CRITICAL**: Rotate grandparent $G$ first, then rotate parent $P$! | **Cuts the depth of the entire path roughly in half**, progressively rebalancing the tree. |
+| **Zig-Zag (Heterogeneous)** | $X$ is right child of $P$ and $P$ is left child of $G$ (or vice versa). | Rotate parent $P$ first, then rotate grandparent $G$ (standard double rotation). | Moves $X$ up two levels; identical to AVL LR/RL double rotations. |
+
+---
+
+### Why Rotate Grandparent First in Zig-Zig?
+
+If we naively rotated $P$ then $G$ (as in standard bottom-up single rotations), a degenerate linear path of length $n$ would simply be reversed into another linear path of length $n$, doing nothing to compress path length. By rotating the grandparent $G$ first, all nodes along the path have their depths halved:
+
+| Topological Element | Before Zig-Zig ($X$ and $P$ both left children) | After Zig-Zig ($G$ rotated right first, then $P$ rotated right) |
+| :--- | :--- | :--- |
+| **Subtree Root** | Node $G$ | Node $X$ |
+| **Left Child of Root** | Node $P$ | Subtree $A$ (Left child of $X$) |
+| **Right Child of Root** | Subtree $D$ | Node $P$ |
+| **Left Child of $P$** | Node $X$ | Subtree $B$ (Right child of $X$) |
+| **Right Child of $P$** | Subtree $C$ | Node $G$ |
+| **Subtrees of $G$** | Left: $P$, Right: $D$ | Left: $C$, Right: $D$ |
+
+$$\text{Inorder Sequence Invariant}: \quad \text{keys}(A) < X < \text{keys}(B) < P < \text{keys}(C) < G < \text{keys}(D)$$
+
+---
+
+## 3. Tarjan Potential Function & Amortized Complexity
+
+While an individual splay operation in a skewed tree can take $O(n)$ time, Robert Tarjan proved using the potential method that any sequence of $m$ operations on an $n$-node splay tree takes at most $O(m \log n)$ time.
+
+### The Potential Function
+For any node $x$ in tree $T$, let $s(x)$ denote the size of the subtree rooted at $x$ (number of nodes). The **rank** of node $x$ is defined as:
+
+$$r(x) = \log_2(s(x))$$
+
+The global **potential function** $\Phi(T)$ is the sum of ranks across all nodes in $T$:
+
+$$\Phi(T) = \sum_{x \in T} r(x) = \sum_{x \in T} \log_2(s(x))$$
+
+### The Splay Access Lemma
+*The amortized time to splay a node $x$ in a tree with root $t$ is:*
+
+$$\hat{c} \le 3(r(t) - r(x)) + 1 = O(\log n)$$
+
+Because $r(t) = \log_2 n$ and $r(x) \ge 0$, the amortized cost per search, insertion, or deletion is strictly bounded by $O(\log n)$.
+
+---
+
+## 4. Complete Implementation: Splay Tree Operations
+
+```typescript
+export class SplayNode<T> {
+  key: T;
+  left: SplayNode<T> | null = null;
+  right: SplayNode<T> | null = null;
+  parent: SplayNode<T> | null = null;
+
+  constructor(key: T) {
+    this.key = key;
+  }
+}
+
+export class SplayTree<T> {
+  root: SplayNode<T> | null = null;
+
+  private rotateRight(p: SplayNode<T>): void {
+    const x = p.left!;
+    p.left = x.right;
+    if (x.right !== null) x.right.parent = p;
+
+    x.parent = p.parent;
+    if (p.parent === null) {
+      this.root = x;
+    } else if (p === p.parent.left) {
+      p.parent.left = x;
+    } else {
+      p.parent.right = x;
+    }
+
+    x.right = p;
+    p.parent = x;
+  }
+
+  private rotateLeft(p: SplayNode<T>): void {
+    const x = p.right!;
+    p.right = x.left;
+    if (x.left !== null) x.left.parent = p;
+
+    x.parent = p.parent;
+    if (p.parent === null) {
+      this.root = x;
+    } else if (p === p.parent.left) {
+      p.parent.left = x;
+    } else {
+      p.parent.right = x;
+    }
+
+    x.left = p;
+    p.parent = x;
+  }
+
+  public splay(x: SplayNode<T>): void {
+    while (x.parent !== null) {
+      const p = x.parent;
+      const g = p.parent;
+
+      if (g === null) {
+        // Case 1: Zig
+        if (x === p.left) this.rotateRight(p);
+        else this.rotateLeft(p);
+      } else if (x === p.left && p === g.left) {
+        // Case 2a: Zig-Zig (Rotate G first, then P!)
+        this.rotateRight(g);
+        this.rotateRight(p);
+      } else if (x === p.right && p === g.right) {
+        // Case 2b: Zig-Zig (Rotate G first, then P!)
+        this.rotateLeft(g);
+        this.rotateLeft(p);
+      } else if (x === p.right && p === g.left) {
+        // Case 3a: Zig-Zag
+        this.rotateLeft(p);
+        this.rotateRight(g);
+      } else {
+        // Case 3b: Zig-Zag
+        this.rotateRight(p);
+        this.rotateLeft(g);
+      }
+    }
+  }
+
+  public search(key: T): SplayNode<T> | null {
+    let curr = this.root;
+    let last: SplayNode<T> | null = null;
+
+    while (curr !== null) {
+      last = curr;
+      if (key < curr.key) curr = curr.left;
+      else if (key > curr.key) curr = curr.right;
+      else {
+        this.splay(curr);
+        return curr;
+      }
+    }
+
+    if (last !== null) this.splay(last);
+    return null;
+  }
+}
 ```
 
 ---
 
-# TOPICS 88m–88p: TREAPS (RANDOMIZED CARTESIAN TREES)
+## 5. Treaps: Duality of Tree + Heap
 
-### 1. The Treap Philosophy: Duality of Tree + Heap
-Invented by Raimund Seidel and Cecilia Aragon in 1989, a **Treap** (contraction of **Tr**ee + H**eap**) is a binary search tree whose nodes store two distinct values:
-1. **Key $K$**: Satisfies the **Binary Search Tree Property** (left $\le$ parent $\le$ right).
-2. **Priority $P$**: Generated **uniformly at random** upon insertion; satisfies the **Max-Heap Property** ($\text{parent.priority} \ge \text{children.priorities}$).
+A Treap (Tree + Heap) assigns every item two distinct properties:
+1. **Key $K$**: Maintains the symmetric **Binary Search Tree Invariant** ($y.\text{key} < x.\text{key} < z.\text{key}$).
+2. **Priority $P$**: Generated **uniformly at random** upon creation; maintains the **Max-Heap Invariant** ($x.\text{priority} \ge x.\text{left}.\text{priority}$ and $x.\text{priority} \ge x.\text{right}.\text{priority}$).
 
-```text
-ANATOMY OF A TREAP NODE:
-                 [ Key: "dog" | Priority: 94 ]
-                 /                           \
-[ Key: "cat" | Priority: 72 ]     [ Key: "fox" | Priority: 81 ]
+### Cartesian Uniqueness Theorem
+*For any set of pairs $\{(K_1, P_1), (K_2, P_2), \dots, (K_n, P_n)\}$ with distinct keys and distinct priorities, there exists exactly one unique Treap structure.*
 
-- Horizontal BST order on Keys:      "cat" < "dog" < "fox"
-- Vertical Max-Heap on Priorities:    94 > 72 and 94 > 81
+**Proof Sketch**:
+1. The pair with the maximal priority $P_{\max}$ must unconditionally serve as the **Root** of the tree to satisfy the Max-Heap property.
+2. By the BST property, all pairs with $K_i < K_{\text{root}}$ must fall into the left subtree, and all pairs with $K_i > K_{\text{root}}$ must fall into the right subtree.
+3. Applying this logic inductively down each partition defines a unique topological tree. $\blacksquare$
+
+Because priorities are chosen uniformly at random, every key permutation is equally likely. Thus, the expected height of a Treap matches that of a randomly generated BST:
+
+$$\mathbf{E}[\text{Height}] = \mathbf{\Theta(\log n)}$$
+
+---
+
+## 6. Core Treap Primitives: Split and Merge
+
+Instead of maintaining explicit balance factors and complex rotation cases, modern Treap implementations operate exclusively via two $O(\log n)$ building blocks:
+
+| Primitive | Preconditions | Input Arguments | Output Return Values | Purpose |
+| :--- | :--- | :--- | :--- | :--- |
+| **`Split(T, val)`** | $T$ is a valid Treap. | Tree root $T$, split threshold `val`. | Two valid Treaps $(L, R)$ where $\forall u \in L: u.\text{key} \le \text{val}$ and $\forall v \in R: v.\text{key} > \text{val}$. | Partitions a tree into two subtrees along key boundary. |
+| **`Merge(L, R)`** | **Crucial**: All keys in $L$ must be strictly less than all keys in $R$ ($\max(L) < \min(R)$). | Left Treap root $L$, Right Treap root $R$. | A single merged Treap $T$. | Joins two disjoint subtrees respecting both BST and Heap invariants. |
+
+```typescript
+export class TreapNode<T> {
+  key: T;
+  priority: number;
+  left: TreapNode<T> | null = null;
+  right: TreapNode<T> | null = null;
+
+  constructor(key: T, priority: number = Math.random()) {
+    this.key = key;
+    this.priority = priority;
+  }
+}
+
+export function split<T>(
+  t: TreapNode<T> | null,
+  val: T
+): [TreapNode<T> | null, TreapNode<T> | null] {
+  if (t === null) return [null, null];
+
+  if (t.key <= val) {
+    const [subL, subR] = split(t.right, val);
+    t.right = subL;
+    return [t, subR];
+  } else {
+    const [subL, subR] = split(t.left, val);
+    t.left = subR;
+    return [subL, t];
+  }
+}
+
+export function merge<T>(
+  l: TreapNode<T> | null,
+  r: TreapNode<T> | null
+): TreapNode<T> | null {
+  if (l === null) return r;
+  if (r === null) return l;
+
+  if (l.priority > r.priority) {
+    l.right = merge(l.right, r);
+    return l;
+  } else {
+    r.left = merge(l, r.left);
+    return r;
+  }
+}
 ```
 
 ---
 
-### 2. Cartesian Uniqueness Theorem & Height Guarantee
+## 7. Implicit Treap: Dynamic Arrays with $O(\log n)$ Range Reversals
 
-$$\mathbf{Theorem}: \quad \text{For any set of pairs } \{(K_1, P_1), (K_2, P_2), \dots, (K_n, P_n)\} \text{ with distinct keys and priorities,}$$
-$$\text{there exists \textbf{EXACTLY ONE} unique Treap structure!}$$
+An **Implicit Treap** does not store explicit keys. Instead, the key of a node is implicitly determined by its 1-based index in the in-order traversal:
 
-- **Proof Sketch**: The pair with the highest priority $P_{\max}$ must unconditionally be the **Root** (by the heap property). All pairs with $K_i < K_{\text{root}}$ must fall into the left subtree, and all pairs with $K_i > K_{\text{root}}$ must fall into the right subtree (by the BST property). Applying this recursively constructs a unique binary tree. $\blacksquare$
-- **Height Analysis**: Because priorities are chosen uniformly at random, every permutation of keys into a BST is equally likely. Thus, the expected shape of a Treap is mathematically identical to a BST formed by inserting elements in random order!
-$$\mathbf{E}[\text{Height}] = \mathbf{O(\log n)}$$
-
----
-
-### 3. Core Treap Primitives: Split and Merge
-
-Instead of cumbersome insertions and rotations, modern Treap algorithms rely on two universal $O(\log n)$ building blocks: `Split` and `Merge`.
-
-```text
-OPERATION Split(T, val) ──► Returns two Treaps (L, R) where:
-- L contains all nodes with key ≤ val
-- R contains all nodes with key > val
-
-OPERATION Merge(L, R)   ──► Returns merged Treap T
-- Prerequisite: All keys in L must be strictly less than all keys in R!
-```
-
-```text
-ALGORITHM Split(T, val):
-1.  if T = NULL: return (NULL, NULL)
-2.  if T.key ≤ val:
-3.      (T.right, R) ← Split(T.right, val)
-4.      return (T, R)
-5.  else:
-6.      (L, T.left) ← Split(T.left, val)
-7.      return (L, T)
-
-ALGORITHM Merge(L, R):
-1.  if L = NULL: return R
-2.  if R = NULL: return L
-3.  if L.priority > R.priority:
-4.      L.right ← Merge(L.right, R)
-5.      return L
-6.  else:
-7.      R.left ← Merge(L, R.left)
-8.      return R
-```
-
----
-
-### 4. Implicit Treap: Dynamic Arrays & Range Reversal in $O(\log n)$
-
-An **Implicit Treap** does not store explicit keys! Instead, the key of node $X$ is defined **implicitly** by its 1-based index in the in-order traversal:
 $$\text{Index}(X) = \text{SubtreeSize}(X.\text{left}) + 1$$
 
-Each node maintains a `size` field: $\text{size}(u) = 1 + \text{size}(u.\text{left}) + \text{size}(u.\text{right})$.
+Each node tracks $\text{size}(u) = 1 + \text{size}(u.\text{left}) + \text{size}(u.\text{right})$.
 
-#### Revolutionary Capabilities of Implicit Treaps:
-1. **Dynamic Insertion/Deletion at index $i$**: In $O(\log n)$ time (unlike static arrays which take $O(n)$ to shift elements).
-2. **Range Reversal (`Reverse(l, r)`) in $O(\log n)$**:
-   - `Split(T, r)` into $(T_1, T_{>r})$.
-   - `Split(T_1, l - 1)` into $(T_{<l}, T_{\text{target}})$.
-   - Now $T_{\text{target}}$ represents exactly the subarray $[l, r]$!
-   - Apply a lazy `reversed` flag to $T_{\text{target}}$'s root (swap left and right children on the fly).
-   - Re-merge the pieces together!
-
----
-
-## Module 06 Summary & Key Takeaways
-
-1. **Splay Trees** achieve amortized $O(\log n)$ performance without storing any balancing metadata by splaying accessed nodes to the root via Zig, Zig-Zig, and Zig-Zag rotations.
-2. In Zig-Zig, **always rotate the grandparent first**, which cuts the depth of the traversal path in half.
-3. A **Treap** combines a BST on keys and a Heap on random priorities, guaranteeing expected $O(\log n)$ height.
-4. **Implicit Treaps** turn tree structures into ultra-fast dynamic arrays, enabling arbitrary range reversals, rotations, and range sum queries in $O(\log n)$ time.
+### Range Reversal in $O(\log n)$
+To reverse the subarray $[l, r]$:
+1. `split(T, r)` into $(T_1, T_{>r})$.
+2. `split(T_1, l - 1)` into $(T_{<l}, T_{\text{target}})$.
+3. $T_{\text{target}}$ now isolates exactly the subarray $[l, r]$.
+4. Toggle a lazy boolean `reversed` flag at $T_{\text{target}}$'s root (which pushes down child pointer swaps on demand).
+5. `merge(merge(T_{<l}, T_{\text{target}}), T_{>r})$ to restore the global tree.
 
 ---
 
-## References & Academic Attribution
+## 8. Comparative Analysis: Splay Tree vs. Treap vs. AVL/Red-Black
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
-2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
-3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.
+| Dimension | Splay Tree | Treap | AVL / Red-Black Tree |
+| :--- | :--- | :--- | :--- |
+| **Balance Mechanism** | Self-adjusting heuristics (Splaying) | Random priority heap ordering | Deterministic height/color invariants |
+| **Worst-Case Search** | $O(n)$ (Amortized $O(\log n)$) | $O(n)$ (Expected $O(\log n)$) | **Strictly $O(\log n)$ guaranteed** |
+| **Node Overhead** | **0 extra bits** (Only pointers) | 32-bit random priority integer | 1-bit color or 2-bit balance factor |
+| **Primary Strength** | Working-set caching, Pareto 80/20 | Code simplicity, split/merge slicing | Mission-critical hard real-time latency |
+| **Concurrency Safety** | Poor (read operations mutate tree structure) | Excellent (reads do not alter topology) | Excellent (read operations are pure) |
+
+---
+
+## 9. Common Traps, Edge Cases & Implementation Pitfalls
+
+1. **Splaying During Read Operations**:
+   - In a Splay Tree, a `search` or `contains` query **must mutate the tree** by splaying the found node (or last accessed node) to the root. Treating search as a read-only const operation destroys the amortized $O(\log n)$ guarantee.
+2. **Rotating the Wrong Node First in Zig-Zig**:
+   - Rotating parent $P$ before grandparent $G$ in Zig-Zig fails to halve the path length, degrading sequential access to quadratic $O(n^2)$ time.
+3. **Treap Merge Precondition Violation**:
+   - Calling `merge(L, R)` when $\max(L) > \min(R)$ silently corrupts the Binary Search Tree invariant. Always verify or ensure that key ranges are strictly disjoint before merging.
+
+---
+
+## 10. References & Academic Attribution
+
+1. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.
+2. **Aragon, C. R., & Seidel, R.** (1989). Randomized search trees. *30th Annual Symposium on Foundations of Computer Science (SFCS)*, 540–545. IEEE.
+3. **Tarjan, R. E.** (1985). Amortized computational complexity. *SIAM Journal on Algebraic Discrete Methods*, 6(2), 306–318.
