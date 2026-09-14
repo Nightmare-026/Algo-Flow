@@ -1,7 +1,32 @@
 # Part 11: Problem Bank — Volume 04: Trees, BSTs, Heaps & Tries (100 Problems)
 
-> **Problems Covered:** Q241 to Q340  
-> **Patterns:** Binary Tree DFS/BFS &bull; Subtree Metrics &bull; Lowest Common Ancestor &bull; BST Invariants &bull; Dual-Heap Median &bull; Top-K Patterns &bull; Prefix Tries &bull; 0-1 Bitwise Tries &bull; Segment Trees & Fenwick Trees &bull; Tree Decompositions
+
+Hierarchical data structures model relational taxonomies, priority scheduling, string prefix lookups, and range query partitions. This volume curates 100 signature problems across binary tree traversals, BST invariants, heap orderings, trie bit manipulations, and advanced structural decompositions with optimal asymptotic performance.
+
+---
+
+## 1. Executive Summary & Learning Objectives
+
+This problem bank codifies 100 core challenges spanning trees, binary search trees, priority heaps, prefix tries, and multiway search structures.
+
+By completing this problem set, you will be able to:
+1. **Master Tree Recursive & Iterative Traversals**: Formulate preorder, inorder, postorder, and level-order traversals to calculate subtree heights, diameters, and paths in $\mathcal{O}(n)$ time.
+2. **Preserve Binary Search Tree Invariants**: Execute validation, range deletion, rebalancing, and successor retrieval in $\mathcal{O}(h)$ time.
+3. **Exploit Priority Heap Ordering**: Maintain streaming medians and $K$-th extreme elements using dual min/max heap configurations in $\mathcal{O}(\log n)$ insertion time.
+4. **Implement String & Bitwise Tries**: Construct prefix retrieval engines and 0-1 bitwise trees to answer Maximum XOR queries in $\mathcal{O}(32)$ bit operations.
+5. **Apply Advanced Structural Decompositions**: Implement Segment Trees, Fenwick Trees, Cartesian Trees, and Kd-Trees for multi-dimensional spatial queries.
+
+---
+
+## 2. Problem Taxonomy & Architecture Guide
+
+| Section | Problem Range | Primary Patterns Covered | Target Complexity Range |
+| :--- | :--- | :--- | :--- |
+| **Section 1** | Q241 – Q265 | Binary Tree Fundamentals, Paths & Traversals | $\mathcal{O}(n)$ Time, $\mathcal{O}(h)$ Stack Space |
+| **Section 2** | Q266 – Q285 | Binary Search Tree (BST) Properties & Rebalancing | $\mathcal{O}(h)$ Time, $\mathcal{O}(1)$ to $\mathcal{O}(h)$ Space |
+| **Section 3** | Q286 – Q305 | Priority Queues, Dual Heaps & Order Statistics | $\mathcal{O}(n \log k)$ Time, $\mathcal{O}(k)$ Space |
+| **Section 4** | Q306 – Q325 | Prefix Tries, Aho-Corasick & 0-1 Bitwise Tries | $\mathcal{O}(L)$ Time, $\mathcal{O}(N \cdot L)$ Space |
+| **Section 5** | Q326 – Q340 | Segment Trees, Fenwick Trees & Tree Decompositions | $\mathcal{O}(\log n)$ to $\mathcal{O}(\log^2 n)$ Time, $\mathcal{O}(n)$ Space |
 
 ---
 
