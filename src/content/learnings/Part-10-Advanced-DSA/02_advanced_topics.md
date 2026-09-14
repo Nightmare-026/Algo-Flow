@@ -1,172 +1,245 @@
 # Part 10: Advanced DSA — Module 02: Advanced Graphs, Strings & Tree Techniques
 
-> **Topics Covered:**  
-> 152. Strongly Connected Components (Tarjan & Kosaraju), Bridges & Articulation Points &bull; 153. Advanced String Search (KMP & The $\pi$ Prefix Table) &bull; 154. Advanced Tree Techniques (Euler Tour & Binary Lifting for LCA) &bull; 155. Advanced DP Paradigms (Bitmask DP & Digit DP)
+Advanced algorithmic paradigms conquer combinatorial explosions and topological complexities by exploiting hidden structural symmetries. From finding strongly connected components and linear pattern matching to flattening tree hierarchies and bitmask dynamic programming, these techniques power compilers, network routers, and high-performance search engines.
 
 ---
 
-# TOPIC 152: ADVANCED GRAPH ALGORITHMS (SCC & BRIDGES)
+## 1. Executive Summary & Learning Objectives
+
+This module explores advanced computational techniques across graphs, strings, trees, and exponential state spaces, establishing rigorous mathematical invariants for industrial and competitive applications.
+
+By the end of this chapter, you will be able to:
+1. **Partition Directed & Undirected Graphs**: Compute Strongly Connected Components via Kosaraju's two-pass algorithm and detect critical bridges using Tarjan's low-link timestamps in $\mathcal{O}(V + E)$ time.
+2. **Execute Linear String Matching**: Construct the KMP prefix-function ($\pi$ table) in $\mathcal{O}(m)$ time and stream text searches in $\mathcal{O}(n)$ time without pointer backtracking.
+3. **Flatten Tree Hierarchies**: Apply the Euler Tour Technique to map subtree queries directly to contiguous 1D ranges $[\text{in}[u], \text{out}[u]]$.
+4. **Compute Lowest Common Ancestors**: Implement binary lifting via dynamic programming to jump ancestral powers of two in $\mathcal{O}(\log n)$ query time.
+5. **Formulate Bitmask State Spaces**: Compress subset membership into integer bitmasks to solve permutation-hard problems such as TSP in $\mathcal{O}(n^2 2^n)$ time.
+
+---
+
+## 2. Topic 152: Advanced Graph Algorithms (SCC & Bridges)
 
 ### 1. Strongly Connected Components (SCC)
-In a directed graph, a **Strongly Connected Component (SCC)** is a maximal subgraph where **every vertex is reachable from every other vertex**.
+In a directed graph $G = (V, E)$, a **Strongly Connected Component (SCC)** is a maximal set of vertices $U \subseteq V$ such that for every pair $u, v \in U$, there exists a directed path from $u$ to $v$ and from $v$ to $u$.
 
-#### Kosaraju's 2-Pass Algorithm:
-1. Run DFS on graph $G$. Push vertices onto a stack according to their finish times.
-2. Compute the **Transpose Graph $G^T$** (reverse the direction of all edges).
-3. Pop vertices from the stack. If unvisited in $G^T$, run DFS from that vertex: the resulting visited tree forms an **entire SCC**!
-- **Time Complexity**: $\mathbf{\Theta(V + E)}$.
+#### Kosaraju's Two-Pass Algorithm
+1. **First DFS Pass**: Perform DFS on $G$. Upon completing vertex exploration, push the vertex onto a finishing stack $S$.
+2. **Transpose Graph**: Construct $G^T$ by reversing the orientation of every directed edge in $E$.
+3. **Second DFS Pass**: Pop vertices sequentially from $S$. If a popped vertex is unvisited in $G^T$, initiate a DFS from it in $G^T$. The resulting traversal tree constitutes an entire independent SCC.
 
-```text
-ORIGINAL GRAPH G:        (1) ───► (2) ───► (3)
-                          ▲        │        │
-                          └────────┘        ▼
-                                           (4)
-SCC 1: {1, 2} (Mutually reachable cycle)
-SCC 2: {3}
-SCC 3: {4}
-```
+- **Time Complexity**: $\Theta(V + E)$
+- **Space Complexity**: $\Theta(V + E)$ auxiliary storage
 
 ---
 
 ### 2. Bridges (Critical Connections) in Undirected Graphs
-A **Bridge** is an edge whose removal strictly increases the number of connected components (disconnects the graph).
-- **Tarjan's Bridge Algorithm**: Maintain two arrays during DFS:
-  - `disc[u]`: Discovery time of vertex $u$.
-  - `low[u]`: Lowest discovery time reachable from $u$ via at most one back-edge.
-- **Bridge Invariant**: An edge $(u, v)$ is a **Bridge** if and only if:
+A **Bridge** is an edge whose deletion strictly increases the number of connected components in an undirected graph.
+
+#### Tarjan's Bridge Invariant
+Maintain two DFS timestamps for each vertex $u$:
+- $\text{disc}[u]$: Discovery time of node $u$ in the DFS tree.
+- $\text{low}[u]$: Lowest discovery time reachable from $u$ through its DFS subtree and at most one back-edge.
+
+An edge $(u, v)$ is a **Bridge** if and only if:
 $$\mathbf{low}[v] > \mathbf{disc}[u]$$
-*(Meaning $v$ has zero alternate back-edges connecting to $u$ or an ancestor of $u$; cutting $(u, v)$ isolates $v$'s subtree!)*
+
+*Proof*: If $\text{low}[v] \le \text{disc}[u]$, there exists a cycle or back-edge from $v$ or its descendants reaching $u$ or an ancestor of $u$. If $\text{low}[v] > \text{disc}[u]$, no alternate route exists, and severing $(u, v)$ isolates $v$'s subtree.
 
 ---
----
 
-# TOPIC 153: ADVANCED STRING ALGORITHMS: KNUTH-MORRIS-PRATT (KMP)
+## 3. Topic 153: Advanced String Algorithms: Knuth-Morris-Pratt (KMP)
 
-### 1. The Naive String Matching Inefficiency
-Searching for pattern $P$ (length $m$) in text $T$ (length $n$):
-- Naive scan rewinds the text pointer $i$ on every mismatch $\implies O(n \cdot m)$ worst case.
-- **KMP Insight**: The text pointer $i$ **NEVER rewinds**! It always moves strictly forward ($O(n)$ time) by precomputing the **LPS (Longest Proper Prefix which is also Suffix)** table $\pi$.
-
----
+### 1. The Non-Rewinding Search Invariant
+When matching pattern $P$ (length $m$) against text $T$ (length $n$):
+- Naive matching rewinds the text index upon mismatch $\implies \mathcal{O}(n \cdot m)$ worst case.
+- **KMP Invariant**: The text pointer $i$ moves strictly forward ($i \to i + 1$). On mismatch, pattern pointer $j$ falls back using the precomputed $\pi$ (LPS) table.
 
 ### 2. The $\pi$ (LPS) Array
-For pattern $P$, $\pi[i]$ stores the length of the longest proper prefix of $P[0 \dots i]$ that matches a suffix of $P[0 \dots i]$:
+$\pi[k]$ stores the length of the longest proper prefix of $P[0 \dots k]$ that is also a suffix of $P[0 \dots k]$:
 
-```text
-PATTERN:    a   b   a   b   a   c   a
-INDEX:      0   1   2   3   4   5   6
-π [LPS]:    0   0   1   2   3   0   1
+| Pattern Char | **a** | **b** | **a** | **b** | **a** | **c** | **a** |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Index $k$** | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
+| **$\pi[k]$ (LPS)** | 0 | 0 | 1 | 2 | 3 | 0 | 1 |
 
-For substring "ababa" (index 4):
-Prefix "aba" equals Suffix "aba" ──► Length = 3!
+For prefix `"ababa"` at index 4, the longest proper prefix matching a suffix is `"aba"` of length 3.
+
+```typescript
+export function buildLPS(pattern: string): number[] {
+  const m = pattern.length;
+  const lps = new Array(m).fill(0);
+  let len = 0;
+  let i = 1;
+
+  while (i < m) {
+    if (pattern[i] === pattern[len]) {
+      len++;
+      lps[i] = len;
+      i++;
+    } else {
+      if (len !== 0) {
+        len = lps[len - 1]; // Fallback to shorter prefix-suffix
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
+  }
+
+  return lps;
+}
+
+export function kmpSearch(text: string, pattern: string): number[] {
+  const n = text.length;
+  const m = pattern.length;
+  const matches: number[] = [];
+  if (m === 0) return matches;
+
+  const lps = buildLPS(pattern);
+  let i = 0; // Text pointer
+  let j = 0; // Pattern pointer
+
+  while (i < n) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+    }
+
+    if (j === m) {
+      matches.push(i - j);
+      j = lps[j - 1];
+    } else if (i < n && text[i] !== pattern[j]) {
+      if (j !== 0) {
+        j = lps[j - 1]; // Skip redundant comparisons
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return matches;
+}
 ```
 
 ---
 
-### 3. Complete Pseudocode: KMP String Matching
+## 4. Topic 154: Advanced Tree Techniques (Euler Tour & Binary Lifting)
 
-```text
-ALGORITHM BuildLPS(pattern, m)
-1.  allocate lps[0...m - 1] initialized to 0
-2.  len ← 0, i ← 1
-3.  while i < m:
-4.      if pattern[i] = pattern[len]:
-5.          len ← len + 1
-6.          lps[i] ← len
-7.          i ← i + 1
-8.      else:
-9.          if len ≠ 0:
-10.             len ← lps[len - 1]  // Smart fallback
-11.         else:
-12.             lps[i] ← 0
-13.             i ← i + 1
-14. return lps
+### 1. The Euler Tour Technique (Subtree Interval Mapping)
+By recording timestamps when entering and exiting vertices during DFS, a hierarchical tree is projected onto a 1D sequence:
+- Record `in[u]` upon visiting node $u$.
+- Record `out[u]` upon exiting node $u$.
 
-ALGORITHM KMP(text, pattern, n, m)
-1.  lps ← BuildLPS(pattern, m)
-2.  i ← 0, j ← 0
-3.  while i < n:
-4.      if text[i] = pattern[j]:
-5.          i ← i + 1, j ← j + 1
-6.      if j = m:
-7.          Print("Pattern found at index: " + (i - j))
-8.          j ← lps[j - 1]
-9.      else if i < n and text[i] ≠ pattern[j]:
-10.         if j ≠ 0:
-11.             j ← lps[j - 1]      // Fallback without rewinding text pointer i!
-12.         else:
-13.             i ← i + 1
-```
-
-- **Preprocessing Time**: $\Theta(m)$.
-- **Search Time**: $\Theta(n)$.
-- **Total Time Complexity**: $\mathbf{\Theta(n + m)}$ linear time!
-
----
----
-
-# TOPIC 154: ADVANCED TREE TECHNIQUES (EULER TOUR & BINARY LIFTING)
-
-### 1. The Euler Tour Technique (Tree Flattening)
-Flattens a hierarchical tree into a 1D linear array using DFS entry and exit timestamps:
-- Record `in[u]` when entering node $u$.
-- Record `out[u]` when exiting node $u$.
-- **⭐ REVOLUTIONARY INVARIANT**: The entire subtree rooted at node $u$ occupies the strictly contiguous 1D range:
+**Key Invariant**: The entire subtree rooted at node $u$ corresponds precisely to the contiguous 1D interval:
 $$[\text{in}[u], \, \text{out}[u]]$$
-- **Power**: Converts complex subtree updates and subtree queries into simple 1D **Range Queries on a Segment Tree or Fenwick Tree**!
+
+This projection converts complex subtree mutations and aggregations into standard 1D range queries executable on a Segment Tree or Fenwick Tree in $\mathcal{O}(\log n)$ time.
 
 ---
 
 ### 2. Binary Lifting for Lowest Common Ancestor (LCA)
-Find the **Lowest Common Ancestor (LCA)** of two nodes $u$ and $v$ in $O(\log N)$ time:
-- Precompute table `up[node][k]`, representing the $2^k$-th ancestor of `node`.
-- Recurrence:
-$$\text{up}[u][k] = \text{up}\big[\text{up}[u][k - 1]\big][k - 1]$$
-*(Your $2^k$-th ancestor is the $2^{k-1}$-th ancestor of your $2^{k-1}$-th ancestor!)*
+Binary lifting precomputes an ancestral jump table using dynamic programming:
+Let `up[u][k]` denote the $2^k$-th ancestor of vertex $u$:
 
-```text
-QUERY LCA(u, v) IN O(log N):
-1. Lift the deeper node upwards so depth(u) = depth(v).
-2. If u = v, return u.
-3. Jump both nodes upwards in decreasing powers of 2 (k = 20 down to 0)
-   as long as up[u][k] ≠ up[v][k].
-4. Return up[u][0] (their direct parent)!
+$$\text{up}[u][k] = \text{up}\big[\text{up}[u][k-1]\big][k-1]$$
+
+```typescript
+export class BinaryLiftingLCA {
+  private up: number[][];
+  private depth: number[];
+  private maxK: number;
+
+  constructor(n: number, adj: number[][], root: number = 0) {
+    this.maxK = Math.floor(Math.log2(Math.max(1, n))) + 1;
+    this.up = Array.from({ length: n }, () => new Array(this.maxK).fill(-1));
+    this.depth = new Array(n).fill(0);
+
+    this.dfs(root, -1, 0, adj);
+  }
+
+  private dfs(u: number, parent: number, d: number, adj: number[][]): void {
+    this.depth[u] = d;
+    this.up[u][0] = parent;
+
+    for (let k = 1; k < this.maxK; k++) {
+      if (this.up[u][k - 1] !== -1) {
+        this.up[u][k] = this.up[this.up[u][k - 1]][k - 1];
+      }
+    }
+
+    for (const v of adj[u]) {
+      if (v !== parent) {
+        this.dfs(v, u, d + 1, adj);
+      }
+    }
+  }
+
+  public getLCA(u: number, v: number): number {
+    // 1. Ensure u is at least as deep as v
+    if (this.depth[u] < this.depth[v]) {
+      [u, v] = [v, u];
+    }
+
+    // 2. Lift u to the same depth as v
+    for (let k = this.maxK - 1; k >= 0; k--) {
+      if (this.depth[u] - (1 << k) >= this.depth[v]) {
+        u = this.up[u][k];
+      }
+    }
+
+    if (u === v) return u;
+
+    // 3. Lift both nodes together below the LCA
+    for (let k = this.maxK - 1; k >= 0; k--) {
+      if (this.up[u][k] !== -1 && this.up[u][k] !== this.up[v][k]) {
+        u = this.up[u][k];
+        v = this.up[v][k];
+      }
+    }
+
+    return this.up[u][0];
+  }
+}
 ```
 
 ---
----
 
-# TOPIC 155: ADVANCED DYNAMIC PROGRAMMING (BITMASK DP)
+## 5. Topic 155: Advanced Dynamic Programming (Bitmask DP)
 
-### Traveling Salesperson Problem (TSP) in $O(N^2 \cdot 2^N)$
-Find the minimum cost to visit all $N$ cities and return to start.
-- **Brute Force**: Try all permutations $\implies O(N!)$ (Unusable for $N = 20$: $20! \approx 2.4 \times 10^{18}$).
-- **Bitmask DP**: Represent the set of visited cities as a **binary integer bitmask** of length $N$:
-  - `mask = (1011)₂` $\implies$ cities 0, 1, and 3 have been visited.
+### Traveling Salesperson Problem (TSP)
+Given $N$ vertices and pairwise transition costs, find the minimum cost tour visiting every node once and returning to the origin.
 
-#### State Definition:
-`dp[mask][u]`: Minimum cost to visit all cities in `mask`, currently ending at city $u$.
+- **Brute Force Permutations**: $\mathcal{O}(N!)$ (Intractable for $N \ge 15$).
+- **Held-Karp Bitmask DP**: Encode visited subsets as an integer bitmask of length $N$:
 
-#### Recurrence Transition:
+#### State Definition
+`dp[mask][u]`: Minimum cost of traversing all vertices present in `mask`, currently located at vertex $u$.
+
+#### Recurrence Relation
 $$\text{dp}[\text{mask} \ | \ (1 \ll v)][v] = \min_{v \notin \text{mask}} \Big( \text{dp}[\text{mask}][u] + \text{cost}[u][v] \Big)$$
 
-- **Total States**: $2^N \times N$.
-- **Transitions per State**: $N$.
-- **Total Runtime**: $\mathbf{\Theta(N^2 \cdot 2^N)}$ (Easily executes for $N \le 20$ in $\approx 0.4\text{ seconds}$!).
+- **Total States**: $2^N \times N$
+- **Transitions per State**: $N$
+- **Overall Runtime**: $\mathbf{\Theta(N^2 \cdot 2^N)}$, solving $N = 20$ instances in approximately $0.4\text{ seconds}$.
 
 ---
 
-## Module 02 Summary & Key Takeaways
+## 6. Algorithmic Domain Summary
 
-1. **Kosaraju's Algorithm** finds all Strongly Connected Components in directed graphs in $O(V + E)$ via graph transposition and 2 DFS passes.
-2. **KMP** matches strings in $O(n + m)$ without ever rewinding the text pointer by exploiting the $\pi$ (LPS) table.
-3. **Euler Tour** flattens tree subtrees into contiguous 1D intervals $[\text{in}[u], \text{out}[u]]$, bridging trees and segment trees.
-4. **Binary Lifting** calculates the LCA of any two nodes in $O(\log N)$ time using powers-of-two ancestral tables.
+| Subsystem | Core Paradigm | Canonical Algorithm | Asymptotic Complexity |
+| :--- | :--- | :--- | :--- |
+| **Directed Graphs** | Transposition + Double DFS | Kosaraju SCC | $\Theta(V + E)$ time, $\mathcal{O}(V)$ space |
+| **Undirected Graphs** | DFS Discovery / Low-Link | Tarjan Bridges | $\Theta(V + E)$ time, $\mathcal{O}(V)$ space |
+| **String Matching** | Prefix-Suffix Finite Automaton | Knuth-Morris-Pratt | $\Theta(n + m)$ time, $\mathcal{O}(m)$ space |
+| **Tree Subtree Queries** | DFS Interval Projection | Euler Tour Flattening | $\mathcal{O}(n)$ build, $\mathcal{O}(\log n)$ query |
+| **Ancestral Queries** | Dyadic Powers Decomposition | Binary Lifting LCA | $\mathcal{O}(n \log n)$ build, $\mathcal{O}(\log n)$ query |
+| **Permutation Optimization** | Subset State Compression | Held-Karp Bitmask DP | $\Theta(n^2 2^n)$ time, $\Theta(n 2^n)$ space |
 
 ---
 
 ## References & Academic Attribution
 
-1. **Fenwick, P. M.** (1994). A new data structure for cumulative frequency tables. *Software: Practice and Experience*, 24(3), 327–336.
-2. **Sleator, D. D., & Tarjan, R. E.** (1983). A data structure for dynamic trees. *Journal of Computer and System Sciences*, 26(3), 362–391.
-3. **Tarjan, R. E.** (1979). Applications of path compression on balanced trees. *Journal of the ACM (JACM)*, 26(4), 690–715.
+1. **Kosaraju, S. R.** (1978). Fast algorithms for connectivity and related problems. *Unpublished technical report*.
+2. **Tarjan, R. E.** (1972). Depth-first search and linear graph algorithms. *SIAM Journal on Computing*, 1(2), 146–160.
+3. **Knuth, D. E., Morris, J. H., & Pratt, V. R.** (1977). Fast pattern matching in strings. *SIAM Journal on Computing*, 6(2), 323–350.
+4. **Held, M., & Karp, R. M.** (1962). A dynamic programming approach to sequencing problems. *Journal of the Society for Industrial and Applied Mathematics*, 10(1), 196–210.
