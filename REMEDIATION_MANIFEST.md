@@ -4,7 +4,7 @@
 - [x] front-matter/notation-and-symbols — status: done
 - [x] front-matter/complexity-quick-ref — status: done
 ## Part 01 — Algorithmic Foundations
-- [ ] foundations/data-and-algorithms — status: not-started
+- [x] foundations/data-and-algorithms — status: done
 - [ ] foundations/problem-solving-methodology — status: not-started
 - [ ] foundations/asymptotic-analysis — status: not-started
 - [ ] foundations/recursion-and-recurrences — status: not-started
