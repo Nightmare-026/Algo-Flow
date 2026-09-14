@@ -1,4 +1,4 @@
-# 🌲 Part 06: Trees — Module 09: Tries, Radix Trees & Bitwise 0-1 Structures
+# Part 06: Trees — Module 09: Tries, Radix Trees & Bitwise 0-1 Structures
 
 > **Topics Covered:**  
 > 95a. Standard Trie (Digital Search Tree & Autocomplete) &bull; 95b. Node Memory Footprint & Dynamic Pointers &bull; 95c. Compressed Trie (Radix Tree & Patricia Trie) &bull; 95d. Bitwise 0-1 Trie & Maximum XOR Subarray Mastery &bull; 95e. Suffix Trie & Suffix Tree Foundations &bull; 95f. Aho-Corasick Automaton Multi-Pattern Matching Preview
@@ -199,7 +199,7 @@ Invented by Alfred Aho and Margaret Corasick in 1975, the **Aho-Corasick Automat
 
 ---
 
-## 🔁 Module 09 Summary & Key Takeaways
+## Module 09 Summary & Key Takeaways
 
 1. **Standard Tries** provide $O(L)$ search and insert independent of dictionary size $N$.
 2. **Radix Trees** eliminate single-child nodes, guaranteeing at most $2N$ internal nodes.
@@ -207,4 +207,9 @@ Invented by Alfred Aho and Margaret Corasick in 1975, the **Aho-Corasick Automat
 4. **Suffix Trees** index an entire text in $O(n)$ time, enabling $O(m)$ substring searches.
 
 ---
-[⬅️ Previous: Module 08 — Multiway & B-Trees](file:///d:/DSA/Part-06-Trees/08_multiway_trees_b_trees.md) | [Next: Module 10 — Spatial & Specialized Trees ➡️](file:///d:/DSA/Part-06-Trees/10_spatial_and_specialized_trees.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
+2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
+3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.

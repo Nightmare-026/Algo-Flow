@@ -1,4 +1,4 @@
-# ⚖️ Part 06: Trees — Module 04: AVL Trees & Self-Balancing Rotations
+# Part 06: Trees — Module 04: AVL Trees & Self-Balancing Rotations
 
 > **Topics Covered:**  
 > 83. AVL Tree Invariants & Theoretical Foundations &bull; 84. Balance Factor ($BF$) & Logarithmic Height Proof &bull; 85. Left-Left (LL) Single Right Rotation &bull; 86. Right-Right (RR) Single Left Rotation &bull; 87. Left-Right (LR) Double Rotation &bull; 88. Right-Left (RL) Double Rotation
@@ -199,11 +199,16 @@ ALGORITHM InsertAVL(node, key)
 
 ---
 
-## 🔁 Module 04 Summary & Key Takeaways
+## Module 04 Summary & Key Takeaways
 
 1. An **AVL Tree** maintains $|BF| \le 1$ at every node, strictly bounding height to $\le 1.44 \log_2 n$.
 2. All search, insertion, and deletion operations run in guaranteed **$O(\log n)$ worst-case time**.
 3. Rebalancing is accomplished in $O(1)$ time via **4 rotations**: Single rotations (LL, RR) or Double rotations (LR, RL).
 
 ---
-[⬅️ Previous: Module 03 — Binary Search Trees](file:///d:/DSA/Part-06-Trees/03_binary_search_trees.md) | [Next: Module 05 — Red-Black Trees ➡️](file:///d:/DSA/Part-06-Trees/05_red_black_trees.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
+2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
+3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.

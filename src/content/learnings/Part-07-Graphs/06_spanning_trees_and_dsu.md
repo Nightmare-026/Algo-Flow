@@ -1,4 +1,4 @@
-# 🌲 Part 07: Graphs — Module 06: Minimum Spanning Trees & Disjoint Set Union (DSU)
+# Part 07: Graphs — Module 06: Minimum Spanning Trees & Disjoint Set Union (DSU)
 
 > **Topics Covered:**  
 > 117. Minimum Spanning Tree (MST) Concept & The Cut Property &bull; 118. Prim's Algorithm (Greedy Vertex-Growth via Min-Heap) &bull; 119. Kruskal's Algorithm (Greedy Edge-Selection) &bull; 120. Disjoint Set Union (DSU / Union-Find with Path Compression & Rank)
@@ -215,7 +215,7 @@ ALGORITHM Kruskal(edgeList, V, E)
 
 ---
 
-## 🔁 Module 06 Summary & Key Takeaways
+## Module 06 Summary & Key Takeaways
 
 1. By the **Cut Property**, the minimum-weight crossing edge for any cut is guaranteed to be in the MST.
 2. **Prim's** grows from a root vertex using a min-heap in $O((V+E)\log V)$ time; best for dense graphs.
@@ -223,4 +223,9 @@ ALGORITHM Kruskal(edgeList, V, E)
 4. **DSU with Path Compression and Rank** executes union and find operations in effectively $O(1)$ amortized time ($O(\alpha(N))$).
 
 ---
-[⬅️ Previous: Module 05 — Shortest Paths](file:///d:/DSA/Part-07-Graphs/05_shortest_paths.md) | [Next: Part 08 — Algorithm Design Techniques ➡️](file:///d:/DSA/Part-08-Algorithm-Design-Techniques/01_brute_force_and_divide_conquer.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 20–23 (Graph Algorithms, Minimum Spanning Trees, Shortest Paths). MIT Press.
+2. **Dijkstra, E. W.** (1959). A note on two problems in connexion with graphs. *Numerische Mathematik*, 1(1), 269–271.
+3. **Tarjan, R. E.** (1972). Depth-first search and linear graph algorithms. *SIAM Journal on Computing*, 1(2), 146–160.

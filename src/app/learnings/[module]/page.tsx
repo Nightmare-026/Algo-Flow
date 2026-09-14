@@ -7,6 +7,8 @@ import { ArrowRight, ChevronLeft, ChevronRight, Compass, Layers } from "lucide-r
 
 import { SITE_NAME } from "@/lib/constants/site";
 
+import { getSiteUrl } from "@/lib/site";
+
 interface ModulePageProps {
   params: Promise<{
     module: string;
@@ -30,13 +32,28 @@ export async function generateMetadata({ params }: ModulePageProps): Promise<Met
     };
   }
 
+  const siteUrl = getSiteUrl();
+  const canonicalUrl = `${siteUrl}/learnings/${mod.slug}`;
+
   return {
     title: `Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} — Syllabus | ${SITE_NAME}`,
     description: mod.shortDescription,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: `Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} | ${SITE_NAME}`,
       description: mod.shortDescription,
+      url: canonicalUrl,
       type: "article",
+      siteName: SITE_NAME,
+      images: ["/opengraph-image"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} | ${SITE_NAME}`,
+      description: mod.shortDescription,
+      images: ["/opengraph-image"],
     },
   };
 }

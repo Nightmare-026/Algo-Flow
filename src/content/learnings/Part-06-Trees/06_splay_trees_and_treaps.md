@@ -1,4 +1,4 @@
-# 🌪️ Part 06: Trees — Module 06: Splay Trees & Treaps (Randomized Cartesian Trees)
+# Part 06: Trees — Module 06: Splay Trees & Treaps (Randomized Cartesian Trees)
 
 > **Topics Covered:**  
 > 88i. Splay Tree Principles & Self-Adjusting Heuristics &bull; 88j. Splay Rotations: Zig, Zig-Zig & Zig-Zag Mechanics &bull; 88k. Tarjan Potential Function & Amortized $O(\log n)$ Analysis &bull; 88l. Splay Operations: Search, Insert, Delete, Split & Merge &bull; 88m. Treap Duality: BST Key + Heap Priority &bull; 88n. Cartesian Uniqueness Theorem & Expected $O(\log n)$ Height &bull; 88o. Treap Split & Merge Core Primitives &bull; 88p. Implicit Treap: Dynamic Array with Range Reversals in $O(\log n)$
@@ -197,7 +197,7 @@ Each node maintains a `size` field: $\text{size}(u) = 1 + \text{size}(u.\text{le
 
 ---
 
-## 🔁 Module 06 Summary & Key Takeaways
+## Module 06 Summary & Key Takeaways
 
 1. **Splay Trees** achieve amortized $O(\log n)$ performance without storing any balancing metadata by splaying accessed nodes to the root via Zig, Zig-Zig, and Zig-Zag rotations.
 2. In Zig-Zig, **always rotate the grandparent first**, which cuts the depth of the traversal path in half.
@@ -205,4 +205,9 @@ Each node maintains a `size` field: $\text{size}(u) = 1 + \text{size}(u.\text{le
 4. **Implicit Treaps** turn tree structures into ultra-fast dynamic arrays, enabling arbitrary range reversals, rotations, and range sum queries in $O(\log n)$ time.
 
 ---
-[⬅️ Previous: Module 05 — Red-Black Trees](file:///d:/DSA/Part-06-Trees/05_red_black_trees.md) | [Next: Module 07 — Heaps & Priority Queues ➡️](file:///d:/DSA/Part-06-Trees/07_heaps_and_priority_queues.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
+2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
+3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.

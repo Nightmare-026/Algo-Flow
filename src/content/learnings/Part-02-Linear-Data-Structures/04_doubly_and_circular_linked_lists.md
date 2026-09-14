@@ -1,4 +1,4 @@
-# 🔗 Part 02: Linear Data Structures — Module 04: Doubly & Circular Linked Lists
+# Part 02: Linear Data Structures — Module 04: Doubly & Circular Linked Lists
 
 > **Topics Covered:**  
 > 25. Doubly Linked List (DLL) Architecture & Bi-Directional Traversal &bull; $O(1)$ Arbitrary Deletion Mechanics &bull; The Sentinel / Dummy Node Pattern &bull; 26. Circular Singly Linked List (CSLL) &bull; Circular Doubly Linked List (CDLL) &bull; The Josephus Elimination Problem & Simulation
@@ -23,7 +23,7 @@ Intermediate.
 
 ### 5. Definition & Motivation
 
-### 💡 CONCEPT
+### Concept
 A **Doubly Linked List (DLL)** is a sequence of nodes where each node contains **two pointers**:
 1. `next`: Points to the immediate succeeding node in sequence.
 2. `prev`: Points to the immediate preceding node in sequence.
@@ -100,14 +100,14 @@ AFTER DELETION:
 
 ### 9. The Sentinel (Dummy) Node Pattern
 
-### ⚠️ THE PROBLEM: Pointer Edge-Case Hell
+### THE PROBLEM: Pointer Edge-Case Hell
 In raw linked lists, you must constantly check for boundary edge cases:
 - Is the list currently empty (`head = NULL`)?
 - Are we deleting the only remaining node?
 - Are we inserting before `head` (requires updating `head`)?
 - Are we inserting after `tail` (requires updating `tail`)?
 
-### 💡 THE SOLUTION: Sentinels
+### Solution: Sentinels
 Introduce permanent, invariant **Dummy Head** and **Dummy Tail** nodes that never change and never hold user data:
 
 ```text
@@ -271,7 +271,7 @@ ALGORITHM InsertAtTailCSLL(tail, val):
 
 ### 5. Classic Application: The Josephus Problem
 
-### 💡 THE PROBLEM
+### THE PROBLEM
 $n$ people stand in a circle numbered $1$ to $n$. A count begins at person $1$ and moves around the circle in a fixed direction. In each step, the $k$-th person is executed/eliminated. The circle closes, and counting resumes from the person immediately following the eliminated one. Find the safe position that guarantees survival.
 
 #### Circular Linked List Simulation:
@@ -315,7 +315,7 @@ ALGORITHM JosephusSurvivor(n, k)
 
 ---
 
-## 🔁 Module 04 Summary & Key Takeaways
+## Module 04 Summary & Key Takeaways
 
 1. **Doubly Linked Lists** trade 8 additional bytes of pointer memory per node for **$O(1)$ arbitrary deletion** and bidirectional traversals.
 2. The **Sentinel pattern** replaces null boundary checks with invariant dummy nodes, preventing off-by-one pointer errors.
@@ -323,4 +323,9 @@ ALGORITHM JosephusSurvivor(n, k)
 4. **Circular Linked Lists** naturally model periodic round-robin schedulers and token-ring networks without edge-case resets.
 
 ---
-[⬅️ Previous: Module 03 — Singly Linked Lists](file:///d:/DSA/Part-02-Linear-Data-Structures/03_singly_linked_lists.md) | [Next: Module 05 — Specialized Linked Lists ➡️](file:///d:/DSA/Part-02-Linear-Data-Structures/05_specialized_linked_lists.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
+3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.

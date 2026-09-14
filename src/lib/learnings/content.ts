@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { Marked } from "marked";
+import katex from "katex";
 import { getChapterBySlugs } from "./registry";
 import type { ParsedChapterContent, TableOfContentsItem } from "./types";
 
@@ -23,7 +24,7 @@ export function slugifyHeading(text: string): string {
 }
 
 /**
- * Extracts Table of Contents from markdown lines (H2 and H3).
+ * Extracts Table of Contents from markdown lines (H2, H3, and any subsequent H1 sections).
  */
 export function extractTableOfContents(markdown: string): TableOfContentsItem[] {
   const items: TableOfContentsItem[] = [];
@@ -39,11 +40,14 @@ export function extractTableOfContents(markdown: string): TableOfContentsItem[] 
     }
     if (inCodeBlock) continue;
 
-    const h2Match = line.match(/^##\s+(.+)$/);
-    const h3Match = line.match(/^###\s+(.+)$/);
+    const trimmed = line.trim();
+    // Rogue H1 in body treated as H2 section
+    const h1Match = trimmed.match(/^#\s+(.+)$/);
+    const h2Match = trimmed.match(/^##\s+(.+)$/);
+    const h3Match = trimmed.match(/^###\s+(.+)$/);
 
-    if (h2Match) {
-      const title = h2Match[1].trim();
+    if (h1Match || h2Match) {
+      const title = (h1Match ? h1Match[1] : h2Match![1]).trim();
       let slug = slugifyHeading(title);
       if (!slug) slug = "section";
       const count = slugCounts.get(slug) || 0;
@@ -62,6 +66,60 @@ export function extractTableOfContents(markdown: string): TableOfContentsItem[] 
   }
 
   return items;
+}
+
+/**
+ * Pre-processes markdown to convert LaTeX expressions to accessible HTML via KaTeX.
+ * Protects fenced code blocks and inline code snippets from math transformation.
+ */
+export function renderMathInMarkdown(markdown: string): string {
+  const codeBlocks: string[] = [];
+  const inlineCodes: string[] = [];
+
+  // Protect code blocks (```...```)
+  let text = markdown.replace(/(```[\s\S]*?```)/g, (match) => {
+    codeBlocks.push(match);
+    return `@@CODEBLOCK_${codeBlocks.length - 1}@@`;
+  });
+
+  // Protect inline code (`...`)
+  text = text.replace(/(`[^`\n]+`)/g, (match) => {
+    inlineCodes.push(match);
+    return `@@INLINECODE_${inlineCodes.length - 1}@@`;
+  });
+
+  // Replace display math ($$...$$)
+  text = text.replace(/\$\$([\s\S]*?)\$\$/g, (_, math) => {
+    try {
+      const rendered = katex.renderToString(math.trim(), {
+        displayMode: true,
+        throwOnError: false,
+      });
+      return `<div class="katex-display-wrapper my-5 overflow-x-auto text-center py-2.5 neu-inset rounded-2xl bg-surface/40 p-2">${rendered}</div>`;
+    } catch {
+      return `$$${math}$$`;
+    }
+  });
+
+  // Replace inline math ($...$) - ensure not empty and not multiple $$
+  text = text.replace(/(?<!\$)\$([^\$\n]+?)\$(?!\$)/g, (_, math) => {
+    try {
+      return katex.renderToString(math.trim(), {
+        displayMode: false,
+        throwOnError: false,
+      });
+    } catch {
+      return `$${math}$`;
+    }
+  });
+
+  // Restore inline code
+  text = text.replace(/@@INLINECODE_(\d+)@@/g, (_, index) => inlineCodes[Number(index)] || "");
+
+  // Restore code blocks
+  text = text.replace(/@@CODEBLOCK_(\d+)@@/g, (_, index) => codeBlocks[Number(index)] || "");
+
+  return text;
 }
 
 /**
@@ -88,10 +146,19 @@ export async function getParsedChapter(
     const fileContent = await fs.readFile(filePath, "utf-8");
 
     // Remove leading H1 if present to avoid duplication with page hero header
-    const cleanedMarkdown = fileContent.replace(/^#\s+[^\n]+\n+/, "");
+    let cleanedMarkdown = fileContent.replace(/^#\s+[^\n]+\n+/, "");
+
+    // Sanitize any accidental file:/// links or local drive paths
+    cleanedMarkdown = cleanedMarkdown
+      .replace(/\[([^\]]+)\]\(file:\/\/\/[^\)]+\)/g, "")
+      .replace(/file:\/\/\/[^\s\)]+/g, "")
+      .replace(/---\s*$/, "");
 
     // Extract Table of Contents
     const tableOfContents = extractTableOfContents(cleanedMarkdown);
+
+    // Render LaTeX Math Formulas with KaTeX
+    const mathProcessedMarkdown = renderMathInMarkdown(cleanedMarkdown);
 
     // Track heading counts during marked rendering to match TOC IDs
     const renderSlugCounts = new Map<string, number>();
@@ -102,7 +169,7 @@ export async function getParsedChapter(
         heading({ tokens, depth, text }) {
           const rawText = text || "";
           let slug = slugifyHeading(rawText);
-          if (!slug) slug = depth === 2 ? "section" : "heading";
+          if (!slug) slug = depth <= 2 ? "section" : "heading";
 
           const count = renderSlugCounts.get(slug) || 0;
           renderSlugCounts.set(slug, count + 1);
@@ -110,7 +177,8 @@ export async function getParsedChapter(
 
           const inlineHtml = this.parser.parseInline(tokens);
 
-          if (depth === 2) {
+          // Treat depth 1 or 2 as major section header with permalink
+          if (depth <= 2) {
             return `<div class="group scroll-mt-24 mt-12 mb-5 pb-2 border-b border-border/60 flex items-center justify-between"><h2 id="${uniqueId}" class="font-extrabold text-2xl text-foreground tracking-tight m-0">${inlineHtml}</h2><a href="#${uniqueId}" class="text-xs text-primary/50 opacity-0 group-hover:opacity-100 transition-opacity ml-2 font-mono px-2 py-1 rounded hover:bg-surface-raised" aria-label="Permalink to section">#</a></div>\n`;
           }
 
@@ -118,30 +186,40 @@ export async function getParsedChapter(
             const lower = rawText.toLowerCase();
 
             // Pedagogical callout header transformations
-            if (rawText.includes("💡") || lower.includes("concept")) {
-              return `<div class="callout-heading callout-concept scroll-mt-28 mt-8 mb-3 p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-between"><div class="flex items-center gap-2 font-bold text-emerald-700 dark:text-emerald-400"><span class="text-lg">💡</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-emerald-700 dark:text-emerald-400">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-emerald-500/50 hover:text-emerald-500 font-mono px-1">#</a></div>\n`;
+            if (
+              rawText.includes("💡") ||
+              lower.includes("concept") ||
+              lower.includes("intuition")
+            ) {
+              return `<div class="callout-heading callout-concept scroll-mt-28 mt-8 mb-3 p-3.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-emerald-800 dark:text-emerald-300"><span class="text-lg">💡</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-emerald-800 dark:text-emerald-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-emerald-500/50 hover:text-emerald-500 font-mono px-1">#</a></div>\n`;
             }
 
-            if (rawText.includes("🧠") || lower.includes("intuition")) {
-              return `<div class="callout-heading callout-intuition scroll-mt-28 mt-8 mb-3 p-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10 flex items-center justify-between"><div class="flex items-center gap-2 font-bold text-indigo-700 dark:text-indigo-400"><span class="text-lg">🧠</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-indigo-700 dark:text-indigo-400">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-indigo-500/50 hover:text-indigo-500 font-mono px-1">#</a></div>\n`;
+            if (
+              rawText.includes("🧠") ||
+              lower.includes("mental model") ||
+              lower.includes("core idea")
+            ) {
+              return `<div class="callout-heading callout-intuition scroll-mt-28 mt-8 mb-3 p-3.5 rounded-2xl border border-indigo-500/30 bg-indigo-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-indigo-800 dark:text-indigo-300"><span class="text-lg">🧠</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-indigo-800 dark:text-indigo-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-indigo-500/50 hover:text-indigo-500 font-mono px-1">#</a></div>\n`;
             }
 
             if (
               rawText.includes("⚠️") ||
               lower.includes("pitfall") ||
               lower.includes("edge case") ||
-              lower.includes("warning")
+              lower.includes("warning") ||
+              lower.includes("traps")
             ) {
-              return `<div class="callout-heading callout-warning scroll-mt-28 mt-8 mb-3 p-3 rounded-xl border border-amber-500/30 bg-amber-500/10 flex items-center justify-between"><div class="flex items-center gap-2 font-bold text-amber-700 dark:text-amber-400"><span class="text-lg">⚠️</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-amber-700 dark:text-amber-400">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-amber-500/50 hover:text-amber-500 font-mono px-1">#</a></div>\n`;
+              return `<div class="callout-heading callout-warning scroll-mt-28 mt-8 mb-3 p-3.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-amber-800 dark:text-amber-300"><span class="text-lg">⚠️</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-amber-800 dark:text-amber-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-amber-500/50 hover:text-amber-500 font-mono px-1">#</a></div>\n`;
             }
 
             if (
               rawText.includes("⚙️") ||
               lower.includes("memory") ||
               lower.includes("hardware") ||
-              lower.includes("layout")
+              lower.includes("layout") ||
+              lower.includes("cache")
             ) {
-              return `<div class="callout-heading callout-memory scroll-mt-28 mt-8 mb-3 p-3 rounded-xl border border-sky-500/30 bg-sky-500/10 flex items-center justify-between"><div class="flex items-center gap-2 font-bold text-sky-700 dark:text-sky-400"><span class="text-lg">⚙️</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-sky-700 dark:text-sky-400">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-sky-500/50 hover:text-sky-500 font-mono px-1">#</a></div>\n`;
+              return `<div class="callout-heading callout-memory scroll-mt-28 mt-8 mb-3 p-3.5 rounded-2xl border border-sky-500/30 bg-sky-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-sky-800 dark:text-sky-300"><span class="text-lg">⚙️</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-sky-800 dark:text-sky-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-sky-500/50 hover:text-sky-500 font-mono px-1">#</a></div>\n`;
             }
 
             return `<div class="group scroll-mt-28 mt-7 mb-3 flex items-center justify-between"><h3 id="${uniqueId}" class="font-bold text-lg text-foreground m-0">${inlineHtml}</h3><a href="#${uniqueId}" class="text-xs text-primary/50 opacity-0 group-hover:opacity-100 transition-opacity ml-2 font-mono px-2 py-0.5 rounded hover:bg-surface-raised" aria-label="Permalink to section">#</a></div>\n`;
@@ -153,13 +231,36 @@ export async function getParsedChapter(
 
           return `<h${depth} id="${uniqueId}" class="scroll-mt-28 font-semibold mt-4 mb-2 text-foreground">${inlineHtml}</h${depth}>\n`;
         },
-        table({ header, rows }) {
-          return `<div class="overflow-x-auto my-6 rounded-2xl border border-border neu-inset p-1"><table class="w-full text-left text-sm border-collapse">${header}${rows}</table></div>`;
+
+        // Marked v18 table renderer fix: parse token cells cleanly without [object Object]
+        table(token) {
+          const headerHtml = token.header
+            .map((cell) => {
+              const align = cell.align ? ` text-${cell.align}` : " text-left";
+              return `<th class="p-3.5 font-bold text-foreground border-b-2 border-border/80 bg-surface-raised/70${align}">${this.parser.parseInline(cell.tokens)}</th>`;
+            })
+            .join("");
+
+          const bodyHtml = token.rows
+            .map((row) => {
+              const cells = row
+                .map((cell) => {
+                  const align = cell.align ? ` text-${cell.align}` : " text-left";
+                  return `<td class="p-3.5 text-muted-foreground border-b border-border/40 font-mono text-xs md:text-sm${align}">${this.parser.parseInline(cell.tokens)}</td>`;
+                })
+                .join("");
+              return `<tr class="hover:bg-surface-raised/50 transition-colors">${cells}</tr>`;
+            })
+            .join("");
+
+          return `<div class="overflow-x-auto my-7 rounded-2xl border border-border/80 neu-inset bg-surface/50 p-1 shadow-inner"><table class="w-full text-left border-collapse"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table></div>`;
         },
+
         blockquote({ tokens }) {
           const body = this.parser.parse(tokens);
           return `<blockquote class="border-l-4 border-primary pl-4 py-2 my-5 text-foreground/90 bg-surface-raised/40 rounded-r-xl font-medium">${body}</blockquote>`;
         },
+
         code({ text, lang }) {
           const language = lang || "text";
           const isAsciiDiagram =
@@ -167,19 +268,21 @@ export async function getParsedChapter(
             (text.includes("┌") ||
               text.includes("╔") ||
               text.includes("───") ||
-              text.includes("|") ||
+              text.includes("|  ") ||
               text.includes("RAM") ||
               text.includes("HEAP") ||
-              text.includes("STACK"));
+              text.includes("STACK") ||
+              text.includes("Index:") ||
+              text.includes("Array:"));
 
           const escaped = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-          return `<div class="code-block-wrapper relative my-6 rounded-2xl overflow-hidden border border-border/80 bg-surface/90 neu-raised group"><div class="flex items-center justify-between px-4 py-2.5 bg-surface-raised/80 border-b border-border/60 text-xs font-mono text-muted-foreground"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-green-500/60 inline-block"></span><span class="ml-2 font-semibold text-foreground/80">${language}</span>${isAsciiDiagram ? '<span class="ml-2 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-sans font-bold uppercase tracking-wider">Physical Memory Layout</span>' : ""}</div><button onclick="navigator.clipboard.writeText(this.closest('.code-block-wrapper').querySelector('code').innerText); this.innerText='Copied!'; setTimeout(() => this.innerText='Copy', 2000)" class="text-[11px] font-sans font-medium px-2.5 py-1 rounded-lg border border-border bg-surface hover:bg-surface-raised text-foreground/70 hover:text-foreground transition-all cursor-pointer">Copy</button></div><pre class="p-4 md:p-5 text-xs md:text-sm font-mono overflow-x-auto leading-relaxed text-foreground/90 bg-background/50"><code>${escaped}</code></pre></div>`;
+          return `<div class="code-block-wrapper relative my-6 rounded-2xl overflow-hidden border border-border/80 bg-surface/90 neu-raised group"><div class="flex items-center justify-between px-4 py-2.5 bg-surface-raised/80 border-b border-border/60 text-xs font-mono text-muted-foreground"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-green-500/60 inline-block"></span><span class="ml-2 font-semibold text-foreground/80">${language}</span>${isAsciiDiagram ? '<span class="ml-2 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-sans font-bold uppercase tracking-wider">Physical Memory Layout</span>' : ""}</div><button onclick="navigator.clipboard.writeText(this.closest('.code-block-wrapper').querySelector('code').innerText); this.innerText='Copied!'; setTimeout(() => this.innerText='Copy', 2000)" class="text-[11px] font-sans font-medium px-2.5 py-1 rounded-lg border border-border bg-surface hover:bg-surface-raised text-foreground/70 hover:text-foreground transition-all cursor-pointer">Copy</button></div><pre class="p-4 md:p-5 text-xs md:text-sm font-mono overflow-x-auto leading-relaxed text-foreground/90 bg-background/50"><code>${escaped}</code></pre></div>`;
         },
       },
     });
 
-    const htmlContent = await marked.parse(cleanedMarkdown);
+    const htmlContent = await marked.parse(mathProcessedMarkdown);
 
     // Compute metrics
     const words = fileContent.trim().split(/\s+/).filter(Boolean).length;

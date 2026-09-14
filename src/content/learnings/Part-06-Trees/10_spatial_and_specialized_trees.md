@@ -1,4 +1,4 @@
-# 🌐 Part 06: Trees — Module 10: Spatial & Specialized Trees (Kd-Trees, Quadtrees, Cartesian & Threaded Trees)
+# Part 06: Trees — Module 10: Spatial & Specialized Trees (Kd-Trees, Quadtrees, Cartesian & Threaded Trees)
 
 > **Topics Covered:**  
 > 97d. Kd-Trees & Multidimensional Orthogonal Partitioning &bull; 97e. Nearest Neighbor (k-NN) Pruning & Range Queries &bull; 97f. Quadtrees (2D) & Octrees (3D) in Spatial Indexing &bull; 97g. Cartesian Trees & The Monotonic Stack $O(n)$ Construction &bull; 97h. The RMQ $\iff$ LCA Equivalence &bull; 97i. Threaded Binary Trees & Stackless Inorder Traversals
@@ -178,7 +178,7 @@ FUNCTION InorderSuccessor(node):
 
 ---
 
-## 🔁 Module 10 Summary & Key Takeaways
+## Module 10 Summary & Key Takeaways
 
 1. **Kd-Trees** alternate splitting hyperplanes across $k$ dimensions, enabling efficient nearest neighbor searches with branch pruning.
 2. **Quadtrees** decompose 2D space into 4 quadrants, accelerating collision detection and $N$-body simulations.
@@ -186,4 +186,9 @@ FUNCTION InorderSuccessor(node):
 4. **Threaded Trees** eliminate traversal stack memory by repurposing null leaf pointers as predecessor/successor highway links.
 
 ---
-[⬅️ Previous: Module 09 — Tries & String Trees](file:///d:/DSA/Part-06-Trees/09_tries_and_string_trees.md) | [Next: Part 07 — Graphs ➡️](file:///d:/DSA/Part-07-Graphs/01_graph_types_and_taxonomy.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
+2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
+3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.

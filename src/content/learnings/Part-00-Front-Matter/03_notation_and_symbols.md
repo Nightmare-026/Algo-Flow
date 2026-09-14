@@ -1,4 +1,4 @@
-# 📐 Part 00: Front Matter — DSA Notation, Mathematical Symbols & Pseudocode Standard
+# Part 00: Front Matter — DSA Notation, Mathematical Symbols & Pseudocode Standard
 
 ---
 
@@ -133,4 +133,9 @@ ALGORITHM BinarySearch(A, target)
 ```
 
 ---
-[⬅️ Previous: DSA Roadmap](file:///d:/DSA/Part-00-Front-Matter/02_dsa_roadmap.md) | [Next: Complexity Quick Reference ➡️](file:///d:/DSA/Part-00-Front-Matter/04_complexity_quick_ref.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 1–3. MIT Press.
+2. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.). Addison-Wesley.
+3. **IEEE / ACM Computing Curricula Guidelines** (2020). Curriculum Guidelines for Undergraduate Degree Programs in Computer Science.

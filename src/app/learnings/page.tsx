@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { safeJsonLd } from "@/lib/security/safe-json";
 import { SITE_NAME } from "@/lib/constants/site";
+import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: `DSA Curriculum — 62 In-Depth Chapters & Architectural Blueprints | ${SITE_NAME}`,
@@ -46,6 +47,7 @@ export const metadata: Metadata = {
 export default function LearningsPage() {
   const modules = getAllModules();
   const stats = getCurriculumStats();
+  const siteUrl = getSiteUrl();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -56,7 +58,7 @@ export default function LearningsPage() {
     provider: {
       "@type": "Organization",
       name: SITE_NAME,
-      url: "https://algo-flow.com",
+      url: siteUrl,
     },
     hasCourseInstance: {
       "@type": "CourseInstance",

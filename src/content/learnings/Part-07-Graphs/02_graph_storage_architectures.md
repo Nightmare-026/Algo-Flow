@@ -1,4 +1,4 @@
-# 💾 Part 07: Graphs — Module 02: Graph Storage Architectures & Data Structures
+# Part 07: Graphs — Module 02: Graph Storage Architectures & Data Structures
 
 > **Topics Covered:**  
 > 103. Adjacency Matrix Representation & Matrix Powers ($A^k$) &bull; 104. Adjacency List Representation (Vectors vs Linked Nodes) &bull; 105. Edge List Representation &bull; 106. Compressed Sparse Row (CSR) & Compressed Sparse Column (CSC) in HPC & ML &bull; Incidence Matrix Representation &bull; Master Storage Benchmark & Hardware Cache Analysis
@@ -111,13 +111,13 @@ EDGE LIST:
 
 ### 5. Architecture 4: Compressed Sparse Row (CSR) & CSC in HPC / AI
 
-### 💡 THE HARDWARE PROBLEM WITH ADJACENCY LISTS:
+### Hardware Performance Bottleneck WITH ADJACENCY LISTS:
 In standard Adjacency Lists (`vector<vector<int>>`):
 - Each inner vector is a separate heap allocation.
 - Pointers to inner vectors are scattered across memory.
 - In High-Performance Computing (HPC), GPU graph processing (NVIDIA cuGraph), and Graph Neural Networks (PyTorch Geometric, DGL), pointer chasing cripples memory bandwidth!
 
-### 🚀 THE SOLUTION: Compressed Sparse Row (CSR)
+### Solution: Compressed Sparse Row (CSR)
 CSR packs the entire graph into **three flat, contiguous 1D primitive arrays** with **zero pointers**:
 1. `col_ind[]`: Flat array of length $|E|$ containing the destination neighbor IDs of all edges.
 2. `values[]`: Flat array of length $|E|$ containing edge weights.
@@ -185,7 +185,7 @@ Vertex 2:    [       0       │      +1       │      +1       ]
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## Module 02 Summary & Key Takeaways
 
 1. **Adjacency Matrix** provides $O(1)$ edge queries but wastes $\Theta(V^2)$ memory, making it unviable for large sparse graphs.
 2. The $k$-th power of an adjacency matrix ($A^k$) counts the exact number of paths of length $k$ between all node pairs.
@@ -193,4 +193,9 @@ Vertex 2:    [       0       │      +1       │      +1       ]
 4. **Compressed Sparse Row (CSR)** packs sparse graphs into 3 flat contiguous arrays (`row_ptr`, `col_ind`, `values`), delivering zero pointer overhead and maximum CPU/GPU cache performance in HPC and machine learning.
 
 ---
-[⬅️ Previous: Module 01 — Graph Types & Taxonomy](file:///d:/DSA/Part-07-Graphs/01_graph_types_and_taxonomy.md) | [Next: Module 03 — Traversals & Cycles ➡️](file:///d:/DSA/Part-07-Graphs/03_traversals_and_cycles.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 20–23 (Graph Algorithms, Minimum Spanning Trees, Shortest Paths). MIT Press.
+2. **Dijkstra, E. W.** (1959). A note on two problems in connexion with graphs. *Numerische Mathematik*, 1(1), 269–271.
+3. **Tarjan, R. E.** (1972). Depth-first search and linear graph algorithms. *SIAM Journal on Computing*, 1(2), 146–160.

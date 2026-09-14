@@ -1,4 +1,4 @@
-# 🌌 Part 10: Advanced DSA — Module 02: Advanced Graphs, Strings & Tree Techniques
+# Part 10: Advanced DSA — Module 02: Advanced Graphs, Strings & Tree Techniques
 
 > **Topics Covered:**  
 > 152. Strongly Connected Components (Tarjan & Kosaraju), Bridges & Articulation Points &bull; 153. Advanced String Search (KMP & The $\pi$ Prefix Table) &bull; 154. Advanced Tree Techniques (Euler Tour & Binary Lifting for LCA) &bull; 155. Advanced DP Paradigms (Bitmask DP & Digit DP)
@@ -156,7 +156,7 @@ $$\text{dp}[\text{mask} \ | \ (1 \ll v)][v] = \min_{v \notin \text{mask}} \Big( 
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## Module 02 Summary & Key Takeaways
 
 1. **Kosaraju's Algorithm** finds all Strongly Connected Components in directed graphs in $O(V + E)$ via graph transposition and 2 DFS passes.
 2. **KMP** matches strings in $O(n + m)$ without ever rewinding the text pointer by exploiting the $\pi$ (LPS) table.
@@ -164,4 +164,9 @@ $$\text{dp}[\text{mask} \ | \ (1 \ll v)][v] = \min_{v \notin \text{mask}} \Big( 
 4. **Binary Lifting** calculates the LCA of any two nodes in $O(\log N)$ time using powers-of-two ancestral tables.
 
 ---
-[⬅️ Previous: Module 01 — Range Query Structures](file:///d:/DSA/Part-10-Advanced-DSA/01_range_query_structures.md) | [Next: Module 03 — Tree Decompositions ➡️](file:///d:/DSA/Part-10-Advanced-DSA/03_tree_decompositions.md)
+
+## References & Academic Attribution
+
+1. **Fenwick, P. M.** (1994). A new data structure for cumulative frequency tables. *Software: Practice and Experience*, 24(3), 327–336.
+2. **Sleator, D. D., & Tarjan, R. E.** (1983). A data structure for dynamic trees. *Journal of Computer and System Sciences*, 26(3), 362–391.
+3. **Tarjan, R. E.** (1979). Applications of path compression on balanced trees. *Journal of the ACM (JACM)*, 26(4), 690–715.

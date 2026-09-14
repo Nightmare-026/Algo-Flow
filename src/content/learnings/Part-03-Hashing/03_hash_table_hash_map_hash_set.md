@@ -1,4 +1,4 @@
-# 🗄️ Part 03: Hashing — Module 03: Hash Table, Hash Map & Hash Set Architectures
+# Part 03: Hashing — Module 03: Hash Table, Hash Map & Hash Set Architectures
 
 > **Topics Covered:**  
 > 40. Hash Table Architecture & Dynamic Rehashing &bull; Hash Map (Key-Value Associative Dictionaries, Invariants & Entry Sets) &bull; Production Collision Optimizations (Java 8+ Bucket Treeification & Python Compact Hash Tables) &bull; Hash Set (Deduplication Engine, Backing Mechanics & Mathematical Set Operations) &bull; Master Comparison: Hash Table vs Hash Map vs Hash Set vs Tree Structures
@@ -48,7 +48,7 @@ In everyday software engineering, the terms **Hash Table**, **Hash Map**, and **
 
 ### 6. The Necessity of Dynamic Rehashing
 
-### 💡 CONCEPT
+### Concept
 As insertions increase, the load factor $\alpha = n / m$ increases. If the table capacity $m$ remains static:
 - In **Separate Chaining**, chains grow to average length $\alpha$. When $\alpha \gg 1$, search degrades to a disastrous **$\Theta(n)$ linear scan**!
 - In **Open Addressing**, probe sequences become extremely long. As $\alpha \to 1.0$, insertion time explodes towards infinity and open addressing fails completely.
@@ -211,10 +211,10 @@ DENSE ENTRIES ARRAY:   [ Entry 0 │ Entry 1 │ Entry 2 ]  (No empty gaps!)
 
 ### 1. Definition & Underlying Architecture
 
-### 💡 CONCEPT
+### Concept
 A **Hash Set** is an Abstract Data Type that models the mathematical concept of a **finite set**: a collection of distinct, unique elements with no inherent ordering and no duplicate items allowed.
 
-### 🧠 THE UNDERLYING ENGINE: Backed by a Hash Map!
+### THE UNDERLYING ENGINE: Backed by a Hash Map!
 In high-performance systems (including Java's `java.util.HashSet`, Python's `set`, and C++'s `std::unordered_set`), a Hash Set is almost never written from scratch. Instead, it is **internally implemented by wrapping a Hash Map**:
 - Every element added to the set is stored as a **Key** in the internal map.
 - The associated **Value** is a shared, static, 0-byte dummy sentinel constant (e.g., `PRESENT = new Object()`).
@@ -310,7 +310,7 @@ DATA STRUCTURE HashSet
 
 ---
 
-## 🔁 Module 03 Summary & Key Takeaways
+## Module 03 Summary & Key Takeaways
 
 1. **Hash Tables** map keys to bucket indices using modular arithmetic; when load factor $\alpha \ge 0.75$, **dynamic rehashing** must recompute all key indices in a doubled capacity array.
 2. A **Hash Map** associates unique keys with values; production implementations like Java 8+ convert degraded bucket chains into **Red-Black Trees** ($O(\log n)$) to foil Hash DoS attacks.
@@ -318,4 +318,9 @@ DATA STRUCTURE HashSet
 4. Use **Hash structures** for raw average $O(1)$ speed; use **Tree structures** when data must remain sorted or when range queries ($[L, R]$) are required.
 
 ---
-[⬅️ Previous: Module 02 — Collision Resolution](file:///d:/DSA/Part-03-Hashing/02_collision_resolution.md) | [Next: Module 04 — Advanced Hashing & Probabilistic Structures ➡️](file:///d:/DSA/Part-03-Hashing/04_advanced_hashing_and_probabilistic.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: Hash Tables. MIT Press.
+2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: Hashing. Addison-Wesley.
+3. **Mitzenmacher, M., & Upfal, E.** (2017). *Probability and Computing: Randomization and Probabilistic Techniques in Algorithms* (2nd ed.). Cambridge University Press.

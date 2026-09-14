@@ -1,4 +1,4 @@
-# 🔗 Part 02: Linear Data Structures — Module 03: Singly Linked Lists
+# Part 02: Linear Data Structures — Module 03: Singly Linked Lists
 
 > **Topics Covered:**  
 > 24. Singly Linked List Architecture & Heap Memory Layout &bull; Core Node Operations (Insert, Delete, Search, Access) &bull; In-Place 3-Pointer Reversal &bull; Floyd's Cycle-Finding Algorithm & Cycle Start Derivation &bull; Fast & Slow Pointer Patterns
@@ -24,10 +24,10 @@ Beginner to Intermediate.
 
 ### 5. Definition & Intuitive Mental Model
 
-### 💡 CONCEPT
+### Concept
 A **Singly Linked List** is a linear collection of data elements called **Nodes**, where the linear sequence is maintained not by physical adjacency in hardware memory, but by explicit unidirectional address pointers embedded within each node.
 
-### 🧠 INTUITION: The Scavenger Hunt Analogy
+### Intuition: The Scavenger Hunt Analogy
 Think of an Array as a row of numbered lockers placed side-by-side in a corridor ($0, 1, 2, 3$). To inspect locker 3, you simply walk directly to it in $O(1)$ time because its address is physically contiguous.
 
 A Singly Linked List, by contrast, is a **treasure hunt / scavenger hunt**:
@@ -305,7 +305,7 @@ ALGORITHM ReverseList(head)
 
 ### 12. Floyd's Cycle-Finding Algorithm (Tortoise and Hare)
 
-### 💡 CONCEPT
+### Concept
 Given a linked list, determine if it contains a closed loop (cycle) and identify the exact node where the cycle begins, using only $O(1)$ auxiliary space.
 
 ```text
@@ -400,7 +400,7 @@ ALGORITHM FindCycleEntry(head)
 
 ---
 
-## 🔁 Module 03 Summary & Key Takeaways
+## Module 03 Summary & Key Takeaways
 
 1. **Singly Linked Lists** excel at constant-time insertion and deletion at the head ($O(1)$), but cannot support $O(1)$ random indexing.
 2. In-place reversal uses **3 sliding pointers** (`prev`, `curr`, `nextNode`) in $O(n)$ time and $O(1)$ memory.
@@ -408,4 +408,9 @@ ALGORITHM FindCycleEntry(head)
 4. Linked lists incur non-trivial pointer memory overhead (8 bytes per node) and poor CPU cache locality compared to contiguous arrays.
 
 ---
-[⬅️ Previous: Module 02 — Strings & Matrices](file:///d:/DSA/Part-02-Linear-Data-Structures/02_strings_and_matrices.md) | [Next: Module 04 — Doubly & Circular Linked Lists ➡️](file:///d:/DSA/Part-02-Linear-Data-Structures/04_doubly_and_circular_linked_lists.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
+3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.

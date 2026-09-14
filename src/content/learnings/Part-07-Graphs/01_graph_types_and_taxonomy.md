@@ -1,4 +1,4 @@
-# 🕸️ Part 07: Graphs — Module 01: Graph Types & Master Taxonomy
+# Part 07: Graphs — Module 01: Graph Types & Master Taxonomy
 
 > **Topics Covered:**  
 > 98. Graph Anatomy & The Handshaking Lemma &bull; 99. Directed Graphs (Digraphs) vs Undirected Graphs &bull; 100. Weighted vs Unweighted Graphs &bull; 101. Directed Acyclic Graphs (DAGs) & Invariants &bull; 102. Bipartite Graphs & The Odd Cycle Theorem &bull; Complete Graphs ($K_n, K_{m,n}$) &bull; Dense vs Sparse Graphs & The Sparsity Threshold &bull; Special Graph Classes: Trees, Forests, Planar Graphs, Eulerian & Hamiltonian Topologies
@@ -24,12 +24,12 @@ Intermediate.
 
 ### 5. Definition & Intuitive Mental Model
 
-### 💡 CONCEPT
+### Concept
 A **Graph** $G = (V, E)$ is a non-linear data structure consisting of:
 - A finite, non-empty set of **Vertices (Nodes)** $V = \{v_1, v_2, \dots, v_n\}$.
 - A set of **Edges (Arcs)** $E \subseteq V \times V$, where each edge connects a pair of vertices $(u, v)$.
 
-### 🧠 INTUITION: The Network of Relationships
+### Intuition: The Network of Relationships
 Unlike trees, which are bound to a strict single root and hierarchical parent-child relationships with zero cycles:
 - Graphs have **no root**.
 - Graphs have **no hierarchy**.
@@ -52,7 +52,7 @@ GENERAL GRAPH TOPOLOGY:
 
 ### 6. The Fundamental Invariant: Euler's Handshaking Lemma
 
-### 💡 THE THEOREM (Leonhard Euler, 1736):
+### Theorem (Leonhard Euler, 1736):
 In any undirected graph $G = (V, E)$, the sum of degrees of all vertices equals **exactly twice the number of edges**:
 
 $$\sum_{v \in V} \deg(v) = 2 |E|$$
@@ -139,7 +139,7 @@ $$(u) \xrightarrow{\quad w = 15 \quad} (v)$$
 
 ### 1. Definition & Motivation
 
-### 💡 CONCEPT
+### Concept
 A **Directed Acyclic Graph (DAG)** is a directed graph containing **zero directed cycles**:
 - You can never start at any vertex $v$ and follow directed edges to return to $v$.
 
@@ -176,7 +176,7 @@ A VALID DIRECTED ACYCLIC GRAPH (DAG):
 
 ### 1. Definition
 
-### 💡 CONCEPT
+### Concept
 An undirected graph $G = (V, E)$ is **Bipartite** if its vertex set $V$ can be partitioned into two disjoint subsets $V_1$ and $V_2$ ($V = V_1 \cup V_2$ with $V_1 \cap V_2 = \emptyset$) such that **every edge** connects a vertex in $V_1$ to a vertex in $V_2$.
 - **No edge exists between vertices in the same set!**
 
@@ -192,7 +192,7 @@ SET V₂ (Color BLUE):         (1)         (2)
 
 ### 2. The Odd Cycle Theorem
 
-### 💡 THE THEOREM (Dénes Kőnig, 1936):
+### Theorem (Dénes Kőnig, 1936):
 *A graph is **Bipartite** if and only if it contains **NO odd-length cycles**!*
 
 #### Proof Intuition (2-Coloring):
@@ -290,7 +290,7 @@ $$E \le 3V - 6$$
 
 ---
 
-## 🔁 Module 01 Summary & Key Takeaways
+## Module 01 Summary & Key Takeaways
 
 1. **The Handshaking Lemma** guarantees that $\sum \deg(v) = 2|E|$, proving the number of odd-degree vertices in any graph must be even.
 2. In **Directed Graphs**, $\sum \text{in-deg}(v) = \sum \text{out-deg}(v) = |E|$.
@@ -299,4 +299,9 @@ $$E \le 3V - 6$$
 5. **Eulerian paths** traverse every *edge* once ($O(V+E)$), while **Hamiltonian cycles** visit every *vertex* once (NP-Complete).
 
 ---
-[⬅️ Previous: Part 06 Trees](file:///d:/DSA/Part-06-Trees/10_spatial_and_specialized_trees.md) | [Next: Module 02 — Graph Storage Architectures ➡️](file:///d:/DSA/Part-07-Graphs/02_graph_storage_architectures.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 20–23 (Graph Algorithms, Minimum Spanning Trees, Shortest Paths). MIT Press.
+2. **Dijkstra, E. W.** (1959). A note on two problems in connexion with graphs. *Numerische Mathematik*, 1(1), 269–271.
+3. **Tarjan, R. E.** (1972). Depth-first search and linear graph algorithms. *SIAM Journal on Computing*, 1(2), 146–160.

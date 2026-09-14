@@ -1,4 +1,4 @@
-# 🔄 Part 04: Searching — Module 03: Rotated Arrays & Binary Search on Answer Space
+# Part 04: Searching — Module 03: Rotated Arrays & Binary Search on Answer Space
 
 > **Topics Covered:**  
 > 48. Search in Rotated Sorted Array & Pivot Identification &bull; 49. Binary Search on Monotonic Answer Space (Optimization Problems)
@@ -165,11 +165,16 @@ ALGORITHM CanShip(W, n, D, cap)
 
 ---
 
-## 🔁 Module 03 Summary & Key Takeaways
+## Module 03 Summary & Key Takeaways
 
 1. In **Rotated Sorted Arrays**, at least one half is always sorted; compare $A[\text{low}]$ with $A[\text{mid}]$ to choose the active search half in $O(\log n)$ time.
 2. **Binary Search on Answer** transforms difficult optimization problems into a sequence of simple greedy verification checks ($P(x)$).
 3. Whenever a question asks for "Minimum of Maximums" or "Maximum of Minimums", test for monotonicity and apply Binary Search on the Answer space.
 
 ---
-[⬅️ Previous: Module 02 — Bounds & Occurrences](file:///d:/DSA/Part-04-Searching/02_bounds_and_occurrences.md) | [Next: Part 05 — Sorting ➡️](file:///d:/DSA/Part-05-Sorting/01_elementary_sorts.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Section 2.3 & Chapter 12. MIT Press.
+2. **Bentley, J.** (2000). *Programming Pearls* (2nd ed.), Column 4: Writing Correct Programs. Addison-Wesley.
+3. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.2: Searching by Comparison of Keys. Addison-Wesley.

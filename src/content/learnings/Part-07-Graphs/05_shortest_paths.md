@@ -1,4 +1,4 @@
-# 🚀 Part 07: Graphs — Module 05: Shortest Path Algorithms
+# Part 07: Graphs — Module 05: Shortest Path Algorithms
 
 > **Topics Covered:**  
 > 114. Dijkstra's Algorithm (Greedy SSSP with Min-Heap) &bull; 115. Bellman-Ford Algorithm (Negative Weights & Cycle Detection) &bull; 116. Floyd-Warshall Algorithm (All-Pairs Shortest Paths via Dynamic Programming)
@@ -166,11 +166,16 @@ ALGORITHM FloydWarshall(adjMatrix, V)
 
 ---
 
-## 🔁 Module 05 Summary & Key Takeaways
+## Module 05 Summary & Key Takeaways
 
 1. **Dijkstra's Algorithm** is the fastest SSSP algorithm for non-negative graphs ($O((V+E)\log V)$), but fails when negative weights are present.
 2. **Bellman-Ford** handles negative edge weights and detects negative cycles by relaxing all edges $V - 1$ times ($O(V \cdot E)$).
 3. **Floyd-Warshall** computes All-Pairs Shortest Paths in $O(V^3)$ via DP; the intermediate vertex $k$ must always be the outermost loop.
 
 ---
-[⬅️ Previous: Module 04 — Topological Sort & DAGs](file:///d:/DSA/Part-07-Graphs/04_topological_sort_and_dags.md) | [Next: Module 06 — Spanning Trees & DSU ➡️](file:///d:/DSA/Part-07-Graphs/06_spanning_trees_and_dsu.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 20–23 (Graph Algorithms, Minimum Spanning Trees, Shortest Paths). MIT Press.
+2. **Dijkstra, E. W.** (1959). A note on two problems in connexion with graphs. *Numerische Mathematik*, 1(1), 269–271.
+3. **Tarjan, R. E.** (1972). Depth-first search and linear graph algorithms. *SIAM Journal on Computing*, 1(2), 146–160.

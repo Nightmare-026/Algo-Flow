@@ -1,4 +1,4 @@
-# 📚 Part 11: Problem Bank — Volume 03: Hashing & Binary Search (80 Problems)
+# Part 11: Problem Bank — Volume 03: Hashing & Binary Search (80 Problems)
 
 > **Problems Covered:** Q161 to Q240  
 > **Patterns:** Hash Tables & Frequencies &bull; Prefix Sum Remainder Modulo &bull; Rolling Hash &bull; Binary Search on Sorted Arrays &bull; Rotated Array Partitioning &bull; Binary Search on Answer Space &bull; Sweep-Line Hash Maps
@@ -572,4 +572,9 @@
 - **Edge Cases:** Number is 1 or $n$.
 
 ---
-[⬅️ Previous: Volume 02 — Linked Lists, Stacks & Queues](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/02_linked_lists_stacks_queues_60.md) | [Next: Volume 04 — Trees, BSTs, Heaps & Tries (Q241–Q340) ➡️](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/04_trees_bst_tries_heaps_100.md)
+
+## References & Academic Attribution
+
+1. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+3. **USA Computing Olympiad (USACO)** & **CP-Algorithms Archives** (2024). Curated Competitive Programming and Algorithm Verification Standards.

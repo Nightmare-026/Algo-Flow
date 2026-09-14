@@ -1,4 +1,4 @@
-# 📚 Part 11: Problem Bank — Volume 02: Linked Lists, Stacks, Queues & Monotonic Structures (60 Problems)
+# Part 11: Problem Bank — Volume 02: Linked Lists, Stacks, Queues & Monotonic Structures (60 Problems)
 
 > **Problems Covered:** Q101 to Q160  
 > **Patterns:** Fast & Slow Pointers &bull; In-Place List Reversal &bull; Dummy Head Sentinel &bull; Monotonic Stack &bull; Monotonic Deque &bull; Parentheses & Expression Parsing &bull; LRU/LFU Cache Architecture
@@ -432,4 +432,9 @@
 - **Edge Cases:** Flat sequences `()()` vs deeply nested `((()))`.
 
 ---
-[⬅️ Previous: Volume 01 — Arrays & Strings](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/01_arrays_strings_pointers_100.md) | [Next: Volume 03 — Hashing & Search (Q161–Q240) ➡️](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/03_hashing_and_search_80.md)
+
+## References & Academic Attribution
+
+1. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+3. **USA Computing Olympiad (USACO)** & **CP-Algorithms Archives** (2024). Curated Competitive Programming and Algorithm Verification Standards.

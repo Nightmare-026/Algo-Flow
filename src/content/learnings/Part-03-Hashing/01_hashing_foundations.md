@@ -1,4 +1,4 @@
-# 🗝️ Part 03: Hashing — Module 01: Foundations, Hash Functions & Load Factor
+# Part 03: Hashing — Module 01: Foundations, Hash Functions & Load Factor
 
 > **Topics Covered:**  
 > 32. Hashing Principles & Direct Address Table Comparison &bull; 33. Hash Functions & Uniform Distribution &bull; 34. Collisions, The Birthday Paradox & Load Factor ($\alpha$)
@@ -124,7 +124,7 @@ For $m = 365$: $n \approx 1.177 \sqrt{365} \approx \mathbf{22.49} \implies \math
 
 ### 3. The Load Factor ($\alpha$)
 
-### 💡 CONCEPT
+### Concept
 The **Load Factor $\alpha$** measures how densely occupied the hash table is:
 
 $$\alpha = \frac{n}{m} = \frac{\text{Total number of stored keys}}{\text{Total number of available slots in table}}$$
@@ -136,7 +136,7 @@ When $\alpha$ crosses the threshold, the hash table must perform **Rehashing** (
 
 ---
 
-## 🔁 Module 01 Summary & Key Takeaways
+## Module 01 Summary & Key Takeaways
 
 1. **Hashing** compresses a huge key universe into a small table index $[0, m-1]$ in expected $O(1)$ time.
 2. A good hash function is deterministic, uniformly distributed, and computationally fast.
@@ -144,4 +144,9 @@ When $\alpha$ crosses the threshold, the hash table must perform **Rehashing** (
 4. **Load factor $\alpha = n/m$** dictates hash table performance; keeping $\alpha \le 0.75$ guarantees expected $O(1)$ operations.
 
 ---
-[⬅️ Previous: Part 02 Linear Structures](file:///d:/DSA/Part-02-Linear-Data-Structures/08_deques_and_priority_queues.md) | [Next: Module 02 — Collision Resolution ➡️](file:///d:/DSA/Part-03-Hashing/02_collision_resolution.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: Hash Tables. MIT Press.
+2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: Hashing. Addison-Wesley.
+3. **Mitzenmacher, M., & Upfal, E.** (2017). *Probability and Computing: Randomization and Probabilistic Techniques in Algorithms* (2nd ed.). Cambridge University Press.

@@ -1,4 +1,4 @@
-# ⚡ Part 05: Sorting — Module 02: Divide & Conquer and Heap Sorts
+# Part 05: Sorting — Module 02: Divide & Conquer and Heap Sorts
 
 > **Topics Covered:**  
 > 53. Merge Sort (Divide & Conquer, Merging & Stability) &bull; 54. Quick Sort (Partitioning Schemes, Pivot Strategies & Dutch National Flag) &bull; 55. Heap Sort (Max-Heap, In-Place Sorting & $O(n)$ Build-Heap Derivation)
@@ -233,11 +233,16 @@ $$\text{Total Work} = \frac{n}{2} \times 2 = \mathbf{O(n)} \quad \blacksquare$$
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## Module 02 Summary & Key Takeaways
 
 1. **Merge Sort** guarantees $O(n \log n)$ time and is stable, but requires $O(n)$ extra memory buffer.
 2. **Quick Sort** is the fastest in practice due to contiguous memory access and $O(\log n)$ auxiliary space, but has an $O(n^2)$ worst case on pathological pivots.
 3. **Heap Sort** guarantees $O(n \log n)$ in-place ($O(1)$ space), but runs slower than QuickSort due to scattered cache access.
 
 ---
-[⬅️ Previous: Module 01 — Elementary Sorts](file:///d:/DSA/Part-05-Sorting/01_elementary_sorts.md) | [Next: Module 03 — Linear Time Sorts ➡️](file:///d:/DSA/Part-05-Sorting/03_linear_time_sorts.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 6–8 (Heapsort, Quicksort, Linear-Time Sorting). MIT Press.
+2. **Hoare, C. A. R.** (1962). Quicksort. *The Computer Journal*, 5(1), 10–16.
+3. **Sedgewick, R.** (1978). Implementing Quicksort programs. *Communications of the ACM*, 21(10), 847–857.

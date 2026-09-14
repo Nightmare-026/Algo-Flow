@@ -1,4 +1,4 @@
-# 🧩 Part 01: Foundations — Module 02: Problem-Solving Methodology, Pseudocode & Flowcharts
+# Part 01: Foundations — Module 02: Problem-Solving Methodology, Pseudocode & Flowcharts
 
 > **Topics Covered:**  
 > 7. Problem-Solving Methodology & Framework &bull; 8. Pseudocode Standards & Control Flow &bull; 9. Flowchart Architecture & ISO Symbols
@@ -51,10 +51,10 @@ To optimize from brute force, look for:
 
 ## 8. Pseudocode Basics & Universal Standards
 
-### 💡 CONCEPT
+### Concept
 **Pseudocode** is an artificial, informal, high-level description of an algorithm. It uses the structural conventions of modern programming languages but omits language-specific syntax, type declarations, and memory-management boilerplate to emphasize the mathematical logic.
 
-### 📌 Universal Syntax Rules
+### Universal Syntax Rules
 
 ```text
 Rule 1: Line Numbers       Every instruction line is numbered (1., 2., 3...)
@@ -110,7 +110,7 @@ Rule 6: Return Values      Explicit 'return <value>' at exit points
 
 ## 9. Flowchart Basics & ISO Standards
 
-### 💡 CONCEPT
+### Concept
 A **Flowchart** is a diagrammatic, graphical representation of an algorithm displaying the sequential flow of control, decisions, and data transformations using standardized ISO geometric symbols.
 
 ### ISO Flowchart Symbol Legend
@@ -196,11 +196,16 @@ The following diagram illustrates the complete control flow for searching target
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## Module 02 Summary & Key Takeaways
 
 1. **Structured Problem Solving**: Clarify constraints first $\rightarrow$ simulate manually $\rightarrow$ build brute force baseline $\rightarrow$ optimize via B.U.D. $\rightarrow$ dry run with state tables $\rightarrow$ code.
 2. **Pseudocode** eliminates syntactic noise and emphasizes universal mathematical logic with unambiguous line numbering.
 3. **Flowcharts** make branch conditions, loop cycles, and termination boundaries visually unmistakable.
 
 ---
-[⬅️ Previous: Module 01 — Data & Algorithms](file:///d:/DSA/Part-01-Foundations/01_data_and_algorithms.md) | [Next: Module 03 — Asymptotic Analysis ➡️](file:///d:/DSA/Part-01-Foundations/03_asymptotic_analysis.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 3: Characterizing Running Times. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.4: Analysis of Algorithms. Addison-Wesley.
+3. **Sipser, M.** (2012). *Introduction to the Theory of Computation* (3rd ed.). Cengage Learning.

@@ -1,4 +1,4 @@
-# ⚡ Part 05: Sorting — Module 03: Non-Comparison Linear Time Sorts
+# Part 05: Sorting — Module 03: Non-Comparison Linear Time Sorts
 
 > **Topics Covered:**  
 > 56. Counting Sort (Frequency Hashing & Stable Reconstruction) &bull; 57. Radix Sort (LSD vs MSD Positional Sorting) &bull; 58. Bucket Sort (Uniform Distribution & Scatter-Gather)
@@ -135,11 +135,16 @@ BUCKET 7: [ 0.78 ]
 
 ---
 
-## 🔁 Module 03 Summary & Key Takeaways
+## Module 03 Summary & Key Takeaways
 
 1. **Counting Sort** sorts bounded integers $[0, k]$ in $O(n + k)$ time via prefix frequency counts.
 2. **Radix Sort** breaks large integers into $d$ digits, sorting from least significant to most significant in $O(d(n+b))$ time using a stable sub-sorter.
 3. **Bucket Sort** delivers expected $O(n)$ runtime for uniformly distributed floating-point data by scattering into $n$ sub-intervals.
 
 ---
-[⬅️ Previous: Module 02 — Divide & Conquer Sorts](file:///d:/DSA/Part-05-Sorting/02_divide_and_conquer_sorts.md) | [Next: Module 04 — Sorting Theory & Master Comparison ➡️](file:///d:/DSA/Part-05-Sorting/04_sorting_theory_comparison.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 6–8 (Heapsort, Quicksort, Linear-Time Sorting). MIT Press.
+2. **Hoare, C. A. R.** (1962). Quicksort. *The Computer Journal*, 5(1), 10–16.
+3. **Sedgewick, R.** (1978). Implementing Quicksort programs. *Communications of the ACM*, 21(10), 847–857.

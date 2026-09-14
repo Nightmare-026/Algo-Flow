@@ -1,4 +1,4 @@
-# 🚀 Part 10: Advanced DSA — Module 01: Range Query Data Structures
+# Part 10: Advanced DSA — Module 01: Range Query Data Structures
 
 > **Topics Covered:**  
 > 148. Segment Tree (Point Updates & Range Queries in $O(\log N)$) &bull; 149. Segment Tree with Lazy Propagation ($O(\log N)$ Range Updates) &bull; 150. Fenwick Tree / Binary Indexed Tree (BIT & `i & (-i)`) &bull; 151. Sparse Table (Static Range Minimum Queries in strictly $O(1)$ Time)
@@ -78,7 +78,7 @@ What if we need to update an **entire range $[L, R]$** by adding $v$ to every el
 
 # TOPIC 150: FENWICK TREE (BINARY INDEXED TREE / BIT)
 
-### 1. Definition & The Magic of `i & (-i)`
+### 1. Definition & Low-Bit Isolation (`i & (-i)`)
 A **Fenwick Tree (BIT)** (invented by Peter Fenwick, 1994) supports prefix sum queries and point updates in $O(\log N)$ time with **zero pointer overhead and exactly $N + 1$ memory space** (no $4N$ expansion needed!).
 
 #### The Lowbit Isolation:
@@ -176,11 +176,16 @@ $$\text{ST}[k][i] = \min(\text{ST}[k-1][i], \ \text{ST}[k-1][i + 2^{k-1}])$$
 
 ---
 
-## 🔁 Module 01 Summary & Key Takeaways
+## Module 01 Summary & Key Takeaways
 
 1. **Segment Trees** handle point updates and range queries in $O(\log N)$ using $4N$ memory; **Lazy Propagation** enables $O(\log N)$ range updates.
 2. **Fenwick Trees (BIT)** achieve prefix sums and updates in $O(\log N)$ with ultra-lightweight code using `i & (-i)`.
 3. **Sparse Tables** exploit idempotency ($\min(x, x) = x$) to deliver **$O(1)$ constant-time Range Minimum Queries** after $O(N \log N)$ preprocessing.
 
 ---
-[⬅️ Previous: Part 09 Problem Solving Patterns](file:///d:/DSA/Part-09-Problem-Solving-Patterns/03_core_interview_patterns.md) | [Next: Module 02 — Advanced Topics ➡️](file:///d:/DSA/Part-10-Advanced-DSA/02_advanced_topics.md)
+
+## References & Academic Attribution
+
+1. **Fenwick, P. M.** (1994). A new data structure for cumulative frequency tables. *Software: Practice and Experience*, 24(3), 327–336.
+2. **Sleator, D. D., & Tarjan, R. E.** (1983). A data structure for dynamic trees. *Journal of Computer and System Sciences*, 26(3), 362–391.
+3. **Tarjan, R. E.** (1979). Applications of path compression on balanced trees. *Journal of the ACM (JACM)*, 26(4), 690–715.

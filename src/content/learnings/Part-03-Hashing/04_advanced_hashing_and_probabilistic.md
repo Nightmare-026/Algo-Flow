@@ -1,4 +1,4 @@
-# 🔬 Part 03: Hashing — Module 04: Advanced Collision Resolution & Probabilistic Hashing
+# Part 03: Hashing — Module 04: Advanced Collision Resolution & Probabilistic Hashing
 
 > **Topics Covered:**  
 > Cuckoo Hashing (Two Independent Hash Functions & Guaranteed $O(1)$ Worst-Case Lookup) &bull; Robin Hood Hashing (Probe Sequence Length Variance Minimization) &bull; 2-Level Perfect Hashing (FKS Scheme with Zero Collisions & $O(n)$ Space Proof) &bull; Bloom Filters (Zero False Negatives Probabilistic Membership) &bull; Count-Min Sketch & Merkle Trees
@@ -28,7 +28,7 @@ In standard open addressing or separate chaining:
 - Average lookup time is $O(1)$.
 - **Worst-case lookup time is $O(n)$** (or $O(\log n)$ with treeification). If multiple keys collide, you must step through a chain or probe sequence.
 
-### 💡 THE CUCKOO PRINCIPLE (Pagh & Rodler, 2001):
+### THE CUCKOO PRINCIPLE (Pagh & Rodler, 2001):
 Named after the European cuckoo bird, which lays its eggs in the nests of other birds, kicking out existing eggs to make room.
 
 In Cuckoo Hashing:
@@ -88,7 +88,7 @@ Intermediate to Advanced.
 ### 4. Motivation: The Curse of Long Probe Chains
 In standard Linear Probing, some lucky keys land directly in their home slot (Probe Sequence Length $\text{PSL} = 0$), while unlucky keys that arrived later get pushed $20$ or $30$ slots down the table ($\text{PSL} = 30$). This huge variance causes sluggish worst-case queries and cache thrashing.
 
-### 💡 THE ROBIN HOOD MOTTO:
+### THE ROBIN HOOD MOTTO:
 *"Take from the rich (keys with small PSL) and give to the poor (keys with large PSL)!"*
 
 ---
@@ -150,7 +150,7 @@ If you hash $n$ keys into a single hash table of size $m$:
 $$m = \Theta(n^2)$$
 - Storing $1,000,000$ keys would require a table of size $1,000,000^2 = 10^{12}$ slots (Terabytes of RAM!), which is completely impractical.
 
-### 💡 THE FKS 2-LEVEL SOLUTION (Fredman, Komlós, Szemerédi, 1984):
+### THE FKS 2-LEVEL SOLUTION (Fredman, Komlós, Szemerédi, 1984):
 Achieves **guaranteed zero collisions** and **$O(1)$ worst-case lookup** using only **$O(n)$ total linear memory**!
 
 ---
@@ -242,7 +242,7 @@ $$\hat{f}(x) = \min_{0 \le i < d} \text{table}[i][h_i(x)]$$
 
 ---
 
-## 🔁 Module 04 Summary & Key Takeaways
+## Module 04 Summary & Key Takeaways
 
 1. **Cuckoo Hashing** guarantees **$O(1)$ worst-case lookup** with at most 2 memory probes by using displacement eviction and cycle-detecting rehashing.
 2. **Robin Hood Hashing** balances probe sequence lengths by letting "poor" keys steal slots from "rich" keys, slashing variance and enabling early search termination.
@@ -250,4 +250,9 @@ $$\hat{f}(x) = \min_{0 \le i < d} \text{table}[i][h_i(x)]$$
 4. **Bloom Filters** achieve massive RAM savings ($< 10$ bits/item) with guaranteed zero false negatives; **Count-Min Sketches** provide sublinear frequency estimation for massive data streams.
 
 ---
-[⬅️ Previous: Module 03 — Hash Table, Hash Map & Hash Set](file:///d:/DSA/Part-03-Hashing/03_hash_table_hash_map_hash_set.md) | [Next: Part 04 — Searching ➡️](file:///d:/DSA/Part-04-Searching/01_linear_and_binary_search.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: Hash Tables. MIT Press.
+2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: Hashing. Addison-Wesley.
+3. **Mitzenmacher, M., & Upfal, E.** (2017). *Probability and Computing: Randomization and Probabilistic Techniques in Algorithms* (2nd ed.). Cambridge University Press.

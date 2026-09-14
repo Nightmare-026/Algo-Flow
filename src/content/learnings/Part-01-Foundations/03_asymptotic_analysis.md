@@ -1,4 +1,4 @@
-# 📈 Part 01: Foundations — Module 03: Asymptotic Analysis & Growth of Functions
+# Part 01: Foundations — Module 03: Asymptotic Analysis & Growth of Functions
 
 > **Topics Covered:**  
 > 10. Time Complexity & Counting Primitive Operations &bull; 11. Space Complexity (Auxiliary vs Total) &bull; 12. Big-O Notation ($O$) &bull; 13. Big-Omega Notation ($\Omega$) &bull; 14. Big-Theta Notation ($\Theta$) &bull; 15. Best, Average, and Worst Case Analyses &bull; 16. Asymptotic Hierarchy & Growth of Functions
@@ -7,7 +7,7 @@
 
 ## 10. Time Complexity & Counting Operations
 
-### 💡 CONCEPT
+### Concept
 **Time Complexity** is not the wall-clock time (seconds or milliseconds) an algorithm takes to run. Wall-clock time varies wildly depending on processor clock speed, operating system scheduling, compiler optimizations, and background processes.
 
 Instead, **Time Complexity $T(n)$** is a mathematical function that quantifies the **number of elementary operations** executed by an algorithm as a function of the input size $n$.
@@ -21,7 +21,7 @@ An elementary (primitive) operation executes in constant time ($O(1)$) on the Ra
 - Pointer dereference: `node.next`
 - Function call invocation and return
 
-### 🔎 Step-by-Step Operation Counting Example
+### Step-by-Step Operation Counting Example
 
 Consider the algorithm to compute the sum of an array $A$ of size $n$:
 
@@ -46,10 +46,10 @@ As $n \to \infty$, the constant $b$ and coefficient $a$ become insignificant rel
 
 ## 11. Space Complexity: Auxiliary vs Total Memory
 
-### 💡 CONCEPT
+### Concept
 **Space Complexity $S(n)$** measures the total memory required by the algorithm with respect to input size $n$.
 
-### 📌 Critical Architectural Distinction
+### Critical Architectural Distinction
 
 $$\text{Total Space Complexity} = \text{Input Space} + \text{Auxiliary Space}$$
 
@@ -74,7 +74,7 @@ $$\text{Total Space Complexity} = \text{Input Space} + \text{Auxiliary Space}$$
 
 ## 12. Big-O ($O$) Notation: Asymptotic Upper Bound
 
-### 💡 CONCEPT & FORMAL DEFINITION
+### Concept & Formal Definition
 Big-O characterizes the **worst-case rate of growth** (upper bound). It guarantees that the function will never grow faster than a constant multiple of $g(n)$ for sufficiently large $n$.
 
 $$\mathcal{O}(g(n)) = \left\{ f(n) : \exists \, c > 0 \text{ and } n_0 \ge 1 \text{ such that } 0 \le f(n) \le c \cdot g(n) \text{ for all } n \ge n_0 \right\}$$
@@ -97,10 +97,10 @@ $$\mathcal{O}(g(n)) = \left\{ f(n) : \exists \, c > 0 \text{ and } n_0 \ge 1 \te
                      (Threshold)
 ```
 
-### 🧠 INTUITION
+### Intuition
 $c \cdot g(n)$ acts as a "ceiling". Past the point $n_0$, $f(n)$ is trapped permanently beneath $c \cdot g(n)$.
 
-### 📐 Formal Mathematical Proof Example
+### Formal Mathematical Proof Example
 **Theorem**: Prove that $f(n) = 3n^2 + 5n + 8$ is $O(n^2)$.
 
 **Proof**:
@@ -117,7 +117,7 @@ $\therefore 3n^2 + 5n + 8 \in O(n^2)$. $\blacksquare$
 
 ## 13. Big-Omega ($\Omega$) Notation: Asymptotic Lower Bound
 
-### 💡 CONCEPT & FORMAL DEFINITION
+### Concept & Formal Definition
 Big-Omega characterizes the **asymptotic lower bound**. It guarantees that an algorithm will take *at least* a constant multiple of $g(n)$ steps for large $n$.
 
 $$\Omega(g(n)) = \left\{ f(n) : \exists \, c > 0 \text{ and } n_0 \ge 1 \text{ such that } 0 \le c \cdot g(n) \le f(n) \text{ for all } n \ge n_0 \right\}$$
@@ -136,14 +136,14 @@ $$\Omega(g(n)) = \left\{ f(n) : \exists \, c > 0 \text{ and } n_0 \ge 1 \text{ s
                               n₀
 ```
 
-### 🧠 INTUITION
+### Intuition
 $c \cdot g(n)$ is the "floor". Past $n_0$, the algorithm's runtime will never fall below this line.
 
 ---
 
 ## 14. Big-Theta ($\Theta$) Notation: Asymptotically Tight Bound
 
-### 💡 CONCEPT & FORMAL DEFINITION
+### Concept & Formal Definition
 Big-Theta characterizes the **tight bound**. An algorithm is $\Theta(g(n))$ if and only if $g(n)$ is simultaneously its upper bound ($O$) and its lower bound ($\Omega$).
 
 $$\Theta(g(n)) = \left\{ f(n) : \exists \, c_1 > 0, c_2 > 0, n_0 \ge 1 \text{ such that } 0 \le c_1 \cdot g(n) \le f(n) \le c_2 \cdot g(n) \text{ for all } n \ge n_0 \right\}$$
@@ -231,7 +231,7 @@ Operations ▲
 
 ---
 
-## 🔁 Module 03 Summary & Key Takeaways
+## Module 03 Summary & Key Takeaways
 
 1. **Time Complexity** measures abstract step count; **Auxiliary Space** measures extra memory beyond the original input.
 2. **Big-O** is an asymptotic upper bound ($\le$); **Big-Omega** is an asymptotic lower bound ($\ge$); **Big-Theta** is a tight sandwich ($\le \text{and} \ge$).
@@ -239,4 +239,9 @@ Operations ▲
 4. Any algorithm with exponential ($2^n$) or factorial ($n!$) complexity becomes unrunnable for $n > 30$.
 
 ---
-[⬅️ Previous: Module 02 — Problem Solving Methodology](file:///d:/DSA/Part-01-Foundations/02_problem_solving_methodology.md) | [Next: Module 04 — Recursion & Recurrences ➡️](file:///d:/DSA/Part-01-Foundations/04_recursion_and_recurrences.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 3: Characterizing Running Times. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.4: Analysis of Algorithms. Addison-Wesley.
+3. **Sipser, M.** (2012). *Introduction to the Theory of Computation* (3rd ed.). Cengage Learning.

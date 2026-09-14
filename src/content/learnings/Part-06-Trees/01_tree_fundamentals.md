@@ -1,4 +1,4 @@
-# 🌳 Part 06: Trees — Module 01: Tree Fundamentals & Binary Tree Varieties
+# Part 06: Trees — Module 01: Tree Fundamentals & Binary Tree Varieties
 
 > **Topics Covered:**  
 > 63. Tree Terminology & Anatomy &bull; 64. Fundamental Mathematical Tree Theorems &bull; 65. Structural Classification of Trees &bull; 66. Binary Tree Anatomy &bull; 67. Complete Binary Tree &bull; 68. Full (Strict) Binary Tree &bull; 69. Perfect Binary Tree &bull; 70. Balanced Trees &bull; 71. Degenerate (Skewed) Tree
@@ -143,7 +143,7 @@ This compact, cache-friendly array representation forms the exact physical found
 
 ---
 
-## 🔁 Module 01 Summary & Key Takeaways
+## Module 01 Summary & Key Takeaways
 
 1. A tree with $N$ vertices has exactly **$N - 1$ edges** and no cycles.
 2. In a **Complete Binary Tree**, leaves are packed left-to-right; mapped directly into arrays via indices $2i+1$ and $2i+2$.
@@ -151,4 +151,9 @@ This compact, cache-friendly array representation forms the exact physical found
 4. Keeping a tree **Balanced** ($h = O(\log n)$) is essential to prevent operations from degrading to $O(n)$ linked list speed.
 
 ---
-[⬅️ Previous: Part 05 Sorting](file:///d:/DSA/Part-05-Sorting/04_sorting_theory_comparison.md) | [Next: Module 02 — Tree Traversals ➡️](file:///d:/DSA/Part-06-Trees/02_tree_traversals.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
+2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
+3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.

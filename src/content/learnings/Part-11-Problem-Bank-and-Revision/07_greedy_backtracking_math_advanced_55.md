@@ -1,4 +1,4 @@
-# 📚 Part 11: Problem Bank — Volume 07: Greedy, Backtracking, Bit Hacks, Math & Geometry (55 Problems)
+# Part 11: Problem Bank — Volume 07: Greedy, Backtracking, Bit Hacks, Math & Geometry (55 Problems)
 
 > **Problems Covered:** Q471 to Q525  
 > **Patterns:** Interval Sweepline & Scheduling &bull; Backtracking State-Space Trees &bull; N-Queens & Sudoku &bull; Bit Manipulation Tricks (`n & (n - 1)`) &bull; Sieve of Eratosthenes &bull; Binary Exponentiation &bull; Computational Geometry (Convex Hull)
@@ -405,4 +405,9 @@
 - **Edge Cases:** Zero polynomial, degrees not powers of 2 (pad with zeroes).
 
 ---
-[⬅️ Previous: Volume 06 — Dynamic Programming](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/06_dynamic_programming_60.md) | [Next: Module 08 — Pitfalls & Confusions ➡️](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/08_pitfalls_and_confusions.md)
+
+## References & Academic Attribution
+
+1. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+3. **USA Computing Olympiad (USACO)** & **CP-Algorithms Archives** (2024). Curated Competitive Programming and Algorithm Verification Standards.

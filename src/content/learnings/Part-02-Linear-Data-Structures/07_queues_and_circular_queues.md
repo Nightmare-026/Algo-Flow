@@ -1,4 +1,4 @@
-# 🎟️ Part 02: Linear Data Structures — Module 07: Queues & Circular Queues
+# Part 02: Linear Data Structures — Module 07: Queues & Circular Queues
 
 > **Topics Covered:**  
 > 28. Queue Abstract Data Type (FIFO) & Operations &bull; Linear Array Queue & The "False Overflow / Drift" Problem &bull; Linked List Queue Implementation &bull; 29. Circular Queue (Ring Buffer) & Modulo Arithmetic &bull; Wrap-Around State Tracking & Kernel Ring Buffers
@@ -24,10 +24,10 @@ Beginner to Intermediate.
 
 ### 5. Definition & Intuitive Mental Model
 
-### 💡 CONCEPT
+### Concept
 A **Queue** is a linear data structure governed by the **FIFO (First-In, First-Out)** principle: the first element added to the queue is the first one to be removed. Elements enter at one end called the **Rear (Tail)** and depart from the opposite end called the **Front (Head)**.
 
-### 🧠 INTUITION: The Movie Ticket Counter
+### Intuition: The Movie Ticket Counter
 Think of a physical line of people waiting to buy tickets at a cinema:
 - New customers arrive and join at the back of the line (`Enqueue`).
 - The ticket agent serves the customer at the front of the line (`Dequeue`).
@@ -77,7 +77,7 @@ Array: [ __ │ __ │ __ │ 40 │ 50 ]
                       front rear
 ```
 
-### ⚠️ THE DISASTER (False Overflow):
+### THE DISASTER (False Overflow):
 Now attempt to `Enqueue(60)`.
 - The code checks: `if rear == capacity - 1` ($4 == 4 \implies$ **Overflow error!**).
 - **The Tragedy**: The queue rejects the new element claiming it is "FULL", even though slots $0, 1, 2$ are completely **empty and wasted**!
@@ -123,7 +123,7 @@ Intermediate.
 
 ### 5. Intuition & Modulo Ring Topology
 
-### 💡 THE ELEGANT SOLUTION:
+### THE ELEGANT SOLUTION:
 Instead of treating an array as a straight line that terminates at index $C-1$, mentally bend the array into a **circle** where index $C-1$ wraps seamlessly back around to index $0$!
 
 ```text
@@ -242,7 +242,7 @@ Let Capacity $C = 5$. We perform a sequence of operations illustrating wrap-arou
 
 ---
 
-## 🔁 Module 07 Summary & Key Takeaways
+## Module 07 Summary & Key Takeaways
 
 1. **Queues** strictly enforce **FIFO** order with insertions at `rear` and removals at `front`.
 2. Linear array queues suffer from **false overflow (drift)**, wasting vacated slots unless shifted at $O(n)$ cost.
@@ -250,4 +250,9 @@ Let Capacity $C = 5$. We perform a sequence of operations illustrating wrap-arou
 4. Ring buffers are the undisputed industry standard for **high-throughput real-time systems, audio streaming, and hardware driver buffers**.
 
 ---
-[⬅️ Previous: Module 06 — Stacks](file:///d:/DSA/Part-02-Linear-Data-Structures/06_stacks.md) | [Next: Module 08 — Deques & Priority Queues ➡️](file:///d:/DSA/Part-02-Linear-Data-Structures/08_deques_and_priority_queues.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
+3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.

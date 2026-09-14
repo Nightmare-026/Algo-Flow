@@ -49,6 +49,9 @@ jobs:
       - name: Validate algorithm registry
         run: npm run validate:registry
 
+      - name: Validate curriculum integrity
+        run: npm run validate:curriculum
+
       - name: Validate visualizer coordination
         run: npm run validate:visualizers:coordination
 

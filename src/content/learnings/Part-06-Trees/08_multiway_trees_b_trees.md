@@ -1,4 +1,4 @@
-# 🏛️ Part 06: Trees — Module 08: Multiway Trees, B-Trees & B+ Trees
+# Part 06: Trees — Module 08: Multiway Trees, B-Trees & B+ Trees
 
 > **Topics Covered:**  
 > 96a. The Memory Hierarchy & External Storage Latency &bull; 96b. Why Binary Trees Fail on Disk (Random I/O Bottlenecks) &bull; 96c. B-Tree Definition, Minimum Degree $t$ & Invariants &bull; 96d. B-Tree Search & Proactive Split Insertion &bull; 96e. B-Tree Deletion (Borrow & Merge) &bull; 97a. B+ Tree Architecture & Routing Key Paradigm &bull; 97b. Doubly-Linked Leaf Chain & Range Query Mastery &bull; 97c. 2-3 and 2-3-4 Trees & The Red-Black Tree Isomorphism
@@ -166,7 +166,7 @@ When an insertion in a 2-3-4 tree splits a full 4-node, in the equivalent Red-Bl
 
 ---
 
-## 🔁 Module 08 Summary & Key Takeaways
+## Module 08 Summary & Key Takeaways
 
 1. **Disk I/O** is $10^5 \times$ slower than RAM; multiway trees minimize disk page fetches by maximizing the branching factor $B$.
 2. **B-Trees** maintain all leaves at the exact same depth, guaranteeing $O(\log_t n)$ worst-case search, insert, and delete.
@@ -174,4 +174,9 @@ When an insertion in a 2-3-4 tree splits a full 4-node, in the equivalent Red-Bl
 4. A **Red-Black Tree** is an isometric binary encoding of a **2-3-4 Tree**.
 
 ---
-[⬅️ Previous: Module 07 — Heaps & Priority Queues](file:///d:/DSA/Part-06-Trees/07_heaps_and_priority_queues.md) | [Next: Module 09 — Tries & String Trees ➡️](file:///d:/DSA/Part-06-Trees/09_tries_and_string_trees.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
+2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
+3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.

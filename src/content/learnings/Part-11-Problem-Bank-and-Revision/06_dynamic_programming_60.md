@@ -1,4 +1,4 @@
-# 📚 Part 11: Problem Bank — Volume 06: Dynamic Programming (60 Problems)
+# Part 11: Problem Bank — Volume 06: Dynamic Programming (60 Problems)
 
 > **Problems Covered:** Q411 to Q470  
 > **Patterns:** 1D Linear Recurrences &bull; 2D Grid DP &bull; 0/1 & Unbounded Knapsack &bull; Longest Common Subsequence &bull; String Alignments &bull; Interval DP &bull; Bitmask DP &bull; Tree DP &bull; Digit DP
@@ -444,4 +444,9 @@
 - **Edge Cases:** Digit set does not contain any valid matching digit.
 
 ---
-[⬅️ Previous: Volume 05 — Graphs & Networks](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/05_graphs_and_networks_70.md) | [Next: Volume 07 — Greedy, Backtracking, Math & Advanced (Q471–Q525) ➡️](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/07_greedy_backtracking_math_advanced_55.md)
+
+## References & Academic Attribution
+
+1. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+3. **USA Computing Olympiad (USACO)** & **CP-Algorithms Archives** (2024). Curated Competitive Programming and Algorithm Verification Standards.

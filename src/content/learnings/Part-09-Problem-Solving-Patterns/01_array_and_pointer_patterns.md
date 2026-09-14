@@ -1,4 +1,4 @@
-# 🎯 Part 09: Problem-Solving Patterns — Module 01: Array & Pointer Patterns
+# Part 09: Problem-Solving Patterns — Module 01: Array & Pointer Patterns
 
 > **Topics Covered:**  
 > 134. Prefix Sum (1D & 2D Static Range Queries in $O(1)$) &bull; 135. Difference Array ($O(1)$ Range Updates) &bull; 136. Two Pointers (Opposite & Fast/Slow Convergence) &bull; 137. Sliding Window (Fixed & Variable Length Subarrays) &bull; 138. Fast & Slow Pointer (Floyd's Cycle Start Mathematical Proof)
@@ -175,7 +175,7 @@ The distance from the **Head to the Entry Node ($L$)** is mathematically identic
 
 ---
 
-## 🔁 Module 01 Summary & Key Takeaways
+## Module 01 Summary & Key Takeaways
 
 1. **Prefix Sum** answers static range sum queries in $O(1)$ time; **Difference Array** applies range updates in $O(1)$ time.
 2. **Two Pointers** replaces nested loops with linear convergence on sorted sequences.
@@ -183,4 +183,9 @@ The distance from the **Head to the Entry Node ($L$)** is mathematically identic
 4. **Floyd's Tortoise and Hare** discovers the cycle entry node in $O(n)$ time and $O(1)$ space via the distance identity $L = (k-1)C + (C-d)$.
 
 ---
-[⬅️ Previous: Part 08 Algorithm Design Techniques](file:///d:/DSA/Part-08-Algorithm-Design-Techniques/04_dynamic_programming.md) | [Next: Module 02 — Monotonic Data Structures ➡️](file:///d:/DSA/Part-09-Problem-Solving-Patterns/02_monotonic_data_structures.md)
+
+## References & Academic Attribution
+
+1. **Halim, S., Halim, F., & Skiena, S. S.** (2020). *Competitive Programming 4: The Lower Bound of Programming Contests*. CP4 Pte Ltd.
+2. **Laaksonen, A.** (2020). *Guide to Competitive Programming: Learning and Improving Algorithms Through Contests* (2nd ed.). Springer.
+3. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.

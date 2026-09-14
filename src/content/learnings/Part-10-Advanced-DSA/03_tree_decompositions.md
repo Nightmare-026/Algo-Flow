@@ -1,4 +1,4 @@
-# 🌲 Part 10: Advanced DSA — Module 03: Tree Decompositions & Dynamic Trees (HLD, Centroid & Link-Cut Trees)
+# Part 10: Advanced DSA — Module 03: Tree Decompositions & Dynamic Trees (HLD, Centroid & Link-Cut Trees)
 
 > **Topics Covered:**  
 > 154b. Heavy-Light Decomposition (HLD & $O(\log^2 n)$ Path Queries) &bull; 154c. Segment Tree Mapping on Heavy Paths &bull; 154d. Centroid Decomposition ($O(n \log n)$ Tree Divide-and-Conquer) &bull; 154e. Link-Cut Trees (Sleator-Tarjan Dynamic Forests & Splay-Backed Preferred Paths)
@@ -129,11 +129,16 @@ Unlike HLD where heavy edges are fixed statically, a Link-Cut Tree uses **Prefer
 
 ---
 
-## 🔁 Module 03 Summary & Key Takeaways
+## Module 03 Summary & Key Takeaways
 
 1. **Heavy-Light Decomposition (HLD)** partitions trees into heavy paths; any root-to-node path crosses at most $\log_2 N$ light edges, enabling $O(\log^2 N)$ path queries via Segment Trees.
 2. **Centroid Decomposition** provides $O(N \log N)$ divide-and-conquer on trees by recursively finding vertices whose removal cuts subtrees to $\le N/2$.
 3. **Link-Cut Trees** handle dynamic structural edits (`Link` and `Cut`) in amortized $O(\log N)$ time by modeling preferred paths as auxiliary Splay trees.
 
 ---
-[⬅️ Previous: Module 02 — Advanced Graphs & Strings](file:///d:/DSA/Part-10-Advanced-DSA/02_advanced_topics.md) | [Next: Part 11 — Problem Bank & Revision ➡️](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/01_arrays_strings_pointers_100.md)
+
+## References & Academic Attribution
+
+1. **Fenwick, P. M.** (1994). A new data structure for cumulative frequency tables. *Software: Practice and Experience*, 24(3), 327–336.
+2. **Sleator, D. D., & Tarjan, R. E.** (1983). A data structure for dynamic trees. *Journal of Computer and System Sciences*, 26(3), 362–391.
+3. **Tarjan, R. E.** (1979). Applications of path compression on balanced trees. *Journal of the ACM (JACM)*, 26(4), 690–715.

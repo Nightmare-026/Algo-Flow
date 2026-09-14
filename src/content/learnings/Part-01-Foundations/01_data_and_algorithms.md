@@ -1,4 +1,4 @@
-# 🧱 Part 01: Foundations — Module 01: Data, Data Structures & Algorithms
+# Part 01: Foundations — Module 01: Data, Data Structures & Algorithms
 
 > **Topics Covered:**  
 > 1. What is Data? &bull; 2. What is a Data Structure? &bull; 3. What is an Algorithm? &bull; 4. Characteristics of a Good Algorithm &bull; 5. Algorithm vs Program &bull; 6. Algorithm Design Process
@@ -7,7 +7,7 @@
 
 ## 1. What is Data?
 
-### 💡 CONCEPT
+### Concept
 In computer science, **Data** is raw, unorganized facts, symbols, numbers, characters, or observations collected together without context. Data by itself carries no inherent semantic meaning until it is structured, processed, and interpreted.
 
 ```text
@@ -30,13 +30,13 @@ In computer science, **Data** is raw, unorganized facts, symbols, numbers, chara
 
 ## 2. What is a Data Structure?
 
-### 💡 CONCEPT
+### Concept
 A **Data Structure** is a specialized format for organizing, storing, processing, and retrieving data efficiently within physical memory (RAM or disk). It is not merely a container; it is defined by:
 1. The **physical memory layout** of data items.
 2. The **relationships** established between data items.
 3. The set of **supported operations** and the mathematical rules governing their behavior.
 
-### 🧠 INTUITION
+### Intuition
 Consider a physical library containing 100,000 books:
 - If all books are piled randomly in the center of the hall, finding a book takes $O(n)$ time — you must examine every book one by one.
 - If books are categorized by Dewey Decimal classification on indexed shelves, finding any book takes $O(\log n)$ time.
@@ -65,7 +65,7 @@ A fundamental distinction exists between what a structure *does* versus how it i
 
 ## 3. What is an Algorithm?
 
-### 💡 CONCEPT
+### Concept
 An **Algorithm** is a finite, well-defined, step-by-step computational procedure that takes a set of values as **Input**, performs a sequence of deterministic computational steps, and produces a set of values as **Output**, terminating in a finite amount of time.
 
 $$\text{Input } X \xrightarrow{\quad \text{Algorithm } \mathcal{A} \quad} \text{Output } Y = \mathcal{A}(X)$$
@@ -163,7 +163,7 @@ Professional engineers and computer scientists follow an iterative, 7-stage pipe
 
 ---
 
-## 🔁 Module 01 Summary & Key Takeaways
+## Module 01 Summary & Key Takeaways
 
 1. **Data** is raw syntax; **Information** is structured semantics; a **Data Structure** is the physical arrangement and relational contract in memory.
 2. An **ADT** specifies *what* operations are supported; a **Data Structure** defines *how* those operations are realized in physical RAM.
@@ -171,4 +171,9 @@ Professional engineers and computer scientists follow an iterative, 7-stage pipe
 4. Program execution time varies with hardware, but **Algorithmic Complexity** is an invariant property of the logic itself.
 
 ---
-[⬅️ Previous: Part 00 Complexity Reference](file:///d:/DSA/Part-00-Front-Matter/04_complexity_quick_ref.md) | [Next: Module 02 — Problem Solving Methodology ➡️](file:///d:/DSA/Part-01-Foundations/02_problem_solving_methodology.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 3: Characterizing Running Times. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.4: Analysis of Algorithms. Addison-Wesley.
+3. **Sipser, M.** (2012). *Introduction to the Theory of Computation* (3rd ed.). Cengage Learning.

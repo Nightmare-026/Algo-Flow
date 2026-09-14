@@ -1,4 +1,4 @@
-# 🗺️ Part 00: Front Matter — Complete DSA Roadmap & Study Tracks
+# Part 00: Front Matter — Complete DSA Roadmap & Study Tracks
 
 ---
 
@@ -255,4 +255,9 @@ Use this checklist to monitor your personal progress through all 168 sections.
 - [x] Module 09: Master Revision Sheets, Complexity Matrix & Final Map
 
 ---
-[⬅️ Previous: Cover & Purpose](file:///d:/DSA/Part-00-Front-Matter/01_cover_and_purpose.md) | [Next: Notation & Symbols ➡️](file:///d:/DSA/Part-00-Front-Matter/03_notation_and_symbols.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 1–3. MIT Press.
+2. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.). Addison-Wesley.
+3. **IEEE / ACM Computing Curricula Guidelines** (2020). Curriculum Guidelines for Undergraduate Degree Programs in Computer Science.

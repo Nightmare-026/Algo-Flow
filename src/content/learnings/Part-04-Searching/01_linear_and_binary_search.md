@@ -1,4 +1,4 @@
-# 🔍 Part 04: Searching — Module 01: Linear & Binary Search
+# Part 04: Searching — Module 01: Linear & Binary Search
 
 > **Topics Covered:**  
 > 42. Linear Search (Sequential Search & Sentinel Optimization) &bull; 43. Binary Search (Logarithmic Divide-and-Conquer Search)
@@ -156,7 +156,7 @@ Binary Search is one of the most fundamental algorithms in computer science. For
 - Index $i$ where $A[i] = \text{target}$, or $-1$.
 
 ### 6. Constraints / Invariants
-- **Inviolable Precondition**: $A$ **must be sorted**. If $A$ is unsorted, Binary Search fails completely.
+- **Structural Precondition**: $A$ **must be sorted**. If $A$ is unsorted, Binary Search fails completely.
 
 ---
 
@@ -274,11 +274,16 @@ $$T(n) = \Theta(\log n) \quad \blacksquare$$
 
 ---
 
-## 🔁 Module 01 Summary & Key Takeaways
+## Module 01 Summary & Key Takeaways
 
 1. **Linear Search** runs in $O(n)$ time with zero preconditions; **Sentinel search** eliminates boundary checks to double speed.
 2. **Binary Search** requires a sorted container and runs in $O(\log n)$ time.
 3. Always calculate midpoint as $\text{low} + \lfloor (\text{high} - \text{low}) / 2 \rfloor$ to avoid arithmetic overflow.
 
 ---
-[⬅️ Previous: Part 03 Hashing](file:///d:/DSA/Part-03-Hashing/04_advanced_hashing_and_probabilistic.md) | [Next: Module 02 — Bounds & Occurrences ➡️](file:///d:/DSA/Part-04-Searching/02_bounds_and_occurrences.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Section 2.3 & Chapter 12. MIT Press.
+2. **Bentley, J.** (2000). *Programming Pearls* (2nd ed.), Column 4: Writing Correct Programs. Addison-Wesley.
+3. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.2: Searching by Comparison of Keys. Addison-Wesley.

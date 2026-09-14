@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "validate:registry": "tsx scripts/validate-registry.ts",
+    "validate:curriculum": "tsx scripts/validate-curriculum.ts",
     "validate:registry:readiness": "tsx scripts/validate-registry-readiness.ts",
     "validate:visualizers:coordination": "tsx scripts/validate-visualizer-coordination.ts",
     "verify:code-examples": "tsx scripts/verify-code-examples.ts",
@@ -24,6 +25,7 @@
     "@radix-ui/react-switch": "^1.3.2",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.110.0",
+    "@types/katex": "^0.16.8",
     "@types/marked": "^5.0.2",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.4",
@@ -32,6 +34,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.42.2",
+    "katex": "^0.18.7",
     "lucide-react": "^1.23.0",
     "marked": "^18.0.12",
     "next": "^16.3.4",

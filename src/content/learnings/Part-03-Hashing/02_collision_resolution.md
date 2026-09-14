@@ -1,4 +1,4 @@
-# 💥 Part 03: Hashing — Module 02: Collision Resolution Techniques
+# Part 03: Hashing — Module 02: Collision Resolution Techniques
 
 > **Topics Covered:**  
 > 35. Separate Chaining (Open Hashing) &bull; 36. Open Addressing (Closed Hashing) & The Deletion Dilemma &bull; 37. Linear Probing & Primary Clustering &bull; 38. Quadratic Probing & Secondary Clustering &bull; 39. Double Hashing & Permutation Uniformity
@@ -63,7 +63,7 @@ SCENARIO: Table size m = 5, Linear Probing.
    - Search terminates and falsely reports "Key B not found!" ❌
 ```
 
-#### The Solution: The `DELETED` (TOMBSTONE) Marker
+#### Solution: The `DELETED` (TOMBSTONE) Marker
 When deleting a key:
 - Overwrite the slot with a special sentinel value: `TOMBSTONE`.
 - **Search Rule**: Continue probing through `TOMBSTONE` markers (do not halt).
@@ -80,7 +80,7 @@ $$h(k, i) = (h(k) + i) \pmod m \quad \text{for } i = 0, 1, 2, \dots, m-1$$
 
 ---
 
-### 2. The Achilles Heel: Primary Clustering
+### 2. Primary Clustering: Primary Clustering
 Keys tend to clump together into long contiguous blocks of occupied slots called **clusters**. Once a cluster forms, the probability that the next insertion hits the cluster grows proportionally to its size, causing the cluster to grow even faster!
 
 ```text
@@ -141,7 +141,7 @@ Because the step size depends on the key itself, even if two keys collide at the
 
 ---
 
-### 2. Inviolable Rule for $h_2(k)$
+### 2. Structural Rule for $h_2(k)$
 To ensure the probe sequence visits all $m$ slots without getting stuck in a cycle:
 1. $h_2(k)$ must **never** evaluate to $0$ ($h_2(k) \ne 0$).
 2. $h_2(k)$ and $m$ must be **coprime** ($\gcd(h_2(k), m) = 1$).
@@ -163,11 +163,16 @@ $$h_2(k) = 1 + (k \pmod{m - 1})$$
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## Module 02 Summary & Key Takeaways
 
 1. **Separate Chaining** stores collisions in linked lists; memory can grow arbitrarily without resizing, but suffers from cache misses.
 2. **Open Addressing** stores all keys in the table array; requires a `TOMBSTONE` marker during deletion to prevent breaking probe chains.
 3. **Linear Probing** suffers from severe primary clustering; **Quadratic Probing** uses $i^2$ step size; **Double Hashing** uses a second key-dependent step size $h_2(k)$ and achieves optimal pseudo-random probing.
 
 ---
-[⬅️ Previous: Module 01 — Hashing Foundations](file:///d:/DSA/Part-03-Hashing/01_hashing_foundations.md) | [Next: Module 03 — Hash Table, Hash Map & Hash Set ➡️](file:///d:/DSA/Part-03-Hashing/03_hash_table_hash_map_hash_set.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: Hash Tables. MIT Press.
+2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: Hashing. Addison-Wesley.
+3. **Mitzenmacher, M., & Upfal, E.** (2017). *Probability and Computing: Randomization and Probabilistic Techniques in Algorithms* (2nd ed.). Cambridge University Press.

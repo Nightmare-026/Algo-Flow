@@ -1,4 +1,4 @@
-# ⚖️ Part 05: Sorting — Module 04: Sorting Theory, Stability & The $\Omega(n \log n)$ Lower Bound
+# Part 05: Sorting — Module 04: Sorting Theory, Stability & The $\Omega(n \log n)$ Lower Bound
 
 > **Topics Covered:**  
 > 59. Sorting Stability & Multi-Key Sorting &bull; 60. In-Place vs Out-of-Place Sorting Paradigms &bull; 61. The Decision Tree Model & Proof of $\Omega(n \log n)$ Comparison Bound &bull; 62. Complete Master Sorting Comparison Matrix
@@ -123,11 +123,16 @@ Since the height $h$ represents the maximum number of comparisons on the longest
 
 ---
 
-## 🔁 Module 04 Summary & Key Takeaways
+## Module 04 Summary & Key Takeaways
 
 1. **Stability** ensures equal keys retain original relative positions; vital for multi-column spreadsheet and database sorting.
 2. By the **Decision Tree Model**, comparison sorting has an absolute mathematical lower bound of **$\Omega(n \log n)$**.
 3. Non-comparison sorts (Counting, Radix, Bucket) achieve $O(n)$ linear time by exploiting structural properties of the keys rather than pairwise comparisons.
 
 ---
-[⬅️ Previous: Module 03 — Linear Time Sorts](file:///d:/DSA/Part-05-Sorting/03_linear_time_sorts.md) | [Next: Part 06 — Trees ➡️](file:///d:/DSA/Part-06-Trees/01_tree_fundamentals.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 6–8 (Heapsort, Quicksort, Linear-Time Sorting). MIT Press.
+2. **Hoare, C. A. R.** (1962). Quicksort. *The Computer Journal*, 5(1), 10–16.
+3. **Sedgewick, R.** (1978). Implementing Quicksort programs. *Communications of the ACM*, 21(10), 847–857.

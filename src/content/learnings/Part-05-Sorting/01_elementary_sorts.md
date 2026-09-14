@@ -1,4 +1,4 @@
-# 📶 Part 05: Sorting — Module 01: Elementary $O(n^2)$ Sorting Algorithms
+# Part 05: Sorting — Module 01: Elementary $O(n^2)$ Sorting Algorithms
 
 > **Topics Covered:**  
 > 50. Bubble Sort (Adjacent Comparisons & Early Exit Optimization) &bull; 51. Selection Sort (Prefix Selection & Instability) &bull; 52. Insertion Sort (Adaptive Shifting & Online Sorting)
@@ -194,11 +194,16 @@ ALGORITHM InsertionSort(A, n)
 
 ---
 
-## 🔁 Module 01 Summary & Key Takeaways
+## Module 01 Summary & Key Takeaways
 
 1. **Bubble Sort** repeatedly swaps adjacent inversions; early-exit flag allows $O(n)$ best case.
 2. **Selection Sort** minimizes total writes to at most $n-1$ swaps, but is inherently unstable and always $O(n^2)$.
 3. **Insertion Sort** is the gold-standard elementary sort: stable, online, and runs in $O(n)$ time on nearly sorted arrays. Used as the base case in production hybrid sorts (Timsort, IntroSort).
 
 ---
-[⬅️ Previous: Part 04 Searching](file:///d:/DSA/Part-04-Searching/03_search_space_and_rotated.md) | [Next: Module 02 — Divide & Conquer Sorts ➡️](file:///d:/DSA/Part-05-Sorting/02_divide_and_conquer_sorts.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 6–8 (Heapsort, Quicksort, Linear-Time Sorting). MIT Press.
+2. **Hoare, C. A. R.** (1962). Quicksort. *The Computer Journal*, 5(1), 10–16.
+3. **Sedgewick, R.** (1978). Implementing Quicksort programs. *Communications of the ACM*, 21(10), 847–857.

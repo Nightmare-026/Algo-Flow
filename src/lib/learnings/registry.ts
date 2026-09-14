@@ -169,7 +169,7 @@ export const LEARNING_MODULES: LearningModule[] = [
           "Spatial Locality & L1/L2 Caches",
         ],
         visualizerLinks: [
-          { slug: "array-access", title: "Array Access", description: "O(1) memory index access" },
+          { slug: "access", title: "Array Access", description: "O(1) direct memory index access" },
         ],
       },
       {
@@ -251,9 +251,14 @@ export const LEARNING_MODULES: LearningModule[] = [
         ],
         visualizerLinks: [
           {
-            slug: "stack-push-pop",
-            title: "Stack Operations",
-            description: "Push, Pop, and Peek visualizer",
+            slug: "stack-push",
+            title: "Stack Push",
+            description: "Visual LIFO element insertion",
+          },
+          {
+            slug: "stack-pop",
+            title: "Stack Pop",
+            description: "Visual LIFO top removal",
           },
         ],
       },
@@ -269,9 +274,14 @@ export const LEARNING_MODULES: LearningModule[] = [
         topicsCovered: ["Modulo Pointer Arithmetic", "Circular Ring Buffers", "Queue via Stacks"],
         visualizerLinks: [
           {
-            slug: "queue-enqueue-dequeue",
-            title: "Queue Operations",
-            description: "FIFO enqueue and dequeue",
+            slug: "queue-enqueue",
+            title: "Queue Enqueue",
+            description: "Visual FIFO rear insertion",
+          },
+          {
+            slug: "queue-dequeue",
+            title: "Queue Dequeue",
+            description: "Visual FIFO front removal",
           },
         ],
       },
@@ -334,14 +344,14 @@ export const LEARNING_MODULES: LearningModule[] = [
         ],
         visualizerLinks: [
           {
-            slug: "hash-table-chaining",
+            slug: "chaining-insert",
             title: "Separate Chaining",
-            description: "Hash collision resolution",
+            description: "Hash collision resolution with linked buckets",
           },
           {
-            slug: "hash-table-linear-probing",
+            slug: "linear-probing",
             title: "Linear Probing",
-            description: "Open addressing probes",
+            description: "Open addressing sequential slot scanning",
           },
         ],
       },
@@ -578,9 +588,14 @@ export const LEARNING_MODULES: LearningModule[] = [
         ],
         visualizerLinks: [
           {
-            slug: "binary-tree-traversals",
-            title: "Tree Traversals",
-            description: "Visual BFS and DFS orderings",
+            slug: "inorder-traversal",
+            title: "Inorder Traversal",
+            description: "Visual recursive binary tree walk",
+          },
+          {
+            slug: "level-order-traversal",
+            title: "Level Order Traversal",
+            description: "Visual BFS breadth queue traversal",
           },
         ],
       },
@@ -600,9 +615,14 @@ export const LEARNING_MODULES: LearningModule[] = [
         ],
         visualizerLinks: [
           {
-            slug: "bst-search-insert",
-            title: "BST Search & Insert",
-            description: "Visual path traversal",
+            slug: "bst-search",
+            title: "BST Search",
+            description: "Visual binary search key lookup",
+          },
+          {
+            slug: "bst-insertion",
+            title: "BST Insertion",
+            description: "Visual leaf placement maintaining BST invariant",
           },
         ],
       },
@@ -777,13 +797,13 @@ export const LEARNING_MODULES: LearningModule[] = [
         ],
         visualizerLinks: [
           {
-            slug: "graph-bfs",
-            title: "Graph BFS",
+            slug: "bfs",
+            title: "Breadth-First Search (BFS)",
             description: "Visual breadth-first wave exploration",
           },
           {
-            slug: "graph-dfs",
-            title: "Graph DFS",
+            slug: "dfs",
+            title: "Depth-First Search (DFS)",
             description: "Visual depth-first backtracking exploration",
           },
         ],

@@ -1,4 +1,4 @@
-# 🧵 Part 02: Linear Data Structures — Module 02: Strings & Matrices
+# Part 02: Linear Data Structures — Module 02: Strings & Matrices
 
 > **Topics Covered:**  
 > 22. Strings & Character Sequence Architecture &bull; 23. Matrices, 2D Arrays & Memory Orderings (Row-Major vs Column-Major)
@@ -393,11 +393,16 @@ When a matrix of size $R \times C$ contains mostly zeros ($> 95\%$ zeros), stori
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## Module 02 Summary & Key Takeaways
 
 1. **Strings** are character arrays with encoding nuances; repeated concatenation in immutable languages leads to $O(n^2)$ performance traps unless buffers are used.
 2. In **Row-Major Order**, traverse rows in the outer loop and columns in the inner loop to maximize CPU L1 cache hits.
 3. Rotating a matrix $90^\circ$ clockwise equals **Transpose + Reverse each row**, solvable in-place in $O(N^2)$ time with $O(1)$ auxiliary memory.
 
 ---
-[⬅️ Previous: Module 01 — Arrays & Dynamic Arrays](file:///d:/DSA/Part-02-Linear-Data-Structures/01_arrays_and_dynamic_arrays.md) | [Next: Module 03 — Singly Linked Lists ➡️](file:///d:/DSA/Part-02-Linear-Data-Structures/03_singly_linked_lists.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
+3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.

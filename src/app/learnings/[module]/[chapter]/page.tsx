@@ -11,6 +11,7 @@ import { MobileCurriculumNav } from "@/components/learnings/MobileCurriculumNav"
 import { ChevronRight } from "lucide-react";
 import { safeJsonLd } from "@/lib/security/safe-json";
 import { SITE_NAME } from "@/lib/constants/site";
+import { getSiteUrl } from "@/lib/site";
 
 interface ChapterPageProps {
   params: Promise<{
@@ -40,7 +41,8 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
   }
 
   const { module: mod, chapter: ch } = resolved;
-  const canonicalUrl = `https://algo-flow.com/learnings/${mod.slug}/${ch.slug}`;
+  const siteUrl = getSiteUrl();
+  const canonicalUrl = `${siteUrl}/learnings/${mod.slug}/${ch.slug}`;
 
   return {
     title: `${ch.title} — Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} | ${SITE_NAME}`,
@@ -90,7 +92,8 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
 
   const allModules = getAllModules();
   const navigation = getChapterNavigation(moduleSlug, chapterSlug);
-  const chapterUrl = `https://algo-flow.com/learnings/${mod.slug}/${ch.slug}`;
+  const siteUrl = getSiteUrl();
+  const chapterUrl = `${siteUrl}/learnings/${mod.slug}/${ch.slug}`;
 
   // Rich SEO Structured Data (BreadcrumbList + TechArticle)
   const breadcrumbJsonLd = {
@@ -101,19 +104,19 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://algo-flow.com",
+        item: siteUrl,
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Learnings",
-        item: "https://algo-flow.com/learnings",
+        item: `${siteUrl}/learnings`,
       },
       {
         "@type": "ListItem",
         position: 3,
         name: `Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title}`,
-        item: `https://algo-flow.com/learnings/${mod.slug}`,
+        item: `${siteUrl}/learnings/${mod.slug}`,
       },
       {
         "@type": "ListItem",
@@ -139,12 +142,12 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
     author: {
       "@type": "Organization",
       name: SITE_NAME,
-      url: "https://algo-flow.com",
+      url: siteUrl,
     },
     publisher: {
       "@type": "Organization",
       name: SITE_NAME,
-      url: "https://algo-flow.com",
+      url: siteUrl,
     },
   };
 

@@ -1,10 +1,19 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import type { LearningModule } from "@/lib/learnings/types";
-import { ChevronDown, ChevronRight, Search, BookOpen, X, Compass } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Search,
+  BookOpen,
+  X,
+  Compass,
+  CheckCircle2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCompletedChapters } from "@/lib/learnings/progress";
 
 interface CurriculumSidebarProps {
   modules: LearningModule[];
@@ -22,10 +31,20 @@ export function CurriculumSidebar({
   onNavigate,
 }: CurriculumSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const { completedSet: completedChapters } = useCompletedChapters();
+  const activeChapterRef = useRef<HTMLAnchorElement | null>(null);
+
   // Open current module by default
   const [openModules, setOpenModules] = useState<Record<string, boolean>>(() => ({
     [currentModuleSlug]: true,
   }));
+
+  // Auto-scroll active chapter into view on mount
+  useEffect(() => {
+    if (activeChapterRef.current) {
+      activeChapterRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }, [currentChapterSlug]);
 
   const toggleModule = (slug: string) => {
     setOpenModules((prev) => ({
@@ -64,6 +83,11 @@ export function CurriculumSidebar({
       .filter((m): m is LearningModule => m !== null);
   }, [modules, searchQuery]);
 
+  const totalChaptersCount = useMemo(
+    () => modules.reduce((acc, m) => acc + m.chapters.length, 0),
+    [modules]
+  );
+
   return (
     <nav
       aria-label="Curriculum Navigation"
@@ -80,7 +104,12 @@ export function CurriculumSidebar({
             Curriculum
           </span>
         </div>
-        <span className="text-[11px] font-mono text-muted-foreground">62 Chapters</span>
+        <div className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground">
+          {completedChapters.size > 0 && (
+            <span className="text-emerald-500 font-semibold">{completedChapters.size}/</span>
+          )}
+          <span>{totalChaptersCount} Ch</span>
+        </div>
       </div>
 
       {/* Instant Filter Search */}
@@ -96,7 +125,7 @@ export function CurriculumSidebar({
         {searchQuery && (
           <button
             onClick={() => setSearchQuery("")}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-muted-foreground hover:text-foreground"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-muted-foreground hover:text-foreground cursor-pointer"
           >
             <X className="w-3 h-3" />
           </button>
@@ -114,10 +143,15 @@ export function CurriculumSidebar({
             const isCurrentModule = mod.slug === currentModuleSlug;
             const isOpen = searchQuery.trim() ? true : !!openModules[mod.slug];
 
+            // Count module completed chapters
+            const modCompletedCount = mod.chapters.filter((ch) =>
+              completedChapters.has(`${mod.slug}/${ch.slug}`)
+            ).length;
+
             return (
               <div
                 key={mod.id}
-                className="rounded-xl border border-border/40 overflow-hidden bg-surface/50"
+                className="rounded-xl border border-border/40 overflow-hidden bg-surface/50 transition-colors"
               >
                 {/* Module Accordion Header */}
                 <button
@@ -136,7 +170,12 @@ export function CurriculumSidebar({
                     <span className="truncate">{mod.title}</span>
                   </div>
 
-                  <div className="shrink-0 text-muted-foreground">
+                  <div className="flex items-center gap-1.5 shrink-0 text-muted-foreground">
+                    {modCompletedCount > 0 && (
+                      <span className="text-[10px] font-mono font-medium text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+                        {modCompletedCount}/{mod.chapters.length}
+                      </span>
+                    )}
                     {isOpen ? (
                       <ChevronDown className="w-3.5 h-3.5" />
                     ) : (
@@ -150,10 +189,12 @@ export function CurriculumSidebar({
                   <div className="flex flex-col border-t border-border/30 bg-background/30 p-1">
                     {mod.chapters.map((ch) => {
                       const isCurrentChapter = isCurrentModule && ch.slug === currentChapterSlug;
+                      const isDone = completedChapters.has(`${mod.slug}/${ch.slug}`);
 
                       return (
                         <Link
                           key={ch.slug}
+                          ref={isCurrentChapter ? activeChapterRef : null}
                           href={`/learnings/${mod.slug}/${ch.slug}`}
                           onClick={onNavigate}
                           className={cn(
@@ -163,15 +204,26 @@ export function CurriculumSidebar({
                               : "text-muted-foreground hover:text-foreground hover:bg-surface-raised/70"
                           )}
                         >
+                          {isDone ? (
+                            <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
+                          ) : (
+                            <span
+                              className={cn(
+                                "font-mono text-[10px] shrink-0",
+                                isCurrentChapter ? "text-primary" : "text-muted-foreground/60"
+                              )}
+                            >
+                              {ch.order.toString().padStart(2, "0")}.
+                            </span>
+                          )}
                           <span
                             className={cn(
-                              "font-mono text-[10px] shrink-0",
-                              isCurrentChapter ? "text-primary" : "text-muted-foreground/60"
+                              "truncate flex-1",
+                              isDone && !isCurrentChapter && "text-foreground/70"
                             )}
                           >
-                            {ch.order.toString().padStart(2, "0")}.
+                            {ch.title}
                           </span>
-                          <span className="truncate flex-1">{ch.title}</span>
                           {ch.visualizerLinks && ch.visualizerLinks.length > 0 && (
                             <Compass className="w-3 h-3 text-primary/70 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                           )}

@@ -1,11 +1,11 @@
-# 🔴⚫ Part 06: Trees — Module 05: Red-Black Trees (RBT)
+# Part 06: Trees — Module 05: Red-Black Trees (RBT)
 
 > **Topics Covered:**  
-> 88a. Red-Black Tree Architecture & Motivation &bull; 88b. The 5 Inviolable RBT Invariants &bull; 88c. Mathematical Proof: Height $h \le 2\log_2(n+1)$ &bull; 88d. Rotations in Red-Black Trees &bull; 88e. Insertion Algorithm & The 3 Uncle Fixup Cases &bull; 88f. Deletion Algorithm & The 4 Double-Black Fixup Cases &bull; 88g. Red-Black Tree vs AVL Tree Trade-Off Analysis &bull; 88h. Real-World Applications (Linux CFS, C++ STL, Java Collections)
+> 88a. Red-Black Tree Architecture & Motivation &bull; 88b. The 5 Structural Red-Black Tree Properties &bull; 88c. Mathematical Proof: Height $h \le 2\log_2(n+1)$ &bull; 88d. Rotations in Red-Black Trees &bull; 88e. Insertion Algorithm & The 3 Uncle Fixup Cases &bull; 88f. Deletion Algorithm & The 4 Double-Black Fixup Cases &bull; 88g. Red-Black Tree vs AVL Tree Trade-Off Analysis &bull; 88h. Real-World Applications (Linux CFS, C++ STL, Java Collections)
 
 ---
 
-# TOPIC 88a & 88b: DEFINITION & THE 5 INVIOLABLE INVARIANTS
+# TOPIC 88a & 88b: DEFINITION & THE 5 Structural INVARIANTS
 
 ### 1. Motivation: Why Red-Black Trees?
 While AVL trees maintain near-perfect balance (height $h \le 1.44 \log_2 n$), they require frequent rotations during insertions and especially deletions (where rotations can cascade all the way to the root).  
@@ -16,7 +16,7 @@ This makes Red-Black Trees significantly faster in write-heavy environments, mak
 
 ---
 
-### 2. The 5 Inviolable Red-Black Tree Invariants
+### 2. The 5 Structural Red-Black Tree Invariants
 
 Every valid Red-Black Tree must strictly satisfy all 5 properties at all times:
 
@@ -259,7 +259,7 @@ CASE 4: Sibling w is BLACK, and w's outer child is RED
 
 ---
 
-## 🔁 Module 05 Summary & Key Takeaways
+## Module 05 Summary & Key Takeaways
 
 1. A **Red-Black Tree** guarantees worst-case $O(\log n)$ time for Search, Insert, and Delete by enforcing 5 invariants, most notably that no two RED nodes are adjacent and every path from root to leaf has identical black-height.
 2. The height of an RBT with $n$ internal nodes is mathematically bounded by $h \le 2\log_2(n+1)$.
@@ -267,4 +267,9 @@ CASE 4: Sibling w is BLACK, and w's outer child is RED
 4. Standard libraries across the software industry (Linux kernel, C++ STL, Java standard library) prefer Red-Black Trees over AVL trees due to significantly cheaper rebalancing during frequent modifications.
 
 ---
-[⬅️ Previous: Module 04 — AVL Trees](file:///d:/DSA/Part-06-Trees/04_avl_trees.md) | [Next: Module 06 — Splay Trees & Treaps ➡️](file:///d:/DSA/Part-06-Trees/06_splay_trees_and_treaps.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
+2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
+3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.

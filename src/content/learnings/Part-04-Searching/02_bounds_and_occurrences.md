@@ -1,4 +1,4 @@
-# 🎯 Part 04: Searching — Module 02: Lower Bound, Upper Bound & Element Occurrences
+# Part 04: Searching — Module 02: Lower Bound, Upper Bound & Element Occurrences
 
 > **Topics Covered:**  
 > 44. Binary Search Invariants & Interval Models &bull; 45. Lower Bound Algorithm &bull; 46. Upper Bound Algorithm &bull; 47. First and Last Occurrences & Frequency Counting
@@ -168,11 +168,16 @@ ALGORITHM LastOccurrence(A, n, target)
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## Module 02 Summary & Key Takeaways
 
 1. **Lower Bound** finds the first index where $A[i] \ge \text{target}$; **Upper Bound** finds the first index where $A[i] > \text{target}$.
 2. Both run in strictly $O(\log n)$ time and $O(1)$ space.
 3. Total occurrences of any value in a sorted array is calculated in $O(\log n)$ as $\text{UB} - \text{LB}$.
 
 ---
-[⬅️ Previous: Module 01 — Linear & Binary Search](file:///d:/DSA/Part-04-Searching/01_linear_and_binary_search.md) | [Next: Module 03 — Search Space & Rotated Arrays ➡️](file:///d:/DSA/Part-04-Searching/03_search_space_and_rotated.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Section 2.3 & Chapter 12. MIT Press.
+2. **Bentley, J.** (2000). *Programming Pearls* (2nd ed.), Column 4: Writing Correct Programs. Addison-Wesley.
+3. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.2: Searching by Comparison of Keys. Addison-Wesley.

@@ -1,4 +1,4 @@
-# 📚 Part 11: Problem Bank — Volume 01: Arrays, Strings, Matrices & Pointer Patterns (100 Problems)
+# Part 11: Problem Bank — Volume 01: Arrays, Strings, Matrices & Pointer Patterns (100 Problems)
 
 > **Problems Covered:** Q001 to Q100  
 > **Patterns:** Two Pointers &bull; Sliding Window &bull; Prefix Sum &bull; Difference Array &bull; Kadane's &bull; Dutch National Flag &bull; Boyer-Moore &bull; Matrix Traversal
@@ -724,4 +724,9 @@
 - **Edge Cases:** Unequal number of words and pattern characters.
 
 ---
-[⬅️ Previous: Part 10 Advanced DSA](file:///d:/DSA/Part-10-Advanced-DSA/03_tree_decompositions.md) | [Next: Volume 02 — Linked Lists, Stacks & Queues (Q101–Q160) ➡️](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/02_linked_lists_stacks_queues_60.md)
+
+## References & Academic Attribution
+
+1. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+3. **USA Computing Olympiad (USACO)** & **CP-Algorithms Archives** (2024). Curated Competitive Programming and Algorithm Verification Standards.

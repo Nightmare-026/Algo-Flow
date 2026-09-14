@@ -1,4 +1,4 @@
-# 🏆 Part 09: Problem-Solving Patterns — Module 03: Core Interview & Competitive Patterns
+# Part 09: Problem-Solving Patterns — Module 03: Core Interview & Competitive Patterns
 
 > **Topics Covered:**  
 > 141. Interval Merging & Meeting Rooms &bull; 142. Binary Search Patterns &bull; 143. Heap / Top-K & Median Patterns &bull; 144. Hash Map Frequency & Prefix Sum Patterns &bull; 145–146. Recursion & Backtracking Patterns &bull; 147. Bit Manipulation Hacks & Masking Techniques
@@ -146,7 +146,7 @@ $$\text{LowestSetBit}(n) = n \ \& \ (-n)$$
 
 ---
 
-## 🔁 Module 03 Summary & Key Takeaways
+## Module 03 Summary & Key Takeaways
 
 1. **Interval Merging** requires sorting by start time; **Meeting Rooms II** uses a min-heap to track active rooms.
 2. Finding **Top-K elements** uses a Min-Heap of size $K$ to achieve $O(n \log K)$ runtime without sorting the array.
@@ -154,4 +154,9 @@ $$\text{LowestSetBit}(n) = n \ \& \ (-n)$$
 4. Bit manipulation executes in 1 CPU cycle; use `n & (n - 1)` to clear the lowest set bit and XOR cancellation to eliminate duplicates.
 
 ---
-[⬅️ Previous: Module 02 — Monotonic Data Structures](file:///d:/DSA/Part-09-Problem-Solving-Patterns/02_monotonic_data_structures.md) | [Next: Part 10 — Advanced DSA ➡️](file:///d:/DSA/Part-10-Advanced-DSA/01_range_query_structures.md)
+
+## References & Academic Attribution
+
+1. **Halim, S., Halim, F., & Skiena, S. S.** (2020). *Competitive Programming 4: The Lower Bound of Programming Contests*. CP4 Pte Ltd.
+2. **Laaksonen, A.** (2020). *Guide to Competitive Programming: Learning and Improving Algorithms Through Contests* (2nd ed.). Springer.
+3. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.

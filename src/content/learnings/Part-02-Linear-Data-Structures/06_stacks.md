@@ -1,4 +1,4 @@
-# 🥞 Part 02: Linear Data Structures — Module 06: Stacks
+# Part 02: Linear Data Structures — Module 06: Stacks
 
 > **Topics Covered:**  
 > 27. Stack Abstract Data Type (LIFO) & Core Operations &bull; Static & Dynamic Array Stack Implementations (Amortized Analysis) &bull; Linked List Stack &bull; Hardware Call Stack & Activation Records &bull; Expression Evaluation (Infix, Prefix, Postfix, Shunting-Yard Algorithm) &bull; Balanced Delimiter Matching
@@ -24,10 +24,10 @@ Beginner to Intermediate.
 
 ### 5. Definition & Intuitive Mental Model
 
-### 💡 CONCEPT
+### Concept
 A **Stack** is a linear data structure governed by the **LIFO (Last-In, First-Out)** principle: the most recently inserted element is always the first one to be removed. Access to elements is strictly restricted to one single boundary known as the **Top**.
 
-### 🧠 INTUITION: The Cafeteria Tray Dispenser
+### Intuition: The Cafeteria Tray Dispenser
 Imagine a spring-loaded stack of trays in a cafeteria:
 - When a dishwasher cleans a tray, they place it on **Top** (`Push`).
 - When a customer needs a tray, they take the one on **Top** (`Pop`).
@@ -144,7 +144,7 @@ DATA STRUCTURE ArrayStack
 
 ### 10. Hardware Call Stack & Activation Records
 
-### 💡 THE HARDWARE FOUNDATION
+### THE HARDWARE FOUNDATION
 Every running software process allocates a dedicated block of RAM called the **Execution Call Stack**:
 - When a function is called, the CPU pushes an **Activation Record (Stack Frame)** containing:
   1. Return address in machine code instructions.
@@ -244,7 +244,7 @@ Uses an operator stack to convert infix expressions respecting operator preceden
 
 ---
 
-## 🔁 Module 06 Summary & Key Takeaways
+## Module 06 Summary & Key Takeaways
 
 1. **Stacks** enforce strict **LIFO** discipline with $O(1)$ operations at `TOP`.
 2. Dynamic array stacks achieve **amortized $O(1)$** push, while linked list stacks guarantee **worst-case $O(1)$** at the cost of pointer overhead.
@@ -252,4 +252,9 @@ Uses an operator stack to convert infix expressions respecting operator preceden
 4. Stacks are the fundamental engine behind **bracket balancing**, **DFS traversal**, and **Reverse Polish Notation (RPN) compilers**.
 
 ---
-[⬅️ Previous: Module 05 — Specialized Linked Lists](file:///d:/DSA/Part-02-Linear-Data-Structures/05_specialized_linked_lists.md) | [Next: Module 07 — Queues & Circular Queues ➡️](file:///d:/DSA/Part-02-Linear-Data-Structures/07_queues_and_circular_queues.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
+3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.

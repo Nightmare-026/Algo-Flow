@@ -1,4 +1,4 @@
-# 🔀 Part 02: Linear Data Structures — Module 08: Deques & Priority Queues
+# Part 02: Linear Data Structures — Module 08: Deques & Priority Queues
 
 > **Topics Covered:**  
 > 30. Double-Ended Queue (Deque) ADT & Core Operations &bull; Input-Restricted vs Output-Restricted Deques &bull; Circular Array Deque Modulo Mathematics &bull; The Sliding Window Maximum Monotonic Deque Pattern &bull; 31. Priority Queue ADT Fundamentals & Underlying Data Structure Trade-offs
@@ -24,10 +24,10 @@ Intermediate.
 
 ### 5. Definition & Intuitive Mental Model
 
-### 💡 CONCEPT
+### Concept
 A **Double-Ended Queue (Deque)**, pronounced *"deck"*, is a generalized linear data structure that permits elements to be inserted and deleted with equal ease and efficiency from **both ends**: the **Front** and the **Rear**.
 
-### 🧠 INTUITION: The Universal Chameleon
+### Intuition: The Universal Chameleon
 A Deque is the "Swiss Army Knife" of linear containers:
 - If you restrict operations to `PushFront` and `PopFront` $\implies$ You have created a **Stack**!
 - If you restrict operations to `PushBack` and `PopFront` $\implies$ You have created a **Queue**!
@@ -138,7 +138,7 @@ DATA STRUCTURE CircularArrayDeque
 
 ### 9. Classic High-Performance Application: Monotonic Deque for Sliding Window Maximum
 
-### 💡 THE PROBLEM:
+### THE PROBLEM:
 Given an array $A$ of $n$ numbers and a sliding window of size $k$, find the maximum value in every window as it slides from left to right.
 - Brute Force: Scan all $k$ elements in every window $\implies O(n \cdot k)$ time.
 - **Monotonic Deque Solution**: Process all elements in strictly **$O(n)$ linear time**!
@@ -192,12 +192,12 @@ Intermediate.
 
 ### 5. Definition & Intuitive Mental Model
 
-### 💡 CONCEPT
+### Concept
 A **Priority Queue** is an Abstract Data Type (ADT) similar to a regular queue or stack, but where each stored element has an associated numerical or comparable **Priority Key**. 
 - In a standard queue, departure is strictly determined by arrival time (**FIFO**).
 - In a Priority Queue, departure is strictly determined by **highest (or lowest) priority**, regardless of when the element was inserted!
 
-### 🧠 INTUITION: The Hospital Emergency Room (Triage)
+### Intuition: The Hospital Emergency Room (Triage)
 In an ER:
 - A patient with a minor cough who arrives at 8:00 AM does NOT get treated before a patient with a severe cardiac arrest who arrives at 8:15 AM!
 - Patients are treated in order of clinical severity (Priority), not arrival sequence.
@@ -255,7 +255,7 @@ A Priority Queue is an **Abstract Data Type (Interface)**, NOT a concrete storag
 
 ---
 
-## 🔁 Module 08 Summary & Key Takeaways
+## Module 08 Summary & Key Takeaways
 
 1. **Deques** support insertion and deletion at both `Front` and `Rear` in $O(1)$ time, subsuming both Stacks and Queues.
 2. **Circular Array Deques** utilize modulo wrap-around `(index - 1 + capacity) % capacity` to move backward without shifting.
@@ -263,4 +263,9 @@ A Priority Queue is an **Abstract Data Type (Interface)**, NOT a concrete storag
 4. A **Priority Queue** is an ADT where departure order is governed by priority keys rather than arrival sequence; the **Binary Heap** is its most efficient general-purpose implementation.
 
 ---
-[⬅️ Previous: Module 07 — Queues & Circular Queues](file:///d:/DSA/Part-02-Linear-Data-Structures/07_queues_and_circular_queues.md) | [Next: Part 03 — Hashing ➡️](file:///d:/DSA/Part-03-Hashing/01_hashing_foundations.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
+3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.

@@ -1,4 +1,4 @@
-# 🔄 Part 01: Foundations — Module 04: Recursion, Recurrence Relations & the Call Stack
+# Part 01: Foundations — Module 04: Recursion, Recurrence Relations & the Call Stack
 
 > **Topics Covered:**  
 > 17. Recursion Fundamentals, Base Cases & the Call Stack &bull; 18. Recurrence Relations & The Master Theorem &bull; 19. Iteration vs Recursion & Tail-Call Optimization
@@ -7,7 +7,7 @@
 
 ## 17. Recursion Fundamentals & Call Stack Architecture
 
-### 💡 CONCEPT
+### Concept
 **Recursion** is a programming and mathematical technique where a function solves a problem by calling one or more copies of itself on strictly smaller subproblems of the exact same nature, until reaching a trivial condition called the **Base Case**.
 
 ### The Anatomy of Every Valid Recursive Function
@@ -28,7 +28,7 @@ ALGORITHM Factorial(n)
 
 ---
 
-### 🧠 Physical Call Stack & Activation Record Lifecycle
+### Physical Call Stack & Activation Record Lifecycle
 
 When a function executes in physical RAM, the operating system allocates an **Activation Record (Stack Frame)** in the runtime call stack memory region.
 
@@ -62,7 +62,7 @@ Low Memory  ▼
 
 ## 18. Recurrence Relations & Solving Techniques
 
-### 💡 CONCEPT
+### Concept
 A **Recurrence Relation** is an equation or inequality that defines a function $T(n)$ in terms of its value on strictly smaller inputs.
 
 ### Method 1: The Recursion Tree Method
@@ -130,7 +130,7 @@ Compare $f(n)$ with the watershed benchmark function $n^{\log_b a}$ (which repre
 
 ## 19. Iteration vs Recursion & Tail-Call Optimization
 
-### ⚖️ Architectural Comparison
+### Architectural Comparison
 
 | Dimension | Recursion | Iteration |
 | :--- | :--- | :--- |
@@ -142,7 +142,7 @@ Compare $f(n)$ with the watershed benchmark function $n^{\log_b a}$ (which repre
 
 ---
 
-### 💡 Tail-Call Recursion & Tail-Call Optimization (TCO)
+### Tail-Call Recursion & Tail-Call Optimization (TCO)
 
 A recursive call is said to be **Tail-Recursive** if the recursive call is the **absolute final operation** executed by the function before returning. No pending operations remain.
 
@@ -160,12 +160,12 @@ A recursive call is said to be **Tail-Recursive** if the recursive call is the *
 3.     return FactorialTail(n - 1, n * acc) // ✅ TAIL-RECURSIVE: return value is directly returned
 ```
 
-#### 🧠 Compiler Tail-Call Optimization (TCO):
+#### Compiler Tail-Call Optimization (TCO):
 When a function is tail-recursive, a modern optimizing compiler does not allocate a new stack frame. Instead, it reuses the existing stack frame and updates local parameters directly, effectively converting the recursion into an $O(1)$ auxiliary space iterative loop!
 
 ---
 
-## 🔁 Module 04 Summary & Key Takeaways
+## Module 04 Summary & Key Takeaways
 
 1. Recursion requires a **Base Case** (to halt) and a **Recursive Step** (to make inductive progress).
 2. Every uncompleted recursive call consumes an **Activation Record** on the runtime call stack, contributing $O(\text{max depth})$ auxiliary space.
@@ -173,4 +173,9 @@ When a function is tail-recursive, a modern optimizing compiler does not allocat
 4. Tail recursion allows compilers supporting TCO to run recursive logic in $O(1)$ auxiliary stack space.
 
 ---
-[⬅️ Previous: Module 03 — Asymptotic Analysis](file:///d:/DSA/Part-01-Foundations/03_asymptotic_analysis.md) | [Next: Part 02 — Linear Data Structures ➡️](file:///d:/DSA/Part-02-Linear-Data-Structures/01_arrays_and_dynamic_arrays.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 3: Characterizing Running Times. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.4: Analysis of Algorithms. Addison-Wesley.
+3. **Sipser, M.** (2012). *Introduction to the Theory of Computation* (3rd ed.). Cengage Learning.

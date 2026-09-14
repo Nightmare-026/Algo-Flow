@@ -1,4 +1,4 @@
-# ⚡ Part 00: Front Matter — Complexity Quick Reference & Master Tables
+# Part 00: Front Matter — Complexity Quick Reference & Master Tables
 
 ---
 
@@ -75,4 +75,9 @@ $^\ddagger$ *Given direct pointer to the target node.*
 | **Tarjan's** | Strongly Connected Components | $O(V + E)$ | $O(V)$ | Directed graph |
 
 ---
-[⬅️ Previous: Notation & Symbols](file:///d:/DSA/Part-00-Front-Matter/03_notation_and_symbols.md) | [Next: Part 01 — Foundations ➡️](file:///d:/DSA/Part-01-Foundations/01_data_and_algorithms.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 1–3. MIT Press.
+2. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.). Addison-Wesley.
+3. **IEEE / ACM Computing Curricula Guidelines** (2020). Curriculum Guidelines for Undergraduate Degree Programs in Computer Science.

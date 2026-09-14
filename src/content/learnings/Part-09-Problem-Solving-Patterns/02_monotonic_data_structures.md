@@ -1,4 +1,4 @@
-# 🏔️ Part 09: Problem-Solving Patterns — Module 02: Monotonic Data Structures
+# Part 09: Problem-Solving Patterns — Module 02: Monotonic Data Structures
 
 > **Topics Covered:**  
 > 139. Monotonic Stack (Next Greater/Smaller Element & Largest Rectangle in Histogram) &bull; 140. Monotonic Queue (Sliding Window Maximum via Deque in $O(n)$)
@@ -137,11 +137,16 @@ ALGORITHM SlidingWindowMax(A, n, K)
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## Module 02 Summary & Key Takeaways
 
 1. **Monotonic Stack** solves Next Greater / Smaller Element queries in $O(n)$ total amortized time.
 2. The core template repeatedly pops stack elements that violate monotonicity before pushing the new element.
 3. **Monotonic Queue (Deque)** finds the maximum/minimum in a sliding window in $O(n)$ time by evicting older smaller candidates.
 
 ---
-[⬅️ Previous: Module 01 — Array & Pointer Patterns](file:///d:/DSA/Part-09-Problem-Solving-Patterns/01_array_and_pointer_patterns.md) | [Next: Module 03 — Core Interview Patterns ➡️](file:///d:/DSA/Part-09-Problem-Solving-Patterns/03_core_interview_patterns.md)
+
+## References & Academic Attribution
+
+1. **Halim, S., Halim, F., & Skiena, S. S.** (2020). *Competitive Programming 4: The Lower Bound of Programming Contests*. CP4 Pte Ltd.
+2. **Laaksonen, A.** (2020). *Guide to Competitive Programming: Learning and Improving Algorithms Through Contests* (2nd ed.). Springer.
+3. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.

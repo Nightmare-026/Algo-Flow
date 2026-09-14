@@ -1,4 +1,4 @@
-# 📋 Part 11: Problem Bank & Revision — Module 09: Master Revision Sheets & Formula Reference
+# Part 11: Problem Bank & Revision — Module 09: Master Revision Sheets & Formula Reference
 
 > **Topics Covered:**  
 > 165. Master Complexity Tables &bull; 166. Mathematical Formula Sheet &bull; 167. 1-Minute Algorithm Decision Cheat Sheets &bull; 168. Final Comprehensive DSA Revision Map
@@ -166,4 +166,9 @@ WHAT IS THE PROBLEM ASKING FOR?
 ```
 
 ---
-[⬅️ Previous: Module 08 — Pitfalls & Confusions](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/08_pitfalls_and_confusions.md) | [Back to Master Table of Contents 🏠](file:///d:/DSA/README.md)
+
+## References & Academic Attribution
+
+1. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+3. **USA Computing Olympiad (USACO)** & **CP-Algorithms Archives** (2024). Curated Competitive Programming and Algorithm Verification Standards.

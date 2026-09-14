@@ -1,4 +1,4 @@
-# 🔗 Part 02: Linear Data Structures — Module 05: Specialized & Advanced Linked Lists
+# Part 02: Linear Data Structures — Module 05: Specialized & Advanced Linked Lists
 
 > **Topics Covered:**  
 > Skip Lists (Probabilistic Multi-Level Search Towers, $O(\log n)$ Lookups & Range Queries) &bull; Unrolled Linked Lists (Cache-Conscious Chunked Array Nodes & CPU L1/L2 Locality) &bull; XOR Linked Lists (Memory-Efficient Doubly Linked Lists via Bitwise Pointer Arithmetic)
@@ -30,7 +30,7 @@ In a balanced Binary Search Tree or Sorted Array:
 In a standard Sorted Linked List:
 - Even though the elements are in strict ascending order, binary search is **impossible** because we cannot access the midpoint in $O(1)$ time. Searching is condemned to $\Theta(n)$ sequential stepping.
 
-### 💡 THE INGENIOUS SOLUTION (William Pugh, 1989):
+### THE INGENIOUS SOLUTION (William Pugh, 1989):
 What if we build **express train tracks** (hierarchy of index lanes) over our regular local train track?
 - Track 0 (Bottom): Visits every single station ($1, 2, 3, 4, 5, 6, 7, 8$).
 - Track 1 (Express): Skips every 2nd station ($2, 4, 6, 8$).
@@ -147,7 +147,7 @@ Advanced.
 ### 4. The Hardware Reality: Cache Misses in Node Lists
 In a standard linked list, every node holds a single element. Traversing $n$ elements means reading $n$ non-contiguous heap addresses. Modern CPUs fetch data from RAM in **64-byte Cache Lines**. When you access a 4-byte integer in a standard node, 60 bytes of fetched cache line are wasted, causing constant L1/L2 cache misses!
 
-### 💡 THE CONCEPT
+### THE CONCEPT
 An **Unrolled Linked List** groups multiple elements into a small contiguous array inside each node:
 
 ```text
@@ -255,11 +255,16 @@ $$\text{prev} = \text{curr.npx} \oplus \text{next} = (\text{prev} \oplus \text{n
 
 ---
 
-## 🔁 Module 05 Summary & Key Takeaways
+## Module 05 Summary & Key Takeaways
 
 1. **Skip Lists** provide probabilistic multi-level indexing, delivering expected $O(\log n)$ search, insert, and delete with simpler concurrency than balanced trees (used in Redis ZSET).
 2. **Unrolled Linked Lists** pack contiguous arrays into nodes to maximize CPU cache line locality ($64$ bytes) and slash pointer overhead.
 3. **XOR Linked Lists** encode `prev ^ next` into a single field using the bitwise cancellation property $(A \oplus B) \oplus A = B$, cutting DLL pointer memory by 50% in embedded environments.
 
 ---
-[⬅️ Previous: Module 04 — Doubly & Circular Linked Lists](file:///d:/DSA/Part-02-Linear-Data-Structures/04_doubly_and_circular_linked_lists.md) | [Next: Module 06 — Stacks ➡️](file:///d:/DSA/Part-02-Linear-Data-Structures/06_stacks.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
+3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.

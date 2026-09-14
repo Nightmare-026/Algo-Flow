@@ -1,4 +1,4 @@
-# 📚 Part 11: Problem Bank — Volume 04: Trees, BSTs, Heaps & Tries (100 Problems)
+# Part 11: Problem Bank — Volume 04: Trees, BSTs, Heaps & Tries (100 Problems)
 
 > **Problems Covered:** Q241 to Q340  
 > **Patterns:** Binary Tree DFS/BFS &bull; Subtree Metrics &bull; Lowest Common Ancestor &bull; BST Invariants &bull; Dual-Heap Median &bull; Top-K Patterns &bull; Prefix Tries &bull; 0-1 Bitwise Tries &bull; Segment Trees & Fenwick Trees &bull; Tree Decompositions
@@ -720,4 +720,9 @@
 - **Edge Cases:** Reversing range of size 1.
 
 ---
-[⬅️ Previous: Volume 03 — Hashing & Search](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/03_hashing_and_search_80.md) | [Next: Volume 05 — Graphs & Networks (Q341–Q410) ➡️](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/05_graphs_and_networks_70.md)
+
+## References & Academic Attribution
+
+1. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+3. **USA Computing Olympiad (USACO)** & **CP-Algorithms Archives** (2024). Curated Competitive Programming and Algorithm Verification Standards.

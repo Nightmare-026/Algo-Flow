@@ -1,4 +1,4 @@
-# 🔍 Part 07: Graphs — Module 03: Graph Traversals, Cycles & Connectivity
+# Part 07: Graphs — Module 03: Graph Traversals, Cycles & Connectivity
 
 > **Topics Covered:**  
 > 107. Breadth-First Search (BFS & Unweighted Shortest Path) &bull; 108. Depth-First Search (DFS & Edge Classifications) &bull; 109. Cycle Detection (Undirected vs Directed 3-Coloring) &bull; 110. Connected Components & Flood Fill &bull; 111. Bipartite Graph Detection (2-Coloring Theorem)
@@ -174,7 +174,7 @@ ALGORITHM IsBipartite(adj, V)
 
 ---
 
-## 🔁 Module 03 Summary & Key Takeaways
+## Module 03 Summary & Key Takeaways
 
 1. **BFS** visits vertices in order of unweighted edge distance via a queue; finds shortest paths in $O(V + E)$ time.
 2. **DFS** explores deeply via the call stack; classifies edges into Tree, Back, Forward, and Cross edges.
@@ -182,4 +182,9 @@ ALGORITHM IsBipartite(adj, V)
 4. A graph is **Bipartite** if and only if it has **zero odd-length cycles**, verifiable via 2-coloring BFS in $O(V + E)$ time.
 
 ---
-[⬅️ Previous: Module 02 — Graph Storage Architectures](file:///d:/DSA/Part-07-Graphs/02_graph_storage_architectures.md) | [Next: Module 04 — Topological Sort & DAGs ➡️](file:///d:/DSA/Part-07-Graphs/04_topological_sort_and_dags.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 20–23 (Graph Algorithms, Minimum Spanning Trees, Shortest Paths). MIT Press.
+2. **Dijkstra, E. W.** (1959). A note on two problems in connexion with graphs. *Numerische Mathematik*, 1(1), 269–271.
+3. **Tarjan, R. E.** (1972). Depth-first search and linear graph algorithms. *SIAM Journal on Computing*, 1(2), 146–160.

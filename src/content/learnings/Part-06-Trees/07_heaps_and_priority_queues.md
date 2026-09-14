@@ -1,4 +1,4 @@
-# 🏔️ Part 06: Trees — Module 07: Heaps & Priority Queues
+# Part 06: Trees — Module 07: Heaps & Priority Queues
 
 > **Topics Covered:**  
 > 89. Heap Structure & Dual Invariants &bull; 90. Min-Heap & Max-Heap &bull; 91. Array Mapping Arithmetic ($2i+1, 2i+2$) &bull; 92. Core Operations: Sift-Up & Sift-Down &bull; 93. Mathematical Proof: $O(n)$ Linear Build-Heap &bull; 94. Priority Queue ADT Implementation &bull; 94b. Advanced Heaps: D-ary Heaps, Binomial Heaps & Fibonacci Heaps
@@ -177,7 +177,7 @@ DATA STRUCTURE PriorityQueue
 
 ---
 
-## 🔁 Module 07 Summary & Key Takeaways
+## Module 07 Summary & Key Takeaways
 
 1. **Binary Heap** enforces Shape (complete binary tree) and Order (parent $\ge$ or $\le$ children) invariants.
 2. Array arithmetic ($2i+1, 2i+2, \lfloor(i-1)/2\rfloor$) eliminates pointer overhead.
@@ -185,4 +185,9 @@ DATA STRUCTURE PriorityQueue
 4. For high-performance caches, $d$-ary heaps ($d=4$) provide superior real-world throughput due to cache alignment.
 
 ---
-[⬅️ Previous: Module 06 — Splay Trees & Treaps](file:///d:/DSA/Part-06-Trees/06_splay_trees_and_treaps.md) | [Next: Module 08 — Multiway & B-Trees ➡️](file:///d:/DSA/Part-06-Trees/08_multiway_trees_b_trees.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
+2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
+3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.

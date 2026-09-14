@@ -1,4 +1,4 @@
-# 📦 Part 02: Linear Data Structures — Module 01: Arrays & Dynamic Arrays
+# Part 02: Linear Data Structures — Module 01: Arrays & Dynamic Arrays
 
 > **Topics Covered:**  
 > 20. Static Arrays &bull; 21. Dynamic Arrays (Vectors / Resizable Arrays)
@@ -503,4 +503,9 @@ Starting with capacity $= 1$:
 - Halve at $C/4$ to prevent resize thrashing.
 
 ---
-[⬅️ Previous: Part 01 Foundations](file:///d:/DSA/Part-01-Foundations/04_recursion_and_recurrences.md) | [Next: Module 02 — Strings & Matrices ➡️](file:///d:/DSA/Part-02-Linear-Data-Structures/02_strings_and_matrices.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
+3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.

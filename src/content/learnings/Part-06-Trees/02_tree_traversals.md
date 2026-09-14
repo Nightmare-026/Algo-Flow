@@ -1,4 +1,4 @@
-# 🚶 Part 06: Trees — Module 02: Tree Traversals (DFS, BFS & Advanced $O(1)$ Morris Traversals)
+# Part 06: Trees — Module 02: Tree Traversals (DFS, BFS & Advanced $O(1)$ Morris Traversals)
 
 > **Topics Covered:**  
 > 72. Tree Traversal Fundamentals & Classifications &bull; 73. Preorder Traversal (Recursive, Iterative, Morris) &bull; 74. Inorder Traversal (Recursive, Iterative, Morris $O(1)$ Space) &bull; 75. Postorder Traversal (Recursive, 2-Stack Iterative, 1-Stack Iterative) &bull; 76. Level Order Traversal & Zigzag BFS &bull; 76b. Advanced Views: Boundary, Vertical Order, Top & Bottom Views
@@ -284,11 +284,16 @@ Visits the perimeter of the tree in anti-clockwise order:
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## Module 02 Summary & Key Takeaways
 
 1. DFS traversals (**Preorder, Inorder, Postorder**) consume $O(h)$ stack frames; BFS (**Level Order**) consumes $O(W)$ queue entries where $W \le \lceil N/2 \rceil$.
 2. **Morris Traversal** achieves linear time and strictly **$O(1)$ space** by temporarily pointing predecessor right leaves to the current node and restoring them before returning.
 3. For all geometric views (Top, Bottom, Vertical Order), assign Horizontal Distance $HD = 0$ to Root, $HD - 1$ to Left child, and $HD + 1$ to Right child, traversing via BFS.
 
 ---
-[⬅️ Previous: Module 01 — Tree Fundamentals](file:///d:/DSA/Part-06-Trees/01_tree_fundamentals.md) | [Next: Module 03 — Binary Search Trees ➡️](file:///d:/DSA/Part-06-Trees/03_binary_search_trees.md)
+
+## References & Academic Attribution
+
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
+2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
+3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.

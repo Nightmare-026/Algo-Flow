@@ -1,4 +1,4 @@
-# 📚 Part 11: Problem Bank — Volume 05: Graphs, Traversal, Shortest Paths & MSTs (70 Problems)
+# Part 11: Problem Bank — Volume 05: Graphs, Traversal, Shortest Paths & MSTs (70 Problems)
 
 > **Problems Covered:** Q341 to Q410  
 > **Patterns:** BFS/DFS on Graphs & 2D Grids &bull; Multi-Source BFS &bull; Topological Sort (Kahn / DFS) &bull; Dijkstra's Min-Heap &bull; Bellman-Ford & Negative Cycles &bull; Floyd-Warshall &bull; 0-1 BFS with Deque &bull; Disjoint Set Union (DSU / Kruskal's) &bull; Prim's MST &bull; Tarjan's Bridges & Articulation Points &bull; Hierholzer Eulerian Paths
@@ -514,4 +514,9 @@
 - **Edge Cases:** Disconnected source and sink.
 
 ---
-[⬅️ Previous: Volume 04 — Trees & Heaps](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/04_trees_bst_tries_heaps_100.md) | [Next: Volume 06 — Dynamic Programming (Q411–Q470) ➡️](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/06_dynamic_programming_60.md)
+
+## References & Academic Attribution
+
+1. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+3. **USA Computing Olympiad (USACO)** & **CP-Algorithms Archives** (2024). Curated Competitive Programming and Algorithm Verification Standards.

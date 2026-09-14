@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
 /* ==========================================================================
    ALGO FLOW — DESIGN SYSTEM TOKENS (LIGHT & DARK NEUMORPHIC)
@@ -770,27 +771,51 @@
 
 .prose-learnings table {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9375rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
 }
 
 .prose-learnings th {
-  background-color: var(--bg-surface-inset);
   color: var(--text-primary);
-  font-weight: 600;
-  text-align: left;
-  padding: 0.75rem 1rem;
-  border-bottom: 2px solid var(--border);
+  font-weight: 700;
+  padding: 0.875rem 1rem;
+  letter-spacing: 0.02em;
 }
 
 .prose-learnings td {
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border);
   color: var(--text-secondary);
+}
+
+.prose-learnings tr:last-child td {
+  border-bottom: none;
 }
 
 .prose-learnings tr:hover td {
   background-color: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+/* KaTeX typography and dark/light mode balance */
+.prose-learnings .katex {
+  font-size: 1.05em;
+  text-rendering: auto;
+}
+
+.prose-learnings .katex-display {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+}
+
+.prose-learnings .katex-display-wrapper {
+  transition: all 0.2s ease;
+}
+
+.prose-learnings .katex-display-wrapper:hover {
+  border-color: var(--primary);
 }
 
 /* ==========================================================================

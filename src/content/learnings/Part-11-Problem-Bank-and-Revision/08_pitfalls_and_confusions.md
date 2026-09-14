@@ -1,4 +1,4 @@
-# ⚠️ Part 11: Problem Bank & Revision — Module 08: Hall of Common Pitfalls & Frequently Confused Concepts
+# Part 11: Problem Bank & Revision — Module 08: Hall of Common Pitfalls & Frequently Confused Concepts
 
 > **Topics Covered:**  
 > 163. Hall of Common Mistakes, Bugs & Architectural Anti-Patterns &bull; 164. Frequently Confused Concepts Deconstructed
@@ -116,7 +116,7 @@ While both algorithms use a Min-Heap and relax edges, their core objectives diff
 
 ---
 
-## 🔁 Module 08 Summary & Key Takeaways
+## Module 08 Summary & Key Takeaways
 
 1. Never calculate mid as `(low + high) / 2`; always use `low + (high - low) / 2`.
 2. Input cases describe data states; $O, \Omega, \Theta$ describe mathematical growth bounds.
@@ -124,4 +124,9 @@ While both algorithms use a Min-Heap and relax edges, their core objectives diff
 4. Dijkstra minimizes cumulative path distance $\text{dist}[u] + w$; Prim minimizes single edge cost $w$.
 
 ---
-[⬅️ Previous: Volume 07 — Greedy, Backtracking, Math & Advanced](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/07_greedy_backtracking_math_advanced_55.md) | [Next: Module 09 — Master Revision Sheets ➡️](file:///d:/DSA/Part-11-Problem-Bank-and-Revision/09_master_revision_sheets.md)
+
+## References & Academic Attribution
+
+1. **Skiena, S. S.** (2020). *The Algorithm Design Manual* (3rd ed.). Springer.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+3. **USA Computing Olympiad (USACO)** & **CP-Algorithms Archives** (2024). Curated Competitive Programming and Algorithm Verification Standards.

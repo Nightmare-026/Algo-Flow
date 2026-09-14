@@ -1,142 +1,142 @@
-# 🦅 Part 08: Algorithm Design Techniques — Module 02: The Greedy Paradigm & Greedy vs DP
+# Part 08: Algorithm Design Techniques — Module 02: The Greedy Paradigm & Greedy vs DP
 
 > **Topics Covered:**  
 > 123. The Greedy Paradigm, The Greedy-Choice Property & The Exchange Argument &bull; 132. Greedy vs Dynamic Programming (The Coin Change & Knapsack Dilemmas)
 
 ---
 
+## Assessable Learning Objectives
+
+Upon completing this chapter, you will be able to:
+1. **Formulate Greedy Criteria**: Distinguish between the Greedy-Choice Property and Optimal Substructure with mathematical precision.
+2. **Execute the Exchange Argument**: Construct formal mathematical induction proofs establishing that a greedy selection matches or exceeds any hypothetical optimal solution.
+3. **Trace Interval Scheduling**: Execute the activity selection algorithm step-by-step on concrete overlapping intervals using early finish-time ordering.
+4. **Identify Greedy Failure Modes**: Prove through counterexamples (non-canonical coin denominations, 0/1 Knapsack) where greedy heuristics fail and dynamic programming becomes mandatory.
+
+---
+
 # TOPIC 123: THE GREEDY PARADIGM
 
-### 1. Definition
-A **Greedy Algorithm** builds up a solution piece-by-piece, always choosing the next piece that offers the **most immediate and local benefit (locally optimal choice)**, with the expectation that this heuristic will lead to a **globally optimal solution**.
-- A greedy algorithm **NEVER backtracks or reconsiders past decisions**. Once a choice is made, it is permanent.
+### 1. Definition & Operational Mechanics
+
+A **Greedy Algorithm** constructs a candidate solution incrementally through a sequence of local choices. At each decision point, the algorithm commits to the choice that appears best at that exact moment (**locally optimal choice**), without reconsidering earlier choices or evaluating all downstream subproblems.
+
+$$\text{Decision}(t) = \arg \max_{c \in \text{Candidates}(t)} \text{LocalHeuristic}(c)$$
+
+Key characteristics:
+- **Irrevocability**: Once a choice is made, it is permanent. The algorithm never backtracks to explore alternative branches.
+- **Top-Down Progression**: Subproblem reduction occurs immediately after each greedy choice is made.
 
 ---
 
-### 2. The Two Mandatory Mathematical Pillars
+### 2. The Two Mandatory Mathematical Conditions
 
-An optimization problem can be solved greedily if and only if it satisfies:
+A greedy strategy provably finds a global optimum if and only if the problem exhibits both:
 
-1. **The Greedy-Choice Property**: A globally optimal solution can be arrived at by making a locally optimal choice without needing to evaluate the solutions to subproblems.
-2. **Optimal Substructure**: An optimal solution to the overall problem contains within it optimal solutions to its subproblems.
-
----
-
-### 3. How to Prove a Greedy Algorithm is Correct: The Exchange Argument
-
-Proving a greedy algorithm is correct is notoriously subtle. The gold standard proof technique is the **Exchange Argument**:
-1. Let $G$ be the solution produced by the Greedy Algorithm.
-2. Assume an alternative, hypothetically superior optimal solution $O$ exists.
-3. Show that you can gradually modify $O$ by **exchanging** an element in $O$ with an element from $G$ without worsening $O$'s quality.
-4. Conclude through induction that $G$ must be just as optimal as $O$, proving $G$ is globally optimal!
+1. **Greedy-Choice Property**: A globally optimal solution can be assembled by making locally optimal (greedy) choices without consulting downstream subproblem solutions.
+2. **Optimal Substructure**: An optimal solution to the instance contains within it optimal solutions to the resulting subproblems:
+$$\text{OPT}(S) = \text{Choice}^* \cup \text{OPT}(S \setminus \{ \text{Choice}^* \})$$
 
 ---
 
-### 4. Canonical Problem 1: Activity Selection (Interval Scheduling)
+### 3. Formal Mathematical Proof: The Exchange Argument
 
-**Problem**: Given $n$ activities with start times $S[i]$ and finish times $F[i]$, select the **maximum number of mutually compatible activities** (no two overlapping).
+The standard rigorous method for proving greedy correctness is the **Exchange Argument**. We establish that any hypothetical optimal solution can be transformed into the greedy solution step-by-step without degrading its objective value.
 
-#### The Greedy Choice: Sort by Earliest Finish Time $F[i]$!
-- Intuition: Finishing as early as possible frees up the resource for the maximum possible remaining time!
+#### Theorem: Activity Selection (Interval Scheduling)
+Given $n$ intervals with start times $S[i]$ and finish times $F[i]$, selecting activities in ascending order of finish time $F[i]$ yields a schedule of maximum possible cardinality.
 
-```text
-ALGORITHM ActivitySelection(S, F, n)
-    Input: Arrays S (start) and F (finish) of n activities
-    Output: Maximum count of non-overlapping activities
+#### Inductive Proof via Exchange:
+Let $G = \{g_1, g_2, \dots, g_k\}$ be the set of activities selected by the greedy algorithm, ordered by finish time: $F[g_1] \le F[g_2] \le \dots \le F[g_k]$.  
+Let $O = \{o_1, o_2, \dots, o_m\}$ be an arbitrary optimal solution, ordered by finish time: $F[o_1] \le F[o_2] \le \dots \le F[o_m]$. We must prove $k = m$.
 
-1.  Sort activities by finish time F ascending: F[0] ≤ F[1] ≤ ... ≤ F[n - 1]
-2.  count ← 1
-3.  lastFinish ← F[0]           // Select first activity
-4.  for i ← 1 to n - 1:
-5.      if S[i] ≥ lastFinish:   // Non-overlapping!
-6.          count ← count + 1
-7.          lastFinish ← F[i]
-8.  return count
-```
-
-- **Time Complexity**: $\mathbf{\Theta(n \log n)}$ (Dominated by sorting finish times).
-- **Auxiliary Space**: $O(1)$.
+1. **Base Case ($r = 1$)**: By construction, the greedy algorithm selects activity $g_1$ such that $F[g_1] = \min_{i} F[i]$.  
+   Therefore, $F[g_1] \le F[o_1]$.  
+   Construct a modified solution $O' = (O \setminus \{o_1\}) \cup \{g_1\}$. Since $F[g_1] \le F[o_1]$ and $F[o_1] \le S[o_2]$, activity $g_1$ does not conflict with $o_2$. Thus $O'$ is valid and $|O'| = |O| = m$.
+2. **Inductive Step**: Assume for induction that there exists an optimal solution whose first $r$ activities match $G$: $\{g_1, g_2, \dots, g_r, o_{r+1}, \dots, o_m\}$.  
+   Because greedy selects $g_{r+1}$ as the activity with the earliest finish time among all activities starting after $F[g_r]$, we have $F[g_{r+1}] \le F[o_{r+1}]$.  
+   Substituting $g_{r+1}$ in place of $o_{r+1}$ leaves activities $o_{r+2}, \dots, o_m$ valid because $F[g_{r+1}] \le F[o_{r+1}] \le S[o_{r+2}]$.
+3. **Conclusion**: By induction, the entire set $G$ can replace the first $k$ elements of an optimal solution. If $m > k$, there would exist an activity $o_{k+1}$ compatible with $g_k$, contradicting the termination condition of the greedy algorithm. Hence, $k = m$, and $G$ is globally optimal. $\blacksquare$
 
 ---
 
-### 5. Canonical Problem 2: Fractional Knapsack
+### 4. Step-by-Step Worked Dry Run: Activity Selection
 
-Given items with values $v_i$ and weights $w_i$, and a knapsack of capacity $W$. You can take **fractions** of items. Maximize total value.
+Consider $n = 6$ activities with the following start and finish intervals:
+- $A_1: [1, 4]$, $A_2: [3, 5]$, $A_3: [0, 6]$, $A_4: [5, 7]$, $A_5: [3, 9]$, $A_6: [5, 9]$, $A_7: [6, 10]$, $A_8: [8, 11]$
 
-#### The Greedy Strategy:
-Sort items by their **Value-to-Weight Ratio** ($\rho_i = v_i / w_i$) in descending order!
-1. Greedily pack items with the highest $\rho_i$ in their entirety until capacity runs out.
-2. For the final item, take the exact fraction that completely fills the remaining capacity.
-- **Time Complexity**: $O(n \log n)$.
+#### Execution Trace Table:
+
+| Order by $F[i]$ | Activity | Interval $[S_i, F_i]$ | Last Finish Time | Conflict Condition ($S_i \ge \text{lastFinish}$) | Selection Decision | Current Selected Set |
+| :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **1** | $A_1$ | $[1, 4]$ | $0$ (Initial) | $1 \ge 0 \implies \text{True}$ | **SELECT** | $\{ A_1 \}$ |
+| **2** | $A_2$ | $[3, 5]$ | $4$ | $3 \ge 4 \implies \text{False}$ | **REJECT (Overlap)** | $\{ A_1 \}$ |
+| **3** | $A_3$ | $[0, 6]$ | $4$ | $0 \ge 4 \implies \text{False}$ | **REJECT (Overlap)** | $\{ A_1 \}$ |
+| **4** | $A_4$ | $[5, 7]$ | $4$ | $5 \ge 4 \implies \text{True}$ | **SELECT** | $\{ A_1, A_4 \}$ |
+| **5** | $A_5$ | $[3, 9]$ | $7$ | $3 \ge 7 \implies \text{False}$ | **REJECT (Overlap)** | $\{ A_1, A_4 \}$ |
+| **6** | $A_6$ | $[5, 9]$ | $7$ | $5 \ge 7 \implies \text{False}$ | **REJECT (Overlap)** | $\{ A_1, A_4 \}$ |
+| **7** | $A_7$ | $[6, 10]$ | $7$ | $6 \ge 7 \implies \text{False}$ | **REJECT (Overlap)** | $\{ A_1, A_4 \}$ |
+| **8** | $A_8$ | $[8, 11]$ | $7$ | $8 \ge 7 \implies \text{True}$ | **SELECT** | $\{ A_1, A_4, A_8 \}$ |
+
+**Result**: Maximum compatible set cardinality is $3$: $\{A_1, A_4, A_8\}$. Overall runtime is dominated by sorting: $O(n \log n)$.
 
 ---
+
+### 5. Step-by-Step Worked Dry Run: Fractional Knapsack
+
+Given knapsack capacity $W = 50\text{ kg}$ and $4$ available items:
+- Item 1: $v_1 = 60, w_1 = 10 \implies \rho_1 = 6.0\text{ \$/kg}$
+- Item 2: $v_2 = 100, w_2 = 20 \implies \rho_2 = 5.0\text{ \$/kg}$
+- Item 3: $v_3 = 120, w_3 = 30 \implies \rho_3 = 4.0\text{ \$/kg}$
+- Item 4: $v_4 = 50, w_4 = 25 \implies \rho_4 = 2.0\text{ \$/kg}$
+
+#### Execution Trace Table:
+
+| Rank | Item | Value ($v_i$) | Weight ($w_i$) | Density $\rho_i = v_i / w_i$ | Remaining Capacity | Fraction Taken | Value Accrued | Total Accumulated Value |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1** | Item 1 | $\$60$ | $10\text{ kg}$ | $\$6.00 / \text{kg}$ | $50\text{ kg}$ | $1.0$ (Full) | $\$60$ | $\$60$ |
+| **2** | Item 2 | $\$100$ | $20\text{ kg}$ | $\$5.00 / \text{kg}$ | $40\text{ kg}$ | $1.0$ (Full) | $\$100$ | $\$160$ |
+| **3** | Item 3 | $\$120$ | $30\text{ kg}$ | $\$4.00 / \text{kg}$ | $20\text{ kg}$ | $20/30 = 2/3$ | $\frac{2}{3} \times \$120 = \$80$ | **$\$240$** |
+| **4** | Item 4 | $\$50$ | $25\text{ kg}$ | $\$2.00 / \text{kg}$ | $0\text{ kg}$ | $0.0$ (Skipped) | $\$0$ | $\$240$ |
+
+**Conclusion**: Greedily sorting by value density yields maximum possible profit of $\$240$ in $O(n \log n)$ time.
+
 ---
 
 # TOPIC 132: GREEDY VS DYNAMIC PROGRAMMING
 
-Greedy algorithms are faster and simpler than Dynamic Programming, but **they frequently produce completely incorrect answers** if the Greedy-Choice Property does not hold mathematically.
-
----
+While greedy algorithms are fast, they produce incorrect results whenever the Greedy-Choice Property fails.
 
 ### Dilemma 1: The Coin Change Counterexample
 
-**Problem**: Make change for 6 cents using the minimum number of coins.
+Given coin denominations $C$ and target value $V$:
 
-#### Case A: Canonical Denominations (US Currency: 1¢, 5¢, 10¢, 25¢)
-- Greedy choice (pick largest coin $\le \text{target}$) is **provably optimal** for canonical currencies.
+| Coin System | Target $V$ | Greedy Strategy (Largest Coin First) | Optimal Strategy (Dynamic Programming) | Greedy Status |
+| :--- | :---: | :--- | :--- | :---: |
+| **US Canonical** $\{1, 5, 10, 25\}$ | $30\text{ cents}$ | $25 + 5$ (2 coins) | $25 + 5$ (2 coins) | **OPTIMAL** |
+| **Non-Canonical** $\{1, 3, 4\}$ | $6\text{ cents}$ | $4 + 1 + 1$ (**3 coins**) | $3 + 3$ (**2 coins**) | **FAILED** |
+| **Arbitrary** $\{1, 7, 10\}$ | $14\text{ cents}$ | $10 + 1 + 1 + 1 + 1$ (**5 coins**) | $7 + 7$ (**2 coins**) | **FAILED** |
 
-#### Case B: Non-Canonical Denominations: Coins = $\{ 1¢, \, 3¢, \, 4¢ \}$
-- **Greedy Approach for Target = 6¢**:
-  - Picks largest coin $\le 6$: picks **4¢** (Remaining = 2¢).
-  - Picks largest coin $\le 2$: picks **1¢** (Remaining = 1¢).
-  - Picks largest coin $\le 1$: picks **1¢** (Remaining = 0¢).
-  - **Greedy Output**: $4 + 1 + 1 = \mathbf{3 \ coins}$! ❌
-- **Dynamic Programming Approach**:
-  - Evaluates combinations: $3¢ + 3¢ = 6¢$.
-  - **Optimal Output**: $\mathbf{2 \ coins}$! ✅
-
-$$\mathbf{Conclusion}: \quad \text{The Greedy-Choice property FAILS for general coin systems. DP is required!}$$
+**Theoretical Insight**: A coin system is canonical (greedy-compatible) if and only if the change-making problem forms a matroid or satisfies Pearson's polynomial-time test (1994). For arbitrary coin systems, the problem exhibits optimal substructure with overlapping subproblems, requiring $O(n \cdot V)$ Dynamic Programming.
 
 ---
 
-### Dilemma 2: Fractional Knapsack vs 0/1 Knapsack
+### Architectural Trade-Off Matrix: Greedy vs Dynamic Programming
 
-```text
-KNAPSACK CAPACITY W = 50
-Item 1: Value = $60,  Weight = 10 kg  (Ratio = $6 / kg)
-Item 2: Value = $100, Weight = 20 kg  (Ratio = $5 / kg)
-Item 3: Value = $120, Weight = 30 kg  (Ratio = $4 / kg)
-
-FRACTIONAL KNAPSACK: (Items can be cut)
-Greedy packs: All Item 1 (10kg, $60) + All Item 2 (20kg, $100) + 2/3 of Item 3 (20kg, $80).
-Total Value = $240. (GREEDY IS OPTIMAL! ✅)
-
-0/1 KNAPSACK: (Items are atomic; must take ALL or NONE)
-• Greedy by Ratio: Packs Item 1 (10kg) + Item 2 (20kg). Leaves 20kg empty.
-  Total Value = $60 + $100 = $160. ❌
-• Optimal Solution: Packs Item 2 (20kg) + Item 3 (30kg). Exact 50kg!
-  Total Value = $100 + $120 = $220! ✅ (DP IS REQUIRED!)
-```
-
----
-
-### Master Comparison: Greedy vs Dynamic Programming
-
-| Architectural Dimension | Greedy Paradigm | Dynamic Programming (DP) |
+| Dimension | Greedy Paradigm | Dynamic Programming (DP) |
 | :--- | :--- | :--- |
-| **Choice Commitment** | Commits irrevocably to local choice at each step; **never backtracks** | Evaluates **all possibilities** at each step before picking optimal |
-| **Subproblem Dependency**| Solves subproblems from top-down or bottom-up sequentially | Solves **overlapping subproblems** via memoization or tabulation |
-| **Proof of Correctness** | Requires formal proof (Exchange Argument); easily yields bugs | Self-proving via exhaustive optimal substructure induction |
-| **Efficiency** | Typically faster: $O(n \log n)$ or $O(n)$ | Slower: Polynomial ($O(n^2), O(n \cdot W)$) |
-| **Applicability** | Restricted to problems with matroid/greedy properties | Broadly applicable to almost all optimization problems |
+| **Decision Policy** | Irrevocable local choice at each step; **never backtracks** | Evaluates all valid options per state before committing |
+| **Subproblem Structure** | Solves independent subproblems sequentially | Solves **overlapping subproblems** via memoization or tabulation |
+| **Proof Burden** | High (Exchange argument or matroid isomorphism required) | Moderate (Verification of optimal substructure formulation) |
+| **Time Complexity** | Typically $O(n \log n)$ (sorting) or $O(n)$ | Polynomial $O(n^2), O(n^3)$ or pseudo-polynomial $O(n \cdot W)$ |
+| **Space Complexity** | Often $O(1)$ auxiliary space | Requires memory for state tables ($O(n), O(n \cdot W)$) |
+| **Failure Mode** | Returns suboptimal or invalid solutions if greedy property fails | Always globally optimal provided recurrence is correct |
 
 ---
 
-## 🔁 Module 02 Summary & Key Takeaways
+## References & Academic Attribution
 
-1. **Greedy Algorithms** make local optimal choices without backtracking; correct *only* when the problem satisfies the Greedy-Choice Property.
-2. Prove greedy correctness using the **Exchange Argument**.
-3. If taking an item restricts future choices (as in 0/1 Knapsack or non-canonical Coin Change), **Greedy fails and Dynamic Programming is mandatory**.
-
----
-[⬅️ Previous: Module 01 — Brute Force & Divide and Conquer](file:///d:/DSA/Part-08-Algorithm-Design-Techniques/01_brute_force_and_divide_conquer.md) | [Next: Module 03 — Backtracking ➡️](file:///d:/DSA/Part-08-Algorithm-Design-Techniques/03_backtracking.md)
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 16: Greedy Algorithms. MIT Press.
+2. **Edmonds, J.** (1971). Matroids and the greedy algorithm. *Mathematical Programming*, 1(1), 127-136.
+3. **Kleinberg, J., & Tardos, É.** (2006). *Algorithm Design*, Chapter 4: Greedy Algorithms. Pearson / Addison-Wesley.
+4. **Pearson, D.** (1994). A polynomial-time algorithm for the change-making problem. *Operations Research Letters*, 33(3), 231-234.
