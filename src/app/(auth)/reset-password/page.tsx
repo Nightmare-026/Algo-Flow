@@ -8,7 +8,7 @@ import { updatePassword } from "../login/actions";
 
 export const metadata: Metadata = {
   title: "Reset Password",
-  description: "Choose a new Algo Flow password.",
+  description: "Choose a new AlgoFlow password.",
   robots: { index: false, follow: false },
 };
 
@@ -28,7 +28,7 @@ export default async function ResetPasswordPage({
       user={user}
       eyebrow="Choose a new password"
       title="Secure your account"
-      description="Create a new password for your Algo Flow account and enter it twice to confirm."
+      description="Create a new password for your AlgoFlow account and enter it twice to confirm."
     >
       {params.error ? (
         <div

@@ -2,7 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Manrope } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Script from "next/script";
-import { getSiteUrl } from "@/lib/site";
+import {
+  getSiteUrl,
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_DESCRIPTION,
+  SITE_TITLE_TEMPLATE,
+} from "@/lib/site";
 import { safeJsonLd } from "@/lib/security/safe-json";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
@@ -27,28 +33,26 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
-  applicationName: "Algo Flow",
+  applicationName: SITE_NAME,
   appleWebApp: {
-    title: "Algo Flow",
+    title: SITE_NAME,
     statusBarStyle: "default",
     capable: true,
   },
   other: {
-    site_name: "Algo Flow",
+    site_name: SITE_NAME,
   },
   title: {
-    default: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-    template: "%s | Algo Flow",
+    default: `${SITE_NAME} - ${SITE_TAGLINE}`,
+    template: SITE_TITLE_TEMPLATE,
   },
-  description:
-    "Master Data Structures & Algorithms visually with interactive step-by-step visualizers, multi-language code execution, and practice quizzes.",
+  description: SITE_DESCRIPTION,
   keywords: [
-    "Algo Flow",
     "AlgoFlow",
-    "algo flow",
+    "Algo Flow",
     "algoflow",
+    "algo flow",
     "algo-flow",
-    "ALGO FLOW",
     "ALGOFLOW",
     "dsa visualizer",
     "DSA Visualizer",
@@ -72,26 +76,26 @@ export const metadata: Metadata = {
     "data structures step by step",
     "coding interview dsa preparation",
   ],
-  authors: [{ name: "Algo Flow" }],
+  authors: [{ name: SITE_NAME }],
   openGraph: {
     type: "website",
-    title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
+    title: `${SITE_NAME} - ${SITE_TAGLINE}`,
     description:
       "Master Data Structures & Algorithms visually with interactive step-by-step visualizers and multi-language code traces.",
-    siteName: "Algo Flow",
+    siteName: SITE_NAME,
     url: "/",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
+        alt: `${SITE_NAME} - ${SITE_TAGLINE}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
+    title: `${SITE_NAME} - ${SITE_TAGLINE}`,
     description: "Trace data structures and algorithms step by step.",
     images: ["/opengraph-image"],
   },
@@ -115,14 +119,19 @@ export default function RootLayout({
     "@type": "WebSite",
     "@id": `${siteUrl}/#website`,
     url: siteUrl,
-    name: "Algo Flow",
-    alternateName: ["AlgoFlow", "Algo Flow Visualizer", "AlgoFlow DSA"],
-    description: "Interactive Data Structures & Algorithms Visualizer",
+    name: SITE_NAME,
+    alternateName: ["Algo Flow", "AlgoFlow Visualizer", "AlgoFlow DSA"],
+    description: SITE_TAGLINE,
   };
 
   return (
     <html lang="en" data-theme="light-edu" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var k='algo-flow-theme';var s=localStorage.getItem(k);var p=(s==='dark'||s==='dark-neon')?'dark':(s==='light'||s==='light-edu')?'light':(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',p);}catch(e){}})();`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: safeJsonLd(globalSiteSchema) }}

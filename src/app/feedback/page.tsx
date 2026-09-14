@@ -8,7 +8,7 @@ import { MessageSquareHeart } from "lucide-react";
 export const metadata: Metadata = {
   title: "Feedback",
   description:
-    "Share your feedback with Algo Flow — report bugs, request new features, rate your experience, or send us a message. We read every submission.",
+    "Share your feedback with AlgoFlow — report bugs, request new features, rate your experience, or send us a message. We read every submission.",
   alternates: { canonical: "/feedback" },
 };
 
@@ -36,7 +36,7 @@ export default async function FeedbackPage() {
           </h1>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-2xl">
             Found a bug? Have an idea for a new feature? Want to share your experience? We read
-            every piece of feedback and use it to make Algo Flow better for everyone.
+            every piece of feedback and use it to make AlgoFlow better for everyone.
           </p>
         </div>
 

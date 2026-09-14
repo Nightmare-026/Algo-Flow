@@ -116,7 +116,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
         </h2>
         <p className="mt-3 text-sm text-text-secondary leading-relaxed max-w-md mx-auto">
           Your {activeType?.label.toLowerCase() ?? "feedback"} has been submitted successfully. We
-          read every piece of feedback and use it to improve Algo Flow.
+          read every piece of feedback and use it to improve AlgoFlow.
         </p>
         <button
           type="button"
@@ -303,7 +303,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                   : selectedType === "feature_request"
                     ? "Describe the feature you'd like and how it would help your learning…"
                     : selectedType === "rating"
-                      ? "Tell us what you love about Algo Flow or how we can improve…"
+                      ? "Tell us what you love about AlgoFlow or how we can improve…"
                       : "Share any thoughts, questions, or suggestions…"
               }
               className="form-textarea w-full rounded-xl resize-y"

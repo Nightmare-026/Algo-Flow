@@ -19,7 +19,7 @@ import { signup } from "../login/actions";
 
 export const metadata: Metadata = {
   title: "Sign Up",
-  description: "Sign up for an Algo Flow account to save DSA progress, sessions, and bookmarks.",
+  description: "Sign up for an AlgoFlow account to save DSA progress, sessions, and bookmarks.",
   robots: { index: false, follow: false },
 };
 
@@ -39,7 +39,7 @@ export default async function SignupPage({
       user={user}
       activeTab="signup"
       eyebrow={params.success ? "Verification Required" : "Get started"}
-      title={params.success ? "Check your inbox" : "Sign up for Algo Flow"}
+      title={params.success ? "Check your inbox" : "Sign up for AlgoFlow"}
       description={
         params.success
           ? "Use the verification link we sent, then return to log in."

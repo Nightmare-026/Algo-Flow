@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import type { LearningModule } from "@/lib/learnings/types";
-import { Search, BookOpen, ArrowRight, Layers, Sparkles, CheckCircle2, X } from "lucide-react";
+import { Search, BookOpen, ArrowRight, Layers, X } from "lucide-react";
 
 interface LearningsHubExplorerProps {
   modules: LearningModule[];
@@ -112,7 +112,7 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
               itemType="https://schema.org/Course"
               className="group flex flex-col justify-between rounded-3xl border border-border/80 bg-surface/90 p-6 neu-raised hover:border-primary/40 hover:shadow-[var(--shadow-raised)] transition-all duration-300"
             >
-              <meta itemProp="provider" content="Algo Flow" />
+              <meta itemProp="provider" content="AlgoFlow" />
               <meta
                 itemProp="courseCode"
                 content={`Part-${mod.partNumber.toString().padStart(2, "0")}`}

@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Algo Flow — trace data structures and algorithms step by step";
+export const alt = "AlgoFlow — trace data structures and algorithms step by step";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -29,7 +29,7 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ width: 48, height: 48, borderRadius: 14, background: "#16a34a" }} />
-        Algo Flow
+        AlgoFlow
       </div>
       <div
         style={{ marginTop: 52, maxWidth: 950, fontSize: 72, lineHeight: 1.05, fontWeight: 800 }}

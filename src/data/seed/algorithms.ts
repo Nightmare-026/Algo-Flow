@@ -30,7 +30,7 @@ function catalogAlgorithm(input: CatalogAlgorithmInput): Algorithm {
     timeComplexityWorst: input.worst ?? input.average ?? "O(n)",
     spaceComplexity: input.space ?? "O(1)",
     shortDescription: input.shortDescription,
-    longDescription: `${input.name} is included in the Algo Flow content catalog so learners can discover the topic and track it as the visualizer library grows.`,
+    longDescription: `${input.name} is included in the AlgoFlow content catalog so learners can discover the topic and track it as the visualizer library grows.`,
     prerequisites: input.prerequisites ?? [],
     tags: input.tags ?? [],
     visualizerType: input.visualizerType,

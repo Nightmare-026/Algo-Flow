@@ -66,8 +66,12 @@ export function MobileCurriculumNav({
           <div className="relative z-10 max-h-[85vh] bg-surface rounded-t-3xl sm:rounded-3xl p-5 border border-border shadow-2xl flex flex-col mx-auto w-full max-w-lg neu-raised">
             {/* Drawer Header */}
             <div className="flex items-center justify-between pb-3 border-b border-border mb-4">
-              <h3 className="text-sm font-bold text-foreground">
-                {activeDrawer === "curriculum" ? "DSA Curriculum (62 Chapters)" : "On This Page"}
+              <h3 className="text-sm font-bold text-foreground truncate pr-2">
+                {activeDrawer === "curriculum"
+                  ? "DSA Curriculum (62 Chapters)"
+                  : chapterTitle
+                    ? `On This Page: ${chapterTitle}`
+                    : "On This Page"}
               </h3>
               <button
                 onClick={() => setActiveDrawer(null)}

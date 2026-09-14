@@ -52,8 +52,8 @@ Algo Flow enforces defense-in-depth principles across its full stack:
 - Authentication tokens are handled via **Supabase Auth** with strict `HttpOnly`, `SameSite=Lax`, and `Secure` cookie attributes, mitigating cross-site scripting (XSS) token theft and CSRF attacks.
 
 ### 3. HTTP Security Headers
-Configured via `src/proxy.ts` (dynamic nonce-based CSP) and `next.config.ts` (static transport headers):
-- `Content-Security-Policy` (CSP Level 3 with per-request cryptographically secure nonce and `strict-dynamic`; `'unsafe-eval'` disallowed in production)
+Configured harmoniously across `src/proxy.ts` and `next.config.ts`:
+- `Content-Security-Policy` (Defense-in-depth CSP enforcing strict frame, origin, and object controls with edge-compatible static script execution; `'unsafe-eval'` disallowed in production)
 - `Strict-Transport-Security` (HSTS: max-age 2 years, includeSubDomains, preload)
 - `X-Frame-Options: DENY`
 - `X-Content-Type-Options: nosniff`

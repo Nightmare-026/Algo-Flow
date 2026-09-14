@@ -3,15 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import type { LearningModule } from "@/lib/learnings/types";
-import {
-  ChevronDown,
-  ChevronRight,
-  Search,
-  BookOpen,
-  CheckCircle2,
-  X,
-  Compass,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Search, BookOpen, X, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CurriculumSidebarProps {

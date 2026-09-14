@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState, useTransition } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -57,25 +57,31 @@ type CatalogExplorerProps = {
   publishedAlgorithms: Algorithm[];
 };
 
-export function CatalogExplorer({ dataStructures, publishedAlgorithms }: CatalogExplorerProps) {
-  const router = useRouter();
-  const pathname = usePathname();
+function SearchParamsSync({ onSync }: { onSync: (category: string, query: string) => void }) {
   const searchParams = useSearchParams();
-  const [, startTransition] = useTransition();
-
   const urlCategory = searchParams.get("category") ?? "all";
   const urlQuery = searchParams.get("q") ?? "";
 
-  const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery);
-  const [searchQuery, setSearchQuery] = useState(urlQuery);
+  useEffect(() => {
+    onSync(urlCategory, urlQuery);
+  }, [urlCategory, urlQuery, onSync]);
 
-  if (urlQuery !== prevUrlQuery) {
-    setPrevUrlQuery(urlQuery);
-    setSearchQuery(urlQuery);
-  }
+  return null;
+}
 
-  const activeCategory = urlCategory;
+export function CatalogExplorer({ dataStructures, publishedAlgorithms }: CatalogExplorerProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [, startTransition] = useTransition();
+
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const reduceMotion = useReducedMotion();
+
+  const handleUrlSync = useCallback((cat: string, q: string) => {
+    setActiveCategory(cat);
+    setSearchQuery(q);
+  }, []);
 
   const syncUrl = useCallback(
     (q: string, category: string) => {
@@ -97,6 +103,7 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
   };
 
   const handleCategoryChange = (cat: string) => {
+    setActiveCategory(cat);
     syncUrl(searchQuery, cat);
   };
 
@@ -167,6 +174,9 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
 
   return (
     <div className="mt-10">
+      <Suspense fallback={null}>
+        <SearchParamsSync onSync={handleUrlSync} />
+      </Suspense>
       {/* Search & Filter Bar */}
       <div className="neu-raised flex flex-col gap-4 rounded-2xl p-4 lg:flex-row lg:items-center lg:justify-between border border-border">
         {/* Search Input with Clear Button */}

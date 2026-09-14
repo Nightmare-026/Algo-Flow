@@ -49,7 +49,7 @@ export function DSAWorldPreview() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden px-4 py-14 sm:px-6 lg:px-8 lg:py-20"
+      className="relative overflow-hidden px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
       id="dsa-world"
     >
       <motion.div

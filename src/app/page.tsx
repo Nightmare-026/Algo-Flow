@@ -8,36 +8,33 @@ import { HowItWorks } from "@/components/landing/HowItWorks";
 import { LearningFeatures } from "@/components/landing/LearningFeatures";
 import { CodeLanguages } from "@/components/landing/CodeLanguages";
 import { FinalCTA } from "@/components/landing/FinalCTA";
-import { getSiteUrl } from "@/lib/site";
+import { getSiteUrl, SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION } from "@/lib/site";
 import { catalogStats, publishedAlgorithms, publishedDataStructures } from "@/lib/catalog";
 import { safeJsonLd } from "@/lib/security/safe-json";
 
 export const metadata: Metadata = {
-  title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-  description:
-    "Master Data Structures & Algorithms visually with interactive step-by-step visualizers, multi-language code execution, and practice quizzes.",
+  title: `${SITE_NAME} - ${SITE_TAGLINE}`,
+  description: SITE_DESCRIPTION,
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-    description:
-      "Master Data Structures & Algorithms visually with interactive step-by-step visualizers and multi-language code traces.",
+    title: `${SITE_NAME} - ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
     url: "/",
-    siteName: "Algo Flow",
+    siteName: SITE_NAME,
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
+        alt: `${SITE_NAME} - ${SITE_TAGLINE}`,
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Algo Flow - Interactive Data Structures & Algorithms Visualizer",
-    description:
-      "Master Data Structures & Algorithms visually with interactive step-by-step visualizers and multi-language code traces.",
+    title: `${SITE_NAME} - ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
     images: ["/opengraph-image"],
   },
 };
@@ -57,8 +54,8 @@ export default async function HomePage() {
         "@type": "WebSite",
         "@id": `${siteUrl}/#website`,
         url: siteUrl,
-        name: "Algo Flow",
-        description: "Interactive Data Structures & Algorithms Visualizer",
+        name: SITE_NAME,
+        description: SITE_TAGLINE,
         potentialAction: {
           "@type": "SearchAction",
           target: {
@@ -71,7 +68,7 @@ export default async function HomePage() {
       {
         "@type": "EducationalOrganization",
         "@id": `${siteUrl}/#organization`,
-        name: "Algo Flow",
+        name: SITE_NAME,
         url: siteUrl,
         logo: `${siteUrl}/icon.png`,
       },

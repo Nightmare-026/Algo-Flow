@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { createClient } from "@/lib/supabase/server";
 
+import { SITE_NAME } from "@/lib/constants/site";
+
 export const metadata: Metadata = {
   title: {
-    default: "DSA Curriculum & Learnings",
-    template: "%s | Algo Flow",
+    default: `DSA Curriculum & Learnings | ${SITE_NAME}`,
+    template: `%s | ${SITE_NAME}`,
   },
   description:
     "Master Data Structures & Algorithms with 12 comprehensive modules, 62 in-depth chapters, memory layout diagrams, and interactive visualizers.",

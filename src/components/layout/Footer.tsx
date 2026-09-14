@@ -55,7 +55,7 @@ export function Footer() {
               <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
                 <Image
                   src="/logo.png"
-                  alt="Algo Flow logo - Interactive Data Structures & Algorithms Visualizer"
+                  alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
                   width={26}
                   height={26}
                   className="object-contain"
@@ -101,7 +101,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex items-center justify-center border-t border-border pt-8 text-xs text-text-muted text-center">
-          <p>© {new Date().getFullYear()} Algo Flow by Nightmare. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} AlgoFlow by Nightmare. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

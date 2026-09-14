@@ -20,7 +20,7 @@ import { LegalNav } from "@/components/legal/LegalNav";
 export const metadata: Metadata = {
   title: "License Agreement",
   description:
-    "Software License & Educational Study Agreement for Algo Flow. Read about permitted educational uses, commercial restrictions, and copyright rights.",
+    "Software License & Educational Study Agreement for AlgoFlow. Read about permitted educational uses, commercial restrictions, and copyright rights.",
   alternates: { canonical: "/license" },
 };
 
@@ -51,9 +51,9 @@ export default async function LicensePage() {
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             This agreement governs the intellectual property rights, source code, interactive
-            visualizers, simulation workflows, design tokens, and educational materials of Algo
-            Flow. Please review what is permitted for personal study and the strict prohibitions
-            regarding commercial duplication and distribution.
+            visualizers, simulation workflows, design tokens, and educational materials of AlgoFlow.
+            Please review what is permitted for personal study and the strict prohibitions regarding
+            commercial duplication and distribution.
           </p>
           <LegalNav currentPath="/license" />
         </div>
@@ -83,8 +83,8 @@ export default async function LicensePage() {
                 Permitted: Classroom & Academic Use
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                Educators and professors are welcome to project Algo Flow in live academic
-                classrooms or workshops to demonstrate computer science principles.
+                Educators and professors are welcome to project AlgoFlow in live academic classrooms
+                or workshops to demonstrate computer science principles.
               </p>
             </div>
 
@@ -126,11 +126,11 @@ export default async function LicensePage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                Algo Flow, its source code, object code, TypeScript interfaces, Next.js
-                architecture, component libraries, visual designs, animation state synchronization
-                engines, mental math calculation studios, and associated documentation
-                (collectively, the &quot;Software&quot;) are the exclusive intellectual property and
-                proprietary assets of <strong>Nightmare</strong> (the &quot;Copyright Holder&quot;).
+                AlgoFlow, its source code, object code, TypeScript interfaces, Next.js architecture,
+                component libraries, visual designs, animation state synchronization engines, mental
+                math calculation studios, and associated documentation (collectively, the
+                &quot;Software&quot;) are the exclusive intellectual property and proprietary assets
+                of <strong>Nightmare</strong> (the &quot;Copyright Holder&quot;).
               </p>
               <p>
                 All rights, title, and interest in and to the Software—including all worldwide
@@ -202,7 +202,7 @@ export default async function LicensePage() {
                 <li>
                   <strong>Cloning & Derivative Platforms:</strong> Re-host, mirror, create
                   software-as-a-service (SaaS) products, or launch derivative websites that
-                  replicate Algo Flow&apos;s features, user interface, or timeline scrubbing
+                  replicate AlgoFlow&apos;s features, user interface, or timeline scrubbing
                   workflows.
                 </li>
                 <li>
@@ -240,7 +240,7 @@ export default async function LicensePage() {
                 This license does not claim ownership over universal mathematical facts. Rather,
                 protection extends to the bespoke visualizer codebases, React/Next.js interactive
                 components, state scrubbing pipelines, styling token systems, mental math test
-                engines, and original pedagogical diagrams created for Algo Flow.
+                engines, and original pedagogical diagrams created for AlgoFlow.
               </p>
             </div>
           </section>
@@ -288,7 +288,7 @@ export default async function LicensePage() {
               <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] mt-4">
                 <p className="font-bold text-text-primary text-xs">Licensing Representative:</p>
                 <p className="text-xs text-text-secondary mt-1">
-                  Nightmare / Algo Flow Licensing Office
+                  Nightmare / AlgoFlow Licensing Office
                 </p>
                 <p className="font-mono text-xs font-bold text-primary mt-2">
                   <a href="mailto:ganeshsharma7114@gmail.com" className="hover:underline">

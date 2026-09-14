@@ -5,6 +5,7 @@ import { VisualizerClient } from "./VisualizerClient";
 import { publicationRegistry } from "@/visualizers/registry/publication-registry";
 import { getSiteUrl } from "@/lib/site";
 import { safeJsonLd } from "@/lib/security/safe-json";
+import { SITE_NAME } from "@/lib/constants/site";
 
 export function generateStaticParams() {
   return algorithms
@@ -22,8 +23,9 @@ export async function generateMetadata({
   if (!algorithm) return {};
 
   const title = `${algorithm.name} Visualizer`;
-  const rawDesc = `${algorithm.shortDescription} Interactive step-by-step visualizer with code traces.`;
-  const description = rawDesc.length > 155 ? `${rawDesc.slice(0, 152)}...` : rawDesc;
+  const description =
+    algorithm.shortDescription ??
+    `Step through ${algorithm.name} algorithm visualization with synchronized code.`;
   return {
     title,
     description,
@@ -33,12 +35,13 @@ export async function generateMetadata({
       title,
       description,
       url: `/visualizer/${algorithm.slug}`,
+      siteName: SITE_NAME,
       images: [
         {
           url: "/opengraph-image",
           width: 1200,
           height: 630,
-          alt: `${algorithm.name} Visualizer - Algo Flow`,
+          alt: `${algorithm.name} Visualizer - ${SITE_NAME}`,
         },
       ],
     },
@@ -75,7 +78,7 @@ export default async function VisualizerPage({ params }: { params: Promise<{ slu
         url: `${siteUrl}/visualizer/${algorithm.slug}`,
         provider: {
           "@type": "Organization",
-          name: "Algo Flow",
+          name: SITE_NAME,
           url: siteUrl,
         },
       },

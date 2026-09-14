@@ -67,12 +67,12 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
           <Link
             href="/"
             className="group flex min-h-11 items-center gap-3 rounded-xl pr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label="Algo Flow home"
+            aria-label="AlgoFlow home"
           >
             <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)] transition-transform duration-200 group-hover:scale-105">
               <Image
                 src="/logo.png"
-                alt="Algo Flow logo - Interactive Data Structures & Algorithms Visualizer"
+                alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
                 width={26}
                 height={26}
                 className="object-contain"

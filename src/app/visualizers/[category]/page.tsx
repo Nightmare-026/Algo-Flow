@@ -10,6 +10,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { CategoryExplorer } from "./CategoryExplorer";
 import { getSiteUrl } from "@/lib/site";
 import { safeJsonLd } from "@/lib/security/safe-json";
+import { SITE_NAME } from "@/lib/constants/site";
 
 export function generateStaticParams() {
   return dataStructures
@@ -36,7 +37,7 @@ export async function generateMetadata({
       title,
       description,
       url: `/visualizers/${structure.slug}`,
-      siteName: "Algo Flow",
+      siteName: SITE_NAME,
       images: [
         { url: "/opengraph-image", width: 1200, height: 630, alt: `${structure.name} Visualizers` },
       ],
@@ -120,7 +121,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         "@type": "CollectionPage",
         "@id": `${siteUrl}/visualizers/${structure.slug}/#webpage`,
         url: `${siteUrl}/visualizers/${structure.slug}`,
-        name: `${structure.name} Visualizers | Algo Flow`,
+        name: `${structure.name} Visualizers | ${SITE_NAME}`,
         description: structure.description,
       },
       {

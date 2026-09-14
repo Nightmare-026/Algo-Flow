@@ -8,7 +8,7 @@ import { sendPasswordReset } from "../login/actions";
 
 export const metadata: Metadata = {
   title: "Forgot Password",
-  description: "Reset your Algo Flow password.",
+  description: "Reset your AlgoFlow password.",
   robots: { index: false, follow: false },
 };
 

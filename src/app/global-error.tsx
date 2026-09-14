@@ -20,9 +20,9 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body>
-        <title>Something went wrong | Algo Flow</title>
+        <title>Something went wrong | AlgoFlow</title>
         <ErrorState
-          title="Algo Flow could not load"
+          title="AlgoFlow could not load"
           reference={error.digest}
           onRetry={reset ?? unstable_retry}
         />

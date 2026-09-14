@@ -10,6 +10,7 @@ import { ReadingProgressBar } from "@/components/learnings/ReadingProgressBar";
 import { MobileCurriculumNav } from "@/components/learnings/MobileCurriculumNav";
 import { ChevronRight } from "lucide-react";
 import { safeJsonLd } from "@/lib/security/safe-json";
+import { SITE_NAME } from "@/lib/constants/site";
 
 interface ChapterPageProps {
   params: Promise<{
@@ -20,18 +21,12 @@ interface ChapterPageProps {
 
 export async function generateStaticParams() {
   const modules = getAllModules();
-  const params: { module: string; chapter: string }[] = [];
-
-  for (const mod of modules) {
-    for (const ch of mod.chapters) {
-      params.push({
-        module: mod.slug,
-        chapter: ch.slug,
-      });
-    }
-  }
-
-  return params;
+  return modules.flatMap((m) =>
+    m.chapters.map((ch) => ({
+      module: m.slug,
+      chapter: ch.slug,
+    }))
+  );
 }
 
 export async function generateMetadata({ params }: ChapterPageProps): Promise<Metadata> {
@@ -40,7 +35,7 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
 
   if (!resolved) {
     return {
-      title: "Chapter Not Found | Algo Flow",
+      title: `Chapter Not Found | ${SITE_NAME}`,
     };
   }
 
@@ -48,7 +43,7 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
   const canonicalUrl = `https://algo-flow.com/learnings/${mod.slug}/${ch.slug}`;
 
   return {
-    title: `${ch.title} — Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} | Algo Flow`,
+    title: `${ch.title} — Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} | ${SITE_NAME}`,
     description: ch.description,
     alternates: {
       canonical: canonicalUrl,
@@ -60,19 +55,19 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
       "DSA",
       "Data Structures and Algorithms",
       "Computer Science",
-      "Algo Flow",
+      SITE_NAME,
     ],
     openGraph: {
-      title: `${ch.title} | Algo Flow Learnings`,
+      title: `${ch.title} | ${SITE_NAME} Learnings`,
       description: ch.description,
       url: canonicalUrl,
       type: "article",
-      siteName: "Algo Flow",
+      siteName: SITE_NAME,
       locale: "en_US",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${ch.title} | Algo Flow`,
+      title: `${ch.title} | ${SITE_NAME}`,
       description: ch.description,
     },
   };
@@ -143,12 +138,12 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
     mainEntityOfPage: chapterUrl,
     author: {
       "@type": "Organization",
-      name: "Algo Flow",
+      name: SITE_NAME,
       url: "https://algo-flow.com",
     },
     publisher: {
       "@type": "Organization",
-      name: "Algo Flow",
+      name: SITE_NAME,
       url: "https://algo-flow.com",
     },
   };

@@ -8,12 +8,11 @@ const PROTECTED_ROUTES = ["/dashboard"];
 const AUTH_ROUTES = ["/login", "/signup", "/forgot-password", "/reset-password"];
 
 export async function proxy(request: NextRequest) {
-  const nonce = btoa(crypto.randomUUID());
   const isDev = process.env.NODE_ENV === "development";
 
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ""} https://va.vercel-scripts.com;
+    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://va.vercel-scripts.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https:;
     font-src 'self' data: https:;
@@ -28,7 +27,6 @@ export async function proxy(request: NextRequest) {
     .trim();
 
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-nonce", nonce);
   requestHeaders.set("Content-Security-Policy", cspHeader);
 
   // Update the Supabase session with modified request headers

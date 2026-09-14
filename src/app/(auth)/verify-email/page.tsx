@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Verify Email",
-  description: "Check your email to verify your Algo Flow account.",
+  description: "Check your email to verify your AlgoFlow account.",
   robots: { index: false, follow: false },
 };
 
@@ -22,7 +22,7 @@ export default async function VerifyEmailPage() {
       user={user}
       eyebrow="Verify your email"
       title="Check your inbox"
-      description="Open the verification message from Algo Flow to finish creating your account."
+      description="Open the verification message from AlgoFlow to finish creating your account."
     >
       <div className="text-center">
         <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-muted text-primary-active shadow-[var(--shadow-inset)]">

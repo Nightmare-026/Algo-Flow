@@ -20,7 +20,7 @@ import { LegalNav } from "@/components/legal/LegalNav";
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
-    "Cookie Policy and local storage transparency for Algo Flow. Learn about our zero-ad-tracker approach, essential cookies, and client-side preferences.",
+    "Cookie Policy and local storage transparency for AlgoFlow. Learn about our zero-ad-tracker approach, essential cookies, and client-side preferences.",
   alternates: { canonical: "/cookies" },
 };
 
@@ -50,7 +50,7 @@ export default async function CookiesPage() {
             Version {COOKIE_VERSION} • Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
-            At Algo Flow, we believe in radical transparency. We operate a strict{" "}
+            At AlgoFlow, we believe in radical transparency. We operate a strict{" "}
             <strong>Zero-Ad-Tracker</strong> policy: we never deploy commercial advertising cookies,
             cross-site tracking beacons, or behavioral monitoring scripts. This document details the
             small set of essential cookies and browser storage tokens required to operate the
@@ -146,12 +146,12 @@ export default async function CookiesPage() {
                 <Lock className="h-4 w-4" />
               </span>
               <h2 className="text-xl font-bold font-display text-text-primary tracking-tight">
-                2. Inventory of Cookies Used on Algo Flow
+                2. Inventory of Cookies Used on AlgoFlow
               </h2>
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                We maintain an exhaustive and minimal list of cookies. All cookies on Algo Flow are
+                We maintain an exhaustive and minimal list of cookies. All cookies on AlgoFlow are
                 classified as <strong>Strictly Necessary</strong>:
               </p>
               <div className="overflow-x-auto">
@@ -189,7 +189,7 @@ export default async function CookiesPage() {
                 </table>
               </div>
               <p className="text-xs text-text-muted mt-3">
-                <em>Privacy-First Web Telemetry:</em> Algo Flow uses Vercel Web Analytics to monitor
+                <em>Privacy-First Web Telemetry:</em> AlgoFlow uses Vercel Web Analytics to monitor
                 platform health and Core Web Vitals. Vercel Web Analytics operates completely
                 <strong>cookie-less</strong>—it does not use cookies, does not persist identifiers
                 across sites, and does not store personal data.
@@ -333,7 +333,7 @@ export default async function CookiesPage() {
               <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] mt-4">
                 <p className="font-bold text-text-primary text-xs">Official Privacy Office:</p>
                 <p className="text-xs text-text-secondary mt-1">
-                  Algo Flow Data Protection Representative
+                  AlgoFlow Data Protection Representative
                 </p>
                 <p className="font-mono text-xs font-bold text-primary mt-2">
                   <a href="mailto:ganeshsharma7114@gmail.com" className="hover:underline">

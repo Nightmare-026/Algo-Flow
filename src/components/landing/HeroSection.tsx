@@ -131,7 +131,7 @@ function WorkbenchPreview() {
           <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
             Live Simulation Sandbox
           </span>
-          <h2 className="text-base font-bold font-display text-text-primary">{titleText}</h2>
+          <p className="text-base font-bold font-display text-text-primary">{titleText}</p>
         </div>
         <span className="neu-inset rounded-full px-3 py-1 font-mono text-xs font-bold text-primary">
           Step {stepIndex + 1}/{fullPreviewTrace.length}
@@ -139,8 +139,8 @@ function WorkbenchPreview() {
       </div>
 
       {/* Array Canvas Well */}
-      <div className="mt-4 rounded-2xl border border-border bg-bg-surface-inset p-5 shadow-[var(--shadow-inset)]">
-        <div className="mb-4 flex items-center justify-between gap-3 text-xs">
+      <div className="mt-4 rounded-2xl border border-border bg-bg-surface-inset p-3.5 sm:p-5 shadow-[var(--shadow-inset)]">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs">
           <span className="font-semibold text-text-secondary font-mono">
             Input: [{PREVIEW_INPUT.join(", ")}]
           </span>
@@ -150,7 +150,7 @@ function WorkbenchPreview() {
         </div>
 
         <div
-          className="flex min-h-40 items-end justify-center gap-3 sm:gap-4 pt-4"
+          className="flex min-h-40 items-end justify-center gap-2 sm:gap-4 pt-4"
           role="region"
           aria-label={`Array values ${state?.elements?.map((e) => e.value).join(", ")}. ${step.title}. ${step.description}`}
         >
@@ -302,7 +302,7 @@ export function HeroSection({
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden px-4 pb-20 pt-32 sm:px-6 lg:px-8 lg:pb-28 lg:pt-36">
+    <section className="relative overflow-hidden px-4 pb-12 pt-28 sm:px-6 lg:px-8 lg:pb-16 lg:pt-32">
       {/* Background Ambient Glows */}
       <div
         className="pointer-events-none absolute left-[5%] top-28 h-72 w-72 rounded-full bg-primary/10 blur-3xl"

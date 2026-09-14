@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllModules, getModuleBySlug } from "@/lib/learnings/registry";
 import { Footer } from "@/components/layout/Footer";
-import { BookOpen, ArrowRight, ChevronLeft, ChevronRight, Compass, Layers } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Compass, Layers } from "lucide-react";
+
+import { SITE_NAME } from "@/lib/constants/site";
 
 interface ModulePageProps {
   params: Promise<{
@@ -24,15 +26,15 @@ export async function generateMetadata({ params }: ModulePageProps): Promise<Met
 
   if (!mod) {
     return {
-      title: "Module Not Found | Algo Flow",
+      title: `Module Not Found | ${SITE_NAME}`,
     };
   }
 
   return {
-    title: `Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} — Syllabus | Algo Flow`,
+    title: `Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} — Syllabus | ${SITE_NAME}`,
     description: mod.shortDescription,
     openGraph: {
-      title: `Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} | Algo Flow`,
+      title: `Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} | ${SITE_NAME}`,
       description: mod.shortDescription,
       type: "article",
     },

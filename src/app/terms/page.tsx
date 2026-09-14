@@ -23,7 +23,7 @@ import { LegalNav } from "@/components/legal/LegalNav";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "Terms of Service and user agreement for Algo Flow. Review permitted educational uses, user conduct, intellectual property rights, and platform disclaimers.",
+    "Terms of Service and user agreement for AlgoFlow. Review permitted educational uses, user conduct, intellectual property rights, and platform disclaimers.",
   alternates: { canonical: "/terms" },
 };
 
@@ -53,9 +53,9 @@ export default async function TermsPage() {
             Version {TERMS_VERSION} • Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
-            Welcome to Algo Flow (&quot;Algo Flow&quot;, &quot;we&quot;, &quot;us&quot;, or
+            Welcome to AlgoFlow (&quot;AlgoFlow&quot;, &quot;we&quot;, &quot;us&quot;, or
             &quot;our&quot;). These Terms of Service constitute a legally binding agreement between
-            you and Algo Flow governing your access to and use of our computer science visualizer
+            you and AlgoFlow governing your access to and use of our computer science visualizer
             library, interactive execution engines, mental calculation studios, and associated web
             services.
           </p>
@@ -75,7 +75,7 @@ export default async function TermsPage() {
                 Educational Study License
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                Algo Flow is provided for personal, academic, classroom, and interview preparation.
+                AlgoFlow is provided for personal, academic, classroom, and interview preparation.
                 Visualizer algorithms and simulations are for educational purposes.
               </p>
             </div>
@@ -98,7 +98,7 @@ export default async function TermsPage() {
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
                 All bespoke visualizer architectures, state synchronization pipelines, visual
-                assets, and brand trademarks are proprietary assets of Algo Flow.
+                assets, and brand trademarks are proprietary assets of AlgoFlow.
               </p>
             </div>
 
@@ -129,7 +129,7 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                By accessing, browsing, registering for, or using Algo Flow, you confirm that you
+                By accessing, browsing, registering for, or using AlgoFlow, you confirm that you
                 have read, understood, and agreed to be bound by these Terms of Service, our{" "}
                 <Link href="/privacy" className="text-primary hover:underline font-bold">
                   Privacy Policy
@@ -164,7 +164,7 @@ export default async function TermsPage() {
               </h2>
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
-              <p>Algo Flow provides interactive Computer Science education tools, including:</p>
+              <p>AlgoFlow provides interactive Computer Science education tools, including:</p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
                   <strong>137 Visualizer Workstations:</strong> Dynamic, deterministic execution
@@ -290,10 +290,10 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                <strong>Algo Flow Proprietary Assets:</strong> All original software code, user
+                <strong>AlgoFlow Proprietary Assets:</strong> All original software code, user
                 interface designs, visualizer animation engines, step synchronization algorithms,
-                design tokens, trademarks, logos, and pedagogical diagrams on Algo Flow are the
-                exclusive intellectual property of Algo Flow and its licensors.
+                design tokens, trademarks, logos, and pedagogical diagrams on AlgoFlow are the
+                exclusive intellectual property of AlgoFlow and its licensors.
               </p>
               <p>
                 <strong>Limited Educational License:</strong> Subject to compliance with these
@@ -412,7 +412,7 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                You may discontinue your use of Algo Flow at any time and may request deletion of
+                You may discontinue your use of AlgoFlow at any time and may request deletion of
                 your account and personal history from your Student Dashboard settings or by
                 contacting support.
               </p>

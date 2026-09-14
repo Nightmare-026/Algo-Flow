@@ -38,7 +38,7 @@ export function HowItWorks() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="px-4 py-14 sm:px-6 lg:px-8 lg:py-20" id="how-it-works">
+    <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14" id="how-it-works">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 max-w-3xl">
           <p className="section-kicker">Interactive Workflow</p>
@@ -46,7 +46,7 @@ export function HowItWorks() {
             From Visual Intuition to Code Execution.
           </h2>
           <p className="mt-3 text-sm sm:text-base leading-relaxed text-text-secondary">
-            Algo Flow eliminates abstract memorization by uniting visual state, step explanations,
+            AlgoFlow eliminates abstract memorization by uniting visual state, step explanations,
             and production code in one tactile workspace.
           </p>
         </div>

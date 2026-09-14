@@ -11,7 +11,7 @@ import { login } from "./actions";
 
 export const metadata: Metadata = {
   title: "Log In",
-  description: "Log in to Algo Flow to save bookmarks, sessions, streaks, and progress.",
+  description: "Log in to AlgoFlow to save bookmarks, sessions, streaks, and progress.",
   robots: { index: false, follow: false },
 };
 
@@ -37,7 +37,7 @@ export default async function LoginPage({
       user={user}
       activeTab="login"
       eyebrow="Welcome back"
-      title="Sign in to Algo Flow"
+      title="Sign in to AlgoFlow"
       description="Log in to return to saved algorithms, sessions, and learning progress."
     >
       {params.oauth_hint === "google" ? (
@@ -113,7 +113,7 @@ export default async function LoginPage({
 
       {/* Switch to Sign Up */}
       <p className="mt-7 text-center text-xs text-text-secondary">
-        New to Algo Flow?{" "}
+        New to AlgoFlow?{" "}
         <Link
           href={params.next ? `/signup?next=${encodeURIComponent(params.next)}` : "/signup"}
           className="font-bold text-primary hover:underline transition-colors"

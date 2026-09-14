@@ -1,9 +1,8 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CatalogExplorer } from "./CatalogExplorer";
-import { getSiteUrl } from "@/lib/site";
+import { getSiteUrl, SITE_NAME } from "@/lib/site";
 import { publishedAlgorithms, publishedDataStructures } from "@/lib/catalog";
 import { safeJsonLd } from "@/lib/security/safe-json";
 
@@ -17,13 +16,13 @@ export const metadata: Metadata = {
     description:
       "Explore interactive data structure and algorithm visualizers with step-by-step code execution traces.",
     url: "/visualizers",
-    siteName: "Algo Flow",
+    siteName: SITE_NAME,
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Algo Flow - Visualizer Library",
+        alt: `${SITE_NAME} - Visualizer Library`,
       },
     ],
     type: "website",
@@ -47,7 +46,7 @@ export default function VisualizersPage() {
         "@type": "CollectionPage",
         "@id": `${siteUrl}/visualizers/#webpage`,
         url: `${siteUrl}/visualizers`,
-        name: "Visualizer Library | Algo Flow",
+        name: `Visualizer Library | ${SITE_NAME}`,
         description:
           "Explore interactive data structure and algorithm visualizers with step-by-step traces.",
       },
@@ -92,16 +91,10 @@ export default function VisualizersPage() {
             </p>
           </div>
 
-          <Suspense
-            fallback={
-              <div className="mt-8 h-96 w-full animate-pulse rounded-2xl border border-border bg-surface-hover/30" />
-            }
-          >
-            <CatalogExplorer
-              dataStructures={publishedDataStructures}
-              publishedAlgorithms={publishedAlgorithms}
-            />
-          </Suspense>
+          <CatalogExplorer
+            dataStructures={publishedDataStructures}
+            publishedAlgorithms={publishedAlgorithms}
+          />
         </div>
       </main>
       <Footer />

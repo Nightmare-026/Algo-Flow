@@ -42,12 +42,12 @@ export function AuthShell({
               <Link
                 href="/"
                 className="group flex min-h-10 items-center gap-2.5 rounded-xl pr-2"
-                aria-label="Algo Flow home"
+                aria-label="AlgoFlow home"
               >
                 <span className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
                   <Image
                     src="/logo.png"
-                    alt="Algo Flow logo - Interactive Data Structures & Algorithms Visualizer"
+                    alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
                     width={22}
                     height={22}
                     className="object-contain"

@@ -34,7 +34,7 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
               )}
             </div>
             <p className="text-xs text-text-secondary mt-0.5">
-              Manage how you sign in to Algo Flow. Primary Email:{" "}
+              Manage how you sign in to AlgoFlow. Primary Email:{" "}
               <strong className="text-text-primary">{email || "Your Account"}</strong>
             </p>
           </div>

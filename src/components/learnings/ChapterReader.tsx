@@ -17,7 +17,6 @@ import {
   Check,
   Compass,
   ArrowRight,
-  Sparkles,
   BookOpen,
 } from "lucide-react";
 

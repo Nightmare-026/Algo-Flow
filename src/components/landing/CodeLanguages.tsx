@@ -71,7 +71,7 @@ export function CodeLanguages() {
   };
 
   return (
-    <section className="px-4 py-14 sm:px-6 lg:px-8 lg:py-20" id="code-languages">
+    <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14" id="code-languages">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 max-w-3xl">
           <p className="section-kicker">Multi-Language Code Tracing</p>
