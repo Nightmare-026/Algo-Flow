@@ -69,6 +69,6 @@
 - [x] problem-bank-and-revision/trees-bst-tries-heaps-100 — status: done
 - [x] problem-bank-and-revision/graphs-and-networks-70 — status: done
 - [x] problem-bank-and-revision/dynamic-programming-60 — status: done
-- [ ] problem-bank-and-revision/greedy-backtracking-math-advanced-55 — status: not-started
+- [x] problem-bank-and-revision/greedy-backtracking-math-advanced-55 — status: done
 - [ ] problem-bank-and-revision/pitfalls-and-confusions — status: not-started
 - [ ] problem-bank-and-revision/master-revision-sheets — status: not-started

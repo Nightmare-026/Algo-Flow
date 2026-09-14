@@ -1,7 +1,32 @@
 # Part 11: Problem Bank — Volume 07: Greedy, Backtracking, Bit Hacks, Math & Geometry (55 Problems)
 
-> **Problems Covered:** Q471 to Q525  
-> **Patterns:** Interval Sweepline & Scheduling &bull; Backtracking State-Space Trees &bull; N-Queens & Sudoku &bull; Bit Manipulation Tricks (`n & (n - 1)`) &bull; Sieve of Eratosthenes &bull; Binary Exponentiation &bull; Computational Geometry (Convex Hull)
+
+Heuristic choices, exhaustive tree searches, low-level bitwise operations, and discrete number theory resolve problems where standard polynomial dynamic programming is unavailable. This volume compiles 55 signature problems spanning greedy interval scheduling, backtracking pruning constraints, bitwise bitmask manipulations, modular arithmetic, and geometric algorithms.
+
+---
+
+## 1. Executive Summary & Learning Objectives
+
+This problem bank codifies 55 essential challenges spanning greedy interval optimization, combinatorial backtracking, bit hacks, number theory, and computational geometry.
+
+By completing this problem set, you will be able to:
+1. **Apply Greedy Choice Principles**: Prove matroid exchange properties for earliest-deadline-first interval scheduling and gas station tour invariants in $\mathcal{O}(n \log n)$ time.
+2. **Prune Backtracking Search Spaces**: Formulate state-space trees with bitmask constraint propagation to solve N-Queens, Sudoku, and Word Search in optimal time.
+3. **Execute Single-Cycle Bit Manipulation**: Use bitwise primitives (`n & (n - 1)`, single-number XOR, submask enumeration) for high-performance set algebra.
+4. **Implement Foundational Number Theory**: Construct Sieve of Eratosthenes primes, Extended Euclidean GCD, and binary exponentiation in $\mathcal{O}(\log n)$ time.
+5. **Formulate Geometric & Transform Algorithms**: Implement Graham Scan convex hulls, orientation cross-products, and Fast Fourier Transform (FFT) polynomial convolutions in $\mathcal{O}(n \log n)$ time.
+
+---
+
+## 2. Problem Taxonomy & Architecture Guide
+
+| Section | Problem Range | Primary Patterns Covered | Target Complexity Range |
+| :--- | :--- | :--- | :--- |
+| **Section 1** | Q471 – Q482 | Greedy Intervals, Sweepline & Task Scheduling | $\mathcal{O}(n)$ to $\mathcal{O}(n \log n)$ Time, $\mathcal{O}(1)$ to $\mathcal{O}(n)$ Space |
+| **Section 2** | Q483 – Q495 | Backtracking, Permutations, Subsets & Constraint Satisfaction | Exponential Time $\mathcal{O}(k^n)$ with Strict Pruning, $\mathcal{O}(n)$ Stack Space |
+| **Section 3** | Q496 – Q505 | Bit Manipulation Hacks, Masking & ALU Tricks | $\mathcal{O}(1)$ to $\mathcal{O}(n)$ Time, $\mathcal{O}(1)$ Space |
+| **Section 4** | Q506 – Q515 | Number Theory, Modular Arithmetic & Primality | $\mathcal{O}(\log n)$ to $\mathcal{O}(n \log \log n)$ Time, $\mathcal{O}(1)$ Space |
+| **Section 5** | Q516 – Q525 | Computational Geometry, Game Theory & FFT Convolutions | $\mathcal{O}(1)$ to $\mathcal{O}(n \log n)$ Time, $\mathcal{O}(n)$ Space |
 
 ---
 
