@@ -1,191 +1,271 @@
 # Part 10: Advanced DSA — Module 01: Range Query Data Structures
 
-> **Topics Covered:**  
-> 148. Segment Tree (Point Updates & Range Queries in $O(\log N)$) &bull; 149. Segment Tree with Lazy Propagation ($O(\log N)$ Range Updates) &bull; 150. Fenwick Tree / Binary Indexed Tree (BIT & `i & (-i)`) &bull; 151. Sparse Table (Static Range Minimum Queries in strictly $O(1)$ Time)
+Interval-based queries and dynamic mutations are central to database indexing, competitive programming, and geometric processing. Range query data structures resolve the fundamental tension between static prefix precomputations and naive linear scans, unlocking logarithmic updates and constant-time idempotent queries.
 
 ---
 
-# TOPIC 148: SEGMENT TREE
+## 1. Executive Summary & Learning Objectives
+
+This module formalizes advanced hierarchical data structures designed to evaluate and mutate range aggregates over 1D sequences with optimal asymptotic efficiency.
+
+By the end of this chapter, you will be able to:
+1. **Construct Array-Backed Segment Trees**: Implement binary interval decomposition supporting range associative queries and point updates in $\mathcal{O}(\log n)$ time within $4n$ array bounds.
+2. **Apply Lazy Propagation**: Defer pending range updates via transmission tags, guaranteeing $\mathcal{O}(\log n)$ batch modifications.
+3. **Master Fenwick Trees (BIT)**: Utilize low-bit isolation $i \ \& \ (-i)$ to manage prefix sums and point mutations with zero pointer overhead in strictly $\mathcal{O}(n)$ memory.
+4. **Leverage Idempotent Sparse Tables**: Exploit algebraic property $\min(x, x) = x$ to evaluate static Range Minimum Queries in strictly $\mathcal{O}(1)$ time following $\mathcal{O}(n \log n)$ preprocessing.
+
+---
+
+## 2. Topic 148: Segment Tree
 
 ### 1. The Core Trade-off Problem
-Given an array $A$ of size $N$, we need to support two operations repeatedly:
-1. **Range Query**: Calculate $\sum_{i=L}^{R} A[i]$ (or $\min / \max$).
-2. **Point Update**: Set $A[\text{index}] \leftarrow \text{value}$.
+Given an array $A$ of size $n$, systems require efficient handling of two competing operations:
+1. **Range Query**: Evaluate $\sum_{i=L}^{R} A[i]$ (or $\min$, $\max$, $\gcd$).
+2. **Point Update**: Assign $A[\text{index}] \leftarrow \text{value}$.
 
-| Data Structure | Range Query Time | Point Update Time |
-| :--- | :---: | :---: |
-| **Naive Array** | $O(N)$ | $O(1)$ |
-| **Prefix Sum Array** | $O(1)$ | $O(N)$ (must rebuild prefix sums!) |
-| **Segment Tree** | $\mathbf{O(\log N)}$ | $\mathbf{O(\log N)}$ |
+| Architecture | Range Query Time | Point Update Time | Construction Time | Memory Bound |
+| :--- | :---: | :---: | :---: | :---: |
+| **Unindexed Array** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | $n$ |
+| **Prefix Sum Array** | $\mathcal{O}(1)$ | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | $n$ |
+| **Segment Tree** | $\mathbf{\mathcal{O}(\log n)}$ | $\mathbf{\mathcal{O}(\log n)}$ | $\mathcal{O}(n)$ | $4n$ |
 
 ---
 
-### 2. Architecture & 4N Memory Bound
-A Segment Tree is a full binary tree where each node represents an interval $[L, R]$:
-- **Leaf Nodes**: Individual array elements $[i, i]$.
-- **Internal Nodes**: The merge of left and right child intervals: $[L, \text{mid}]$ and $[\text{mid}+1, R]$.
-- **Storage**: Mapped into a 1D array of size **$4N$** (where left child is $2i+1$ and right is $2i+2$).
+### 2. Binary Interval Decomposition & 4n Bound
+A Segment Tree recursively divides an interval $[0, n-1]$ into two halves until reaching unit-length intervals $[i, i]$:
+- **Leaf Nodes**: Hold individual elements $A[i]$.
+- **Internal Nodes**: Store the aggregated result (e.g., sum) of their left child $[L, \text{mid}]$ and right child $[\text{mid}+1, R]$.
+- **Storage Layout**: Flat 1D array indexed from $0$:
+  - Left child of node $u$: $2u + 1$
+  - Right child of node $u$: $2u + 2$
+  - Maximum nodes in binary tree of height $\lceil \log_2 n \rceil + 1 \le 4n$.
 
-```text
-SEGMENT TREE OVER A = [ 1, 3, 5, 7 ]:
-                        [0..3] (Sum = 16)
-                       /      \
-             [0..1] (4)        [2..3] (12)
-             /      \          /       \
-         [0] (1)  [1] (3)   [2] (5)   [3] (7)
+---
+
+### 3. Implementation: Segment Tree with Point Updates
+
+```typescript
+export class SegmentTree {
+  private tree: number[];
+  private n: number;
+
+  constructor(nums: number[]) {
+    this.n = nums.length;
+    this.tree = new Array(4 * this.n).fill(0);
+    if (this.n > 0) {
+      this.build(nums, 0, 0, this.n - 1);
+    }
+  }
+
+  private build(nums: number[], node: number, start: number, end: number): void {
+    if (start === end) {
+      this.tree[node] = nums[start];
+      return;
+    }
+    const mid = start + Math.floor((end - start) / 2);
+    const leftChild = 2 * node + 1;
+    const rightChild = 2 * node + 2;
+
+    this.build(nums, leftChild, start, mid);
+    this.build(nums, rightChild, mid + 1, end);
+    this.tree[node] = this.tree[leftChild] + this.tree[rightChild];
+  }
+
+  public update(index: number, val: number): void {
+    this.updatePoint(0, 0, this.n - 1, index, val);
+  }
+
+  private updatePoint(node: number, start: number, end: number, idx: number, val: number): void {
+    if (start === end) {
+      this.tree[node] = val;
+      return;
+    }
+    const mid = start + Math.floor((end - start) / 2);
+    const leftChild = 2 * node + 1;
+    const rightChild = 2 * node + 2;
+
+    if (idx <= mid) {
+      this.updatePoint(leftChild, start, mid, idx, val);
+    } else {
+      this.updatePoint(rightChild, mid + 1, end, idx, val);
+    }
+    this.tree[node] = this.tree[leftChild] + this.tree[rightChild];
+  }
+
+  public query(left: number, right: number): number {
+    return this.queryRange(0, 0, this.n - 1, left, right);
+  }
+
+  private queryRange(node: number, start: number, end: number, L: number, R: number): number {
+    // Case 1: Out of range
+    if (R < start || end < L) return 0;
+
+    // Case 2: Node range completely inside query range
+    if (L <= start && end <= R) return this.tree[node];
+
+    // Case 3: Partial overlap
+    const mid = start + Math.floor((end - start) / 2);
+    const p1 = this.queryRange(2 * node + 1, start, mid, L, R);
+    const p2 = this.queryRange(2 * node + 2, mid + 1, end, L, R);
+    return p1 + p2;
+  }
+}
 ```
 
 ---
 
-### 3. Pseudocode: Build, Query, and Point Update
+## 3. Topic 149: Segment Tree with Lazy Propagation
 
-```text
-ALGORITHM BuildSegmentTree(tree, A, node, start, end)
-1.  if start = end:
-2.      tree[node] ← A[start]
-3.      return
-4.  mid ← start + ⌊(end - start) / 2⌋
-5.  BuildSegmentTree(tree, A, 2 * node + 1, start, mid)
-6.  BuildSegmentTree(tree, A, 2 * node + 2, mid + 1, end)
-7.  tree[node] ← tree[2 * node + 1] + tree[2 * node + 2]
-
-ALGORITHM RangeQuery(tree, node, start, end, L, R)
-1.  // Case 1: Completely outside range
-2.  if R < start or end < L: return 0
-3.  // Case 2: Completely inside range
-4.  if L ≤ start and end ≤ R: return tree[node]
-5.  // Case 3: Partial overlap
-6.  mid ← start + ⌊(end - start) / 2⌋
-7.  p1 ← RangeQuery(tree, 2 * node + 1, start, mid, L, R)
-8.  p2 ← RangeQuery(tree, 2 * node + 2, mid + 1, end, L, R)
-9.  return p1 + p2
-```
+### 1. The Challenge of Range Updates
+When updating an entire interval $[L, R]$ by adding delta $v$ to every element:
+- Iterating individual point updates requires $\mathcal{O}(k \log n)$ time, degrading to $\mathcal{O}(n \log n)$ for full-array updates.
+- **Lazy Propagation Principle**: Postpone updating child nodes until their values are strictly needed by a descendant query or update.
+- Maintain a secondary array `lazy[4n]`. When a node's interval falls completely within $[L, R]$:
+  1. Increment `tree[node]` immediately by $v \cdot (\text{end} - \text{start} + 1)$.
+  2. Accumulate $v$ into `lazy[node]`.
+  3. Return without visiting children.
+- If a future operation must traverse into child nodes, push the pending lazy tag down one level before proceeding.
+- **Asymptotic Complexity**: Range Update drops from $\mathcal{O}(n \log n)$ to **$\mathcal{O}(\log n)$**.
 
 ---
----
 
-# TOPIC 149: SEGMENT TREE WITH LAZY PROPAGATION
+## 4. Topic 150: Fenwick Tree (Binary Indexed Tree / BIT)
 
-### 1. The Challenge: Range Updates
-What if we need to update an **entire range $[L, R]$** by adding $v$ to every element?
-- Updating each leaf individually takes $O(N \log N)$ time.
-- **Lazy Propagation**: Postpone updates to descendant nodes until those nodes are actually queried!
-- Maintain a secondary `lazy[]` array. When updating an interval, store the pending increment in `lazy[node]` and return immediately! Push the tag down only when traversing deeper during subsequent queries.
-- **Time Complexity for Range Update**: **$O(\log N)$**!
+### 1. Low-Bit Isolation ($i \ \& \ (-i)$)
+Invented by Peter Fenwick in 1994, the Binary Indexed Tree maintains prefix sums and point updates in $\mathcal{O}(\log n)$ time with **zero pointer overhead and strictly $n + 1$ integer cells**.
 
----
----
+#### Mathematical Foundation
+Let $\text{LSB}(i) = i \ \& \ (-i)$ isolate the least significant set bit of integer $i$.
+Each 1-based index $i$ in a Fenwick Tree stores the partial sum for the left-open interval:
 
-# TOPIC 150: FENWICK TREE (BINARY INDEXED TREE / BIT)
-
-### 1. Definition & Low-Bit Isolation (`i & (-i)`)
-A **Fenwick Tree (BIT)** (invented by Peter Fenwick, 1994) supports prefix sum queries and point updates in $O(\log N)$ time with **zero pointer overhead and exactly $N + 1$ memory space** (no $4N$ expansion needed!).
-
-#### The Lowbit Isolation:
-$$\text{LSB}(i) = i \ \& \ (-i)$$
-Each index $i$ in a 1-based Fenwick Tree is responsible for storing the sum of elements in the interval:
 $$(i - (i \ \& \ (-i)), \ i]$$
 
-```text
-Index (binary)   Responsible Interval Range   Length
-1  (0001₂)       (0, 1]                       1
-2  (0010₂)       (0, 2]                       2
-3  (0011₂)       (2, 3]                       1
-4  (0100₂)       (0, 4]                       4 (Covers entire prefix!)
+| Index $i$ (Binary) | $\text{LSB}(i)$ | Responsible Interval Range | Span Length |
+| :--- | :--- | :--- | :---: |
+| **1** ($0001_2$) | 1 | $(0, 1] = A[1]$ | 1 |
+| **2** ($0010_2$) | 2 | $(0, 2] = A[1] + A[2]$ | 2 |
+| **3** ($0011_2$) | 1 | $(2, 3] = A[3]$ | 1 |
+| **4** ($0100_2$) | 4 | $(0, 4] = A[1] + A[2] + A[3] + A[4]$ | 4 |
+
+---
+
+### 2. Implementation: Fenwick Tree (BIT)
+
+```typescript
+export class FenwickTree {
+  private tree: number[];
+  private n: number;
+
+  constructor(size: number) {
+    this.n = size;
+    this.tree = new Array(this.n + 1).fill(0);
+  }
+
+  /**
+   * Adds delta to element at 1-based index i.
+   * Time Complexity: O(log n)
+   */
+  public update(i: number, delta: number): void {
+    while (i <= this.n) {
+      this.tree[i] += delta;
+      i += i & -i; // Cascade forward to parent intervals
+    }
+  }
+
+  /**
+   * Computes prefix sum from index 1 through i.
+   * Time Complexity: O(log n)
+   */
+  public query(i: number): number {
+    let sum = 0;
+    while (i > 0) {
+      sum += this.tree[i];
+      i -= i & -i; // Cascade backward by stripping lowest set bits
+    }
+    return sum;
+  }
+
+  /**
+   * Computes range sum from 1-based index L to R inclusive.
+   */
+  public queryRange(L: number, R: number): number {
+    return this.query(R) - this.query(L - 1);
+  }
+}
 ```
 
 ---
 
-### 2. Complete Pseudocode: Fenwick Tree (BIT)
+## 5. Topic 151: Sparse Table (Static RMQ in Strictly $\mathcal{O}(1)$)
 
-```text
-DATA STRUCTURE FenwickTree
-    Fields:
-        tree: array of integers of size N + 1 (1-based, initialized to 0)
-        n: integer N
-
-    OPERATION PointUpdate(i, delta):
-        // Cascade forward to all ancestors responsible for index i
-        while i ≤ n:
-            tree[i] ← tree[i] + delta
-            i ← i + (i & (-i))          // Advance to parent by adding LSB
-
-    OPERATION PrefixSum(i):
-        // Accumulate sum by stripping lowest set bits
-        sum ← 0
-        while i > 0:
-            sum ← sum + tree[i]
-            i ← i - (i & (-i))          // Step backwards by subtracting LSB
-        return sum
-
-    OPERATION RangeSum(L, R):
-        return PrefixSum(R) - PrefixSum(L - 1)
-```
-
-- **Point Update**: $O(\log N)$ time.
-- **Prefix Sum**: $O(\log N)$ time.
-- **Auxiliary Space**: $O(N)$ (requires only 10 lines of code!).
-
----
----
-
-# TOPIC 151: SPARSE TABLE (STATIC RMQ IN STRICTLY $O(1)$)
-
-### 1. Problem Statement
-Given a static array $A$ (no updates), answer **Range Minimum Queries (RMQ)** in **strictly $\mathbf{O(1)}$ constant time**!
-
----
-
-### 2. Mathematical Principle: Idempotency
-An operation $\circ$ is **Idempotent** if:
+### 1. Idempotency Principle
+An algebraic binary operation $\circ$ is **idempotent** if:
 $$x \circ x = x$$
-Functions like $\min(x, y)$, $\max(x, y)$, and $\gcd(x, y)$ are idempotent (unlike sum).  
-Because overlapping intervals do not distort the minimum:
-$$\min(A[L \dots R]) = \min\Big( \min(A[L \dots L + 2^k - 1]), \quad \min(A[R - 2^k + 1 \dots R]) \Big)$$
-Where $k = \lfloor \log_2(R - L + 1) \rfloor$ is the largest power of 2 that fits within the range!
 
-```text
-Query Range [L, R] of length 6:
-               L                         R
-               ┌─────────────────────────┐
-Interval 1:    [ 2ᵏ = 4 elements ]       │
-Interval 2:    │       [ 2ᵏ = 4 elements ]
-               └─────────────────────────┘
-Notice the overlap in the middle! Because min(x, x) = x, overlap is 100% harmless!
+Functions such as $\min(x, y)$, $\max(x, y)$, and $\gcd(x, y)$ are idempotent, whereas addition is not.
+
+Because overlapping duplicate elements do not alter the minimum value of an interval, any range $[L, R]$ of length $\text{len} = R - L + 1$ can be decomposed into **two overlapping power-of-two blocks** of length $2^k$, where:
+$$k = \lfloor \log_2(\text{len}) \rfloor$$
+
+$$\min(A[L \dots R]) = \min\Big(\text{ST}[k][L], \, \text{ST}[k][R - 2^k + 1]\Big)$$
+
+```typescript
+export class SparseTable {
+  private st: number[][];
+  private logTable: number[];
+
+  constructor(nums: number[]) {
+    const n = nums.length;
+    const maxK = Math.floor(Math.log2(Math.max(1, n))) + 1;
+    this.st = Array.from({ length: maxK }, () => new Array(n).fill(0));
+
+    // Precompute floor(log2(i)) for O(1) query lookup
+    this.logTable = new Array(n + 1).fill(0);
+    for (let i = 2; i <= n; i++) {
+      this.logTable[i] = this.logTable[Math.floor(i / 2)] + 1;
+    }
+
+    // Base row: intervals of length 2^0 = 1
+    for (let i = 0; i < n; i++) {
+      this.st[0][i] = nums[i];
+    }
+
+    // Dynamic programming fill: ST[k][i] = min(ST[k-1][i], ST[k-1][i + 2^(k-1)])
+    for (let k = 1; k < maxK; k++) {
+      const halfLen = 1 << (k - 1);
+      for (let i = 0; i + (1 << k) <= n; i++) {
+        this.st[k][i] = Math.min(this.st[k - 1][i], this.st[k - 1][i + halfLen]);
+      }
+    }
+  }
+
+  /**
+   * Evaluates Range Minimum Query in strictly O(1) time.
+   */
+  public queryMin(L: number, R: number): number {
+    const len = R - L + 1;
+    const k = this.logTable[len];
+    return Math.min(this.st[k][L], this.st[k][R - (1 << k) + 1]);
+  }
+}
 ```
 
 ---
 
-### 3. Complexity:
-- **Preprocessing (Build Table)**: $\Theta(N \log N)$ time using dynamic programming:
-$$\text{ST}[k][i] = \min(\text{ST}[k-1][i], \ \text{ST}[k-1][i + 2^{k-1}])$$
-- **Query Time**: Strictly $\mathbf{\Theta(1)}$!
-- **Space**: $\Theta(N \log N)$.
+## 6. Range Query Data Structures Comparison
 
----
-
-### 4. Range Query Data Structures Comparison
-
-| Data Structure | Preprocessing Time | Range Query Time | Point Update Time | Range Update Time | Auxiliary Space |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Prefix Sum** | $O(N)$ | $O(1)$ (Sum only) | $O(N)$ | $O(N)$ | $O(N)$ |
-| **Sparse Table** | $O(N \log N)$ | $\mathbf{O(1)}$ (Min/Max/GCD) | No updates | No updates | $O(N \log N)$ |
-| **Fenwick Tree (BIT)**| $O(N)$ | $O(\log N)$ | $O(\log N)$ | $O(\log N)$ (with 2 BITs)| $\mathbf{O(N)}$ |
-| **Segment Tree** | $O(N)$ | $O(\log N)$ | $O(\log N)$ | $O(N)$ | $O(4N)$ |
-| **Segment Tree + Lazy**| $O(N)$ | $O(\log N)$ | $O(\log N)$ | $\mathbf{O(\log N)}$ | $O(4N)$ |
-
----
-
-## Module 01 Summary & Key Takeaways
-
-1. **Segment Trees** handle point updates and range queries in $O(\log N)$ using $4N$ memory; **Lazy Propagation** enables $O(\log N)$ range updates.
-2. **Fenwick Trees (BIT)** achieve prefix sums and updates in $O(\log N)$ with ultra-lightweight code using `i & (-i)`.
-3. **Sparse Tables** exploit idempotency ($\min(x, x) = x$) to deliver **$O(1)$ constant-time Range Minimum Queries** after $O(N \log N)$ preprocessing.
+| Data Structure | Preprocessing Time | Range Query Time | Point Update Time | Range Update Time | Auxiliary Space | Idempotency Required? |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Prefix Sum Array** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ (Sum only) | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | $n$ | No |
+| **Sparse Table** | $\mathcal{O}(n \log n)$ | $\mathbf{\mathcal{O}(1)}$ (RMQ / GCD) | Not supported | Not supported | $\mathcal{O}(n \log n)$ | **Yes** |
+| **Fenwick Tree (BIT)** | $\mathcal{O}(n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ (Dual BIT) | $\mathbf{n}$ | No (Invertible only) |
+| **Segment Tree** | $\mathcal{O}(n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(n)$ | $4n$ | No (Associative only) |
+| **Segment Tree + Lazy** | $\mathcal{O}(n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ | $\mathbf{\mathcal{O}(\log n)}$ | $4n$ | No (Associative only) |
 
 ---
 
 ## References & Academic Attribution
 
 1. **Fenwick, P. M.** (1994). A new data structure for cumulative frequency tables. *Software: Practice and Experience*, 24(3), 327–336.
-2. **Sleator, D. D., & Tarjan, R. E.** (1983). A data structure for dynamic trees. *Journal of Computer and System Sciences*, 26(3), 362–391.
-3. **Tarjan, R. E.** (1979). Applications of path compression on balanced trees. *Journal of the ACM (JACM)*, 26(4), 690–715.
+2. **Bender, M. A., & Farach-Colton, M.** (2000). The LCA problem revisited. *Latin American Symposium on Theoretical Informatics*, 88–94. Springer.
+3. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.

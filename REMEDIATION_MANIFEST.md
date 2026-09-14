@@ -59,7 +59,7 @@
 - [x] problem-solving-patterns/monotonic-data-structures — status: done
 - [x] problem-solving-patterns/core-interview-patterns — status: done
 ## Part 10 — Advanced Data Structures & Algorithms
-- [ ] advanced-dsa/range-query-structures — status: not-started
+- [x] advanced-dsa/range-query-structures — status: done
 - [ ] advanced-dsa/advanced-topics — status: not-started
 - [ ] advanced-dsa/tree-decompositions — status: not-started
 ## Part 11 — 525+ Problem Bank & Master Revision
