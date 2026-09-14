@@ -47,7 +47,7 @@
 - [x] graphs/graph-storage-architectures — status: done
 - [x] graphs/traversals-and-cycles — status: done
 - [x] graphs/topological-sort-and-dags — status: done
-- [ ] graphs/shortest-paths — status: not-started
+- [x] graphs/shortest-paths — status: done
 - [ ] graphs/spanning-trees-and-dsu — status: not-started
 ## Part 08 — Algorithm Design Paradigms
 - [ ] algorithm-design-techniques/brute-force-and-divide-conquer — status: not-started
