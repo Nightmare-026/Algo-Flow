@@ -5,327 +5,309 @@
 
 ---
 
-# TOPIC 25: DOUBLY LINKED LIST
+While singly linked lists provide unidirectional linear chains, systems programming and high-performance caching require bi-directional navigation and true $O(1)$ arbitrary node removals. Doubly linked lists achieve this by embedding both predecessor (`prev`) and successor (`next`) references within each node, while circular variants loop terminal pointers back to the entry node to form endless ring buffers. This chapter details bidirectional heap node topologies, sentinel-based elimination of boundary pointer edge cases, the mechanics of constant-time arbitrary deletion, and cyclic simulations including the classic Josephus elimination problem.
 
-### 1. Topic Title
-**Doubly Linked List (Two-Way Bi-Directional Node-Pointer Linear Structure)**
-
-### 2. Category
-Linear Data Structures — Non-Contiguous Node-Pointer Linked Allocation.
-
-### 3. Difficulty
-Intermediate.
-
-### 4. Prerequisites
-- Module 03: Singly Linked Lists (Pointers, Head/Tail references, Pointer reassignment).
+### Learning Objectives
+- Differentiate the memory layouts, pointer alignment overheads, and traversal capabilities of singly, doubly, and circular linked structures.
+- Prove why holding a direct node reference enables true $O(1)$ deletion in doubly linked lists versus $O(n)$ in singly linked lists.
+- Implement the Sentinel (Dummy Head & Tail) architectural pattern to eliminate null-pointer branch penalties and edge-case exceptions.
+- Construct Circular Singly Linked Lists (CSLL) using a single `tail` pointer to guarantee $O(1)$ insertions at both ends without tracking `head`.
+- Formulate the Josephus elimination problem using circular pointer chains and verify the simulation against the closed-form recurrence $J(n, 2) = 2(n - 2^{\lfloor \log_2 n \rfloor}) + 1$.
 
 ---
 
-### 5. Definition & Motivation
+## Topic 25: Doubly Linked Lists (DLL)
 
-### Concept
-A **Doubly Linked List (DLL)** is a sequence of nodes where each node contains **two pointers**:
-1. `next`: Points to the immediate succeeding node in sequence.
-2. `prev`: Points to the immediate preceding node in sequence.
+### 1. Conceptual Architecture & Node Anatomy
 
-```text
-┌─────────────────────────────────────────────────────────┐
-│                       DOUBLY NODE                       │
-├───────────────────┬─────────────────┬───────────────────┤
-│       prev        │      data       │       next        │
-│     (Pointer)     │     (Value)     │     (Pointer)     │
-│   e.g., 8 bytes   │  e.g., 4 bytes  │   e.g., 8 bytes   │
-└─────────┬─────────┴─────────────────┴─────────┬─────────┘
-          │                                     │
-          ▼ Points to Predecessor               ▼ Points to Successor
+A **Doubly Linked List (DLL)** is a sequence of dynamically allocated nodes where each node contains **two pointers**:
+1. `next`: Stores the virtual heap address of the succeeding node.
+2. `prev`: Stores the virtual heap address of the preceding node.
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        64-BIT DOUBLY NODE LAYOUT                        │
+├───────────────────┬───────────────────┬─────────────────────────────────┤
+│    prev pointer   │   data payload    │          next pointer           │
+│     (8 bytes)     │     (4 bytes)     │           (8 bytes)             │
+│   Offset: +0      │    Offset: +8     │          Offset: +16            │
+└───────────────────┴───────────────────┴─────────────────────────────────┘
 ```
 
-### Why Do We Need Doubly Linked Lists?
-In a Singly Linked List:
-- You cannot move backward; finding a predecessor requires a full $O(n)$ scan from `HEAD`.
-- Deleting the tail node requires $O(n)$ time even if you hold a direct pointer to `TAIL`!
-- Deleting any arbitrary node $X$ requires $O(n)$ time to discover the node pointing to $X$.
+| Field | Type | Size (64-bit Architecture) | Alignment / Offset | Architectural Function |
+| :--- | :--- | :---: | :---: | :--- |
+| **`prev`** | Node Reference | $8\text{ bytes}$ | Offset $+0$ | Holds virtual heap address of immediate predecessor node |
+| **`data`** | Value / Payload | $4\text{ bytes}$ | Offset $+8$ | Stores client data (e.g., 32-bit integer) |
+| **`padding`** | System Alignment | $4\text{ bytes}$ | Offset $+12$ | Padding to preserve 8-byte boundary alignment |
+| **`next`** | Node Reference | $8\text{ bytes}$ | Offset $+16$ | Holds virtual heap address of immediate successor node |
 
-**Doubly Linked Lists solve this completely**: Given a direct reference to any node $X$, deletion and bidirectional traversal take guaranteed **$O(1)$ constant time**!
+Total node size is $24\text{ bytes}$. Compared to a flat array storing a 4-byte integer, a DLL node incurs a **$500\%$ memory overhead**.
+
+#### Virtual Memory Layout Example
+
+| Logical Position | Virtual Heap Address | `prev` Pointer | `data` Value | `next` Pointer | Semantic Role |
+| :---: | :--- | :---: | :---: | :---: | :--- |
+| **Node 1 (`HEAD`)** | `0x10A0` | `NULL` (`0x0`) | `10` | `0x20F4` | First data node; no predecessor |
+| **Node 2** | `0x20F4` | `0x10A0` | `20` | `0x15C8` | Interior node; bidirectional links |
+| **Node 3 (`TAIL`)** | `0x15C8` | `0x20F4` | `30` | `NULL` (`0x0`) | Last data node; no successor |
 
 ---
 
-### 6. Structural Diagram (ASCII)
+### 2. Operations & Asymptotic Complexities
 
-```text
-       HEAD                                                                    TAIL
-        │                                                                       │
-        ▼                                                                       ▼
-NULL ◄──[ prev │ 10 │ next ] ◄══► [ prev │ 20 │ next ] ◄══► [ prev │ 30 │ next ] ──► NULL
-         Addr: 0x10A0               Addr: 0x20F4               Addr: 0x15C8
+| Operation | Best Case | Average Case | Worst Case | Auxiliary Space | Comparison vs. Singly Linked List |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **InsertAtHead($x$)** | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Identical $O(1)$ bound; requires updating `oldHead.prev` |
+| **InsertAtTail($x$)** | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Identical $O(1)$ bound via `tail` reference |
+| **DeleteHead()** | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Identical $O(1)$ bound; sets new `head.prev = NULL` |
+| **DeleteTail()** | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | **$O(1)$ vs $O(n)$ in SLL** (immediate predecessor via `tail.prev`) |
+| **DeleteNode($N$)** | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | **$O(1)$ arbitrary deletion** without scanning from head |
+| **InsertBeforeNode($N, x$)** | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | **$O(1)$ vs $O(n)$ in SLL** (direct access to $N.\text{prev}$) |
+| **InsertAfterNode($N, x$)** | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | $O(1)$ constant time pointer insertion |
+| **Search($x$)** | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | Linear scan; can traverse from `head` or `tail` |
+| **ReverseInPlace()** | $\Theta(n)$ | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | Swap `prev` and `next` pointers on every node |
+
+---
+
+### 3. The Superpower of DLLs: $O(1)$ Arbitrary Deletion
+
+In cache eviction systems (e.g., Least Recently Used / LRU Cache) and OS process scheduling queues, an algorithm frequently needs to evict an item given a direct reference to that node (for instance, retrieved from an auxiliary hash map).
+
+- In a **Singly Linked List**, deleting node $X$ requires starting at `HEAD` and walking forward until finding node $P$ whose `next == X` ($\Theta(n)$ time).
+- In a **Doubly Linked List**, node $X$ already knows its predecessor ($X.\text{prev}$) and its successor ($X.\text{next}$). Deletion requires only rewiring two pointers!
+
+#### State Transition Table: Deleting Node $20$ from $[10 \leftrightarrow 20 \leftrightarrow 30]$
+
+| Step | Action Taken | Pointer Expression | Consequence |
+| :---: | :--- | :--- | :--- |
+| **1** | Point predecessor forward | `target.prev.next = target.next` | Node 10's `next` now skips Node 20 to point directly to Node 30 |
+| **2** | Point successor backward | `target.next.prev = target.prev` | Node 30's `prev` now skips Node 20 to point directly to Node 10 |
+| **3** | Deallocate target node | `free(target)` | Node 20 memory reclaimed; $[10 \leftrightarrow 30]$ remains intact |
+
+$$\text{Time Complexity} = \Theta(1), \quad \text{Auxiliary Space} = O(1)$$
+
+---
+
+### 4. The Sentinel (Dummy) Node Architectural Pattern
+
+Managing boundary conditions in raw linked lists leads to conditional branches for empty lists, single-element lists, head mutations, and tail mutations.
+
+#### The Sentinel Solution
+Introduce two permanent invariant nodes that hold no client data:
+- `headSentinel`: Always sits before the first true data node.
+- `tailSentinel`: Always sits after the last true data node.
+
+```
+Empty List with Sentinels:
+[ headSentinel ] <===================> [ tailSentinel ]
+(prev = NULL, next = tailSentinel)     (prev = headSentinel, next = NULL)
+
+Populated List with Sentinels:
+[ headSentinel ] <===> [ Node 10 ] <===> [ Node 20 ] <===> [ Node 30 ] <===> [ tailSentinel ]
 ```
 
----
-
-### 7. Operations & Asymptotic Complexities
-
-| Operation | Best Case Time | Worst Case Time | Auxiliary Space | Key Note |
-| :--- | :---: | :---: | :---: | :--- |
-| **InsertAtHead($x$)** | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Updates `new.next` and `oldHead.prev` |
-| **InsertAtTail($x$)** | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | $O(1)$ direct via tail pointer |
-| **InsertBeforeNode($N, x$)** | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Constant time without scanning! |
-| **InsertAfterNode($N, x$)** | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Constant time without scanning |
-| **DeleteHead()** | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | Advance head, set new `head.prev ← NULL` |
-| **DeleteTail()** | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | **$O(1)$ vs $O(n)$ in Singly List!** |
-| **DeleteNode($N$)** | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ | **$O(1)$ arbitrary deletion superpower!** |
-| **Search($x$)** | $\Theta(1)$ | $\Theta(n)$ | $O(1)$ | Linear scan (can search from head or tail) |
-| **TraverseBackward()** | $\Theta(n)$ | $\Theta(n)$ | $O(1)$ | Follow `prev` pointers starting from `tail` |
+#### Why Sentinels Eliminate Edge Cases:
+Every user node—regardless of whether it is at the front, middle, or back—**always has a non-null predecessor and a non-null successor**. Special `if (head == NULL)` checks completely disappear from the codebase.
 
 ---
 
-### 8. The Superpower of DLLs: $O(1)$ Arbitrary Deletion
-
-In systems programming, database caches, and browser history engines, we frequently need to delete a node when we already hold a reference to it (e.g., hash map pointing directly to cache node in an LRU Cache).
+### 5. Production Specification: Sentinel Doubly Linked List
 
 ```text
-BEFORE DELETION (Targeting Node 20):
-[ 10 │ next ] ◄═══════► [ prev │ 20 │ next ] ◄═══════► [ prev │ 30 ]
-   (predecessor)             (target node)              (successor)
+CLASS DoublyNode:
+    field data: ValueType
+    field prev: DoublyNode Pointer <- NULL
+    field next: DoublyNode Pointer <- NULL
 
-ACTION:
-  1. target.prev.next ← target.next    // Node 10 points forward directly to 30
-  2. target.next.prev ← target.prev    // Node 30 points backward directly to 10
-  3. deallocate target
+    CONSTRUCTOR(val: ValueType):
+        this.data <- val
 
-AFTER DELETION:
-[ 10 │ next ] ◄════════════════════════════════════════► [ prev │ 30 ]
-```
+CLASS SentinelDoublyLinkedList:
+    field headSentinel: DoublyNode Pointer
+    field tailSentinel: DoublyNode Pointer
+    field size: Integer <- 0
 
----
+    CONSTRUCTOR():
+        this.headSentinel <- new DoublyNode(DEFAULT)
+        this.tailSentinel <- new DoublyNode(DEFAULT)
+        this.headSentinel.next <- this.tailSentinel
+        this.tailSentinel.prev <- this.headSentinel
+        this.size <- 0
 
-### 9. The Sentinel (Dummy) Node Pattern
+    FUNCTION InsertAfterNode(targetNode: DoublyNode, val: ValueType) -> DoublyNode:
+        newNode <- new DoublyNode(val)
+        successor <- targetNode.next
 
-### THE PROBLEM: Pointer Edge-Case Hell
-In raw linked lists, you must constantly check for boundary edge cases:
-- Is the list currently empty (`head = NULL`)?
-- Are we deleting the only remaining node?
-- Are we inserting before `head` (requires updating `head`)?
-- Are we inserting after `tail` (requires updating `tail`)?
+        newNode.prev <- targetNode
+        newNode.next <- successor
+        targetNode.next <- newNode
+        successor.prev <- newNode
 
-### Solution: Sentinels
-Introduce permanent, invariant **Dummy Head** and **Dummy Tail** nodes that never change and never hold user data:
+        this.size <- this.size + 1
+        return newNode
 
-```text
-EMPTY LIST WITH SENTINELS:
-┌───────────────────────────┐         ┌───────────────────────────┐
-│        DUMMY HEAD         │ ◄═════► │        DUMMY TAIL         │
-│  [ NULL │ DUMMY │ next ]  │         │  [ prev │ DUMMY │ NULL ]  │
-└───────────────────────────┘         └───────────────────────────┘
+    FUNCTION InsertAtHead(val: ValueType) -> DoublyNode:
+        return this.InsertAfterNode(this.headSentinel, val)
 
-POPULATED LIST WITH SENTINELS:
-[ DUMMY HEAD ] ◄══► [ Node 10 ] ◄══► [ Node 20 ] ◄══► [ Node 30 ] ◄══► [ DUMMY TAIL ]
-```
+    FUNCTION InsertAtTail(val: ValueType) -> DoublyNode:
+        return this.InsertAfterNode(this.tailSentinel.prev, val)
 
-**Why Sentinels are Architectural Gold**:
-Every real data node *always* has a valid, non-null predecessor and a valid, non-null successor! Special-case `if (head == NULL)` checks completely vanish from your codebase.
+    FUNCTION DeleteNode(targetNode: DoublyNode) -> ValueType:
+        if targetNode == this.headSentinel or targetNode == this.tailSentinel:
+            raise BoundaryException("Cannot delete sentinel nodes")
 
----
+        predecessor <- targetNode.prev
+        successor <- targetNode.next
 
-### 10. Complete Language-Independent Pseudocode (Sentinel DLL)
+        predecessor.next <- successor
+        successor.prev <- predecessor
 
-```text
-STRUCTURE DoublyNode
-    data: ValueType
-    prev: DoublyNode pointer ← NULL
-    next: DoublyNode pointer ← NULL
+        val <- targetNode.data
+        free(targetNode)
+        this.size <- this.size - 1
+        return val
 
-STRUCTURE DoublyLinkedList
-    headSentinel: DoublyNode pointer
-    tailSentinel: DoublyNode pointer
-    size: integer ← 0
+    FUNCTION DeleteHead() -> ValueType:
+        if this.size == 0:
+            raise UnderflowException("List is empty")
+        return this.DeleteNode(this.headSentinel.next)
 
-    OPERATION Initialize():
-        headSentinel ← allocate DoublyNode
-        tailSentinel ← allocate DoublyNode
-        headSentinel.next ← tailSentinel
-        tailSentinel.prev ← headSentinel
-        size ← 0
-
-    OPERATION InsertAtHead(val):
-        InsertAfterNode(headSentinel, val)
-
-    OPERATION InsertAtTail(val):
-        InsertBeforeNode(tailSentinel, val)
-
-    OPERATION InsertAfterNode(targetNode, val):
-        newNode ← allocate DoublyNode
-        newNode.data ← val
-        
-        successor ← targetNode.next
-        
-        newNode.prev ← targetNode
-        newNode.next ← successor
-        targetNode.next ← newNode
-        successor.prev ← newNode
-        
-        size ← size + 1
-
-    OPERATION InsertBeforeNode(targetNode, val):
-        InsertAfterNode(targetNode.prev, val)
-
-    OPERATION DeleteNode(targetNode):
-        if targetNode = headSentinel or targetNode = tailSentinel:
-            error "Cannot delete sentinel boundary node"
-        
-        predecessor ← targetNode.prev
-        successor ← targetNode.next
-        
-        predecessor.next ← successor
-        successor.prev ← predecessor
-        
-        deallocate targetNode
-        size ← size - 1
-
-    OPERATION DeleteHead():
-        if size = 0:
-            error "Underflow: List is empty"
-        DeleteNode(headSentinel.next)
-
-    OPERATION DeleteTail():
-        if size = 0:
-            error "Underflow: List is empty"
-        DeleteNode(tailSentinel.prev)
-```
-
----
----
-
-# TOPIC 26: CIRCULAR LINKED LIST
-
-### 1. Topic Title
-**Circular Linked List (Endless Loop Linear Ring Buffer)**
-
-### 2. Category
-Linear Data Structures — Cyclic Node-Pointer Linked Allocation.
-
-### 3. Structural Variations
-
-#### Variation A: Circular Singly Linked List (CSLL)
-The last node's `next` pointer points back to `head`:
-```text
-           HEAD
-            │
-            ▼
-        ┌──────┬──────┐        ┌──────┬──────┐
-   ┌───►│  10  │  ●───┼───────►│  20  │  ●───┼──┐
-   │    └──────┴──────┘        └──────┴──────┘  │
-   │                                            │
-   │    ┌──────┬──────┐                         │
-   └───┬┤  30  │  ●───┼─────────────────────────┘
-       │└──────┴──────┘
-      TAIL
-```
-
-#### Variation B: Circular Doubly Linked List (CDLL)
-A complete two-way symmetrical ring where:
-- `head.prev = tail`
-- `tail.next = head`
-
-```text
-                ┌───────────────────────────────────────────────┐
-                │                                               │
-                ▼                                               │
-NULL ◄── [ prev │ 10 │ next ] ◄══► [ prev │ 20 │ next ] ◄══► [ prev │ 30 │ next ] ──► NULL
-   ▲                                                            │
-   └────────────────────────────────────────────────────────────┘
+    FUNCTION DeleteTail() -> ValueType:
+        if this.size == 0:
+            raise UnderflowException("List is empty")
+        return this.DeleteNode(this.tailSentinel.prev)
 ```
 
 ---
 
-### 4. Efficient Representation: Single `tail` Pointer
+## Topic 26: Circular Linked Lists (CSLL & CDLL)
 
-In a Circular Singly Linked List, maintaining a pointer to `TAIL` is strictly superior to maintaining a pointer to `HEAD`!
-- Why? Because `tail.next` is automatically `HEAD`!
-- Therefore, having `TAIL` grants you:
-  - Immediate $O(1)$ access to the tail node (`tail`).
-  - Immediate $O(1)$ access to the head node (`tail.next`).
-  - Insertion at Head in $O(1)$: Insert after `tail`.
-  - Insertion at Tail in $O(1)$: Insert after `tail`, then update `tail ← tail.next`.
+### 1. Structural Variations & Topologies
 
-```text
-ALGORITHM InsertAtHeadCSLL(tail, val):
-1.  newNode ← allocate Node(val)
-2.  if tail = NULL:
-3.      newNode.next ← newNode
-4.      return newNode   // tail points to the single node
-5.  newNode.next ← tail.next
-6.  tail.next ← newNode
-7.  return tail
+A **Circular Linked List** eliminates terminal `NULL` pointers by connecting the final node back to the initial node, forming an unbroken ring buffer.
 
-ALGORITHM InsertAtTailCSLL(tail, val):
-1.  newNode ← allocate Node(val)
-2.  if tail = NULL:
-3.      newNode.next ← newNode
-4.      return newNode
-5.  newNode.next ← tail.next
-6.  tail.next ← newNode
-7.  return newNode       // newNode becomes the new tail!
+#### Comparison of Circular Topologies
+
+| Property | Circular Singly Linked List (CSLL) | Circular Doubly Linked List (CDLL) |
+| :--- | :--- | :--- |
+| **Pointer Count per Node** | 1 (`next`) | 2 (`prev`, `next`) |
+| **Loop-Back Condition** | `tail.next == head` | `head.prev == tail` and `tail.next == head` |
+| **Traversal Direction** | Unidirectional (forward only) | Bidirectional (forward and backward) |
+| **Memory Overhead** | 8 bytes pointer / node | 16 bytes pointer / node |
+| **Primary Use Cases** | Round-robin CPU schedulers | Media playlist loops, Fibonacci heaps |
+
+```
+Circular Singly Linked List:
+HEAD -> [ 10 ] -> [ 20 ] -> [ 30 ] (TAIL)
+  ^                            |
+  |----------------------------|
+
+Circular Doubly Linked List:
+  |---------------------------------------------------------|
+  v                                                         |
+[ 10 (HEAD) ] <==========> [ 20 ] <==========> [ 30 (TAIL) ]
+  |                                                         ^
+  |---------------------------------------------------------|
 ```
 
 ---
 
-### 5. Classic Application: The Josephus Problem
+### 2. The Single-`tail` Pointer Architecture for CSLL
 
-### THE PROBLEM
-$n$ people stand in a circle numbered $1$ to $n$. A count begins at person $1$ and moves around the circle in a fixed direction. In each step, the $k$-th person is executed/eliminated. The circle closes, and counting resumes from the person immediately following the eliminated one. Find the safe position that guarantees survival.
+In a standard singly linked list, maintaining a pointer to `HEAD` requires an $O(n)$ traversal to append at the tail. In a Circular Singly Linked List, maintaining only a pointer to **`TAIL`** provides instant $O(1)$ access to both ends:
 
-#### Circular Linked List Simulation:
-Create a circular linked list of $n$ nodes ($1 \to 2 \to \dots \to n \to 1$). Advance $k-1$ steps, delete the target node, and repeat until only $1$ node remains.
+- **Tail Access**: Direct via `tail`.
+- **Head Access**: Direct via `tail.next`!
+- **Insert At Head**: Insert a new node between `tail` and `tail.next`.
+- **Insert At Tail**: Insert between `tail` and `tail.next`, then advance `tail = newNode`.
 
 ```text
-ALGORITHM JosephusSurvivor(n, k)
-    Input: Number of people n, step count k
-    Output: Value of surviving node
+FUNCTION InsertAtHeadCSLL(tail: Node Pointer, val: ValueType) -> Node Pointer:
+    newNode <- new Node(val)
+    if tail == NULL:
+        newNode.next <- newNode
+        return newNode
+    newNode.next <- tail.next
+    tail.next <- newNode
+    return tail
 
-1.  head ← allocate Node(1)
-2.  prevNode ← head
-3.  for i ← 2 to n:
-4.      curr ← allocate Node(i)
-5.      prevNode.next ← curr
-6.      prevNode ← curr
-7.  prevNode.next ← head      // Close the ring!
-8.  
-9.  curr ← head
-10. while curr.next ≠ curr:   // While more than 1 node remains
-11.     for count ← 1 to k - 2:
-12.         curr ← curr.next
-13.     // Delete next node (k-th person)
-14.     eliminated ← curr.next
-15.     curr.next ← eliminated.next
-16.     deallocate eliminated
-17.     curr ← curr.next      // Advance to next starter
-18. return curr.data
+FUNCTION InsertAtTailCSLL(tail: Node Pointer, val: ValueType) -> Node Pointer:
+    newNode <- new Node(val)
+    if tail == NULL:
+        newNode.next <- newNode
+        return newNode
+    newNode.next <- tail.next
+    tail.next <- newNode
+    return newNode    // newNode is the new tail
 ```
 
-#### Step-by-Step State Table: $n = 5$ People, $k = 2$ Elimination Step
+---
 
-| Round | Active Circle Nodes | Counting from | Steps Advanced ($k-1$) | Eliminated Person | Remaining Circle |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| **Round 1** | $1 \to 2 \to 3 \to 4 \to 5$ | Node 1 | 1 step ($1 \to 2$) | **Person 2** | $3 \to 4 \to 5 \to 1$ |
-| **Round 2** | $3 \to 4 \to 5 \to 1$ | Node 3 | 1 step ($3 \to 4$) | **Person 4** | $5 \to 1 \to 3$ |
-| **Round 3** | $5 \to 1 \to 3$ | Node 5 | 1 step ($5 \to 1$) | **Person 1** | $3 \to 5$ |
-| **Round 4** | $3 \to 5$ | Node 3 | 1 step ($3 \to 5$) | **Person 5** | **Person 3** |
+### 3. Classic Application: The Josephus Problem
 
-**Survivor**: **Person 3**. Time Complexity: $O(n \cdot k)$, Auxiliary Space: $O(n)$.
+#### Problem Formulation
+$n$ people stand in a circle labeled $1$ through $n$. Beginning at person $1$, counting proceeds clockwise. Every $k$-th person is eliminated. The circle closes and counting resumes from the person immediately following the eliminated individual. The goal is to determine the safe starting position $J(n, k)$ that guarantees survival.
+
+#### Analytical Formula for $k = 2$
+When $k = 2$ (every second person is eliminated), the problem admits an elegant closed-form solution based on powers of 2:
+
+$$J(n, 2) = 2(n - 2^{\lfloor \log_2 n \rfloor}) + 1$$
+
+For $n = 5$:
+- $\lfloor \log_2 5 \rfloor = 2 \implies 2^2 = 4$
+- $J(5, 2) = 2(5 - 4) + 1 = 2(1) + 1 = 3$
+
+#### Simulation via Circular Linked List ($n = 5, k = 2$)
+
+| Round | Active Circle Sequence | Elimination Step ($k=2$) | Eliminated Person | Remaining Circle |
+| :---: | :--- | :--- | :---: | :--- |
+| **1** | $1 \to 2 \to 3 \to 4 \to 5 \to 1$ | Count 1 (Person 1), Count 2 (Person 2) | **Person 2** | $3 \to 4 \to 5 \to 1 \to 3$ |
+| **2** | $3 \to 4 \to 5 \to 1 \to 3$ | Count 1 (Person 3), Count 2 (Person 4) | **Person 4** | $5 \to 1 \to 3 \to 5$ |
+| **3** | $5 \to 1 \to 3 \to 5$ | Count 1 (Person 5), Count 2 (Person 1) | **Person 1** | $3 \to 5 \to 3$ |
+| **4** | $3 \to 5 \to 3$ | Count 1 (Person 3), Count 2 (Person 5) | **Person 5** | **Person 3 (Survivor)** |
+
+The simulation confirms the theoretical derivation: **Person 3 survives**.
+
+```text
+FUNCTION JosephusSurvivor(n: Integer, k: Integer) -> Integer:
+    head <- new Node(1)
+    prev <- head
+    for i from 2 to n:
+        curr <- new Node(i)
+        prev.next <- curr
+        prev <- curr
+    prev.next <- head    // Close the circular ring
+
+    curr <- head
+    while curr.next != curr:
+        for step from 1 to k - 2:
+            curr <- curr.next
+        // Delete the k-th node
+        eliminated <- curr.next
+        curr.next <- eliminated.next
+        free(eliminated)
+        curr <- curr.next
+    survivor <- curr.data
+    free(curr)
+    return survivor
+```
+
+**Simulation Complexity**: $O(n \cdot k)$ time, $O(n)$ auxiliary space.
 
 ---
 
-## Module 04 Summary & Key Takeaways
+### 4. Key Takeaways
 
-1. **Doubly Linked Lists** trade 8 additional bytes of pointer memory per node for **$O(1)$ arbitrary deletion** and bidirectional traversals.
-2. The **Sentinel pattern** replaces null boundary checks with invariant dummy nodes, preventing off-by-one pointer errors.
-3. In **Circular Singly Linked Lists**, storing only a pointer to **TAIL** provides $O(1)$ access to both `tail` and `head` (`tail.next`).
-4. **Circular Linked Lists** naturally model periodic round-robin schedulers and token-ring networks without edge-case resets.
+1. **Bidirectional Navigation**: Doubly linked lists trade $16$ bytes of pointer overhead per node for true $O(1)$ deletion of arbitrary nodes and bidirectional traversal.
+2. **Sentinel Pattern**: Invariant dummy head and tail nodes eliminate null pointer dereferences and special boundary checks.
+3. **Single Tail Optimization**: Storing only a `tail` reference in a Circular Singly Linked List grants $O(1)$ operations at both head (`tail.next`) and tail (`tail`).
+4. **Natural Ring Topologies**: Circular lists are the natural data structure for round-robin CPU schedulers, periodic ring buffers, and cyclic elimination simulations.
 
 ---
 
-## References & Academic Attribution
+## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
-2. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: Bags, Queues, and Stacks. Addison-Wesley.
-3. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: *Elementary Data Structures*. MIT Press.
+2. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: *Linear Lists*. Addison-Wesley.
+3. **Graham, R. L., Knuth, D. E., & Patashnik, O.** (1994). *Concrete Mathematics: A Foundation for Computer Science* (2nd ed.), Section 1.3: *The Josephus Problem*. Addison-Wesley.
+4. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: *Bags, Queues, and Stacks*. Addison-Wesley.
