@@ -1,326 +1,235 @@
 # Part 03: Hashing — Module 03: Hash Table, Hash Map & Hash Set Architectures
 
 > **Topics Covered:**  
-> 40. Hash Table Architecture & Dynamic Rehashing &bull; Hash Map (Key-Value Associative Dictionaries, Invariants & Entry Sets) &bull; Production Collision Optimizations (Java 8+ Bucket Treeification & Python Compact Hash Tables) &bull; Hash Set (Deduplication Engine, Backing Mechanics & Mathematical Set Operations) &bull; Master Comparison: Hash Table vs Hash Map vs Hash Set vs Tree Structures
+> 41. Hash Table Architecture & Dynamic Rehashing &bull; 42. Hash Map (Key-Value Associative Dictionaries, Invariants & Entry Sets) &bull; Production Collision Optimizations (Java 8+ Bucket Treeification & Python Compact Hash Tables) &bull; 43. Hash Set (Deduplication Engine, Backing Mechanics & Mathematical Set Operations) &bull; 44. Master Comparison: Hash Table vs Hash Map vs Hash Set vs Tree Structures
 
 ---
 
-# TOPIC 40: HASH TABLE ARCHITECTURE & REHASHING
+Associative data structures represent the backbone of practical software engineering, powering database primary keys, symbol tables, routing caches, and in-memory key-value stores. While Hash Tables, Hash Maps, and Hash Sets are often used interchangeably in colloquial discussion, they embody distinct mathematical contracts, memory representations, and concurrency profiles. This chapter examines the core mechanics of associative arrays, dynamic rehashing invariants, modern runtime defenses against Hash-DoS attacks (such as Java 8+ bucket treeification and Python 3.6+ compact sparse/dense layouts), mathematical set algebra algorithms, and trade-offs against tree-based structures.
 
-### 1. Topic Title
-**Hash Table (Associative Key-Value Map Container & Dynamic Rehashing Mechanics)**
-
-### 2. Category
-Associative Key-Value Containers — Bucket-Indexed Hash Storage.
-
-### 3. Difficulty
-Intermediate.
-
-### 4. Prerequisites
-- Module 01: Hashing Foundations (Hash functions, Uniform distribution).
-- Module 02: Collision Resolution (Chaining vs Open Addressing).
+### Learning Objectives
+- Differentiate Hash Tables, Hash Maps, and Hash Sets by their formal mathematical invariants, interface contracts, and physical memory configurations.
+- Implement dynamic table rehashing and prove why existing elements must be recomputed via $h(k) \pmod{m_{\text{new}}}$ rather than copied verbatim.
+- Analyze production engine optimizations that foil Hash DoS attacks, including Java 8+ Red-Black tree bucket treeification and Python 3.6+ compact indices.
+- Construct a Hash Set as an abstraction over an internal Hash Map with sentinel constants and determine optimal time complexities for set operations ($\cap, \cup, \setminus$).
+- Evaluate the asymptotic and practical performance trade-offs between hash-based associative containers and self-balancing binary search trees.
 
 ---
 
-### 5. The Three Associative Archetypes: Table, Map, and Set
+## Topic 41: Hash Table Architecture & Dynamic Rehashing
 
-In everyday software engineering, the terms **Hash Table**, **Hash Map**, and **Hash Set** are frequently confused. Yet their mathematical definitions, API contracts, and memory models have distinct identities:
+### 1. Conceptual Architecture & Associative Taxonomy
+
+The associative family spans three distinct container archetypes:
+
+| Associative Archetype | Mathematical Contract | Key Invariant | Value Payload | Primary Systems Role |
+| :--- | :--- | :--- | :--- | :--- |
+| **Hash Table** | Low-level bucket-indexed array | Keys must support hashing & equality | Directly stores key-value pairs in buckets | Foundational runtime building block |
+| **Hash Map** | Functional mapping $f: K \to V$ | Keys are strictly unique ($K \to V$) | Stores arbitrary client value $V$ per key | General-purpose dictionary / cache |
+| **Hash Set** | Mathematical finite set $S \subset \mathcal{U}$ | Elements are strictly unique ($E$) | Zero payload (value replaced by 0-byte sentinel) | High-speed deduplication & membership query |
+
+---
+
+### 2. The Necessity of Dynamic Rehashing
+
+As elements are inserted, the load factor $\alpha = n / m$ increases:
+- In **Separate Chaining**, chains grow to average depth $\alpha$. When $\alpha \gg 1$, search latency degenerates to an unacceptably slow $\Theta(n)$ linear traversal.
+- In **Open Addressing**, probe lengths increase rapidly. As $\alpha \to 1.0$, insertion time explodes toward infinity.
+
+#### The Rehashing Invariant ($\alpha \ge 0.75$)
+To guarantee expected $O(1)$ constant-time performance, whenever $\alpha$ reaches the threshold ($\alpha \ge 0.75$):
+1. Allocate a new backing array with approximately double capacity ($m_{\text{new}} \approx 2m_{\text{old}}$, chosen as the next prime number to mitigate modulo harmonic clustering).
+2. **Recompute all element indices**: Every single active key must be passed through the hash function modulo the new capacity:
+   $$\text{New Index} = h(k) \pmod{m_{\text{new}}}$$
+3. Deallocate the old backing array.
+
+> ⚠️ **The Rehashing Anti-Pattern**:  
+> One cannot simply block-copy (`memcpy`) buckets to the new table! Because the divisor $m$ changes ($k \pmod m \ne k \pmod{2m}$), virtually every existing key relocates to a completely different array index in the expanded memory block.
+
+---
+
+### 3. Production Specification: Separate Chaining Hash Table with Dynamic Rehashing
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      ASSOCIATIVE HASHING TAXONOMY                           │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                      │
-         ┌────────────────────────────┼────────────────────────────┐
-         ▼                            ▼                            ▼
-  ┌───────────────┐            ┌───────────────┐            ┌───────────────┐
-  │  HASH TABLE   │            │   HASH MAP    │            │   HASH SET    │
-  │ (Low-Level /  │            │ (Key-Value    │            │ (Unique Value │
-  │ Classic Base) │            │  Dictionary)  │            │  Collection)  │
-  └───────┬───────┘            └───────┬───────┘            └───────┬───────┘
-          │                            │                            │
-   Direct address               Maps Key (K)                 Stores unique
-   bucket array of              to Value (V).                elements (E).
-   (key, val) slots.            Unique keys.                 No duplicates.
-```
+CLASS HashNode:
+    field key: KeyType
+    field val: ValueType
+    field next: HashNode Pointer <- NULL
 
----
+    CONSTRUCTOR(k: KeyType, v: ValueType):
+        this.key <- k
+        this.val <- v
 
-### 6. The Necessity of Dynamic Rehashing
+CLASS HashTable:
+    field buckets: Array of HashNode Pointers
+    field capacity: Integer
+    field size: Integer <- 0
+    field MAX_LOAD_FACTOR: Float <- 0.75
 
-### Concept
-As insertions increase, the load factor $\alpha = n / m$ increases. If the table capacity $m$ remains static:
-- In **Separate Chaining**, chains grow to average length $\alpha$. When $\alpha \gg 1$, search degrades to a disastrous **$\Theta(n)$ linear scan**!
-- In **Open Addressing**, probe sequences become extremely long. As $\alpha \to 1.0$, insertion time explodes towards infinity and open addressing fails completely.
+    CONSTRUCTOR(initialCapacity: Integer = 7):
+        this.capacity <- initialCapacity
+        this.size <- 0
+        this.buckets <- allocate_memory(initialCapacity * sizeof(HashNode Pointer))
+        for i from 0 to initialCapacity - 1:
+            this.buckets[i] <- NULL
 
-### The Rehashing Invariant ($\alpha \ge 0.75$):
-To preserve expected $O(1)$ performance, whenever $\alpha \ge 0.75$:
-1. Allocate a new bucket array of roughly double capacity ($m_{new} \ge 2m_{old}$, ideally the next prime number to prevent clustering).
-2. **Rehash all existing keys**: Recompute the new bucket index for every single active key:
-$$\text{New Index} = h(k) \pmod{m_{new}}$$
-3. Free the old bucket array.
+    FUNCTION Put(k: KeyType, v: ValueType) -> Void:
+        idx <- (Hash(k) mod this.capacity + this.capacity) mod this.capacity
+        curr <- this.buckets[idx]
 
-> ⚠️ **CRITICAL MISTAKE**: You **cannot** simply copy or `memcpy` buckets from old indices to the new array! Because the modulus $m$ changed ($k \pmod m \ne k \pmod{2m}$), almost every single key moves to a completely different bucket index!
-
----
-
-### 7. Complete Hash Table Pseudocode (Separate Chaining with Dynamic Rehashing)
-
-```text
-STRUCTURE HashNode
-    key: KeyType
-    val: ValueType
-    next: HashNode pointer ← NULL
-
-DATA STRUCTURE HashTable
-    Fields:
-        buckets: array of HashNode pointers
-        capacity: integer ← 7      // Starting prime capacity
-        size: integer ← 0          // Number of stored key-value pairs
-        MAX_LOAD_FACTOR: float ← 0.75
-
-    OPERATION Initialize(cap ← 7):
-        capacity ← cap
-        size ← 0
-        buckets ← allocate array of size capacity, initialized to NULL
-
-    OPERATION Hash(key):
-        return (PolynomialHash(key) mod capacity + capacity) mod capacity
-
-    OPERATION Put(key, value):
-        idx ← Hash(key)
-        curr ← buckets[idx]
-        // 1. Check if key already exists (Update existing value)
-        while curr ≠ NULL:
-            if curr.key = key:
-                curr.val ← value
+        // 1. Check for key update
+        while curr != NULL:
+            if curr.key == k:
+                curr.val <- v
                 return
-            curr ← curr.next
-        // 2. Key does not exist: Insert new node at Head of chain
-        newNode ← allocate HashNode
-        newNode.key ← key
-        newNode.val ← value
-        newNode.next ← buckets[idx]
-        buckets[idx] ← newNode
-        size ← size + 1
-        // 3. Dynamic Resize Trigger
-        if (size / capacity) ≥ MAX_LOAD_FACTOR:
-            Rehash(NextPrime(capacity * 2))
+            curr <- curr.next
 
-    OPERATION Get(key):
-        idx ← Hash(key)
-        curr ← buckets[idx]
-        while curr ≠ NULL:
-            if curr.key = key:
+        // 2. Insert new node at bucket head
+        newNode <- new HashNode(k, v)
+        newNode.next <- this.buckets[idx]
+        this.buckets[idx] <- newNode
+        this.size <- this.size + 1
+
+        // 3. Evaluate dynamic resize
+        if (this.size / this.capacity) >= this.MAX_LOAD_FACTOR:
+            this.Rehash(NextPrime(2 * this.capacity))
+
+    FUNCTION Get(k: KeyType) -> ValueType:
+        idx <- (Hash(k) mod this.capacity + this.capacity) mod this.capacity
+        curr <- this.buckets[idx]
+        while curr != NULL:
+            if curr.key == k:
                 return curr.val
-            curr ← curr.next
-        error "Key not found"
+            curr <- curr.next
+        raise KeyNotFoundException("Key does not exist in table")
 
-    OPERATION Remove(key):
-        idx ← Hash(key)
-        curr ← buckets[idx]
-        prev ← NULL
-        while curr ≠ NULL:
-            if curr.key = key:
-                if prev = NULL:
-                    buckets[idx] ← curr.next
-                else:
-                    prev.next ← curr.next
-                val ← curr.val
-                deallocate curr
-                size ← size - 1
-                return val
-            prev ← curr
-            curr ← curr.next
-        error "Key not found"
+    PRIVATE FUNCTION Rehash(newCapacity: Integer) -> Void:
+        oldBuckets <- this.buckets
+        oldCap <- this.capacity
+        this.capacity <- newCapacity
+        this.buckets <- allocate_memory(newCapacity * sizeof(HashNode Pointer))
+        for i from 0 to newCapacity - 1:
+            this.buckets[i] <- NULL
+        this.size <- 0
 
-    OPERATION Rehash(newCapacity):
-        oldBuckets ← buckets
-        oldCapacity ← capacity
-        capacity ← newCapacity
-        buckets ← allocate array of size newCapacity, initialized to NULL
-        size ← 0
-        for i ← 0 to oldCapacity - 1:
-            curr ← oldBuckets[i]
-            while curr ≠ NULL:
-                Put(curr.key, curr.val)
-                temp ← curr
-                curr ← curr.next
-                deallocate temp
-        deallocate oldBuckets
+        for i from 0 to oldCap - 1:
+            curr <- oldBuckets[i]
+            while curr != NULL:
+                this.Put(curr.key, curr.val)
+                temp <- curr
+                curr <- curr.next
+                free(temp)
+        free(oldBuckets)
 ```
 
 ---
----
 
-# TOPIC 40B: HASH MAP (ASSOCIATIVE KEY-VALUE DICTIONARY)
+## Topic 42: Hash Map (Key-Value Dictionary) & Production Optimizations
 
-### 1. The Key-Value Contract & Unique Key Invariant
+### 1. Functional Invariants & Collection Views
 
-A **Hash Map** is an associative dictionary that establishes a functional mapping from a set of **Keys** to a set of **Values**:
-$$f : K \to V$$
-
-#### Core Invariants:
-1. **Unique Key Invariant**: A given key $k$ can appear at most once in the map. Attempting to insert an existing key overwrites its associated value.
-2. **Value Duplication Allowed**: Multiple distinct keys may map to identical values ($f(k_1) = f(k_2) = v$).
-3. **Primary Collection Views**:
-   - `KeySet()`: The set of all unique keys ($O(n)$ space).
-   - `Values()`: The collection of all values (may contain duplicates).
-   - `EntrySet()`: The set of all $(k, v)$ pairs.
+A **Hash Map** establishes an associative dictionary $f: K \to V$:
+1. **Key Uniqueness**: Keys are unique. Inserting with an existing key replaces the previous value payload.
+2. **Value Multiplicity**: Multiple keys may reference identical value payloads.
+3. **Canonical Collection Views**:
+   - `KeySet()`: An iterable collection containing all unique keys ($O(n)$ space).
+   - `Values()`: An iterable collection containing all stored values (with potential duplicates).
+   - `EntrySet()`: An iterable collection of $(k, v)$ pairs, enabling single-pass traversals without re-hashing keys.
 
 ---
 
-### 2. Production Optimizations: How Modern Runtimes Prevent $O(n)$ Worst-Case Disasters
+### 2. Runtime Engineering: Neutralizing Hash-DoS Attacks
 
-#### A. Java 8+ Bucket Treeification:
-In classical separate chaining, if an adversary feeds a hash map millions of keys engineered to collide into the same bucket (a **Hash DoS Attack**), the chain degrades to length $n$, crippling server CPU.
-- **Java's Solution**: When a bucket chain length reaches **8 (TREEIFY_THRESHOLD)** and total table capacity is at least 64, the linked list chain is dynamically transformed into a **Red-Black Tree**!
-- Search time in the saturated bucket instantly drops from **$O(n)$ down to $O(\log n)$**! If items are deleted and bucket size drops to **6 (UNTREEIFY_THRESHOLD)**, the tree is flattened back into a simple linked list to save memory.
+In high-concurrency cloud environments, if malicious users identify the hash function used by an application, they can transmit thousands of inputs designed to produce identical hash values (a **Hash Denial of Service / Hash DoS Attack**). This collapses all entries into a single bucket, converting $O(1)$ operations into $O(n)$ bottlenecks that exhaust server CPU resources.
+
+#### Optimization A: Java 8+ Bucket Treeification
+
+| Bucket State | Trigger Condition | Backing Data Structure | Search Time | Memory Profile |
+| :--- | :--- | :--- | :---: | :--- |
+| **Standard Bucket** | Chain length $< 8$ | Singly Linked List | $O(1 + \alpha)$ | Minimal ($8\text{ bytes}$ pointer / node) |
+| **Treeified Bucket** | Chain length $\ge 8$ and $m \ge 64$ | **Red-Black Tree** | **$O(\log n)$** | Slightly higher node footprint; strictly foils Hash-DoS |
+| **Untreeified Bucket**| Chain shrinks to $\le 6$ nodes | Singly Linked List | $O(1 + \alpha)$ | Reclaimed tree pointer overhead |
+
+#### Optimization B: Python 3.6+ Compact Hash Tables
+Traditional open-addressing hash tables store an array of large 24-byte structs `(hash, key, value)`. Because open addressing requires $\alpha \le 0.67$, at least $33\%$ of the array consists of empty slots, wasting megabytes of memory.
+
+Python resolves this by decoupling the hash index from data storage:
+1. **Sparse Indices Array**: A compact array of small integer offsets (e.g., 1-byte `int8`).
+2. **Dense Entries Array**: A contiguous, tightly packed array storing `(hash, key, value)` structs in exact insertion order.
+
+| Structural Array | Element Type | Density | Architectural Benefit |
+| :--- | :--- | :--- | :--- |
+| **Indices Array** | `int8` / `int16` array index | Sparse ($33\%$ empty) | Tiny memory footprint (e.g., 1 byte per slot) |
+| **Entries Array** | `(hash, key, value)` struct | **100% Dense** | Zero wasted memory; preserves insertion order! |
+
+This layout reduces Python dictionary memory consumption by **$30\%\text{--}40\%$** while making dictionary iteration strictly deterministic.
+
+---
+
+## Topic 43: Hash Set (Deduplication Engine) & Set Theory Operations
+
+### 1. Underlying Architecture: The Hash Map Wrapper
+
+A **Hash Set** is an Abstract Data Type modeling mathematical finite sets. In production runtime libraries (such as Java `HashSet`, Python `set`, and C++ `std::unordered_set`), a Hash Set is implemented internally by wrapping a **Hash Map**:
 
 ```text
-NORMAL BUCKET (Chain length < 8):
-Bucket[idx] ──► [ Node A ] ──► [ Node B ] ──► [ Node C │ NULL ]
-
-TREEIFIED BUCKET (Chain length ≥ 8):
-Bucket[idx] ──►       (Root Node)
-                     /           \
-             [ Red Child ]   [ Black Child ]
-              /         \     /           \
+HashSet.Add("Omega")
+       |
+       v
+Internal HashMap Storage:
+       Key: "Omega"  ------->  Value: DUMMY_SENTINEL (Zero-byte static token)
 ```
 
-#### B. Python 3.6+ Compact Hash Table Layout:
-Traditional open-addressing tables store arrays of sparse 24-byte structs `(hash, key, value)` containing massive empty gaps ($\ge 33\%$ empty slots), wasting precious CPU RAM.
-- **Python's Solution**: Split the table into two separate arrays:
-  1. A small sparse **Indices Array** (containing 1-byte integer offsets).
-  2. A dense, contiguous **Entries Array** storing `(hash, key, value)` in exact insertion order!
-- **Benefits**:
-  - Slashes memory consumption by **$30\%$ to $40\%$**!
-  - Makes dictionaries **strictly insertion-ordered** by default!
-
-```text
-SPARSE INDICES ARRAY:  [ -1 │  0 │ -1 │  1 │ -1 │  2 │ -1 ]
-                              │         │         │
-                              ▼         ▼         ▼
-DENSE ENTRIES ARRAY:   [ Entry 0 │ Entry 1 │ Entry 2 ]  (No empty gaps!)
-```
-
----
----
-
-# TOPIC 40C: HASH SET (UNIQUE VALUE DEDUPLICATION ENGINE)
-
-### 1. Definition & Underlying Architecture
-
-### Concept
-A **Hash Set** is an Abstract Data Type that models the mathematical concept of a **finite set**: a collection of distinct, unique elements with no inherent ordering and no duplicate items allowed.
-
-### THE UNDERLYING ENGINE: Backed by a Hash Map!
-In high-performance systems (including Java's `java.util.HashSet`, Python's `set`, and C++'s `std::unordered_set`), a Hash Set is almost never written from scratch. Instead, it is **internally implemented by wrapping a Hash Map**:
-- Every element added to the set is stored as a **Key** in the internal map.
-- The associated **Value** is a shared, static, 0-byte dummy sentinel constant (e.g., `PRESENT = new Object()`).
-
-```text
-HASH SET: Set.Add("Apple")
-   │
-   ▼
-INTERNAL HASH MAP:
-   Key: "Apple"  ──►  Value: DUMMY_SENTINEL (ignored)
-```
-
-Because the underlying Hash Map guarantees that keys must be unique, the Hash Set automatically inherits:
-- Guaranteed deduplication!
-- Expected $O(1)$ insertion (`Add`).
-- Expected $O(1)$ membership testing (`Contains`).
-- Expected $O(1)$ removal (`Remove`).
+Because the internal Hash Map enforces key uniqueness, the Hash Set inherits:
+- Automatic deduplication with zero custom code.
+- Expected $O(1)$ membership checks (`Contains`).
+- Expected $O(1)$ removals (`Remove`).
 
 ---
 
 ### 2. Mathematical Set Operations & Algorithmic Complexities
 
-Let Set $A$ have size $n = |A|$ and Set $B$ have size $m = |B|$:
+Let $|A| = n$ and $|B| = m$:
 
-| Mathematical Operation | Notation | Algorithm | Time Complexity | Auxiliary Space |
+| Set Operation | Mathematical Symbol | Algorithmic Implementation Strategy | Optimal Time | Auxiliary Space |
 | :--- | :---: | :--- | :---: | :---: |
-| **Membership Query** | $x \in A$ | Hash $x$, probe internal map | $\Theta(1)$ | $O(1)$ |
+| **Membership** | $x \in A$ | Hash $x$, inspect internal map bucket | $\Theta(1)$ | $O(1)$ |
+| **Intersection** | $A \cap B$ | Iterate through **smaller set**; query presence in larger set | $O(\min(n, m))$ | $O(\min(n, m))$ |
 | **Union** | $A \cup B$ | Copy larger set into result, insert all elements of smaller set | $O(n + m)$ | $O(n + m)$ |
-| **Intersection** | $A \cap B$ | Iterate through smaller set; if element exists in larger set, append to result | $O(\min(n, m))$ | $O(\min(n, m))$ |
-| **Difference** | $A \setminus B$ | Iterate through $A$; if element does NOT exist in $B$, append to result | $O(n)$ | $O(n)$ |
-| **Symmetric Difference** | $A \Delta B$ | $(A \setminus B) \cup (B \setminus A)$ | $O(n + m)$ | $O(n + m)$ |
-| **Subset Check** | $A \subseteq B$ | If $n > m$ return false. Iterate through $A$; check if all exist in $B$ | $O(n)$ | $O(1)$ |
+| **Difference** | $A \setminus B$ | Iterate through $A$; add elements that do not exist in $B$ | $O(n)$ | $O(n)$ |
+| **Subset Test** | $A \subseteq B$ | If $n > m$ return false. Check if every element of $A$ is in $B$ | $O(n)$ | $O(1)$ |
+
+> 💡 **Intersection Optimization**:  
+> Always iterate through the set with fewer elements ($\min(n, m)$) and perform lookups into the larger set. Inverting this order when $n = 10$ and $m = 1,000,000$ wastes $999,990$ unnecessary hash queries!
 
 ---
 
-### 3. Complete Hash Set Pseudocode
+## Topic 44: Master Architectural Comparison: Hash vs. Tree Containers
 
-```text
-DATA STRUCTURE HashSet
-    Fields:
-        internalMap: HashTable / HashMap
-        DUMMY_CONSTANT: 1
-
-    OPERATION Initialize():
-        internalMap ← new HashTable()
-
-    OPERATION Add(element):
-        // Returns true if added, false if already present
-        if internalMap.Contains(element):
-            return false
-        internalMap.Put(element, DUMMY_CONSTANT)
-        return true
-
-    OPERATION Contains(element):
-        return internalMap.Contains(element)
-
-    OPERATION Remove(element):
-        if not internalMap.Contains(element):
-            return false
-        internalMap.Remove(element)
-        return true
-
-    OPERATION Intersection(SetB):
-        resultSet ← new HashSet()
-        // Optimization: always iterate over the smaller set!
-        smallSet ← this
-        largeSet ← SetB
-        if this.Size() > SetB.Size():
-            smallSet ← SetB
-            largeSet ← this
-        
-        for each item in smallSet.Elements():
-            if largeSet.Contains(item):
-                resultSet.Add(item)
-        return resultSet
-```
-
----
----
-
-# TOPIC 40D: MASTER COMPARISON MATRIX
-
-| Dimension | Hash Table (Classic) | Hash Map | Hash Set | Tree Map / Tree Set (Red-Black) |
+| Evaluation Axis | Classic Hash Table | Production Hash Map | Hash Set | Self-Balancing Tree (Red-Black / AVL) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Data Stored** | Key-Value pairs $(K, V)$ | Key-Value pairs $(K, V)$ | Unique Elements only ($E$) | Key-Value or Set Elements |
-| **Ordering** | Unordered | Unordered (or insertion-ordered in Python) | Unordered | **Strictly Sorted (In-Order BST)** |
-| **Lookup Time** | Expected $O(1)$, Worst $O(n)$ | Expected $O(1)$, Worst $O(\log n)$ (with treeify) | Expected $O(1)$, Worst $O(\log n)$ | **Guaranteed Worst-Case $O(\log n)$** |
-| **Insert Time** | Expected $O(1)$ amortized | Expected $O(1)$ amortized | Expected $O(1)$ amortized | **Guaranteed $O(\log n)$** |
-| **Range Queries ($[L, R]$)**| Impossible ($O(n)$ scan) | Impossible ($O(n)$ scan) | Impossible ($O(n)$ scan) | **Optimal $O(\log n + k)$** |
-| **Null Key Support** | Disallowed in legacy tables | Allowed (typically 1 null key) | Allowed (at most 1 null element)| Disallowed (requires comparable keys) |
-| **Thread Safety** | Synchronized (legacy) | Unsynchronized (fast) | Unsynchronized | Unsynchronized |
-| **Underlying Engine** | Array of buckets | Array of buckets (lists $\to$ trees) | Backed by Hash Map | Self-Balancing Red-Black Tree |
+| **Data Stored** | Key-Value pairs | Key-Value pairs | Unique Keys only | Key-Value pairs or Unique Elements |
+| **Element Ordering**| Arbitrary | Arbitrary (or insertion-ordered) | Arbitrary | **Strictly Sorted (In-Order Traversal)** |
+| **Lookup Latency** | Expected $O(1)$, Worst $O(n)$ | Expected $O(1)$, Worst $O(\log n)^*$ | Expected $O(1)$, Worst $O(\log n)^*$ | **Guaranteed Worst-Case $O(\log n)$** |
+| **Insert Latency** | Expected $O(1)$ amortized | Expected $O(1)$ amortized | Expected $O(1)$ amortized | **Guaranteed $O(\log n)$** |
+| **Range Queries** | Unsupported ($O(n)$ scan) | Unsupported ($O(n)$ scan) | Unsupported ($O(n)$ scan) | **Optimal $O(\log n + k)$** |
+| **Minimum / Maximum**| $O(n)$ full scan | $O(n)$ full scan | $O(n)$ full scan | **$O(\log n)$ (or $O(1)$ cached)** |
+| **Key Requirement** | Must provide `hashCode` and `equals` | Must provide `hashCode` and `equals` | Must provide `hashCode` and `equals` | Must provide strict weak ordering (`<`) |
+| **Primary Trade-off** | Raw constant-time access speed | High throughput with collision treeification | Fast deduplication and set algebra | Deterministic bounds & sorted range traversal |
 
 ---
 
-## Module 03 Summary & Key Takeaways
+### 5. Key Takeaways
 
-1. **Hash Tables** map keys to bucket indices using modular arithmetic; when load factor $\alpha \ge 0.75$, **dynamic rehashing** must recompute all key indices in a doubled capacity array.
-2. A **Hash Map** associates unique keys with values; production implementations like Java 8+ convert degraded bucket chains into **Red-Black Trees** ($O(\log n)$) to foil Hash DoS attacks.
-3. A **Hash Set** is an Abstract Data Type for unique element deduplication, internally implemented by wrapping a Hash Map with dummy value sentinels.
-4. Use **Hash structures** for raw average $O(1)$ speed; use **Tree structures** when data must remain sorted or when range queries ($[L, R]$) are required.
+1. **Rehashing Mechanics**: Dynamic rehashing requires recomputing new index slots for all existing elements via $h(k) \pmod{m_{\text{new}}}$; simple memory copying is invalid.
+2. **Treeification Defense**: Modern HashMaps prevent Hash-DoS degradation by converting bucket linked lists into Red-Black trees when chain length exceeds 8.
+3. **Compact Hash Tables**: Decoupling sparse indices from dense entries (as in Python 3.6+) eliminates empty gap memory waste and preserves insertion order.
+4. **Set Optimization**: Hash Sets reuse Hash Map key machinery with dummy sentinels; set intersection achieves optimal $O(\min(n, m))$ time by driving lookups from the smaller set.
 
 ---
 
-## References & Academic Attribution
+## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: Hash Tables. MIT Press.
-2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: Hashing. Addison-Wesley.
-3. **Mitzenmacher, M., & Upfal, E.** (2017). *Probability and Computing: Randomization and Probabilistic Techniques in Algorithms* (2nd ed.). Cambridge University Press.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: *Hash Tables*, Chapter 13: *Red-Black Trees*. MIT Press.
+2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: *Hashing*. Addison-Wesley.
+3. **Hettinger, R.** (2012). *Modern Dictionaries by More Compact Means*. Python Developers Conference (PyCon).

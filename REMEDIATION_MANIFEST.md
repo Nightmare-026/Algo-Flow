@@ -20,7 +20,7 @@
 ## Part 03 — Hashing & Constant-Time Lookups
 - [x] hashing/hashing-foundations — status: done
 - [x] hashing/collision-resolution — status: done
-- [ ] hashing/hash-table-hash-map-hash-set — status: not-started
+- [x] hashing/hash-table-hash-map-hash-set — status: done
 - [ ] hashing/advanced-hashing-and-probabilistic — status: not-started
 ## Part 04 — Searching Paradigms
 - [ ] searching/linear-and-binary-search — status: not-started
