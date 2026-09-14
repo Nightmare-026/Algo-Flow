@@ -71,4 +71,4 @@
 - [x] problem-bank-and-revision/dynamic-programming-60 — status: done
 - [x] problem-bank-and-revision/greedy-backtracking-math-advanced-55 — status: done
 - [x] problem-bank-and-revision/pitfalls-and-confusions — status: done
-- [ ] problem-bank-and-revision/master-revision-sheets — status: not-started
+- [x] problem-bank-and-revision/master-revision-sheets — status: done
