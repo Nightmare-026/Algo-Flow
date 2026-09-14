@@ -61,7 +61,7 @@
 ## Part 10 — Advanced Data Structures & Algorithms
 - [x] advanced-dsa/range-query-structures — status: done
 - [x] advanced-dsa/advanced-topics — status: done
-- [ ] advanced-dsa/tree-decompositions — status: not-started
+- [x] advanced-dsa/tree-decompositions — status: done
 ## Part 11 — 525+ Problem Bank & Master Revision
 - [ ] problem-bank-and-revision/arrays-strings-pointers-100 — status: not-started
 - [ ] problem-bank-and-revision/linked-lists-stacks-queues-60 — status: not-started
