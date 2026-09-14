@@ -30,7 +30,7 @@
 - [x] sorting/elementary-sorts — status: done
 - [x] sorting/divide-and-conquer-sorts — status: done
 - [x] sorting/linear-time-sorts — status: done
-- [ ] sorting/sorting-theory-comparison — status: not-started
+- [x] sorting/sorting-theory-comparison — status: done
 ## Part 06 — Trees & Hierarchical Structures
 - [ ] trees/tree-fundamentals — status: not-started
 - [ ] trees/tree-traversals — status: not-started
