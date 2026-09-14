@@ -1,275 +1,346 @@
 # Part 06: Trees — Module 05: Red-Black Trees (RBT)
 
-> **Topics Covered:**  
-> 88a. Red-Black Tree Architecture & Motivation &bull; 88b. The 5 Structural Red-Black Tree Properties &bull; 88c. Mathematical Proof: Height $h \le 2\log_2(n+1)$ &bull; 88d. Rotations in Red-Black Trees &bull; 88e. Insertion Algorithm & The 3 Uncle Fixup Cases &bull; 88f. Deletion Algorithm & The 4 Double-Black Fixup Cases &bull; 88g. Red-Black Tree vs AVL Tree Trade-Off Analysis &bull; 88h. Real-World Applications (Linux CFS, C++ STL, Java Collections)
+> Red-Black Trees relax the rigid geometric balance of AVL trees by encoding structural balance into node color bits, bounding maximum height to $2\log_2(n+1)$. This compromise guarantees logarithmic searches while constraining worst-case insertion rebalancing to at most two rotations and deletion rebalancing to at most three.
 
 ---
 
-# TOPIC 88a & 88b: DEFINITION & THE 5 Structural INVARIANTS
+## 1. Executive Summary & Learning Objectives
 
-### 1. Motivation: Why Red-Black Trees?
-While AVL trees maintain near-perfect balance (height $h \le 1.44 \log_2 n$), they require frequent rotations during insertions and especially deletions (where rotations can cascade all the way to the root).  
-**Red-Black Trees** (invented by Rudolf Bayer in 1972 as Symmetric Binary B-Trees, formalized by Guibas & Sedgewick in 1978) relax the balance constraint slightly (height $h \le 2 \log_2(n+1)$) using a 1-bit color attribute (`RED` or `BLACK`) per node.  
-- **Maximum rotations on Insert**: At most **2 rotations**.
-- **Maximum rotations on Delete**: At most **3 rotations**.
-This makes Red-Black Trees significantly faster in write-heavy environments, making them the standard choice in Linux kernel internals (`rbtree.c`), C++ (`std::map`, `std::set`), and Java (`java.util.TreeMap`).
+Invented by Rudolf Bayer in 1972 as Symmetric Binary B-Trees and formalized by Leo Guibas and Robert Sedgewick in 1978, a Red-Black Tree is a self-balancing binary search tree that uses one additional bit of storage per node—its color (`RED` or `BLACK`)—to ensure that no simple path from the root to a leaf is more than twice as long as any other.
 
----
-
-### 2. The 5 Structural Red-Black Tree Invariants
-
-Every valid Red-Black Tree must strictly satisfy all 5 properties at all times:
-
-```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        THE 5 RED-BLACK TREE INVARIANTS                                │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│ 1. Node Color:     Every node is colored either RED or BLACK.                          │
-│ 2. Root Property:  The root of the tree is always BLACK.                               │
-│ 3. Leaf Property:  Every leaf (NIL sentinel node at the bottom) is BLACK.              │
-│ 4. Red Property:   If a node is RED, both of its children must be BLACK.               │
-│                    (Equivalently: No two RED nodes may appear consecutively on a path).│
-│ 5. Black-Height:   For every node u, all simple paths from u to descendant leaves      │
-│                    contain the EXACT SAME number of BLACK nodes (denoted bh(u)).       │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-```text
-VISUALIZING A VALID RED-BLACK TREE:
-                       [ 20 (B) ]                     bh = 2
-                     /            \
-             [ 10 (R) ]          [ 30 (B) ]
-            /          \        /          \
-        [ 5 (B) ]   [ 15 (B) ] [NIL(B)]   [ 40 (R) ]
-        /      \    /        \            /        \
-     [NIL]   [NIL] [NIL]    [NIL]      [NIL]      [NIL]
-
-Note: Every path from Root (20) to any NIL leaf passes through exactly 2 BLACK nodes!
-```
+By the end of this chapter, you will be able to:
+1. **Formulate** the five foundational Red-Black Tree invariants and compute the black-height $bh(u)$ of any arbitrary node.
+2. **Reproduce** the inductive proof demonstrating that a red-black tree with $n$ internal nodes has height $h \le 2\log_2(n+1)$.
+3. **Execute** the three canonical insertion fixup cases, correctly distinguishing recoloring operations from parent-rotation and grandparent-rotation rebalancing.
+4. **Dissect** the four double-black deletion fixup cases and trace how extra blackness is absorbed or rotated out.
+5. **Evaluate** trade-offs between Red-Black trees and AVL trees for read-heavy versus write-heavy systems (e.g., Linux CFS scheduler, C++ `std::map`).
 
 ---
 
-# TOPIC 88c: MATHEMATICAL PROOF OF HEIGHT BOUND $h \le 2\log_2(n+1)$
+## 2. The 5 Structural Red-Black Tree Invariants
+
+Every valid Red-Black Tree must strictly satisfy all five properties at all times:
+
+| Invariant Number | Invariant Name | Formal Specification | Architectural Purpose |
+| :---: | :--- | :--- | :--- |
+| **1** | **Node Color Property** | Every node $u \in T$ is colored either `RED` or `BLACK`. | Binary classification used to maintain balance. |
+| **2** | **Root Property** | The root node is always `BLACK`. | Serves as an invariant baseline for black-height. |
+| **3** | **Leaf Property** | Every external leaf (`NIL` sentinel node) is `BLACK`. | Standardizes path termination with zero black-height contribution. |
+| **4** | **Red Property** | If a node is `RED`, both of its children must be `BLACK`. | Prohibits consecutive `RED` nodes; bounds path length variance. |
+| **5** | **Black-Height Property** | For every node $u$, all simple paths from $u$ to descendant leaves contain the exact same number of `BLACK` nodes ($bh(u)$). | Enforces global structural balance across all subtrees. |
+
+### Canonical Red-Black Tree Layout
+
+The table below illustrates a valid Red-Black Tree containing keys $\{5, 10, 15, 20, 30, 40\}$ with black-height $bh(\text{root}) = 2$:
+
+| Key | Node Color | Parent | Left Child | Right Child | Black-Height $bh$ | Verification Path to Leaves |
+| :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **20** | `BLACK` | `null` | `10` | `30` | $2$ | Root node (Black-Height baseline: 2) |
+| **10** | `RED` | `20` | `5` | `15` | $1$ | Left child of root (Children must be Black) |
+| **30** | `BLACK` | `20` | `NIL` | `40` | $1$ | Right child of root |
+| **5** | `BLACK` | `10` | `NIL` | `NIL` | $1$ | Leaf child (Path to NIL: 1 black node) |
+| **15** | `BLACK` | `10` | `NIL` | `NIL` | $1$ | Leaf child (Path to NIL: 1 black node) |
+| **40** | `RED` | `30` | `NIL` | `NIL` | $0$ | Leaf child (Path to NIL: 0 additional black nodes) |
+
+*Path Verification:*
+- Path $20 \to 10 \to 5 \to \text{NIL}$: Black nodes = $\{20, 5\}$ (Count = 2).
+- Path $20 \to 10 \to 15 \to \text{NIL}$: Black nodes = $\{20, 15\}$ (Count = 2).
+- Path $20 \to 30 \to \text{NIL}$: Black nodes = $\{20, 30\}$ (Count = 2).
+- Path $20 \to 30 \to 40 \to \text{NIL}$: Black nodes = $\{20, 30\}$ (Count = 2).
+All paths encounter exactly 2 black nodes! Invariant 5 is globally satisfied.
+
+---
+
+## 3. Mathematical Proof of Height Bound $h \le 2\log_2(n+1)$
 
 ### Theorem
 A Red-Black Tree with $n$ internal nodes has height at most:
+
 $$h \le 2 \log_2(n + 1)$$
 
-### Formal Proof
+### Formal Proof in Three Steps
 
-**Step 1: Subtree Size Lemma**  
-*Claim*: The subtree rooted at any node $x$ contains at least $2^{bh(x)} - 1$ internal nodes.  
-*Proof by induction on the height of $x$*:
-- **Base Case**: If height $h(x) = 0$, $x$ is a leaf (`NIL`). Its black-height $bh(x) = 0$, and internal nodes $= 2^0 - 1 = 0$. Holds true.
+#### Step 1: Subtree Size Lemma
+*Claim*: The subtree rooted at any node $x$ contains at least $2^{bh(x)} - 1$ internal nodes.
+
+*Proof by Structural Induction on the height of $x$*:
+- **Base Case**: If height $h(x) = 0$, $x$ is an external sentinel leaf (`NIL`). Its black-height is $bh(x) = 0$, and internal nodes $= 2^0 - 1 = 0$. The base case holds.
 - **Inductive Step**: Consider an internal node $x$ with height $h(x) > 0$ and two children $c_1, c_2$.
-  - If child $c_i$ is RED, $bh(c_i) = bh(x)$ (since the child's color does not add to black-height).
-  - If child $c_i$ is BLACK, $bh(c_i) = bh(x) - 1$.
-  - In either case: $bh(c_i) \ge bh(x) - 1$.
+  - If child $c_i$ is `RED`, $bh(c_i) = bh(x)$ (since the child's red color does not augment black-height).
+  - If child $c_i$ is `BLACK`, $bh(c_i) = bh(x) - 1$.
+  - Therefore, in both scenarios: $bh(c_i) \ge bh(x) - 1$.
   - By inductive hypothesis, each child's subtree contains at least $2^{bh(x)-1} - 1$ internal nodes.
-  - Adding node $x$ itself:
-    $$\text{Internal Nodes}(x) \ge 1 + (2^{bh(x)-1} - 1) + (2^{bh(x)-1} - 1) = 2 \cdot 2^{bh(x)-1} - 1 = 2^{bh(x)} - 1$$
-  - The lemma is proven by mathematical induction. $\blacksquare$
+  - Summing the subtrees and counting internal node $x$ itself:
 
-**Step 2: Linking Black-Height to Total Height**  
-- According to **Invariant 4 (Red Property)**, no two RED nodes can be adjacent.
-- Therefore, on any simple path from the root to a leaf, at least half of the nodes (excluding the root itself) must be BLACK.
-- Consequently:
-  $$bh(\text{root}) \ge \frac{h}{2}$$
+$$\text{Internal Nodes}(x) \ge 1 + (2^{bh(x)-1} - 1) + (2^{bh(x)-1} - 1) = 2 \cdot 2^{bh(x)-1} - 1 = 2^{bh(x)} - 1$$
 
-**Step 3: Combining the Inequalities**  
+The lemma is proven for all internal nodes. $\blacksquare$
+
+#### Step 2: Linking Black-Height to Tree Height
+According to **Invariant 4 (Red Property)**, no two `RED` nodes can appear consecutively on any simple path from the root to a leaf. Therefore, on any simple path from the root to a leaf, at least half of the nodes (excluding the root itself) must be `BLACK`. Consequently:
+
+$$bh(\text{root}) \ge \frac{h}{2}$$
+
+#### Step 3: Combining the Inequalities
 Let $n$ be the number of internal nodes in the entire tree:
+
 $$n \ge 2^{bh(\text{root})} - 1 \ge 2^{h/2} - 1$$
+
 $$n + 1 \ge 2^{h/2}$$
-Taking $\log_2$ on both sides:
+
+Taking the base-2 logarithm of both sides:
+
 $$\log_2(n + 1) \ge \frac{h}{2} \implies \mathbf{h \le 2 \log_2(n + 1)}$$
 
-$$\therefore \text{Search, Insertion, and Deletion are strictly } \mathbf{\Theta(\log n)} \text{ worst-case!} \quad \blacksquare$$
+$$\therefore \text{Search, Insertion, and Deletion are strictly bounded to } \mathbf{\Theta(\log n)} \text{ worst-case!} \quad \blacksquare$$
 
 ---
 
-# TOPIC 88e: INSERTION ALGORITHM & THE 3 UNCLE CASES
+## 4. Insertion Mechanics & The 3 Uncle Fixup Cases
 
-### 1. Insertion Strategy
+### Insertion Strategy
 1. Perform standard Binary Search Tree insertion to insert the new node $z$ at a leaf position.
 2. **Color the new node $z$ RED**:
-   - Why RED? Because coloring it BLACK would immediately violate Invariant 5 (Black-Height) along that path.
-   - If $z$ is the root, simply recolor it BLACK (satisfies Invariant 2).
-   - If $z$'s parent is BLACK, all invariants are satisfied; terminate!
-3. If $z$'s parent $p$ is RED, Invariant 4 is violated (**Double Red**). We must call `InsertFixup(z)`.
+   - Coloring $z$ `RED` preserves Invariant 5 (Black-Height) across all paths.
+   - If $z$ is the root, recolor it `BLACK` to satisfy Invariant 2.
+   - If $z$'s parent is `BLACK`, all invariants hold; the algorithm terminates immediately.
+3. If $z$'s parent $p$ is `RED`, Invariant 4 is violated (**Double Red**). We invoke `InsertFixup(z)`.
+
+### The 3 Canonical Uncle Cases (Parent is Left Child of Grandparent)
+
+Let $z$ be the newly inserted node, $p$ its parent, $g$ its grandparent, and $y$ its **uncle** (sibling of $p$, i.e., $g.\text{right}$):
+
+| Case | Geometric Condition | Uncle Color | Surgical Action | Post-Action Status |
+| :--- | :--- | :---: | :--- | :--- |
+| **Case 1: Red Uncle** | $z$'s uncle $y$ is `RED` | `RED` | **Color Flip**: Recolor parent $p \leftarrow \text{BLACK}$, uncle $y \leftarrow \text{BLACK}$, grandparent $g \leftarrow \text{RED}$. | Advance $z \leftarrow g$; repeat loop upward. |
+| **Case 2: Triangle (Inside Child)** | $z$'s uncle $y$ is `BLACK`, $z$ is a right child ($z = p.\text{right}$) | `BLACK` | **Rotate Parent**: Perform `LeftRotate(p)`. Advance $z \leftarrow p$. | Transforms immediately into a straight line (**Case 3**). |
+| **Case 3: Line (Outside Child)** | $z$'s uncle $y$ is `BLACK`, $z$ is a left child ($z = p.\text{left}$) | `BLACK` | **Rotate Grandparent & Swap Colors**: Recolor $p \leftarrow \text{BLACK}$, $g \leftarrow \text{RED}$. Perform `RightRotate(g)`. | All invariants satisfied; **TERMINATE**. |
 
 ---
 
-### 2. The 3 Insertion Rebalancing Cases (Parent is Left Child of Grandparent)
+### Step-by-Step Structural Transformation Matrix
 
-Let $z$ be the newly inserted node, $p$ its parent, $g$ its grandparent, and $y$ its **uncle** (sibling of $p$):
+The table below illustrates the pointer and color mutations across the 3 insertion fixup cases:
 
-```text
-CASE CLASSIFICATION:
-- CASE 1: Uncle y is RED                     ──► RECOLOR (Parent, Uncle, Grandparent) & propagate up
-- CASE 2: Uncle y is BLACK & z is Right Child ──► ROTATE PARENT (Convert Triangle to Line) ──► CASE 3
-- CASE 3: Uncle y is BLACK & z is Left Child  ──► ROTATE GRANDPARENT & SWAP COLORS
-```
+| Case | Configuration Before Fixup | Primary Transformation | Configuration After Fixup |
+| :--- | :--- | :--- | :--- |
+| **Case 1: Color Flip** | Grandparent $g(\text{B})$ has two red children $p(\text{R})$ and $y(\text{R})$. Node $z(\text{R})$ is child of $p$. | Recolor $p \to \text{B}$, $y \to \text{B}$, $g \to \text{R}$. | Grandparent $g(\text{R})$ becomes the active node $z$. No rotations needed. Invariant 5 preserved. |
+| **Case 2: Triangle to Line** | Grandparent $g(\text{B})$, parent $p(\text{R})$ (left child of $g$), node $z(\text{R})$ (right child of $p$), uncle $y(\text{B})$. | Execute `LeftRotate(p)`. | Node $z$ becomes parent of $p$. Both are in a straight left-child line beneath $g$. |
+| **Case 3: Line Rotation** | Grandparent $g(\text{B})$, parent $p(\text{R})$ (left child of $g$), node $z(\text{R})$ (left child of $p$), uncle $y(\text{B})$. | Recolor $p \to \text{B}$, $g \to \text{R}$. Execute `RightRotate(g)`. | Node $p(\text{B})$ becomes subtree root with left child $z(\text{R})$ and right child $g(\text{R})$. Fully balanced! |
 
-#### Case 1: Uncle $y$ is RED (Color Flip)
-Both parent $p$ and uncle $y$ are RED.
-- **Action**:
-  1. Recolor parent $p \leftarrow \text{BLACK}$.
-  2. Recolor uncle $y \leftarrow \text{BLACK}$.
-  3. Recolor grandparent $g \leftarrow \text{RED}$.
-  4. Advance pointer: $z \leftarrow g$ and repeat check upward!
-
-```text
-BEFORE CASE 1:                                 AFTER CASE 1:
-            [ g (B) ]                                      [ g (R) ]  <-- advance z here
-           /         \                                    /         \
-       [ p (R) ]   [ y (R) ]                 ──►      [ p (B) ]   [ y (B) ]
-       /                                              /
-   [ z (R) ]                                      [ z (R) ]
-```
-
-#### Case 2: Uncle $y$ is BLACK & $z$ is Right Child (Triangle / Inside Child)
-$z$, $p$, and $g$ form a zigzag (triangle).
-- **Action**:
-  1. Left-rotate around parent $p$: `LeftRotate(p)`.
-  2. Re-label $z \leftarrow p$ (now $z$ and its new parent form a straight line, which is **Case 3**).
-
-```text
-BEFORE CASE 2 (Triangle):                      AFTER LEFT-ROTATE (Case 3 Line):
-            [ g (B) ]                                      [ g (B) ]
-           /         \                                    /         \
-       [ p (R) ]   [ y (B) ]                 ──►      [ z (R) ]   [ y (B) ]
-            \                                         /
-          [ z (R) ]                               [ p (R) ]
-```
-
-#### Case 3: Uncle $y$ is BLACK & $z$ is Left Child (Line / Outside Child)
-$z$, $p$, and $g$ form a straight line.
-- **Action**:
-  1. Recolor parent $p \leftarrow \text{BLACK}$.
-  2. Recolor grandparent $g \leftarrow \text{RED}$.
-  3. Right-rotate around grandparent $g$: `RightRotate(g)`.
-  4. All invariants are restored; **TERMINATE**!
-
-```text
-BEFORE CASE 3 (Line):                          AFTER RIGHT-ROTATE & RECOLOR:
-            [ g (B) ]                                      [ p (B) ]
-           /         \                                    /         \
-       [ p (R) ]   [ y (B) ]                 ──►      [ z (R) ]   [ g (R) ]
-       /                                                                \
-   [ z (R) ]                                                          [ y (B) ]
-```
-
-*(Note: If parent $p$ is the right child of grandparent $g$, the symmetric mirror cases apply with Left and Right swapped).*
+*(Note: If parent $p$ is the right child of grandparent $g$, symmetric mirror cases apply with Left and Right swapped).*
 
 ---
 
-### 3. Pseudocode: Complete Red-Black Tree Insertion Fixup
+## 5. Complete Implementation: Insertion Fixup
 
-```text
-ALGORITHM InsertFixup(T, z):
-1.  while z.parent ≠ NULL and z.parent.color = RED:
-2.      if z.parent = z.parent.parent.left:
-3.          uncle ← z.parent.parent.right
-4.          // CASE 1: Uncle is RED
-5.          if uncle ≠ NULL and uncle.color = RED:
-6.              z.parent.color ← BLACK
-7.              uncle.color ← BLACK
-8.              z.parent.parent.color ← RED
-9.              z ← z.parent.parent
-10.         else:
-11.             // CASE 2: Uncle is BLACK & z is Right child (Triangle)
-12.             if z = z.parent.right:
-13.                 z ← z.parent
-14.                 LeftRotate(T, z)
-15.             // CASE 3: Uncle is BLACK & z is Left child (Line)
-16.             z.parent.color ← BLACK
-17.             z.parent.parent.color ← RED
-18.             RightRotate(T, z.parent.parent)
-19.     else:
-20.         // Symmetric mirror cases (Parent is Right child of Grandparent)
-21.         uncle ← z.parent.parent.left
-22.         if uncle ≠ NULL and uncle.color = RED:
-23.             z.parent.color ← BLACK
-24.             uncle.color ← BLACK
-25.             z.parent.parent.color ← RED
-26.             z ← z.parent.parent
-27.         else:
-28.             if z = z.parent.left:
-29.                 z ← z.parent
-30.                 RightRotate(T, z)
-31.             z.parent.color ← BLACK
-32.             z.parent.parent.color ← RED
-33.             LeftRotate(T, z.parent.parent)
-34. T.root.color ← BLACK
+```typescript
+export enum Color {
+  RED,
+  BLACK,
+}
+
+export class RBNode<T> {
+  key: T;
+  color: Color = Color.RED;
+  left: RBNode<T> | null = null;
+  right: RBNode<T> | null = null;
+  parent: RBNode<T> | null = null;
+
+  constructor(key: T) {
+    this.key = key;
+  }
+}
+
+export class RedBlackTree<T> {
+  root: RBNode<T> | null = null;
+
+  private leftRotate(x: RBNode<T>): void {
+    const y = x.right!;
+    x.right = y.left;
+    if (y.left !== null) y.left.parent = x;
+
+    y.parent = x.parent;
+    if (x.parent === null) {
+      this.root = y;
+    } else if (x === x.parent.left) {
+      x.parent.left = y;
+    } else {
+      x.parent.right = y;
+    }
+
+    y.left = x;
+    x.parent = y;
+  }
+
+  private rightRotate(y: RBNode<T>): void {
+    const x = y.left!;
+    y.left = x.right;
+    if (x.right !== null) x.right.parent = y;
+
+    x.parent = y.parent;
+    if (y.parent === null) {
+      this.root = x;
+    } else if (y === y.parent.left) {
+      y.parent.left = x;
+    } else {
+      y.parent.right = x;
+    }
+
+    x.right = y;
+    y.parent = x;
+  }
+
+  public insert(key: T): void {
+    const z = new RBNode(key);
+    let y: RBNode<T> | null = null;
+    let x = this.root;
+
+    while (x !== null) {
+      y = x;
+      if (z.key < x.key) {
+        x = x.left;
+      } else if (z.key > x.key) {
+        x = x.right;
+      } else {
+        return; // Duplicate key: ignore
+      }
+    }
+
+    z.parent = y;
+    if (y === null) {
+      this.root = z;
+    } else if (z.key < y.key) {
+      y.left = z;
+    } else {
+      y.right = z;
+    }
+
+    z.color = Color.RED;
+    this.insertFixup(z);
+  }
+
+  private insertFixup(z: RBNode<T>): void {
+    while (z.parent !== null && z.parent.color === Color.RED) {
+      if (z.parent === z.parent.parent?.left) {
+        const uncle = z.parent.parent.right;
+
+        // CASE 1: Uncle is RED -> Color Flip
+        if (uncle !== null && uncle.color === Color.RED) {
+          z.parent.color = Color.BLACK;
+          uncle.color = Color.BLACK;
+          z.parent.parent.color = Color.RED;
+          z = z.parent.parent;
+        } else {
+          // CASE 2: Uncle is BLACK & z is Right child -> Rotate Parent
+          if (z === z.parent.right) {
+            z = z.parent;
+            this.leftRotate(z);
+          }
+
+          // CASE 3: Uncle is BLACK & z is Left child -> Rotate Grandparent & Recolor
+          z.parent!.color = Color.BLACK;
+          z.parent!.parent!.color = Color.RED;
+          this.rightRotate(z.parent!.parent!);
+        }
+      } else {
+        // Symmetric mirror cases
+        const uncle = z.parent.parent?.left ?? null;
+
+        if (uncle !== null && uncle.color === Color.RED) {
+          z.parent.color = Color.BLACK;
+          uncle.color = Color.BLACK;
+          z.parent.parent!.color = Color.RED;
+          z = z.parent.parent!;
+        } else {
+          if (z === z.parent.left) {
+            z = z.parent;
+            this.rightRotate(z);
+          }
+
+          z.parent!.color = Color.BLACK;
+          z.parent!.parent!.color = Color.RED;
+          this.leftRotate(z.parent!.parent!);
+        }
+      }
+    }
+
+    this.root!.color = Color.BLACK;
+  }
+}
 ```
 
 ---
 
-# TOPIC 88f: DELETION ALGORITHM & THE 4 DOUBLE-BLACK CASES
+## 6. Step-by-Step Dry Run State Trace Table
 
-### 1. Deletion Mechanics
-1. Perform standard BST deletion of node $v$. If $v$ has two children, swap its value with its Inorder Successor $s$ and delete $s$ instead. Thus, the spliced node $y$ has at most one non-NIL child $x$.
-2. Splice out node $y$ and let $x$ take its place.
-3. If the removed node $y$ was **RED**:
-   - No black-height invariant is violated; tree remains completely valid!
-4. If the removed node $y$ was **BLACK**:
-   - The path through $x$ is now short by 1 black node.
-   - We conceptually assign an extra unit of blackness to $x$, making $x$ **DOUBLE BLACK** (or `RED-AND-BLACK` if $x$ was red).
-   - If $x$ is `RED-AND-BLACK`, simply recolor $x$ to `BLACK`; done!
-   - If $x$ is `DOUBLE BLACK`, call `DeleteFixup(x)`.
+Consider sequentially inserting keys $[10, 20, 30, 15]$ into an initially empty Red-Black Tree.
+
+| Step | Operation | Active Node $z$ | Tree State Before Fixup | Triggered Condition | Fixup Actions Performed | Final Subtree Colors |
+| :---: | :--- | :---: | :--- | :--- | :--- | :--- |
+| **1** | Insert $10$ | $10$ | Single node $10(\text{R})$ | $10$ is root | Invariant 2 enforcement: recolor root $10 \to \text{BLACK}$. | $10(\text{B})$ |
+| **2** | Insert $20$ | $20$ | $10(\text{B}) \to \text{right}(20(\text{R}))$ | Parent is `BLACK` | No violation! Invariants hold immediately. | $10(\text{B}), 20(\text{R})$ |
+| **3** | Insert $30$ | $30$ | $10(\text{B}) \to \text{right}(20(\text{R})) \to \text{right}(30(\text{R}))$ | Parent $20(\text{R})$ is `RED`, Uncle is `NIL` (`BLACK`) | **Case 3 (Mirror)**: Recolor $20 \to \text{B}, 10 \to \text{R}$. Left-Rotate around grandparent $10$. | $20(\text{B})$ (new root), $10(\text{R})$, $30(\text{R})$ |
+| **4** | Insert $15$ | $15$ | Attaches as right child of $10(\text{R})$ | Double Red ($10(\text{R})$ and $15(\text{R})$). Uncle $30(\text{R})$ is `RED`! | **Case 1: Color Flip**: Recolor $10 \to \text{B}, 30 \to \text{B}, 20 \to \text{R}$. Root $20$ recolored `BLACK`. | $20(\text{B})$ (root), $10(\text{B}), 30(\text{B}), 15(\text{R})$ |
 
 ---
 
-### 2. The 4 Double-Black Rebalancing Cases
+## 7. Deletion Mechanics & The 4 Double-Black Fixup Cases
 
-Let $x$ be the Double-Black node, $p$ its parent, and $w$ its **sibling**:
+When deleting an internal node $v$, it is replaced by its successor $s$. Splicing out node $y$ with replacement child $x$ reduces the case to removing a node with at most one child:
+- If $y$ was `RED`: No black-height property is violated. All invariants remain valid!
+- If $y$ was `BLACK`: The path passing through $x$ is now short by 1 black node. We conceptually assign an extra unit of blackness to $x$, making $x$ **Double-Black**.
 
-```text
-CASE 1: Sibling w is RED
-        ──► Rotate parent p, recolor parent RED and sibling BLACK.
-        ──► Reduces to Case 2, 3, or 4 with new sibling.
+Let $x$ be the Double-Black node, $p$ its parent, and $w$ its sibling:
 
-CASE 2: Sibling w is BLACK, and BOTH of w's children are BLACK
-        ──► Remove black from x and w (w becomes RED).
-        ──► Extra black absorbed by parent p (p becomes DOUBLE BLACK). Propagate upward!
-
-CASE 3: Sibling w is BLACK, w's inner child is RED, outer child is BLACK
-        ──► Rotate sibling w away from inner child, swap colors of w and inner child.
-        ──► Transforms immediately into Case 4!
-
-CASE 4: Sibling w is BLACK, and w's outer child is RED
-        ──► Rotate parent p toward x.
-        ──► Sibling w takes parent's color; parent and outer child become BLACK.
-        ──► Double-black completely absorbed! TERMINATE.
-```
+| Case | Condition at Sibling $w$ | Rebalancing Action | Outcome / Transformation |
+| :--- | :--- | :--- | :--- |
+| **Case 1** | Sibling $w$ is `RED` | Left-rotate parent $p$. Recolor $p \leftarrow \text{RED}$, $w \leftarrow \text{BLACK}$. | Converts to Case 2, 3, or 4 where sibling is `BLACK`. |
+| **Case 2** | Sibling $w$ is `BLACK`, and both of $w$'s children are `BLACK` | Recolor $w \leftarrow \text{RED}$. Absorb extra black into parent $p$. | Parent $p$ becomes Double-Black. Advance $x \leftarrow p$ and propagate upward. |
+| **Case 3** | Sibling $w$ is `BLACK`, inner child is `RED`, outer child is `BLACK` | Right-rotate sibling $w$ away from inner child. Swap colors of $w$ and inner child. | Transforms immediately into **Case 4** with an outer `RED` child. |
+| **Case 4** | Sibling $w$ is `BLACK`, outer child is `RED` | Left-rotate parent $p$. Sibling $w$ takes $p$'s color; recolor $p$ and outer child `BLACK`. | **Double-black is completely eliminated!** Algorithm terminates. |
 
 ---
 
-# TOPIC 88g: RED-BLACK TREE VS AVL TREE COMPARISON
+## 8. Red-Black Tree vs. AVL Tree Trade-Off Matrix
 
-| Feature | AVL Tree | Red-Black Tree |
+| Metric / Dimension | AVL Tree | Red-Black Tree |
 | :--- | :--- | :--- |
-| **Strict Balance Factor** | $|BF| \le 1$ | Height $h \le 2 \log_2(n+1)$ |
-| **Maximum Tree Height** | $\approx 1.44 \log_2 n$ | $\approx 2.00 \log_2 n$ |
-| **Lookup Performance** | **Faster** (more strictly balanced) | Slightly slower (~20% deeper paths) |
+| **Balance Invariant** | $|BF(u)| \le 1$ | $\text{Path}_{\max} \le 2 \times \text{Path}_{\min}$ |
+| **Strict Height Bound** | $\le 1.44 \log_2 n$ | $\le 2.00 \log_2 n$ |
+| **Lookup Speed** | **$\approx 15\text{--}20\%$ faster** (due to shallower tree) | Slightly slower (longer search paths) |
 | **Insertion Rotations** | $\le 2$ rotations | $\le 2$ rotations |
-| **Deletion Rotations** | **$O(\log n)$** (can propagate to root) | **$\le 3$ rotations strictly guaranteed** |
-| **Color/Balance Overhead** | 2 bits per node (balance factor) | 1 bit per node (red/black) |
-| **Primary Use Case** | Read-heavy workloads (Lookup intensive) | Write-heavy & General Purpose (`std::map`, CFS) |
+| **Deletion Rotations** | $O(\log n)$ rotations (can cascade to root) | **$\le 3$ rotations strictly guaranteed** |
+| **Memory Overhead** | 2 bits (balance factor) or 1 integer | 1 bit (color: `RED`/`BLACK`) |
+| **Primary Industry Adoption** | Search-heavy index systems, static dictionaries | Linux kernel (`rbtree.c`), C++ `std::map`, Java `TreeMap` |
 
 ---
 
-## Module 05 Summary & Key Takeaways
+## 9. Common Traps, Edge Cases & Implementation Pitfalls
 
-1. A **Red-Black Tree** guarantees worst-case $O(\log n)$ time for Search, Insert, and Delete by enforcing 5 invariants, most notably that no two RED nodes are adjacent and every path from root to leaf has identical black-height.
-2. The height of an RBT with $n$ internal nodes is mathematically bounded by $h \le 2\log_2(n+1)$.
-3. Insertion requires at most **2 rotations**; deletion requires at most **3 rotations**.
-4. Standard libraries across the software industry (Linux kernel, C++ STL, Java standard library) prefer Red-Black Trees over AVL trees due to significantly cheaper rebalancing during frequent modifications.
+1. **Failure to Recolor the Root**:
+   - Color flip propagation (Case 1) can push a `RED` color all the way to the tree root. The fixup routine must unconditionally reset `root.color = BLACK` upon loop termination.
+2. **Sentinel Node Parent Pointer Corruption**:
+   - In implementations using a shared global `NIL` sentinel node, mutations to `NIL.parent` by rotation logic can corrupt subsequent sentinel queries. Using a dedicated sentinel object with immutable null pointers prevents this fault.
+3. **Triangle vs. Line Child Identification**:
+   - Incorrectly matching Case 2 instead of Case 3 occurs when testing $z$'s relationship to its grandparent rather than its parent. Ensure $z === p.\text{right}$ is checked against $p === g.\text{left}$.
 
 ---
 
-## References & Academic Attribution
+## 10. Real-World Applications & Practice Problems
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 12–13 (BSTs and Red-Black Trees) & Chapter 18 (B-Trees). MIT Press.
-2. **Bayer, R., & McCreight, E.** (1972). Organization and maintenance of large ordered indices. *Acta Informatica*, 1(3), 173–189.
-3. **Sleator, D. D., & Tarjan, R. E.** (1985). Self-adjusting binary search trees. *Journal of the ACM (JACM)*, 32(3), 652–686.
+### Production Systems
+- **Linux Completely Fair Scheduler (CFS)**: Linux tracks runnable tasks ordered by virtual runtime (`vruntime`) using an augmented Red-Black tree (`linux/rbtree.h`), enabling $O(1)$ selection of the minimum runtime process.
+- **Memory Allocators (jemalloc)**: Uses Red-Black trees to track free memory chunks indexed by address and size for rapid buddy-allocation coalescing.
+
+### Standard Practice Problems
+1. **Red-Black Tree Insertion Fixup** — Implement `insertFixup` with full uncle classification and rotations.
+2. **Double-Black Deletion Fixup** — Implement `deleteFixup` covering all 4 sibling color permutations.
+
+---
+
+## 11. References & Academic Attribution
+
+1. **Bayer, R.** (1972). Symmetric binary B-Trees: Data structure and maintenance algorithms. *Acta Informatica*, 1(4), 290–306.
+2. **Guibas, L. J., & Sedgewick, R.** (1978). A dichromatic framework for balanced trees. *19th Annual Symposium on Foundations of Computer Science (SFCS)*, 8–21. IEEE.
+3. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 13. MIT Press.
