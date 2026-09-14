@@ -1,7 +1,31 @@
 # Part 11: Problem Bank — Volume 01: Arrays, Strings, Matrices & Pointer Patterns (100 Problems)
 
-> **Problems Covered:** Q001 to Q100  
-> **Patterns:** Two Pointers &bull; Sliding Window &bull; Prefix Sum &bull; Difference Array &bull; Kadane's &bull; Dutch National Flag &bull; Boyer-Moore &bull; Matrix Traversal
+
+Mastering linear sequence problem solving requires transitioning from basic syntax to pattern recognition across boundary conditions, in-place index manipulation, and invariant tracking. This volume compiles 100 benchmark interview questions spanning fundamental array algorithms to multi-dimensional matrix operations, complete with optimal time-space targets and edge-case pitfalls.
+
+---
+
+## 1. Executive Summary & Learning Objectives
+
+This problem bank codifies 100 core problems spanning linear arrays, strings, and matrices, organized by structural pattern.
+
+By completing this problem set, you will be able to:
+1. **Recognize Core Algorithmic Patterns**: Classify problems into Two Pointers, Sliding Window, Prefix Sum, Difference Array, Kadane's, Dutch National Flag, and Boyer-Moore archetypes.
+2. **Execute In-Place Space Optimizations**: Implement pointer swaps, sign tagging, and bitwise arithmetic achieving $\mathcal{O}(1)$ auxiliary space.
+3. **Formulate Edge-Case Defensive Guards**: Handle boundary conditions for empty sequences, duplicates, negative numbers, and matrix coordinate out-of-bounds errors.
+4. **Evaluate Complexity Trade-Offs**: Compare time and space costs across hash table lookups ($\mathcal{O}(n)$ space), sorting transformations ($\mathcal{O}(n \log n)$ time), and monotonic sweeps.
+
+---
+
+## 2. Problem Taxonomy & Architecture Guide
+
+| Section | Problem Range | Primary Patterns Covered | Target Complexity Range |
+| :--- | :--- | :--- | :--- |
+| **Section 1** | Q001 – Q020 | Array Fundamentals & In-Place Manipulations | $\mathcal{O}(n)$ Time, $\mathcal{O}(1)$ to $\mathcal{O}(n)$ Space |
+| **Section 2** | Q021 – Q040 | Two Pointers & Inward Convergence | $\mathcal{O}(n)$ to $\mathcal{O}(n \log n)$ Time, $\mathcal{O}(1)$ Space |
+| **Section 3** | Q041 – Q060 | Sliding Window & Subarray Bounds | Amortized $\mathcal{O}(n)$ Time, $\mathcal{O}(1)$ to $\mathcal{O}(k)$ Space |
+| **Section 4** | Q061 – Q080 | 2D Matrices, Rotations & Coordinate Traversal | $\mathcal{O}(m \cdot n)$ Time, $\mathcal{O}(1)$ Auxiliary Space |
+| **Section 5** | Q081 – Q100 | String Processing, Anagrams & Palindromic Partitions | $\mathcal{O}(n)$ to $\mathcal{O}(n^2)$ Time, $\mathcal{O}(|\Sigma|)$ Space |
 
 ---
 
