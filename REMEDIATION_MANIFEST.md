@@ -1,7 +1,7 @@
 ## Part 00 — Front Matter & DSA Roadmap
 - [x] front-matter/cover-and-purpose — status: done
 - [x] front-matter/dsa-roadmap — status: done
-- [ ] front-matter/notation-and-symbols — status: not-started
+- [x] front-matter/notation-and-symbols — status: done
 - [ ] front-matter/complexity-quick-ref — status: not-started
 ## Part 01 — Algorithmic Foundations
 - [ ] foundations/data-and-algorithms — status: not-started
