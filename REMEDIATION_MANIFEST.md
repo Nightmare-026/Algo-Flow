@@ -32,7 +32,7 @@
 - [x] sorting/linear-time-sorts — status: done
 - [x] sorting/sorting-theory-comparison — status: done
 ## Part 06 — Trees & Hierarchical Structures
-- [ ] trees/tree-fundamentals — status: not-started
+- [x] trees/tree-fundamentals — status: done
 - [ ] trees/tree-traversals — status: not-started
 - [ ] trees/binary-search-trees — status: not-started
 - [ ] trees/avl-trees — status: not-started
