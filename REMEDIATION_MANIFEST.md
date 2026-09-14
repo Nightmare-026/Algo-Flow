@@ -51,7 +51,7 @@
 - [x] graphs/spanning-trees-and-dsu — status: done
 ## Part 08 — Algorithm Design Paradigms
 - [x] algorithm-design-techniques/brute-force-and-divide-conquer — status: done
-- [ ] algorithm-design-techniques/greedy-algorithms — status: not-started
+- [x] algorithm-design-techniques/greedy-algorithms — status: done
 - [ ] algorithm-design-techniques/backtracking — status: not-started
 - [ ] algorithm-design-techniques/dynamic-programming — status: not-started
 ## Part 09 — Interview & Competitive Patterns
