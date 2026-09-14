@@ -175,10 +175,10 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         chapterTitle={ch.title}
       />
 
-      {/* 3 Full-Height Cards: Left (20%), Middle (65%), Right (15%) */}
+      {/* 3 Full-Height Cards: Left (Tree Nav), Middle (Reading Reader), Right (TOC) */}
       <div className="flex flex-col lg:flex-row gap-2.5 sm:gap-3 flex-1 min-h-0 w-full overflow-hidden">
-        {/* LEFT CARD (20% width) — Full height, scrollable curriculum tree */}
-        <aside className="hidden lg:flex lg:w-[20%] h-full shrink-0 min-w-0 flex-col">
+        {/* LEFT CARD — Full height, scrollable curriculum tree navigation */}
+        <aside className="hidden lg:flex lg:w-[280px] xl:w-[320px] 2xl:w-[340px] h-full shrink-0 min-w-0 flex-col">
           <CurriculumSidebar
             modules={allModules}
             currentModuleSlug={mod.slug}
@@ -187,10 +187,10 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           />
         </aside>
 
-        {/* MIDDLE CARD (65% width) — Full height, scrollable reading article */}
+        {/* MIDDLE CARD — Full height, scrollable reading article taking available space */}
         <main
           id="chapter-reader-container"
-          className="w-full lg:w-[65%] flex-1 h-full min-w-0 overflow-y-auto custom-scrollbar rounded-2xl border border-border/80 bg-surface/90 shadow-[var(--shadow-raised)] p-5 sm:p-7 md:p-9"
+          className="flex-1 h-full min-w-0 overflow-y-auto custom-scrollbar rounded-2xl border border-border/80 bg-surface/90 shadow-[var(--shadow-raised)] p-5 sm:p-7 md:p-9"
         >
           {/* Breadcrumbs inside the reading card */}
           <nav
@@ -214,8 +214,8 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           <ChapterReader module={mod} chapter={ch} content={content} navigation={navigation} />
         </main>
 
-        {/* RIGHT CARD (15% width) — Full height, scrollable table of contents */}
-        <aside className="hidden lg:flex lg:w-[15%] h-full shrink-0 min-w-0 flex-col">
+        {/* RIGHT CARD — Full height, scrollable table of contents */}
+        <aside className="hidden lg:flex lg:w-[175px] xl:w-[200px] 2xl:w-[220px] h-full shrink-0 min-w-0 flex-col">
           <TableOfContents items={content.tableOfContents} className="h-full" />
         </aside>
       </div>
