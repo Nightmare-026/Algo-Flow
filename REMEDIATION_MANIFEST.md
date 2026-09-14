@@ -33,7 +33,7 @@
 - [x] sorting/sorting-theory-comparison — status: done
 ## Part 06 — Trees & Hierarchical Structures
 - [x] trees/tree-fundamentals — status: done
-- [ ] trees/tree-traversals — status: not-started
+- [x] trees/tree-traversals — status: done
 - [ ] trees/binary-search-trees — status: not-started
 - [ ] trees/avl-trees — status: not-started
 - [ ] trees/red-black-trees — status: not-started
