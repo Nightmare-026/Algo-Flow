@@ -1,5 +1,5 @@
 ## Part 00 — Front Matter & DSA Roadmap
-- [ ] front-matter/cover-and-purpose — status: not-started
+- [x] front-matter/cover-and-purpose — status: done
 - [ ] front-matter/dsa-roadmap — status: not-started
 - [ ] front-matter/notation-and-symbols — status: not-started
 - [ ] front-matter/complexity-quick-ref — status: not-started
