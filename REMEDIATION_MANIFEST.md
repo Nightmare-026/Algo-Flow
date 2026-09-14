@@ -46,7 +46,7 @@
 - [x] graphs/graph-types-and-taxonomy — status: done
 - [x] graphs/graph-storage-architectures — status: done
 - [x] graphs/traversals-and-cycles — status: done
-- [ ] graphs/topological-sort-and-dags — status: not-started
+- [x] graphs/topological-sort-and-dags — status: done
 - [ ] graphs/shortest-paths — status: not-started
 - [ ] graphs/spanning-trees-and-dsu — status: not-started
 ## Part 08 — Algorithm Design Paradigms
