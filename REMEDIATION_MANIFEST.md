@@ -27,7 +27,7 @@
 - [x] searching/bounds-and-occurrences — status: done
 - [x] searching/search-space-and-rotated — status: done
 ## Part 05 — Sorting Algorithms & Theory
-- [ ] sorting/elementary-sorts — status: not-started
+- [x] sorting/elementary-sorts — status: done
 - [ ] sorting/divide-and-conquer-sorts — status: not-started
 - [ ] sorting/linear-time-sorts — status: not-started
 - [ ] sorting/sorting-theory-comparison — status: not-started
