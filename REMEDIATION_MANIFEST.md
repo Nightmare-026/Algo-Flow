@@ -50,7 +50,7 @@
 - [x] graphs/shortest-paths — status: done
 - [x] graphs/spanning-trees-and-dsu — status: done
 ## Part 08 — Algorithm Design Paradigms
-- [ ] algorithm-design-techniques/brute-force-and-divide-conquer — status: not-started
+- [x] algorithm-design-techniques/brute-force-and-divide-conquer — status: done
 - [ ] algorithm-design-techniques/greedy-algorithms — status: not-started
 - [ ] algorithm-design-techniques/backtracking — status: not-started
 - [ ] algorithm-design-techniques/dynamic-programming — status: not-started
