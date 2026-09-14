@@ -1,7 +1,28 @@
 # Part 11: Problem Bank — Volume 03: Hashing & Binary Search (80 Problems)
 
-> **Problems Covered:** Q161 to Q240  
-> **Patterns:** Hash Tables & Frequencies &bull; Prefix Sum Remainder Modulo &bull; Rolling Hash &bull; Binary Search on Sorted Arrays &bull; Rotated Array Partitioning &bull; Binary Search on Answer Space &bull; Sweep-Line Hash Maps
+
+Constant-time dictionary lookups and logarithmic divide-and-conquer searches represent the primary mechanisms for eliminating exhaustive linear scans in software systems. This volume curates 80 foundational interview problems spanning hash table invariants, prefix sum modulo arithmetic, randomized data structures, and binary search over discrete answer spaces.
+
+---
+
+## 1. Executive Summary & Learning Objectives
+
+This problem bank codifies 80 essential challenges exploring associative table mappings and logarithmic domain reductions.
+
+By completing this problem set, you will be able to:
+1. **Formulate Hash Table Invariants**: Exploit prefix sum complements, remainder modular arithmetic, and geometric hash representations in $\mathcal{O}(n)$ time.
+2. **Design Amortized $\mathcal{O}(1)$ Containers**: Combine dynamic arrays and hash maps to support insert, delete, and uniform random sampling in constant time.
+3. **Partition Non-Monotonic Spaces**: Execute modified binary searches across rotated sorted arrays, mountain arrays, and unknown-length streams in $\mathcal{O}(\log n)$ time.
+4. **Binary Search on Continuous & Discrete Answer Spaces**: Formulate monotonic feasibility predicates to optimize capacity allocation, scheduling, and geometric bounds.
+
+---
+
+## 2. Problem Taxonomy & Architecture Guide
+
+| Section | Problem Range | Primary Patterns Covered | Target Complexity Range |
+| :--- | :--- | :--- | :--- |
+| **Section 1** | Q161 – Q200 | Hashing, HashMaps & Frequency Tables | $\mathcal{O}(n)$ Time, $\mathcal{O}(n)$ Space |
+| **Section 2** | Q201 – Q240 | Binary Search, Rotations & Answer Space Pruning | $\mathcal{O}(\log n)$ to $\mathcal{O}(n \log (\max - \min))$ Time, $\mathcal{O}(1)$ Space |
 
 ---
 
