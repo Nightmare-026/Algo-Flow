@@ -35,7 +35,7 @@
 - [x] trees/tree-fundamentals — status: done
 - [x] trees/tree-traversals — status: done
 - [x] trees/binary-search-trees — status: done
-- [ ] trees/avl-trees — status: not-started
+- [x] trees/avl-trees — status: done
 - [ ] trees/red-black-trees — status: not-started
 - [ ] trees/splay-trees-and-treaps — status: not-started
 - [ ] trees/heaps-and-priority-queues — status: not-started
