@@ -1,7 +1,31 @@
 # Part 11: Problem Bank — Volume 06: Dynamic Programming (60 Problems)
 
-> **Problems Covered:** Q411 to Q470  
-> **Patterns:** 1D Linear Recurrences &bull; 2D Grid DP &bull; 0/1 & Unbounded Knapsack &bull; Longest Common Subsequence &bull; String Alignments &bull; Interval DP &bull; Bitmask DP &bull; Tree DP &bull; Digit DP
+
+Optimal substructure and overlapping subproblems allow dynamic programming to solve intractable combinatorial explosions in polynomial time. This volume compiles 60 benchmark interview problems spanning 1D linear recurrences, 2D grid pathing, knapsack variations, sequence alignments, interval partitions, and advanced tree and digit state formulations.
+
+---
+
+## 1. Executive Summary & Learning Objectives
+
+This problem bank codifies 60 essential dynamic programming challenges classified by structural state formulation and topological iteration direction.
+
+By completing this problem set, you will be able to:
+1. **Define Multi-Dimensional States**: Isolate independent state parameters capturing prefix decisions, remaining capacities, and boundary constraints.
+2. **Execute Space Compression**: Compress 2D state matrices into 1D rolling buffers using directional iteration to preserve single-use invariants.
+3. **Formulate String & Sequence Alignments**: Solve Longest Common Subsequence, Edit Distance, and Interleaving Strings in $\mathcal{O}(m \cdot n)$ time.
+4. **Architect Non-Linear DP Systems**: Formulate Interval DP for matrix chains, Bitmask DP for permutation graphs, and Postorder Tree DP for hierarchical node monitoring.
+5. **Construct Digit DP Solvers**: Count constrained integers using position, tight-bound, and leading-zero state flags in logarithmic digit steps.
+
+---
+
+## 2. Problem Taxonomy & Architecture Guide
+
+| Section | Problem Range | Primary Patterns Covered | Target Complexity Range |
+| :--- | :--- | :--- | :--- |
+| **Section 1** | Q411 – Q420 | 1D DP, Linear Recurrences & State Machines | $\mathcal{O}(n)$ Time, $\mathcal{O}(1)$ to $\mathcal{O}(n)$ Space |
+| **Section 2** | Q421 – Q440 | 2D Grid DP & Knapsack Archetypes (0/1 & Unbounded) | $\mathcal{O}(m \cdot n)$ or $\mathcal{O}(n \cdot W)$ Time, $\mathcal{O}(W)$ Space |
+| **Section 3** | Q441 – Q455 | String Alignments, LCS & Edit Distance | $\mathcal{O}(m \cdot n)$ Time, $\mathcal{O}(\min(m, n))$ Space |
+| **Section 4** | Q456 – Q470 | Interval DP, Bitmask DP, Tree DP & Digit DP | $\mathcal{O}(n^3)$ to $\mathcal{O}(n^2 2^n)$ Time, Exponential to Polynomial Space |
 
 ---
 
