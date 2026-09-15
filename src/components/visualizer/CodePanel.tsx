@@ -179,9 +179,13 @@ export function CodePanel({
 
   const handleCopy = async () => {
     if (!codeString) return;
-    await navigator.clipboard.writeText(codeString);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(codeString);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Ignore clipboard permission errors silently
+    }
   };
 
   return (

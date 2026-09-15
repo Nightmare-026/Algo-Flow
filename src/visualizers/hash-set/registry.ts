@@ -1,5 +1,5 @@
 import { AlgorithmVisualizerDefinition } from "@/visualizers/registry/types";
-import { getHashSetCodeExamples } from "./multilanguage-code-examples";
+import { getHashSetCodeExamples } from "./code-examples";
 import { hashSetCodeLineMappings } from "./code-line-mappings";
 import { coordinateHashSetSteps } from "./pseudocode-line-mappings";
 import { generateHashSetInsertSteps } from "./insert";

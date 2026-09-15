@@ -10,14 +10,7 @@ export type UserPreferences = {
   difficulty: string;
 };
 
-const ALLOWED_THEMES = new Set([
-  "system",
-  "light",
-  "dark",
-  "light-edu",
-  "dark-neon",
-  "nature-cinematic",
-]);
+const ALLOWED_THEMES = new Set(["system", "light", "dark", "light-edu", "dark-neon"]);
 const ALLOWED_LANGUAGES = new Set(["javascript", "typescript", "python", "java", "cpp"]);
 const ALLOWED_DIFFICULTIES = new Set(["all", "easy", "medium", "hard"]);
 

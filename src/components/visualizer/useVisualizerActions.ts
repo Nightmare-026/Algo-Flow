@@ -8,13 +8,17 @@ export function useVisualizerBookmark(algorithmId: string, onStatus: (msg: strin
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     getBookmarks()
       .then((bookmarks) => {
-        if (bookmarks.includes(algorithmId)) setIsBookmarked(true);
+        if (isMounted && bookmarks.includes(algorithmId)) setIsBookmarked(true);
       })
       .catch(() => {
-        onStatus("Bookmarks could not be loaded.");
+        if (isMounted) onStatus("Bookmarks could not be loaded.");
       });
+    return () => {
+      isMounted = false;
+    };
   }, [algorithmId, onStatus]);
 
   const handleToggleBookmark = async () => {

@@ -1,7 +1,7 @@
 # Algo Flow — Privacy Policy
 
-**Effective Date**: September 4, 2026  
-**Version**: 2026-09-04  
+**Effective Date**: September 5, 2026  
+**Version**: 2026-09-05  
 **Maintainer**: Nightmare / Algo Flow Team  
 **Contact**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  
 **Web Version**: [https://algo-flow.vercel.app/privacy](https://algo-flow.vercel.app/privacy)
@@ -20,7 +20,7 @@
 ## 2. Information We Collect
 
 ### A. Information You Provide (Optional Account Creation)
-- **Account Identity**: Email address, hashed password (managed by Supabase Auth), chosen username, and profile avatar URL if signing in with Google OAuth.
+- **Account Identity**: Email address, hashed password (managed by Supabase Auth), chosen username, and profile avatar URL if signing in with Google or GitHub OAuth.
 - **Study & Progress Data**: Visualizer completion history, topic mastery, study streaks, experience points (XP), bookmarks, and quiz scores.
 - **Mental Math Telemetry**: Calculation solve times, accuracy ratings, speed records, and daily challenge entries.
 
@@ -35,12 +35,12 @@
 
 ---
 
-## 3. Third-Party Authentication (Sign in with Google)
+## 3. Third-Party Authentication (Sign in with Google & GitHub)
 
-When you authenticate via **Google OAuth 2.0**:
-- We request access only to **standard non-sensitive identity scopes**: `email`, `profile`, and `openid`.
+When you authenticate via **Google OAuth 2.0** or **GitHub OAuth**:
+- We request access only to **standard non-sensitive identity scopes**: `email`, `profile`, and `openid` (Google) or `read:user`, `user:email` (GitHub).
 - We receive your email, display name, and avatar picture to construct your user profile.
-- We **never** access, request, or store your private Google data (such as Google Drive, Gmail, or contacts).
+- We **never** access, request, or store your private Google data (such as Google Drive, Gmail, or contacts) or private GitHub repositories.
 - Tokens are encrypted in transit via TLS 1.3.
 
 ---
@@ -66,8 +66,9 @@ When you authenticate via **Google OAuth 2.0**:
 | Subprocessor | Role & Services | Compliance Certifications |
 | :--- | :--- | :--- |
 | **Supabase Inc.** | PostgreSQL Database, Auth, RLS Storage | SOC 2 Type II, ISO 27001, HIPAA compliant |
-| **Vercel Inc.** | Edge CDN, Global Serverless Hosting | SOC 2 Type II, ISO 27001 |
+| **Vercel Inc.** | Edge CDN, Global Serverless Hosting & Cookie-less Web Analytics | SOC 2 Type II, ISO 27001, Cookie-less Telemetry |
 | **Google LLC** | Google OAuth 2.0 Identity Provider | SOC 2, ISO 27001, Privacy Shield / DPA |
+| **GitHub Inc. / Microsoft** | GitHub OAuth 2.0 Identity Provider | SOC 2, ISO 27001, Microsoft Enterprise DPA |
 
 ---
 

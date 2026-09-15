@@ -239,7 +239,9 @@ export async function getParsedChapter(
           const headerHtml = token.header
             .map((cell) => {
               const align = cell.align ? ` text-${cell.align}` : " text-left";
-              const cellContent = cell.tokens ? this.parser.parseInline(cell.tokens) : (cell.text || "");
+              const cellContent = cell.tokens
+                ? this.parser.parseInline(cell.tokens)
+                : cell.text || "";
               return `<th class="p-3.5 font-bold text-foreground border-b-2 border-border/80 bg-surface-raised/70${align}">${cellContent}</th>`;
             })
             .join("");
@@ -249,7 +251,9 @@ export async function getParsedChapter(
               const cells = row
                 .map((cell) => {
                   const align = cell.align ? ` text-${cell.align}` : " text-left";
-                  const cellContent = cell.tokens ? this.parser.parseInline(cell.tokens) : (cell.text || "");
+                  const cellContent = cell.tokens
+                    ? this.parser.parseInline(cell.tokens)
+                    : cell.text || "";
                   return `<td class="p-3.5 text-muted-foreground border-b border-border/40 font-mono text-xs md:text-sm${align}">${cellContent}</td>`;
                 })
                 .join("");

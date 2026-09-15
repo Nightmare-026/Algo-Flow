@@ -67,9 +67,14 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
       setIsAnswered(false);
     } else {
       setIsSubmitting(true);
-      await submitQuizAttempt(algorithm.id, score, questions.length);
-      setIsFinished(true);
-      setIsSubmitting(false);
+      try {
+        await submitQuizAttempt(algorithm.id, score, questions.length);
+      } catch {
+        // Continue to finished screen even if remote recording fails
+      } finally {
+        setIsFinished(true);
+        setIsSubmitting(false);
+      }
     }
   };
 

@@ -27,7 +27,7 @@ export const matrixCodeLineMappings = {
     line(1, 1, 1, 1, 1),
     line(3, 4, 3, 4, 4),
     line(4, 5, 5, 5, 6),
-    line(6, 11, 8, 1, 1),
+    line(6, 11, 8, 9, 11),
   ],
   "matrix-multiplication": [line(1, 1, 1, 1, 1), line(4, 9, 8, 9, 9), line(6, 13, 9, 13, 13)],
   "matrix-addition": [line(1, 1, 1, 1, 1), line(4, 7, 6, 6, 6), line(6, 10, 7, 9, 9)],

@@ -269,6 +269,18 @@ export default async function CookiesPage() {
                         Zero tracking; enables seamless offline-friendly practice tracking
                       </td>
                     </tr>
+                    <tr>
+                      <td className="p-3 font-mono font-bold text-text-primary">
+                        algoflow_completed_chapters
+                      </td>
+                      <td className="p-3">
+                        Tracks completed DSA curriculum chapters for guest and offline study
+                        progress
+                      </td>
+                      <td className="p-3">
+                        Zero tracking; strictly client-side educational progress state
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

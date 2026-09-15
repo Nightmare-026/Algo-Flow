@@ -11,9 +11,6 @@ const line = (
   lines: { javascript, python, cpp, java },
 });
 
-const oneLineOperation = (logicalLines: number[]) =>
-  logicalLines.map((logicalLine) => line(logicalLine, 1, 1, 3, 3));
-
 export const stackCodeLineMappings = {
   "array-stack": [
     line(1, 1, 1, 1, 1),
@@ -23,22 +20,27 @@ export const stackCodeLineMappings = {
   ],
   "stack-push": [
     line(1, 1, 1, 3, 3),
-    line(2, 1, 1, 3, 3),
-    line(3, 1, 1, 4, 4),
-    line(4, 1, 1, 4, 4),
-    line(5, 1, 1, 4, 4),
+    line(2, 2, 2, 4, 4),
+    line(3, 5, 4, 7, 7),
+    line(4, 5, 4, 7, 7),
+    line(5, 6, 5, 8, 8),
   ],
   "stack-pop": [
     line(1, 1, 1, 3, 3),
-    line(2, 1, 1, 3, 3),
-    line(3, 1, 1, 3, 3),
-    line(4, 1, 1, 4, 3),
-    line(5, 1, 1, 4, 3),
+    line(2, 2, 2, 4, 4),
+    line(3, 5, 4, 7, 7),
+    line(4, 6, 5, 8, 8),
+    line(5, 7, 6, 9, 9),
   ],
-  "stack-peek": oneLineOperation([1, 2, 3, 4]),
-  "stack-is-empty": oneLineOperation([1, 2]),
-  "stack-is-full": oneLineOperation([1, 2]),
-  "stack-size": oneLineOperation([1, 2]),
+  "stack-peek": [
+    line(1, 1, 1, 3, 3),
+    line(2, 2, 2, 4, 4),
+    line(3, 5, 4, 7, 7),
+    line(4, 6, 5, 8, 8),
+  ],
+  "stack-is-empty": [line(1, 1, 1, 3, 3), line(2, 2, 2, 4, 4)],
+  "stack-is-full": [line(1, 1, 1, 3, 3), line(2, 2, 2, 4, 4)],
+  "stack-size": [line(1, 1, 1, 3, 3), line(2, 2, 2, 4, 4)],
   "balanced-parentheses": [
     line(1, 1, 1, 1, 1),
     line(2, 3, 5, 3, 3),

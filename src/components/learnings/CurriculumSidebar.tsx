@@ -52,26 +52,16 @@ export function CurriculumSidebar({
   const activeModuleRef = useRef<HTMLLIElement | null>(null);
   const scrollContainerRef = useRef<HTMLOListElement | null>(null);
 
-  // Initialize with current module open
-  const [openModules, setOpenModules] = useState<Record<string, boolean>>(() => ({
-    [currentModuleSlug]: true,
-  }));
+  // Track module open overrides; by default, the active module is open
+  const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
 
   // Track expanded subtopics preview for non-active chapters
-  const [expandedChapterSubtopics, setExpandedChapterSubtopics] = useState<Record<string, boolean>>({});
+  const [expandedChapterSubtopics, setExpandedChapterSubtopics] = useState<Record<string, boolean>>(
+    {}
+  );
 
   // Active subtopic heading ID from scrollspy
   const [activeSubtopicId, setActiveSubtopicId] = useState<string>("");
-
-  // Ensure current module is opened whenever currentModuleSlug changes
-  useEffect(() => {
-    if (currentModuleSlug) {
-      setOpenModules((prev) => ({
-        ...prev,
-        [currentModuleSlug]: true,
-      }));
-    }
-  }, [currentModuleSlug]);
 
   // Auto-scroll active chapter into view smoothly on mount or chapter change
   useEffect(() => {
@@ -106,12 +96,18 @@ export function CurriculumSidebar({
     return () => observer.disconnect();
   }, [currentTableOfContents]);
 
-  const toggleModule = useCallback((slug: string) => {
-    setOpenModules((prev) => ({
-      ...prev,
-      [slug]: !prev[slug],
-    }));
-  }, []);
+  const toggleModule = useCallback(
+    (slug: string) => {
+      setOpenModules((prev) => {
+        const currentlyOpen = prev[slug] ?? slug === currentModuleSlug;
+        return {
+          ...prev,
+          [slug]: !currentlyOpen,
+        };
+      });
+    },
+    [currentModuleSlug]
+  );
 
   const toggleChapterTopics = useCallback((chSlug: string) => {
     setExpandedChapterSubtopics((prev) => ({
@@ -176,12 +172,16 @@ export function CurriculumSidebar({
 
   const areAllExpanded = useMemo(() => {
     if (filteredModules.length === 0) return false;
-    return filteredModules.every((mod) => !!openModules[mod.slug]);
-  }, [filteredModules, openModules]);
+    return filteredModules.every((mod) => openModules[mod.slug] ?? mod.slug === currentModuleSlug);
+  }, [filteredModules, openModules, currentModuleSlug]);
 
   const toggleExpandAll = () => {
     if (areAllExpanded) {
-      setOpenModules({ [currentModuleSlug]: true });
+      const nextState: Record<string, boolean> = {};
+      modules.forEach((mod) => {
+        nextState[mod.slug] = false;
+      });
+      setOpenModules(nextState);
     } else {
       const nextState: Record<string, boolean> = {};
       modules.forEach((mod) => {
@@ -263,7 +263,9 @@ export function CurriculumSidebar({
               aria-label={areAllExpanded ? "Collapse all parts" : "Expand all parts"}
             >
               <ChevronsUpDown className="w-3 h-3 text-primary" />
-              <span className="hidden sm:inline font-mono">{areAllExpanded ? "Collapse" : "Expand"}</span>
+              <span className="hidden sm:inline font-mono">
+                {areAllExpanded ? "Collapse" : "Expand"}
+              </span>
             </button>
 
             {/* Completion Counter */}
@@ -353,9 +355,15 @@ export function CurriculumSidebar({
         className="flex flex-col gap-1.5 flex-1 overflow-y-auto min-h-0 pr-1 custom-scrollbar"
       >
         {filteredModules.length === 0 ? (
-          <li role="listitem" className="text-center py-10 px-4 text-xs text-muted-foreground shrink-0">
+          <li
+            role="listitem"
+            className="text-center py-10 px-4 text-xs text-muted-foreground shrink-0"
+          >
             <p className="font-semibold text-foreground mb-1">No matching chapters</p>
-            <p className="text-[11px] mb-3">Try searching for keywords like &ldquo;array&rdquo;, &ldquo;tree&rdquo;, or &ldquo;dp&rdquo;</p>
+            <p className="text-[11px] mb-3">
+              Try searching for keywords like &ldquo;array&rdquo;, &ldquo;tree&rdquo;, or
+              &ldquo;dp&rdquo;
+            </p>
             <button
               type="button"
               onClick={handleClearSearch}
@@ -367,7 +375,7 @@ export function CurriculumSidebar({
         ) : (
           filteredModules.map((mod) => {
             const isCurrentModule = mod.slug === currentModuleSlug;
-            const isOpen = searchQuery.trim() ? true : !!openModules[mod.slug];
+            const isOpen = searchQuery.trim() ? true : (openModules[mod.slug] ?? isCurrentModule);
 
             const modCompletedCount = mod.chapters.filter((ch) =>
               completedChapters.has(`${mod.slug}/${ch.slug}`)
@@ -573,62 +581,63 @@ export function CurriculumSidebar({
                                 <div className="flex items-center justify-between text-[10px] font-mono text-primary/80 px-1 py-0.5">
                                   <span className="font-semibold flex items-center gap-1">
                                     <ListTree className="w-2.5 h-2.5" />
-                                    Subtopics ({activeChapterSubtopics.length || ch.topicsCovered.length})
+                                    Subtopics (
+                                    {activeChapterSubtopics.length || ch.topicsCovered.length})
                                   </span>
-                                  <span className="text-[9px] text-muted-foreground/70">Jump to</span>
+                                  <span className="text-[9px] text-muted-foreground/70">
+                                    Jump to
+                                  </span>
                                 </div>
 
                                 <ol className="space-y-0.5">
-                                  {activeChapterSubtopics.length > 0 ? (
-                                    activeChapterSubtopics.map((sub) => {
-                                      const isSubActive = activeSubtopicId === sub.id;
-                                      return (
-                                        <li key={sub.id}>
-                                          <a
-                                            href={`#${sub.id}`}
-                                            onClick={(e) => {
-                                              e.preventDefault();
-                                              scrollToSubtopic(sub.id);
-                                            }}
-                                            title={sub.title}
-                                            className={cn(
-                                              "group/sub flex items-start gap-1.5 py-1 px-1.5 rounded-md text-[11px] leading-snug transition-colors cursor-pointer",
-                                              isSubActive
-                                                ? "text-primary font-bold bg-primary/[0.08]"
-                                                : "text-muted-foreground hover:text-foreground hover:bg-surface-raised/60"
-                                            )}
-                                          >
-                                            <span
+                                  {activeChapterSubtopics.length > 0
+                                    ? activeChapterSubtopics.map((sub) => {
+                                        const isSubActive = activeSubtopicId === sub.id;
+                                        return (
+                                          <li key={sub.id}>
+                                            <a
+                                              href={`#${sub.id}`}
+                                              onClick={(e) => {
+                                                e.preventDefault();
+                                                scrollToSubtopic(sub.id);
+                                              }}
+                                              title={sub.title}
                                               className={cn(
-                                                "w-1 h-1 rounded-full shrink-0 mt-1.5 transition-all",
+                                                "group/sub flex items-start gap-1.5 py-1 px-1.5 rounded-md text-[11px] leading-snug transition-colors cursor-pointer",
                                                 isSubActive
-                                                  ? "bg-primary scale-125 shadow-[0_0_6px_rgba(34,197,94,0.6)]"
-                                                  : "bg-muted-foreground/40 group-hover/sub:bg-primary"
+                                                  ? "text-primary font-bold bg-primary/[0.08]"
+                                                  : "text-muted-foreground hover:text-foreground hover:bg-surface-raised/60"
                                               )}
+                                            >
+                                              <span
+                                                className={cn(
+                                                  "w-1 h-1 rounded-full shrink-0 mt-1.5 transition-all",
+                                                  isSubActive
+                                                    ? "bg-primary scale-125 shadow-[0_0_6px_rgba(34,197,94,0.6)]"
+                                                    : "bg-muted-foreground/40 group-hover/sub:bg-primary"
+                                                )}
+                                                aria-hidden="true"
+                                              />
+                                              <span className="break-words line-clamp-2 flex-1 text-left">
+                                                {formatSubtopicTitle(sub.title)}
+                                              </span>
+                                            </a>
+                                          </li>
+                                        );
+                                      })
+                                    : ch.topicsCovered.map((topic, i) => (
+                                        <li key={i}>
+                                          <div className="flex items-start gap-1.5 py-0.5 px-1 text-[11px] text-muted-foreground leading-snug">
+                                            <span
+                                              className="w-1 h-1 rounded-full bg-primary/60 shrink-0 mt-1.5"
                                               aria-hidden="true"
                                             />
                                             <span className="break-words line-clamp-2 flex-1 text-left">
-                                              {formatSubtopicTitle(sub.title)}
+                                              {formatSubtopicTitle(topic)}
                                             </span>
-                                          </a>
+                                          </div>
                                         </li>
-                                      );
-                                    })
-                                  ) : (
-                                    ch.topicsCovered.map((topic, i) => (
-                                      <li key={i}>
-                                        <div className="flex items-start gap-1.5 py-0.5 px-1 text-[11px] text-muted-foreground leading-snug">
-                                          <span
-                                            className="w-1 h-1 rounded-full bg-primary/60 shrink-0 mt-1.5"
-                                            aria-hidden="true"
-                                          />
-                                          <span className="break-words line-clamp-2 flex-1 text-left">
-                                            {formatSubtopicTitle(topic)}
-                                          </span>
-                                        </div>
-                                      </li>
-                                    ))
-                                  )}
+                                      ))}
                                 </ol>
                               </div>
                             )}

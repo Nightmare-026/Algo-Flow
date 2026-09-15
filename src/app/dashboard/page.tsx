@@ -11,16 +11,15 @@ import { getMentalMathUserStats } from "@/features/mental-math/api/actions";
 import {
   Flame,
   Play,
-  Bookmark,
-  Save,
   Star,
   ListChecks,
   ChevronRight,
   BrainCircuit,
-  Code2,
   Workflow,
+  Code2,
   Trophy,
   Crown,
+  Bookmark,
 } from "lucide-react";
 import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
@@ -29,6 +28,10 @@ import {
   DashboardStatCardsAnimation,
 } from "@/components/dashboard/DashboardAnimations";
 import { AccountSecurityCard } from "@/components/dashboard/AccountSecurityCard";
+import { StatCard } from "@/components/dashboard/StatCard";
+import { ActivityItem } from "@/components/dashboard/ActivityItem";
+import { StudyTrackCard } from "@/components/dashboard/StudyTrackCard";
+import { computeCategoryProgress } from "@/components/dashboard/utils";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -85,43 +88,14 @@ export default async function DashboardPage() {
   }
 
   // Derive Progress
-  const totalAlgorithms = algorithms.filter((a) => a.isPublished).length;
-  const completedCount = completedIds.length;
-  const progressPercent =
-    totalAlgorithms > 0 ? Math.round((completedCount / totalAlgorithms) * 100) : 0;
-
-  // Calculate XP based on completed algorithms
-  const totalXP = completedCount * 150;
-
-  // Category breakdowns
-  const linearCount = algorithms.filter(
-    (a) =>
-      a.dataStructureId.includes("list") ||
-      a.dataStructureId.includes("stack") ||
-      a.dataStructureId.includes("queue") ||
-      a.dataStructureId.includes("array")
-  ).length;
-  const linearCompleted = completedIds.filter((id) => {
-    const a = algorithms.find((alg) => alg.id === id);
-    return (
-      a &&
-      (a.dataStructureId.includes("list") ||
-        a.dataStructureId.includes("stack") ||
-        a.dataStructureId.includes("queue") ||
-        a.dataStructureId.includes("array"))
-    );
-  }).length;
-  const linearProgress = linearCount > 0 ? Math.round((linearCompleted / linearCount) * 100) : 0;
-
-  const nonLinearCount = algorithms.filter(
-    (a) => a.dataStructureId.includes("tree") || a.dataStructureId.includes("graph")
-  ).length;
-  const nonLinearCompleted = completedIds.filter((id) => {
-    const a = algorithms.find((alg) => alg.id === id);
-    return a && (a.dataStructureId.includes("tree") || a.dataStructureId.includes("graph"));
-  }).length;
-  const nonLinearProgress =
-    nonLinearCount > 0 ? Math.round((nonLinearCompleted / nonLinearCount) * 100) : 0;
+  const {
+    totalAlgorithms,
+    completedCount,
+    progressPercent,
+    totalXP,
+    linearProgress,
+    nonLinearProgress,
+  } = computeCategoryProgress(algorithms, completedIds);
 
   // Next up logic
   const completedSet = new Set(completedIds);
@@ -159,89 +133,39 @@ export default async function DashboardPage() {
 
         {/* 4 Quick Stat Cards */}
         <DashboardStatCardsAnimation>
-          {/* XP Card */}
-          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-primary/30 transition-colors">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
-                Experience
-              </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-muted text-primary border border-primary/20">
-                <Star className="w-4 h-4 fill-current" />
-              </span>
-            </div>
-            <div className="mt-4">
-              <div className="text-3xl font-extrabold font-display text-text-primary">
-                {totalXP.toLocaleString()}
-              </div>
-              <p className="text-xs font-semibold text-primary mt-1">
-                +150 XP per completed algorithm
-              </p>
-            </div>
-          </div>
-
-          {/* Max Streak Card */}
-          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-warning/30 transition-colors">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
-                Max Streak
-              </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-warning-muted text-warning border border-warning/20">
-                <Flame className="w-4 h-4 fill-current" />
-              </span>
-            </div>
-            <div className="mt-4">
-              <div className="text-3xl font-extrabold font-display text-text-primary">
-                {streak?.max_streak || 0}
-              </div>
-              <p className="text-xs font-medium text-text-muted mt-1">
-                Best consistent study streak
-              </p>
-            </div>
-          </div>
-
-          {/* Topics Completed Card */}
-          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-primary/30 transition-colors">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
-                Mastered
-              </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-muted text-primary border border-primary/20">
-                <ListChecks className="w-4 h-4" />
-              </span>
-            </div>
-            <div className="mt-4">
-              <div className="text-3xl font-extrabold font-display text-text-primary">
+          <StatCard
+            title="Experience"
+            value={totalXP.toLocaleString()}
+            subtitle="+150 XP per completed algorithm"
+            icon={<Star className="w-4 h-4 fill-current" />}
+            variant="primary"
+          />
+          <StatCard
+            title="Max Streak"
+            value={streak?.max_streak || 0}
+            subtitle="Best consistent study streak"
+            icon={<Flame className="w-4 h-4 fill-current" />}
+            variant="warning"
+          />
+          <StatCard
+            title="Mastered"
+            value={
+              <>
                 {completedCount}
                 <span className="text-lg font-normal text-text-muted">/{totalAlgorithms}</span>
-              </div>
-              <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-[var(--shadow-inset)] mt-2">
-                <div
-                  className="bg-primary h-full rounded-full transition-all duration-500"
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Saved Visualizers Card */}
-          <div className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-secondary/30 transition-colors">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
-                Bookmarks
-              </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary-muted text-secondary border border-secondary/20">
-                <Bookmark className="w-4 h-4 fill-current" />
-              </span>
-            </div>
-            <div className="mt-4">
-              <div className="text-3xl font-extrabold font-display text-text-primary">
-                {bookmarkIds.length}
-              </div>
-              <p className="text-xs font-medium text-text-muted mt-1">
-                Saved algorithms for quick study
-              </p>
-            </div>
-          </div>
+              </>
+            }
+            progress={progressPercent}
+            icon={<ListChecks className="w-4 h-4" />}
+            variant="primary"
+          />
+          <StatCard
+            title="Bookmarks"
+            value={bookmarkIds.length}
+            subtitle="Saved algorithms for quick study"
+            icon={<Bookmark className="w-4 h-4 fill-current" />}
+            variant="secondary"
+          />
         </DashboardStatCardsAnimation>
 
         {/* Bento Grid: Daily Challenge, Activity Feed, and Category Progress */}
@@ -314,74 +238,9 @@ export default async function DashboardPage() {
               </h2>
               {activities.length > 0 ? (
                 <div className="flex flex-col gap-2">
-                  {activities.slice(0, 6).map((act) => {
-                    const isMentalMath = act.algorithm_id?.startsWith("mental_math");
-                    const alg = !isMentalMath
-                      ? algorithms.find((a) => a.id === act.algorithm_id)
-                      : null;
-                    if (!alg && !isMentalMath) return null;
-
-                    const mmMetadata = act.metadata as
-                      | {
-                          score?: number;
-                          accuracy?: number;
-                          mode?: string;
-                          operation?: string;
-                        }
-                      | undefined;
-
-                    const title = isMentalMath
-                      ? `Mental Math (${mmMetadata?.operation || "Mixed"}): ${mmMetadata?.score || 0} pts`
-                      : act.action_type === "completed"
-                        ? `Completed: ${alg?.name}`
-                        : act.action_type === "bookmarked"
-                          ? `Bookmarked: ${alg?.name}`
-                          : act.action_type === "saved_session"
-                            ? `Saved session: ${alg?.name}`
-                            : `Passed quiz: ${alg?.name}`;
-
-                    const linkHref = isMentalMath
-                      ? "/mental-math/leaderboard"
-                      : `/visualizer/${alg?.slug}`;
-
-                    const subtext = isMentalMath
-                      ? `${mmMetadata?.accuracy || 100}% accuracy • ${mmMetadata?.mode || "daily"} mode • ${act.created_at ? new Date(act.created_at).toLocaleDateString() : "Recent"}`
-                      : act.created_at
-                        ? new Date(act.created_at).toLocaleDateString()
-                        : "Recent";
-
-                    return (
-                      <div
-                        key={act.id}
-                        className="flex items-center gap-3.5 p-3 rounded-xl border border-transparent hover:border-border hover:bg-surface-hover transition-all group"
-                      >
-                        <div className="flex h-10 w-10 rounded-xl bg-bg-surface-inset border border-border shadow-[var(--shadow-inset)] items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
-                          {isMentalMath ? (
-                            <BrainCircuit className="w-4 h-4" />
-                          ) : act.action_type === "completed" ? (
-                            <ListChecks className="w-4 h-4" />
-                          ) : act.action_type === "bookmarked" ? (
-                            <Bookmark className="w-4 h-4 fill-current" />
-                          ) : act.action_type === "saved_session" ? (
-                            <Save className="w-4 h-4" />
-                          ) : (
-                            <Trophy className="w-4 h-4" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-xs font-bold text-text-primary truncate">{title}</h3>
-                          <p className="text-[11px] font-mono text-text-muted mt-0.5">{subtext}</p>
-                        </div>
-                        <Link
-                          href={linkHref}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-text-muted group-hover:text-primary group-hover:border-primary/40 transition-colors"
-                          aria-label={isMentalMath ? "View leaderboard" : `Open ${alg?.name}`}
-                        >
-                          <ChevronRight className="w-4 h-4" />
-                        </Link>
-                      </div>
-                    );
-                  })}
+                  {activities.slice(0, 6).map((act) => (
+                    <ActivityItem key={act.id} activity={act} algorithms={algorithms} />
+                  ))}
                 </div>
               ) : (
                 <div className="neu-inset flex flex-col items-center justify-center p-8 rounded-2xl border border-border text-center">
@@ -602,72 +461,27 @@ export default async function DashboardPage() {
         <section className="flex flex-col gap-4 mt-2">
           <h2 className="text-lg font-bold font-display text-text-primary">Curated Study Tracks</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <Link
+            <StudyTrackCard
               href="/visualizers/tree"
-              className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
-            >
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex h-11 w-11 rounded-xl bg-surface-inset border border-border shadow-[var(--shadow-inset)] items-center justify-center text-primary">
-                    <Workflow className="w-5 h-5" />
-                  </div>
-                  <span className="bg-primary-muted text-primary border border-primary/20 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase">
-                    Trees
-                  </span>
-                </div>
-                <h3 className="text-base font-bold font-display text-text-primary">
-                  Tree Traversals &amp; Heaps
-                </h3>
-                <p className="text-xs text-text-secondary mt-1.5 leading-relaxed">
-                  Understand DFS, BFS, pre-order, and min/max heap invariant mutations step by step.
-                </p>
-              </div>
-            </Link>
-
-            <Link
+              icon={<Workflow className="w-5 h-5" />}
+              tag="Trees"
+              title="Tree Traversals & Heaps"
+              description="Understand DFS, BFS, pre-order, and min/max heap invariant mutations step by step."
+            />
+            <StudyTrackCard
               href="/visualizers/array"
-              className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
-            >
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex h-11 w-11 rounded-xl bg-surface-inset border border-border shadow-[var(--shadow-inset)] items-center justify-center text-primary">
-                    <Code2 className="w-5 h-5" />
-                  </div>
-                  <span className="bg-primary-muted text-primary border border-primary/20 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase">
-                    Sorting
-                  </span>
-                </div>
-                <h3 className="text-base font-bold font-display text-text-primary">
-                  Sorting Algorithms
-                </h3>
-                <p className="text-xs text-text-secondary mt-1.5 leading-relaxed">
-                  Compare in-place Quick Sort, Divide-and-Conquer Merge Sort, and O(n²)
-                  Bubble/Insertion.
-                </p>
-              </div>
-            </Link>
-
-            <Link
+              icon={<Code2 className="w-5 h-5" />}
+              tag="Sorting"
+              title="Sorting Algorithms"
+              description="Compare in-place Quick Sort, Divide-and-Conquer Merge Sort, and O(n²) Bubble/Insertion."
+            />
+            <StudyTrackCard
               href="/visualizers/graph"
-              className="neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
-            >
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex h-11 w-11 rounded-xl bg-surface-inset border border-border shadow-[var(--shadow-inset)] items-center justify-center text-primary">
-                    <BrainCircuit className="w-5 h-5" />
-                  </div>
-                  <span className="bg-primary-muted text-primary border border-primary/20 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase">
-                    Graphs
-                  </span>
-                </div>
-                <h3 className="text-base font-bold font-display text-text-primary">
-                  Shortest Path &amp; MST
-                </h3>
-                <p className="text-xs text-text-secondary mt-1.5 leading-relaxed">
-                  Trace Dijkstra, Bellman-Ford, Kruskal, and Prim algorithms across weighted graphs.
-                </p>
-              </div>
-            </Link>
+              icon={<BrainCircuit className="w-5 h-5" />}
+              tag="Graphs"
+              title="Shortest Path & MST"
+              description="Trace Dijkstra, Bellman-Ford, Kruskal, and Prim algorithms across weighted graphs."
+            />
           </div>
         </section>
 

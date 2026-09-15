@@ -52,8 +52,9 @@ export async function getStreak(): Promise<UserStreak | null> {
   };
 
   const today = new Date().toISOString().split("T")[0];
-  if (streak.last_activity_date && streak.last_activity_date !== today) {
-    const lastDate = new Date(streak.last_activity_date);
+  const lastActivityDateStr = streak.last_activity_date?.split("T")[0];
+  if (lastActivityDateStr && lastActivityDateStr !== today) {
+    const lastDate = new Date(lastActivityDateStr);
     const todayDate = new Date(today);
     const diffDays = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
 

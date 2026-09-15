@@ -1,7 +1,7 @@
 # Algo Flow — Terms of Service
 
-**Effective Date**: September 4, 2026  
-**Version**: 2026-09-04  
+**Effective Date**: September 5, 2026  
+**Version**: 2026-09-05  
 **Maintainer**: Nightmare / Algo Flow Team  
 **Contact**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  
 **Web Version**: [https://algo-flow.vercel.app/terms](https://algo-flow.vercel.app/terms)
@@ -35,7 +35,7 @@ We reserve the right to modify, refine, or update any visualization or education
 ## 4. User Accounts & Security
 
 - **Public Exploration**: Exploring visualizers and reading algorithms requires no account.
-- **Persistent Profiles**: Accessing study streaks, bookmarks, XP leaderboards, and session save states requires signing in with email or Google OAuth 2.0.
+- **Persistent Profiles**: Accessing study streaks, bookmarks, XP leaderboards, and session save states requires signing in with email, Google OAuth 2.0, or GitHub OAuth.
 - **Account Responsibilities**: You are solely responsible for maintaining the confidentiality of your credentials. You agree to notify us immediately of any unauthorized access at `ganeshsharma7114@gmail.com`.
 - **Non-Transferability**: Accounts are strictly personal and non-transferable.
 

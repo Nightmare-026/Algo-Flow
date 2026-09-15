@@ -1,7 +1,7 @@
 # Algo Flow — Cookie Policy & Local Storage Transparency
 
-**Effective Date**: September 4, 2026  
-**Version**: 2026-09-04  
+**Effective Date**: September 5, 2026  
+**Version**: 2026-09-05  
 **Maintainer**: Nightmare / Algo Flow Team  
 **Contact**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  
 **Web Version**: [https://algo-flow.vercel.app/cookies](https://algo-flow.vercel.app/cookies)  
@@ -36,11 +36,12 @@ We use HTML5 Browser `localStorage` to save your UI preferences locally on your 
 
 | Storage Key | Purpose | Stored Data | Transmission to Server |
 | :--- | :--- | :--- | :--- |
-| `theme` | Remembers your Light or Dark workstation appearance | `"light"` or `"dark"` | No (Client-side only) |
-| `visualizer-speed` | Remembers your preferred animation playback rate | Numerical float (`0.25` – `2.0`) | No (Client-side only) |
-| `visualizer-tour-[slug]` | Tracks visualizer onboarding walkthrough completion | Boolean string (`"true"`) | No (Client-side only) |
-| `sound-enabled` | Remembers your audio cue preference | Boolean string (`"true"` or `"false"`) | No (Client-side only) |
-| `mental-math-practice-settings` | Remembers your preferred calculation drill operators | JSON object of selected operators | No (Client-side only) |
+| `algo-flow-theme` | Remembers your workstation appearance preference | `"light"`, `"dark"`, `"dark-neon"`, `"light-edu"`, or `"system"` | No (Client-side only) |
+| `algo-flow-lang` | Remembers preferred programming language for code implementations | `"javascript"`, `"python"`, `"cpp"`, or `"java"` | No (Client-side only) |
+| `algo_flow_sound_muted` | Remembers audio sound effects mute toggle for mental math exercises | Boolean string (`"true"` or `"false"`) | No (Client-side only) |
+| `visualizer-tour-[slug]` | Records whether interactive walkthrough was completed for a specific algorithm | Boolean string (`"true"`) | No (Client-side only) |
+| `algo_flow_mental_math_stats_v1` | Caches local calculation drill statistics, speed metrics, and mastery history | JSON object of local stats and history | No (Client-side only) |
+| `algoflow_completed_chapters` | Tracks locally completed DSA curriculum chapters for offline and guest study progress | JSON array of chapter slug identifiers | No (Client-side only) |
 
 ---
 

@@ -10,15 +10,64 @@ type Fixture = {
   accessResult?: boolean;
   calls?: Record<RequiredCodeLanguage, string>;
   sortStatements?: Record<RequiredCodeLanguage, string>;
+  statements?: Record<RequiredCodeLanguage, string>;
 };
 
 const fixtures: Record<string, Fixture> = {
-  access: { expected: "8", accessResult: true },
-  "access-by-index": { expected: "8", accessResult: true },
-  "random-access": { expected: "8", accessResult: true },
-  "forward-traversal": { expected: "4 8 15" },
-  "reverse-traversal": { expected: "15 8 4" },
-  "range-traversal": { expected: "8 15" },
+  access: {
+    expected: "8",
+    statements: {
+      javascript: "console.log(accessByIndex(array, 1));",
+      python: "print(access_by_index(array, 1))",
+      cpp: "cout << accessByIndex(array, 1) << endl;",
+      java: "System.out.println(new Main().accessByIndex(array, 1));",
+    },
+  },
+  "access-by-index": {
+    expected: "8",
+    statements: {
+      javascript: "console.log(accessByIndex(array, 1));",
+      python: "print(access_by_index(array, 1))",
+      cpp: "cout << accessByIndex(array, 1) << endl;",
+      java: "System.out.println(new Main().accessByIndex(array, 1));",
+    },
+  },
+  "random-access": {
+    expected: "8",
+    statements: {
+      javascript: "console.log(accessByIndex(array, 1));",
+      python: "print(access_by_index(array, 1))",
+      cpp: "cout << accessByIndex(array, 1) << endl;",
+      java: "System.out.println(new Main().accessByIndex(array, 1));",
+    },
+  },
+  "forward-traversal": {
+    expected: "4 8 15",
+    statements: {
+      javascript: "forwardTraversal(array);",
+      python: "forward_traversal(array)",
+      cpp: "forwardTraversal(array);",
+      java: "new Main().forwardTraversal(array);",
+    },
+  },
+  "reverse-traversal": {
+    expected: "15 8 4",
+    statements: {
+      javascript: "reverseTraversal(array);",
+      python: "reverse_traversal(array)",
+      cpp: "reverseTraversal(array);",
+      java: "new Main().reverseTraversal(array);",
+    },
+  },
+  "range-traversal": {
+    expected: "8 15",
+    statements: {
+      javascript: "rangeTraversal(array, start, end);",
+      python: "range_traversal(array, start, end)",
+      cpp: "rangeTraversal(array, start, end);",
+      java: "new Main().rangeTraversal(array, start, end);",
+    },
+  },
   "linear-search": {
     expected: "2",
     calls: {
@@ -238,6 +287,16 @@ function javascriptSource(code: string, fixture: Fixture) {
       'console.log(array.join(" "));',
     ].join("\n");
   }
+  if (fixture.statements) {
+    return [
+      code,
+      "const array = [4, 8, 15];",
+      "const index = 1;",
+      "const start = 1;",
+      "const end = 2;",
+      fixture.statements.javascript,
+    ].join("\n");
+  }
   if (fixture.calls) {
     return [code, `console.log(${fixture.calls.javascript});`].join("\n");
   }
@@ -258,6 +317,16 @@ function pythonSource(code: string, fixture: Fixture) {
       "array = [3, 1, 2]",
       fixture.sortStatements.python,
       'print(" ".join(map(str, array)))',
+    ].join("\n");
+  }
+  if (fixture.statements) {
+    return [
+      code,
+      "array = [4, 8, 15]",
+      "index = 1",
+      "start = 1",
+      "end = 2",
+      fixture.statements.python,
     ].join("\n");
   }
   if (fixture.calls) {
@@ -284,6 +353,22 @@ int main() {
   vector<int> array = {3, 1, 2};
   ${fixture.sortStatements.cpp}
   for (int value : array) cout << value << " ";
+  return 0;
+}`;
+  }
+  if (fixture.statements) {
+    return `#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+${code}
+int main() {
+  vector<int> array = {4, 8, 15};
+  int n = static_cast<int>(array.size());
+  int index = 1;
+  int start = 1;
+  int end = 2;
+  ${fixture.statements.cpp}
   return 0;
 }`;
   }
@@ -327,6 +412,19 @@ ${code}
     int[] array = {3, 1, 2};
     ${fixture.sortStatements.java}
     for (int value : array) System.out.print(value + " ");
+  }
+}`;
+  }
+  if (fixture.statements) {
+    return `import java.util.Arrays;
+public class Main {
+${code}
+  public static void main(String[] args) {
+    int[] array = {4, 8, 15};
+    int index = 1;
+    int start = 1;
+    int end = 2;
+    ${fixture.statements.java}
   }
 }`;
   }

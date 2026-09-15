@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState, useEffect, useRef, useCallback } from "react";
+import { ReactNode, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -32,7 +32,9 @@ import {
 import type { CodeLineMapping } from "@/visualizers/registry/types";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { catalogStats } from "@/lib/catalog";
+import { usePracticeMode } from "./hooks/usePracticeMode";
+import { useVisualizerKeyboard } from "./hooks/useVisualizerKeyboard";
+import { useVisualizerTour } from "./hooks/useVisualizerTour";
 
 interface VisualizerLayoutProps {
   algorithm: Algorithm;
@@ -41,15 +43,6 @@ interface VisualizerLayoutProps {
   legend?: ReadonlyArray<StepLegendItem>;
   children: ReactNode;
   controls?: ReactNode;
-}
-
-function shuffleArray<T>(array: T[]): T[] {
-  const result = [...array];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
 }
 
 export function VisualizerLayout({
@@ -61,27 +54,28 @@ export function VisualizerLayout({
   controls,
 }: VisualizerLayoutProps) {
   const pathname = usePathname();
-  const { currentStepIndex, totalSteps, reducedMotion, isPlaying, pause, steps } =
-    usePlaybackStore();
+  const { currentStepIndex, totalSteps, reducedMotion } = usePlaybackStore();
   const [activeRightTab, setActiveRightTab] = useState<"pseudocode" | "code">("pseudocode");
   const [activeLowerTab, setActiveLowerTab] = useState<"explanation" | "log">("explanation");
   const [activeLanguage, setActiveLanguage] = useState<string>("python");
-  // activeLanguage is used in InspectorPanel via prop drilling
-  const [isPracticeMode, setIsPracticeMode] = useState(false);
-  const [showPracticePrompt, setShowPracticePrompt] = useState(false);
-  const [practiceOptions, setPracticeOptions] = useState<string[]>([]);
-  const [practiceAnswer, setPracticeAnswer] = useState<string>("");
-  const [practiceSelected, setPracticeSelected] = useState<string | null>(null);
-  const [practiceFeedback, setPracticeFeedback] = useState<"correct" | "incorrect" | null>(null);
-  const [showShortcuts, setShowShortcuts] = useState(false);
   const [showInspector, setShowInspector] = useState(false);
-  const [showTour, setShowTour] = useState(false);
-  const [tourStep, setTourStep] = useState(0);
   const canvasRegionRef = useRef<HTMLDivElement>(null);
-  const tourInitializedRef = useRef(false);
-  const tourModalRef = useRef<HTMLDivElement>(null);
-  const tourTriggerRef = useRef<HTMLElement | null>(null);
   const isMobile = useMediaQuery("(max-width: 1023px)");
+
+  // Extracted hooks
+  const {
+    isPracticeMode,
+    setIsPracticeMode,
+    togglePracticeMode,
+    showPracticePrompt,
+    practiceOptions,
+    practiceAnswer,
+    practiceSelected,
+    setPracticeSelected,
+    practiceFeedback,
+    handlePracticeSubmit,
+    handlePracticeSkip,
+  } = usePracticeMode();
 
   const { statusMessage, showStatus } = useStatusToast();
   const { isBookmarked, handleToggleBookmark } = useVisualizerBookmark(algorithm.id, showStatus);
@@ -107,210 +101,28 @@ export function VisualizerLayout({
     }
   }, [showStatus]);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const activeElement = document.activeElement;
-      if (
-        activeElement &&
-        (activeElement.tagName === "INPUT" ||
-          activeElement.tagName === "TEXTAREA" ||
-          activeElement.tagName === "SELECT" ||
-          (activeElement as HTMLElement).isContentEditable)
-      ) {
-        return;
-      }
+  const {
+    showTour,
+    closeTour,
+    tourStep,
+    nextTourStep,
+    prevTourStep,
+    goToTourStep,
+    tourModalRef,
+    tourSteps,
+  } = useVisualizerTour({
+    algorithmSlug: algorithm.slug,
+    algorithmName: algorithm.name,
+  });
 
-      if (event.key === "?" || (event.key === "/" && event.shiftKey)) {
-        event.preventDefault();
-        setShowShortcuts((prev) => !prev);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  // Focus management and keyboard trap for onboarding tour modal
-  useEffect(() => {
-    if (!showTour) return;
-
-    tourTriggerRef.current = (document.activeElement as HTMLElement) || null;
-
-    const timer = setTimeout(() => {
-      const focusable = tourModalRef.current?.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
-      if (focusable && focusable.length > 0) {
-        focusable[0].focus();
-      }
-    }, 50);
-
-    const handleModalKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        setShowTour(false);
-        return;
-      }
-
-      if (e.key === "Tab") {
-        const focusable = tourModalRef.current?.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        );
-        if (!focusable || focusable.length === 0) return;
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (e.shiftKey) {
-          if (document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleModalKeyDown);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("keydown", handleModalKeyDown);
-      tourTriggerRef.current?.focus?.();
-    };
-  }, [showTour]);
-
-  // Onboarding tour for first-time visitors
-  useEffect(() => {
-    if (tourInitializedRef.current) return;
-    tourInitializedRef.current = true;
-    // Use setTimeout to defer state update until after render
-    setTimeout(() => {
-      // Skip tour in test environments (Playwright sets navigator.webdriver)
-      if (typeof window !== "undefined" && window.navigator.webdriver) {
-        return;
-      }
-      // Also skip if a test flag is present in localStorage
-      if (localStorage.getItem("playwright-test-mode") === "true") {
-        return;
-      }
-      const hasSeenTour = localStorage.getItem(`visualizer-tour-${algorithm.slug}`);
-      if (!hasSeenTour) {
-        setShowTour(true);
-        localStorage.setItem(`visualizer-tour-${algorithm.slug}`, "true");
-      }
-    }, 0);
-  }, [algorithm.slug]);
-
-  // Custom event handlers for keyboard shortcuts
-  useEffect(() => {
-    const handlePracticeToggle = () => setIsPracticeMode((prev) => !prev);
-    const handleFullscreenToggle = () => handleFullscreen();
-    const handleBookmarkToggle = () => handleToggleBookmark();
-    const handleSaveSessionTrigger = () => handleSaveSession();
-    const handleTabPseudocode = () => setActiveRightTab("pseudocode");
-    const handleTabCode = () => setActiveRightTab("code");
-    const handleTabExplanation = () => setActiveLowerTab("explanation");
-    const handleTabLog = () => setActiveLowerTab("log");
-
-    window.addEventListener("toggle-practice-mode", handlePracticeToggle);
-    window.addEventListener("toggle-fullscreen", handleFullscreenToggle);
-    window.addEventListener("toggle-bookmark", handleBookmarkToggle);
-    window.addEventListener("save-session", handleSaveSessionTrigger);
-    window.addEventListener("tab-pseudocode", handleTabPseudocode);
-    window.addEventListener("tab-code", handleTabCode);
-    window.addEventListener("tab-explanation", handleTabExplanation);
-    window.addEventListener("tab-log", handleTabLog);
-
-    return () => {
-      window.removeEventListener("toggle-practice-mode", handlePracticeToggle);
-      window.removeEventListener("toggle-fullscreen", handleFullscreenToggle);
-      window.removeEventListener("toggle-bookmark", handleBookmarkToggle);
-      window.removeEventListener("save-session", handleSaveSessionTrigger);
-      window.removeEventListener("tab-pseudocode", handleTabPseudocode);
-      window.removeEventListener("tab-code", handleTabCode);
-      window.removeEventListener("tab-explanation", handleTabExplanation);
-      window.removeEventListener("tab-log", handleTabLog);
-    };
-  }, [handleFullscreen, handleToggleBookmark, handleSaveSession]);
-
-  // Onboarding tour for first-time visitors
-  useEffect(() => {
-    if (tourInitializedRef.current) return;
-    tourInitializedRef.current = true;
-    // Use setTimeout to defer state update until after render
-    setTimeout(() => {
-      // Skip tour in test environments (Playwright sets navigator.webdriver)
-      if (typeof window !== "undefined" && window.navigator.webdriver) {
-        return;
-      }
-      // Also skip if a test flag is present in localStorage
-      if (localStorage.getItem("playwright-test-mode") === "true") {
-        return;
-      }
-      const hasSeenTour = localStorage.getItem(`visualizer-tour-${algorithm.slug}`);
-      if (!hasSeenTour) {
-        setShowTour(true);
-        localStorage.setItem(`visualizer-tour-${algorithm.slug}`, "true");
-      }
-    }, 0);
-  }, [algorithm.slug]);
-
-  useEffect(() => {
-    if (!isPracticeMode || !isPlaying || currentStepIndex >= totalSteps - 1) return;
-
-    const shouldPause = Math.random() < 0.1;
-    if (shouldPause) {
-      pause();
-
-      const nextStep = steps[currentStepIndex + 1];
-      if (!nextStep) return;
-
-      const answerType = nextStep.actionType;
-
-      let answerText = "Continue operation";
-      if (answerType === "compare") answerText = "Compare elements";
-      else if (answerType === "swap") answerText = "Swap elements";
-      else if (answerType === "update") answerText = "Update a value";
-      else if (answerType === "highlight") answerText = "Highlight an element";
-
-      const distractorOptions = [
-        "Compare elements",
-        "Swap elements",
-        "Update a value",
-        "Highlight an element",
-        "Continue operation",
-      ].filter((o) => o !== answerText);
-
-      const options = shuffleArray([answerText, ...shuffleArray(distractorOptions).slice(0, 3)]);
-
-      const timer = setTimeout(() => {
-        setPracticeOptions(options);
-        setPracticeAnswer(answerText);
-        setPracticeSelected(null);
-        setPracticeFeedback(null);
-        setShowPracticePrompt(true);
-      }, 0);
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentStepIndex, isPracticeMode, isPlaying, totalSteps, steps, pause]);
-
-  const handlePracticeSubmit = () => {
-    if (practiceSelected === practiceAnswer) {
-      setPracticeFeedback("correct");
-      setTimeout(() => {
-        setShowPracticePrompt(false);
-        const { play } = usePlaybackStore.getState();
-        play();
-      }, 1500);
-    } else {
-      setPracticeFeedback("incorrect");
-    }
-  };
+  const { showShortcuts, closeShortcuts } = useVisualizerKeyboard({
+    togglePracticeMode,
+    handleFullscreen,
+    handleToggleBookmark,
+    handleSaveSession,
+    setActiveRightTab,
+    setActiveLowerTab,
+  });
 
   const handleShare = async () => {
     try {
@@ -556,11 +368,7 @@ export function VisualizerLayout({
 
                         <div className="flex items-center justify-between border-t border-border pt-4">
                           <button
-                            onClick={() => {
-                              setShowPracticePrompt(false);
-                              const { play } = usePlaybackStore.getState();
-                              play();
-                            }}
+                            onClick={handlePracticeSkip}
                             className="text-xs font-bold text-text-muted hover:text-text-primary cursor-pointer"
                           >
                             Skip
@@ -626,7 +434,7 @@ export function VisualizerLayout({
                         Keyboard Shortcuts
                       </h2>
                       <button
-                        onClick={() => setShowShortcuts(false)}
+                        onClick={closeShortcuts}
                         className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-all cursor-pointer"
                         aria-label="Close shortcuts"
                       >
@@ -812,7 +620,7 @@ export function VisualizerLayout({
                   Welcome to {algorithm.name}
                 </h2>
                 <button
-                  onClick={() => setShowTour(false)}
+                  onClick={closeTour}
                   className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-colors cursor-pointer"
                   aria-label="Close tour"
                 >
@@ -820,37 +628,6 @@ export function VisualizerLayout({
                 </button>
               </div>
               {(() => {
-                const tourSteps = [
-                  {
-                    title: "Canvas & Visualization",
-                    description:
-                      "Watch the algorithm animate step-by-step. Use the timeline or keyboard shortcuts (←/→) to navigate.",
-                  },
-                  {
-                    title: "Playback Controls",
-                    description:
-                      "Play, pause, restart, or jump to any step. Adjust speed with the slider.",
-                  },
-                  {
-                    title: "Step Legend",
-                    description:
-                      "Color-coded indicators show what each visual state means (e.g., compared, current, found).",
-                  },
-                  {
-                    title: "Inspector Panels",
-                    description: `View synchronized pseudocode, source code (${catalogStats.languageCount} languages), step-by-step explanation, and execution log.`,
-                  },
-                  {
-                    title: "Interactive Practice Mode",
-                    description:
-                      "Toggle on to get quizzed at random steps — predict the next operation to reinforce learning.",
-                  },
-                  {
-                    title: "Keyboard Shortcuts",
-                    description:
-                      "Press ? or Shift+/ anytime to see all shortcuts. Space = play/pause, 1/2 = pseudocode/code, E/L = explanation/log.",
-                  },
-                ];
                 const step = tourSteps[tourStep];
                 return (
                   <>
@@ -866,7 +643,7 @@ export function VisualizerLayout({
                     <div className="flex items-center justify-between border-t border-border pt-4">
                       {tourStep > 0 && (
                         <button
-                          onClick={() => setTourStep((s) => s - 1)}
+                          onClick={prevTourStep}
                           className="text-xs font-bold text-text-muted hover:text-text-primary cursor-pointer"
                         >
                           Previous
@@ -876,7 +653,7 @@ export function VisualizerLayout({
                         {tourSteps.map((_, i) => (
                           <button
                             key={i}
-                            onClick={() => setTourStep(i)}
+                            onClick={() => goToTourStep(i)}
                             className={cn(
                               "h-1.5 w-8 rounded-full transition-colors",
                               i === tourStep ? "bg-primary" : "bg-border"
@@ -887,14 +664,14 @@ export function VisualizerLayout({
                       </div>
                       {tourStep < tourSteps.length - 1 ? (
                         <button
-                          onClick={() => setTourStep((s) => s + 1)}
+                          onClick={nextTourStep}
                           className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover cursor-pointer"
                         >
                           Next
                         </button>
                       ) : (
                         <button
-                          onClick={() => setShowTour(false)}
+                          onClick={closeTour}
                           className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover cursor-pointer"
                         >
                           Get Started

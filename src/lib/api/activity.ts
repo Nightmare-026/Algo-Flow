@@ -10,6 +10,8 @@ export type ActivityItem = {
   metadata?: Record<string, unknown> | null;
 };
 
+export type Activity = ActivityItem;
+
 export async function getActivityTimeline(limit: number = 10): Promise<ActivityItem[]> {
   const supabase = await createClient();
   const safeLimit = Number.isInteger(limit) ? Math.min(Math.max(limit, 1), 50) : 10;
