@@ -47,14 +47,19 @@ export async function proxy(request: NextRequest) {
 
   // If the user is not authenticated and trying to access a protected route
   if (!user && requiresAuth) {
+    // Dev Mode Auth Bypass (Strictly local dev only, zero risk to production)
+    if (isDev && process.env.DEV_MOCK_AUTH === "true") {
+      return supabaseResponse;
+    }
+
     url.pathname = "/login";
     url.searchParams.set("next", path);
     // Important: we create a new response but must preserve cookies set by updateSession
     const redirectResponse = NextResponse.redirect(url);
     redirectResponse.headers.set("Content-Security-Policy", cspHeader);
-    // Copy cookies from supabaseResponse
+    // Copy cookies with full security attributes (httpOnly, secure, sameSite, maxAge)
     supabaseResponse.cookies.getAll().forEach((cookie) => {
-      redirectResponse.cookies.set(cookie.name, cookie.value);
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
     });
     return redirectResponse;
   }
@@ -66,7 +71,7 @@ export async function proxy(request: NextRequest) {
     const redirectResponse = NextResponse.redirect(url);
     redirectResponse.headers.set("Content-Security-Policy", cspHeader);
     supabaseResponse.cookies.getAll().forEach((cookie) => {
-      redirectResponse.cookies.set(cookie.name, cookie.value);
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
     });
     return redirectResponse;
   }

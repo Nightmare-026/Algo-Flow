@@ -109,6 +109,16 @@ export function StepTimeline() {
                 <button
                   key={step.id}
                   type="button"
+                  tabIndex={isCurrent ? 0 : -1}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                      e.preventDefault();
+                      goToStep(Math.min(totalSteps - 1, currentStepIndex + 1));
+                    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                      e.preventDefault();
+                      goToStep(Math.max(0, currentStepIndex - 1));
+                    }
+                  }}
                   onClick={() => goToStep(index)}
                   aria-current={isCurrent ? "step" : undefined}
                   aria-label={`Step ${index + 1}: ${step.title}. ${step.operation}`}

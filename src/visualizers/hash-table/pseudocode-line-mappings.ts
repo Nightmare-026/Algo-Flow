@@ -7,7 +7,7 @@ const probingSearch: LineMap = { 1: 1, 2: 1, 4: 2, 5: 3, 7: 4, 10: 5 };
 const probingDelete: LineMap = { 1: 1, 2: 1, 4: 2, 6: 4, 8: 6, 11: 6 };
 
 const mappings: Readonly<Record<string, LineMap>> = {
-  "division-hash-method": { 2: 1 },
+  "division-hash-method": { 1: 1, 2: 1 },
   "hash-insert": probingInsert,
   "linear-probing": probingInsert,
   "probing-insert": probingInsert,

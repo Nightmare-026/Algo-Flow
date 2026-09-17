@@ -20,7 +20,7 @@ export function StepLog() {
 
   if (steps.length === 0) {
     return (
-      <div className="flex h-full items-center justify-center rounded-xl border border-border bg-surface p-4 text-sm text-text-muted">
+      <div className="neu-inset flex h-full items-center justify-center rounded-none border border-border bg-surface p-4 text-sm text-text-muted">
         <ListChecks className="mr-2 h-3.5 w-3.5" />
         Generate steps to inspect the execution log.
       </div>
@@ -30,7 +30,7 @@ export function StepLog() {
   return (
     <div
       ref={containerRef}
-      className="h-full overflow-auto rounded-xl border border-border bg-surface p-2"
+      className="neu-inset h-full overflow-auto rounded-none border border-border bg-surface p-2"
     >
       <ol className="space-y-1">
         {steps.map((step, index) => {

@@ -75,22 +75,17 @@ erDiagram
         timestamp updated_at "Update Timestamp"
     }
 
-    "public.user_consents" {
-        uuid id PK "Row UUID"
-        uuid user_id FK "References auth.users(id) ON DELETE CASCADE"
-        string consent_type "e.g., analytics, cookies, terms"
-        boolean granted "True if Accepted"
-        string ip_hash "SHA256 of IP Address"
-        string user_agent "Client Browser UA"
-        timestamp created_at "Consent Timestamp"
-    }
-
-    "public.user_audit_logs" {
-        uuid id PK "Row UUID"
+    %% Observability & Telemetry Domain
+    "public.application_error_logs" {
+        uuid id PK "Log UUID"
         uuid user_id FK "References auth.users(id) ON DELETE SET NULL"
-        string action "e.g., login, password_change, export"
-        jsonb metadata "Event Details & Device Info"
-        timestamp created_at "Audit Timestamp"
+        string error_name "Error class or code"
+        string error_message "Truncated error description"
+        string error_stack "Stack trace"
+        jsonb context "Request and execution context"
+        string url "Page URL where error occurred"
+        string user_agent "Client User-Agent"
+        timestamp created_at "Logged Timestamp"
     }
 
     %% Visualizer & Learning Progress Domain
@@ -98,12 +93,12 @@ erDiagram
         uuid id PK "Row UUID"
         uuid user_id FK "References auth.users(id) ON DELETE CASCADE"
         string algorithm_id "Static Algorithm Identifier"
-        boolean completed "Algorithm Tracing Status"
+        string status "not_started | in_progress | completed | needs_revision"
         timestamp completed_at "Completion Timestamp"
         timestamp created_at "First Started Timestamp"
     }
 
-    "public.user_bookmarks" {
+    "public.bookmarks" {
         uuid id PK "Row UUID"
         uuid user_id FK "References auth.users(id) ON DELETE CASCADE"
         string algorithm_id "Bookmarked Algorithm Identifier"

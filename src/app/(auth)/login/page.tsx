@@ -40,6 +40,28 @@ export default async function LoginPage({
       title="Sign in to AlgoFlow"
       description="Log in to return to saved algorithms, sessions, and learning progress."
     >
+      {process.env.NODE_ENV === "development" && process.env.DEV_MOCK_AUTH === "true" ? (
+        <div className="mb-6 rounded-2xl border border-primary/30 bg-primary-muted/25 p-4 text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p className="font-bold text-primary flex items-center gap-1.5">
+                <span>🛠️</span> Local Dev Mode Active
+              </p>
+              <p className="text-text-secondary mt-0.5">
+                You can bypass login and explore the dashboard directly with a mock developer
+                profile.
+              </p>
+            </div>
+            <Link
+              href="/dashboard"
+              className="inline-flex min-h-9 items-center justify-center rounded-xl bg-primary px-4 text-xs font-bold text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all shrink-0"
+            >
+              Open Dashboard →
+            </Link>
+          </div>
+        </div>
+      ) : null}
+
       {params.oauth_hint === "google" ? (
         <Callout variant="info" title="Google Sign-In Detected" dismissible className="mb-6">
           <p>

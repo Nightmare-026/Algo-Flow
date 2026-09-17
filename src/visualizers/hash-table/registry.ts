@@ -22,56 +22,56 @@ function getCodeExamples(slug: string, algorithmId: string, isChaining: boolean)
 const rawHashTableRegistry: AlgorithmVisualizerDefinition[] = [
   {
     slug: "division-hash-method",
-    generateSteps: (data, opts) => generateDivisionHashSteps(opts.value!, opts.capacity!),
+    generateSteps: (data, opts) => generateDivisionHashSteps(data, opts.value, opts.capacity),
     getCodeExamples: getHashTableCodeExamples,
     codeLineMapping: hashTableCodeLineMappings["division-hash-method"],
   },
   {
     slug: "hash-insert",
     generateSteps: (data, opts) =>
-      generateLinearProbingInsertSteps(data, opts.value!, opts.capacity!),
+      generateLinearProbingInsertSteps(data, opts.value!, opts.capacity!, opts.probingStrategy),
     getCodeExamples: (slug, id) => getCodeExamples(slug, id, false),
     codeLineMapping: hashTableCodeLineMappings["hash-insert"],
   },
   {
     slug: "linear-probing",
     generateSteps: (data, opts) =>
-      generateLinearProbingInsertSteps(data, opts.value!, opts.capacity!),
+      generateLinearProbingInsertSteps(data, opts.value!, opts.capacity!, opts.probingStrategy),
     getCodeExamples: (slug, id) => getCodeExamples(slug, id, false),
     codeLineMapping: hashTableCodeLineMappings["linear-probing"],
   },
   {
     slug: "probing-insert",
     generateSteps: (data, opts) =>
-      generateLinearProbingInsertSteps(data, opts.value!, opts.capacity!),
+      generateLinearProbingInsertSteps(data, opts.value!, opts.capacity!, opts.probingStrategy),
     getCodeExamples: (slug, id) => getCodeExamples(slug, id, false),
     codeLineMapping: hashTableCodeLineMappings["probing-insert"],
   },
   {
     slug: "hash-search",
     generateSteps: (data, opts) =>
-      generateLinearProbingSearchSteps(data, opts.target!, opts.capacity!),
+      generateLinearProbingSearchSteps(data, opts.target!, opts.capacity!, opts.probingStrategy),
     getCodeExamples: (slug, id) => getCodeExamples(slug, id, false),
     codeLineMapping: hashTableCodeLineMappings["hash-search"],
   },
   {
     slug: "probing-search",
     generateSteps: (data, opts) =>
-      generateLinearProbingSearchSteps(data, opts.target!, opts.capacity!),
+      generateLinearProbingSearchSteps(data, opts.target!, opts.capacity!, opts.probingStrategy),
     getCodeExamples: (slug, id) => getCodeExamples(slug, id, false),
     codeLineMapping: hashTableCodeLineMappings["probing-search"],
   },
   {
     slug: "hash-delete",
     generateSteps: (data, opts) =>
-      generateLinearProbingDeleteSteps(data, opts.target!, opts.capacity!),
+      generateLinearProbingDeleteSteps(data, opts.target!, opts.capacity!, opts.probingStrategy),
     getCodeExamples: (slug, id) => getCodeExamples(slug, id, false),
     codeLineMapping: hashTableCodeLineMappings["hash-delete"],
   },
   {
     slug: "probing-delete",
     generateSteps: (data, opts) =>
-      generateLinearProbingDeleteSteps(data, opts.target!, opts.capacity!),
+      generateLinearProbingDeleteSteps(data, opts.target!, opts.capacity!, opts.probingStrategy),
     getCodeExamples: (slug, id) => getCodeExamples(slug, id, false),
     codeLineMapping: hashTableCodeLineMappings["probing-delete"],
   },

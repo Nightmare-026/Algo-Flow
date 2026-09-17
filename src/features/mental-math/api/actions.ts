@@ -111,18 +111,43 @@ export async function recordMentalMathSession(summary: SessionSummary): Promise<
       updated_at: new Date().toISOString(),
     });
 
-    // 4. Record to user activity timeline
-    await supabase.from("activity_timeline").insert({
-      user_id: user.id,
-      algorithm_id: `mental_math_${summary.operation}`,
-      action_type: "quiz_completed",
-      metadata: {
-        score: integrity.recalculatedScore,
-        accuracy: summary.accuracyPercentage,
-        mode: summary.mode,
-        operation: summary.operation,
-      },
-    });
+    // 4. Record to user activity timeline with domain and structured action type
+    try {
+      await supabase.from("activity_timeline").insert({
+        user_id: user.id,
+        domain: "mental_math",
+        algorithm_id: `mental_math_${summary.operation}`,
+        action_type: "math_session_completed",
+        metadata: {
+          score: integrity.recalculatedScore,
+          accuracy: summary.accuracyPercentage,
+          mode: summary.mode,
+          operation: summary.operation,
+          total_questions: summary.totalQuestions,
+          correct_count: summary.correctCount,
+        },
+      });
+    } catch {
+      // Fallback for older schema
+      await supabase.from("activity_timeline").insert({
+        user_id: user.id,
+        algorithm_id: `mental_math_${summary.operation}`,
+        action_type: "quiz_completed",
+        metadata: {
+          score: integrity.recalculatedScore,
+          accuracy: summary.accuracyPercentage,
+          mode: summary.mode,
+          operation: summary.operation,
+        },
+      });
+    }
+
+    // 5. Touch unified platform streak
+    try {
+      await supabase.rpc("touch_user_streak", { p_domain: "mental_math" });
+    } catch {
+      // non-blocking
+    }
 
     return {
       ok: true,
@@ -148,7 +173,7 @@ export async function submitDailyChallenge(summary: SessionSummary): Promise<Sub
   if (!integrity.isValid) {
     return {
       ok: false,
-      message: integrity.reason || "Score submission failed integrity check.",
+      message: integrity.reason || "Daily challenge integrity verification failed.",
     };
   }
 
@@ -174,6 +199,25 @@ export async function submitDailyChallenge(summary: SessionSummary): Promise<Sub
       },
       { onConflict: "user_id,challenge_date" }
     );
+
+    // Record daily challenge completed in timeline
+    try {
+      await supabase.from("activity_timeline").insert({
+        user_id: user.id,
+        domain: "mental_math",
+        algorithm_id: `mental_math_daily_${challengeDate}`,
+        action_type: "daily_completed",
+        metadata: {
+          score: integrity.recalculatedScore,
+          accuracy: summary.accuracyPercentage,
+          solve_time_ms: summary.totalTimeMs,
+          challenge_date: challengeDate,
+        },
+      });
+      await supabase.rpc("touch_user_streak", { p_domain: "mental_math" });
+    } catch {
+      // Non-blocking
+    }
 
     // Compute rank for this date
     const { count } = await supabase

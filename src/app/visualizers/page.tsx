@@ -77,8 +77,8 @@ export default function VisualizersPage() {
         dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
       />
       <Navbar />
-      <main id="main-content" className="flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8 lg:pt-40">
-        <div className="mx-auto max-w-7xl">
+      <main id="main-content" className="flex-1 pb-24 pt-32 lg:pt-40">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="section-kicker">Visualizer library</p>
             <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">

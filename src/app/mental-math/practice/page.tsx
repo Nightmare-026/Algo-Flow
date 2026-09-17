@@ -114,7 +114,7 @@ export default function PracticeGamePage() {
   // Show Drill Setup Studio if status is idle or user explicitly opened config
   if (status === "idle" || showConfig) {
     return (
-      <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-16">
+      <div className="flex w-full flex-col pb-16">
         <ConfigModal
           initialConfig={{
             ...config,
@@ -139,7 +139,7 @@ export default function PracticeGamePage() {
   }
 
   return (
-    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-3 sm:gap-4">
+    <div className="flex w-full flex-col gap-3 sm:gap-4">
       <SessionHUD
         mode={config.mode}
         currentIndex={currentIndex}

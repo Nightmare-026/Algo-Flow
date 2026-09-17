@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AlertCircle, FileEdit, Search, Shuffle, Target, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   defaultVisualizerInputOptions,
   parseNumberList,
@@ -18,8 +19,11 @@ interface HashTableInputControlsProps {
   onOptionsChange?: (options: VisualizerInputOptions) => void;
 }
 
-const needsValue = (slug: string) => slug.includes("insert");
+const needsValue = (slug: string) =>
+  slug.includes("insert") || slug.includes("division-hash-method");
 const needsTarget = (slug: string) => slug.includes("search") || slug.includes("delete");
+const isOpenAddressing = (slug: string) =>
+  slug.includes("probing") || slug.includes("linear-probing");
 
 export function HashTableInputControls({
   onGenerate,
@@ -60,7 +64,7 @@ export function HashTableInputControls({
           {/* Pod 1: Elements Size & Random Preset */}
           <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
             <div className="flex items-center gap-1.5 pr-1">
-              <span className="font-mono text-[10px] font-semibold text-text-muted">Elements</span>
+              <span className="font-mono text-[10px] font-semibold text-text-muted">Keys</span>
               <input
                 type="range"
                 min="1"
@@ -111,19 +115,70 @@ export function HashTableInputControls({
               Build
             </Button>
           </form>
+
+          {/* Pod 3: Probing Strategy Selector for Open Addressing */}
+          {isOpenAddressing(slug) && (
+            <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+              <span className="font-mono text-[10px] font-semibold text-text-muted px-1">
+                Probe:
+              </span>
+              <button
+                type="button"
+                onClick={() => onOptionsChange?.({ ...options, probingStrategy: "linear" })}
+                className={cn(
+                  "h-6 rounded px-2 font-mono text-[10px] font-bold transition-colors",
+                  !options.probingStrategy || options.probingStrategy === "linear"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                )}
+                title="Linear Probing: h(k, i) = (h(k) + i) mod m"
+              >
+                Linear (+i)
+              </button>
+              <button
+                type="button"
+                onClick={() => onOptionsChange?.({ ...options, probingStrategy: "quadratic" })}
+                className={cn(
+                  "h-6 rounded px-2 font-mono text-[10px] font-bold transition-colors",
+                  options.probingStrategy === "quadratic"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                )}
+                title="Quadratic Probing: h(k, i) = (h(k) + i²) mod m"
+              >
+                Quadratic (+i²)
+              </button>
+              <button
+                type="button"
+                onClick={() => onOptionsChange?.({ ...options, probingStrategy: "double-hashing" })}
+                className={cn(
+                  "h-6 rounded px-2 font-mono text-[10px] font-bold transition-colors",
+                  options.probingStrategy === "double-hashing"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                )}
+                title="Double Hashing: h(k, i) = (h₁(k) + i · h₂(k)) mod m"
+              >
+                Double (+i·h₂)
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Right Section: Context Parameters Pod */}
         <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)] lg:ml-auto">
           <label className="flex items-center gap-1.5 font-mono text-[10px] font-semibold text-text-secondary">
             <Database className="h-3 w-3 text-primary" aria-hidden="true" />
-            <span className="hidden sm:inline">Size:</span>
+            <span className="hidden sm:inline">Capacity (m):</span>
             <input
               type="number"
               value={options.capacity}
-              onChange={(event) => updateOption("capacity", Number(event.target.value))}
+              onChange={(event) =>
+                updateOption("capacity", Math.max(1, Number(event.target.value)))
+              }
               className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
               min={1}
+              max={31}
               aria-label="Table capacity size"
             />
           </label>
@@ -131,13 +186,15 @@ export function HashTableInputControls({
           {needsValue(slug) && (
             <label className="flex items-center gap-1.5 font-mono text-[10px] font-semibold text-text-secondary">
               <Target className="h-3 w-3 text-primary" aria-hidden="true" />
-              <span className="hidden sm:inline">Value:</span>
+              <span className="hidden sm:inline">
+                {slug.includes("division") ? "Key (k):" : "Key:"}
+              </span>
               <input
                 type="number"
                 value={options.value}
                 onChange={(event) => updateOption("value", Number(event.target.value))}
                 className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
-                aria-label="Value to insert/find"
+                aria-label="Key to hash or insert"
               />
             </label>
           )}

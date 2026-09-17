@@ -120,10 +120,12 @@ function verifyKeys(expected: number[], actions: ReadonlyArray<VisualStep["actio
 
 function verifyHashStep(steps: ReadonlyArray<VisualStep>) {
   const failures: string[] = [];
-  if (steps.length !== 1 || steps[0].actionType !== "hash")
-    failures.push("Division hashing must emit one hash step.");
-  if (!steps[0]?.highlights.active?.includes("bucket-7"))
+  if (steps.length === 0 || !steps.some((step) => step.actionType === "hash"))
+    failures.push("Division hashing must emit a hash step.");
+  if (!steps.some((step) => step.highlights.active?.includes("bucket-7")))
     failures.push("23 mod 8 must select bucket 7.");
+  if (steps.at(-1)?.actionType === "error")
+    failures.push("Valid hash input must not finish with an error.");
   return failures;
 }
 

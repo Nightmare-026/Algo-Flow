@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { ErrorState } from "@/components/feedback/ErrorState";
+import { logger } from "@/lib/observability/logger";
 import "./globals.css";
 
 export default function GlobalError({
@@ -14,13 +15,18 @@ export default function GlobalError({
   unstable_retry?: () => void;
 }) {
   useEffect(() => {
-    console.error("[global-error]", error);
+    logger.error(error, {
+      digest: error.digest,
+      source: "global-error-boundary",
+    });
   }, [error]);
 
   return (
     <html lang="en">
-      <body>
+      <head>
         <title>Something went wrong | AlgoFlow</title>
+      </head>
+      <body>
         <ErrorState
           title="AlgoFlow could not load"
           reference={error.digest}

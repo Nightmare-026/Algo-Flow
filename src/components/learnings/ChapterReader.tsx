@@ -248,6 +248,21 @@ export function ChapterReader({ module, chapter, content, navigation }: ChapterR
       <div
         className="prose-learnings max-w-none"
         dangerouslySetInnerHTML={{ __html: content.htmlContent }}
+        onClick={(e) => {
+          const target = e.target as HTMLElement;
+          const btn = target.closest<HTMLButtonElement>("[data-copy-btn]");
+          if (btn) {
+            const wrapper = btn.closest(".code-block-wrapper");
+            const codeEl = wrapper?.querySelector("code");
+            if (codeEl) {
+              navigator.clipboard.writeText(codeEl.innerText);
+              btn.innerText = "Copied!";
+              setTimeout(() => {
+                btn.innerText = "Copy";
+              }, 2000);
+            }
+          }
+        }}
       />
 
       {/* Chapter Bottom Navigation */}

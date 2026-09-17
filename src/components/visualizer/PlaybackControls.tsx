@@ -86,7 +86,7 @@ export function PlaybackControls() {
       } else if (event.key === "ArrowLeft" || event.key === "j" || event.key === "J") {
         event.preventDefault();
         previousStep();
-      } else if (event.key === "ArrowRight" || event.key === "l" || event.key === "L") {
+      } else if (event.key === "ArrowRight") {
         event.preventDefault();
         nextStep();
       } else if (event.key === "r" || event.key === "R") {

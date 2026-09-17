@@ -27,9 +27,15 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setUser(data.user);
+    });
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
+      }
     });
     return () => data.subscription.unsubscribe();
   }, []);
@@ -129,23 +135,19 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
               <div className="hidden items-center gap-2 sm:flex">
                 <Link
                   href="/dashboard"
-                  className="neu-inset flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors"
+                  title={`Signed in as ${user.email} - View Dashboard`}
+                  aria-label={`Go to dashboard for ${user.email}`}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface font-display text-sm font-bold text-text-primary shadow-[var(--shadow-raised-sm)] transition-colors duration-200 hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25"
                 >
-                  <span className="h-2 w-2 rounded-full bg-primary" />
-                  <span className="max-w-32 truncate">
-                    {user.user_metadata?.first_name || user.email?.split("@")[0]}
-                  </span>
+                  {(
+                    user.user_metadata?.first_name ||
+                    user.user_metadata?.full_name ||
+                    user.email?.split("@")[0] ||
+                    "U"
+                  )
+                    .charAt(0)
+                    .toUpperCase()}
                 </Link>
-                <form action={signout}>
-                  <button
-                    className={buttonVariants({ variant: "ghost", size: "sm" })}
-                    type="submit"
-                    aria-label="Sign out"
-                  >
-                    <LogOut className="h-4 w-4" aria-hidden="true" />
-                    <span className="sr-only sm:not-sr-only">Log out</span>
-                  </button>
-                </form>
               </div>
             ) : (
               <div className="hidden items-center gap-2 sm:flex">

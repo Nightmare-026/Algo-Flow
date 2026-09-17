@@ -1,12 +1,11 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { checkRateLimit } from "@/lib/security/rate-limit";
 import { headers } from "next/headers";
 
-const FEEDBACK_TYPES = ["bug_report", "feature_request", "rating", "general"] as const;
-type FeedbackType = (typeof FEEDBACK_TYPES)[number];
+export const FEEDBACK_TYPES = ["bug_report", "feature_request", "rating", "general"] as const;
+export type FeedbackType = (typeof FEEDBACK_TYPES)[number];
 
 export type FeedbackPayload = {
   type: FeedbackType;
@@ -21,24 +20,6 @@ export type FeedbackResult = {
   success: boolean;
   error?: string;
 };
-
-/* ---------- Rate limiter (5 submissions per hour) ---------- */
-let ratelimit: Ratelimit | null = null;
-
-function getRateLimiter(): Ratelimit | null {
-  if (ratelimit) return ratelimit;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return null;
-
-  ratelimit = new Ratelimit({
-    redis: new Redis({ url, token }),
-    limiter: Ratelimit.slidingWindow(5, "1 h"),
-    analytics: false,
-    prefix: "feedback",
-  });
-  return ratelimit;
-}
 
 /* ---------- Validation ---------- */
 const EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
@@ -83,18 +64,15 @@ export async function submitFeedback(payload: FeedbackPayload): Promise<Feedback
   const validationError = validatePayload(payload);
   if (validationError) return { success: false, error: validationError };
 
-  /* Rate limit */
+  /* Rate limit (5 submissions per hour per IP) */
   const headerStore = await headers();
   const ip = headerStore.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const limiter = getRateLimiter();
-  if (limiter) {
-    const { success: allowed } = await limiter.limit(`feedback:${ip}`);
-    if (!allowed) {
-      return {
-        success: false,
-        error: "You've submitted too many feedback entries. Please try again later.",
-      };
-    }
+  const rateLimitResult = await checkRateLimit(`feedback:${ip}`, 5, 3600000);
+  if (!rateLimitResult.success) {
+    return {
+      success: false,
+      error: "You've submitted too many feedback entries. Please try again later.",
+    };
   }
 
   /* Detect user */

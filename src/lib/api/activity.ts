@@ -4,7 +4,14 @@ import { createClient } from "@/lib/supabase/server";
 
 export type ActivityItem = {
   id: string;
-  action_type: "completed" | "bookmarked" | "saved_session" | "quiz_completed";
+  domain?: "dsa" | "mental_math";
+  action_type:
+    | "completed"
+    | "bookmarked"
+    | "saved_session"
+    | "quiz_completed"
+    | "math_session_completed"
+    | "daily_completed";
   algorithm_id: string;
   created_at: string | null;
   metadata?: Record<string, unknown> | null;
@@ -12,7 +19,10 @@ export type ActivityItem = {
 
 export type Activity = ActivityItem;
 
-export async function getActivityTimeline(limit: number = 10): Promise<ActivityItem[]> {
+export async function getActivityTimeline(
+  limit: number = 10,
+  domainFilter?: "all" | "dsa" | "mental_math"
+): Promise<ActivityItem[]> {
   const supabase = await createClient();
   const safeLimit = Number.isInteger(limit) ? Math.min(Math.max(limit, 1), 50) : 10;
 
@@ -22,14 +32,29 @@ export async function getActivityTimeline(limit: number = 10): Promise<ActivityI
 
   if (!user) return [];
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("activity_timeline")
-    .select("id, action_type, algorithm_id, created_at, metadata")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(safeLimit);
+    .select("id, domain, action_type, algorithm_id, created_at, metadata")
+    .eq("user_id", user.id);
 
-  if (error) throw new Error("Activity timeline could not be loaded.");
+  if (domainFilter && domainFilter !== "all") {
+    query = query.eq("domain", domainFilter);
+  }
 
-  return (data as ActivityItem[] | null) ?? [];
+  const { data, error } = await query.order("created_at", { ascending: false }).limit(safeLimit);
+
+  if (error) {
+    // Gracefully handle if domain column not yet migrated
+    const fallback = await supabase
+      .from("activity_timeline")
+      .select("id, action_type, algorithm_id, created_at, metadata")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(safeLimit);
+
+    if (fallback.error) throw new Error("Activity timeline could not be loaded.");
+    return (fallback.data as unknown as ActivityItem[] | null) ?? [];
+  }
+
+  return (data as unknown as ActivityItem[] | null) ?? [];
 }

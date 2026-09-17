@@ -42,6 +42,7 @@ export function generateChainingInsertSteps(
   });
 
   const hashIndex = valueToInsert % tableSize;
+  state.activeFormula = `h(${valueToInsert}) = ${valueToInsert} % ${tableSize} = ${hashIndex}`;
   steps.push({
     id: uuidv4(),
     stepNumber: stepNumber++,
@@ -142,6 +143,7 @@ export function generateChainingSearchSteps(
   });
 
   const hashIndex = targetValue % tableSize;
+  state.activeFormula = `h(${targetValue}) = ${targetValue} % ${tableSize} = ${hashIndex}`;
   steps.push({
     id: uuidv4(),
     stepNumber: stepNumber++,
@@ -254,6 +256,7 @@ export function generateChainingDeleteSteps(
   });
 
   const hashIndex = targetValue % tableSize;
+  state.activeFormula = `h(${targetValue}) = ${targetValue} % ${tableSize} = ${hashIndex}`;
   steps.push({
     id: uuidv4(),
     stepNumber: stepNumber++,

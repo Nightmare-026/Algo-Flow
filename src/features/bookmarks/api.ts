@@ -93,4 +93,27 @@ export type BookmarkAlgorithm = {
   id: string;
   slug: string;
   name: string;
+  difficulty?: string;
+  shortDescription?: string;
+  dataStructureId?: string;
 };
+
+export async function getBookmarkedAlgorithmItems(
+  providedIds?: string[]
+): Promise<BookmarkAlgorithm[]> {
+  const { algorithms } = await import("@/data/seed/algorithms");
+  const bookmarkIds = providedIds !== undefined ? providedIds : await getBookmarks();
+  if (bookmarkIds.length === 0) return [];
+
+  const set = new Set(bookmarkIds);
+  return algorithms
+    .filter((a) => set.has(a.id))
+    .map((a) => ({
+      id: a.id,
+      slug: a.slug,
+      name: a.name,
+      difficulty: a.difficulty,
+      shortDescription: a.shortDescription,
+      dataStructureId: a.dataStructureId,
+    }));
+}

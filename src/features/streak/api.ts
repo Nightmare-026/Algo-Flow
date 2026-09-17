@@ -8,7 +8,10 @@ export type UserStreak = {
   last_activity_date: string | null;
 };
 
-export async function updateStreakOnActivity(): Promise<UserStreak | null> {
+export async function updateStreakOnActivity(
+  domain: "dsa" | "mental_math" = "dsa",
+  clientTimezone?: string
+): Promise<UserStreak | null> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -16,14 +19,31 @@ export async function updateStreakOnActivity(): Promise<UserStreak | null> {
 
   if (!user) return null;
 
-  const { data, error } = await supabase.rpc("touch_user_streak");
-  if (error) throw new Error("Streak could not be updated.");
+  const timezone = clientTimezone || "UTC";
 
-  return data
+  let resultData = null;
+  const { data, error } = await supabase.rpc("touch_user_streak", {
+    p_timezone: timezone,
+    p_domain: domain,
+  });
+  if (error) {
+    const fallback = await supabase.rpc("touch_user_streak", { p_domain: domain });
+    if (fallback.error) {
+      const basicFallback = await supabase.rpc("touch_user_streak", {});
+      if (basicFallback.error) throw new Error("Streak could not be updated.");
+      resultData = basicFallback.data;
+    } else {
+      resultData = fallback.data;
+    }
+  } else {
+    resultData = data;
+  }
+
+  return resultData
     ? {
-        current_streak: data.current_streak ?? 0,
-        max_streak: data.max_streak ?? 0,
-        last_activity_date: data.last_activity_date,
+        current_streak: resultData.current_streak ?? 0,
+        max_streak: resultData.max_streak ?? 0,
+        last_activity_date: resultData.last_activity_date,
       }
     : null;
 }

@@ -190,7 +190,7 @@ export function CodePanel({
 
   return (
     <section
-      className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]"
+      className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-[var(--shadow-raised-sm)]"
       aria-label="Source code"
     >
       <div className="flex min-h-[38px] shrink-0 items-center justify-between border-b border-border bg-surface px-2">

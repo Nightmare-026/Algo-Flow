@@ -16,25 +16,19 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
   const [state, formAction, isPending] = useActionState(setAccountPassword, null);
 
   return (
-    <section className="neu-raised rounded-3xl p-6 sm:p-8 border border-border bg-surface flex flex-col gap-5 shadow-[var(--shadow-raised-sm)]">
+    <section className="neu-raised rounded-3xl p-6 sm:p-8 border border-border bg-surface flex flex-col justify-between gap-6 shadow-[var(--shadow-raised-sm)] h-full">
+      {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
           <div className="flex h-11 w-11 rounded-2xl bg-primary-muted border border-primary/20 text-primary items-center justify-center shadow-inner shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold font-display text-text-primary">
-                Account Security &amp; Access
-              </h2>
-              {isGoogleUser && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-primary-muted text-primary border border-primary/20">
-                  Google Linked
-                </span>
-              )}
-            </div>
+            <h2 className="text-lg font-bold font-display text-text-primary">
+              Account Security &amp; Access
+            </h2>
             <p className="text-xs text-text-secondary mt-0.5">
-              Manage how you sign in to AlgoFlow. Primary Email:{" "}
+              Manage sign-in credentials for{" "}
               <strong className="text-text-primary">{email || "Your Account"}</strong>
             </p>
           </div>
@@ -44,7 +38,7 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
           className={cn(
-            "inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] transition-all active:scale-95 cursor-pointer shrink-0",
+            "inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] transition-all active:scale-95 cursor-pointer shrink-0 self-start sm:self-auto",
             isOpen
               ? "border border-border bg-surface text-text-secondary hover:bg-surface-hover"
               : "bg-primary text-white hover:bg-primary-hover"
@@ -56,6 +50,15 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
           </span>
         </button>
       </div>
+
+      {!isOpen && (
+        <div className="mt-auto pt-2">
+          <p className="text-xs text-text-muted leading-relaxed">
+            Manage your credentials and password security. You can add or update your account
+            password at any time to sign in securely across devices.
+          </p>
+        </div>
+      )}
 
       {/* Accordion Content */}
       {isOpen && (

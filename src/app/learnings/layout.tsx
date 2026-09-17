@@ -22,7 +22,13 @@ export default async function LearningsLayout({ children }: { children: React.Re
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <Navbar initialUser={user} />
-      <div className="flex-1 pt-18 flex flex-col min-h-0">{children}</div>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="flex-1 pt-18 flex flex-col min-h-0 outline-none"
+      >
+        {children}
+      </main>
     </div>
   );
 }

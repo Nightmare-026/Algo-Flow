@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function MentalMathHubPage() {
   return (
-    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-12 pt-4 pb-24">
+    <div className="flex w-full flex-col gap-10 pt-1 pb-16">
       {/* Curriculum & Operations Explorer Catalog */}
       <section className="flex flex-col gap-5">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">

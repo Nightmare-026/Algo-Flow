@@ -9,31 +9,48 @@ export type DailyChallenge = {
   algorithm_id: string;
 };
 
-// Simple pseudo-random generator seeded by a date string (YYYY-MM-DD)
-// This guarantees the same algorithm is chosen on the same day for all users,
-// even if we don't have it explicitly seeded in the DB for some reason.
+// Deterministic pseudo-random generator seeded by a date string (YYYY-MM-DD)
 function getAlgorithmIdForDate(dateStr: string): string {
   const publishedAlgos = algorithms.filter((a) => a.isPublished);
   if (publishedAlgos.length === 0) return "";
 
-  // Hash the date string to a number
   let hash = 0;
   for (let i = 0; i < dateStr.length; i++) {
     hash = (hash << 5) - hash + dateStr.charCodeAt(i);
-    hash |= 0; // Convert to 32bit integer
+    hash |= 0;
   }
 
   const index = Math.abs(hash) % publishedAlgos.length;
   return publishedAlgos[index].id;
 }
 
+/**
+ * Fetches the daily algorithm challenge, prioritizing the database table
+ * with seamless fallback to deterministic daily calculation.
+ */
 export async function getDailyChallenge(): Promise<DailyChallenge | null> {
   const todayStr = new Date().toISOString().split("T")[0];
+  const supabase = await createClient();
 
-  // In a robust implementation, we'd fetch from DB first.
-  // But deterministic generation based on date is simple and effective for MVP.
+  try {
+    const { data } = await supabase
+      .from("daily_challenges")
+      .select("id, challenge_date, algorithm_id")
+      .eq("challenge_date", todayStr)
+      .maybeSingle();
+
+    if (data && data.algorithm_id) {
+      return {
+        id: data.id,
+        challenge_date: data.challenge_date,
+        algorithm_id: data.algorithm_id,
+      };
+    }
+  } catch {
+    // Database query failed or table unseeded, fall through to deterministic PRNG
+  }
+
   const algoId = getAlgorithmIdForDate(todayStr);
-
   if (!algoId) return null;
 
   return {
@@ -53,17 +70,44 @@ export async function isChallengeCompleted(algorithmId: string): Promise<boolean
   const todayStr = new Date().toISOString().split("T")[0];
   const startOfDay = new Date(todayStr).toISOString();
 
-  // Check if they completed a quiz or visualizer for this algo today
-  const { data, error } = await supabase
-    .from("activity_timeline")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("algorithm_id", algorithmId)
-    .gte("created_at", startOfDay)
-    .in("action_type", ["completed", "quiz_completed"])
-    .limit(1);
+  try {
+    const { data, error } = await supabase
+      .from("activity_timeline")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("algorithm_id", algorithmId)
+      .gte("created_at", startOfDay)
+      .in("action_type", ["completed", "quiz_completed", "daily_completed"])
+      .limit(1);
 
-  if (error) throw new Error("Challenge status could not be loaded.");
+    if (error) return false;
+    return (data?.length ?? 0) > 0;
+  } catch {
+    return false;
+  }
+}
 
-  return (data?.length ?? 0) > 0;
+/**
+ * Checks if the user completed today's Mental Math daily sprint.
+ */
+export async function isMentalMathDailyCompleted(dateStr?: string): Promise<boolean> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return false;
+
+  const targetDate = dateStr || new Date().toISOString().split("T")[0];
+  try {
+    const { data } = await supabase
+      .from("mental_math_daily_attempts")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("challenge_date", targetDate)
+      .maybeSingle();
+
+    return !!data;
+  } catch {
+    return false;
+  }
 }

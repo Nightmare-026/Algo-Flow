@@ -251,7 +251,7 @@ Each `api.ts` creates a Supabase server client, authenticates, and performs data
 - `VisualizerLayout.tsx` (782 lines) is a large component with many state variables — refactoring into smaller pieces is a known improvement area
 - `public/agent-inspector.js` is a debugging script that only loads in development (`process.env.NODE_ENV === "development"`)
 - The mental math feature has its own sub-routing and component tree under `src/app/mental-math/` and `src/features/mental-math/`
-- No CI/CD is configured — all validation runs locally
+- Automated CI is configured via GitHub Actions (`.github/workflows/ci.yml`) running format check, linter, typecheck, unit tests, and build validation.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

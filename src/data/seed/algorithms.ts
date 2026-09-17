@@ -1523,6 +1523,27 @@ const rawAlgorithms: Algorithm[] = [
 
   // ==================== LINKED LIST ====================
   {
+    id: "alg_ll_types",
+    operationId: "op_ll_types",
+    dataStructureId: "ds_linked_list",
+    name: "Linked List Types",
+    slug: "linked-list-types",
+    difficulty: "easy",
+    timeComplexityBest: "O(1)",
+    timeComplexityAverage: "O(1)",
+    timeComplexityWorst: "O(1)",
+    spaceComplexity: "O(1)",
+    shortDescription:
+      "Compare Singly, Doubly, and Circular Linked Lists structure and node layouts.",
+    longDescription:
+      "An overview of node structures across linked list variants: Singly (next pointer), Doubly (next and prev pointers), and Circular (tail points back to head).",
+    prerequisites: [],
+    tags: ["basics", "pointers", "overview"],
+    visualizerType: "linked-list",
+    priority: "P0",
+    isPublished: true,
+  },
+  {
     id: "alg_ll_traversal",
     operationId: "op_ll_traversal",
     dataStructureId: "ds_linked_list",

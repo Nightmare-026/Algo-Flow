@@ -888,11 +888,17 @@
   border-color: var(--primary);
 }
 
-/* Suppress MathML and annotation text duplication across all browsers */
+/* Visually clip MathML and annotations to avoid visual duplication while keeping them accessible to screen readers */
 .katex-mathml,
-.annotation,
-math {
-  display: none !important;
+.annotation {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  height: 1px !important;
+  width: 1px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
 }
 
 /* ==========================================================================

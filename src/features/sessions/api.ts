@@ -5,15 +5,7 @@ import type { UserActionResult } from "@/features/bookmarks/api";
 import type { Json } from "@/types/database";
 import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
 import { checkRateLimit } from "@/lib/security/rate-limit";
-
-function toJson(value: unknown): Json {
-  const serialized = JSON.stringify(value);
-  if (serialized === undefined) {
-    throw new Error("Session state is not JSON serializable.");
-  }
-
-  return JSON.parse(serialized) as Json;
-}
+import { safeSerializeJson } from "@/lib/security/safe-json";
 
 export type SavedSession = {
   id: string;
@@ -46,6 +38,16 @@ export async function saveSession(
     return { ok: false, message: "Session state is invalid." };
   }
 
+  const serializedInput = safeSerializeJson(inputData);
+  if (!serializedInput.ok) {
+    return { ok: false, message: serializedInput.error };
+  }
+
+  const serializedVisual = safeSerializeJson(visualState);
+  if (!serializedVisual.ok) {
+    return { ok: false, message: serializedVisual.error };
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -66,9 +68,9 @@ export async function saveSession(
       user_id: user.id,
       algorithm_id: normalizedAlgorithmId,
       title: title.trim().slice(0, 200),
-      input_data: toJson(inputData),
+      input_data: serializedInput.data,
       current_step: currentStep,
-      visual_state: toJson(visualState),
+      visual_state: serializedVisual.data,
       speed,
       code_language: codeLanguage,
     })

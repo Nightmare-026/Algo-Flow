@@ -219,12 +219,21 @@ function run(
 ): { ok: true; output: string } | { ok: false; reason: string } {
   let attempts = 0;
   while (attempts < 10) {
-    const result = spawnSync(command, args, {
+    let result = spawnSync(command, args, {
       cwd,
       encoding: "utf8",
       windowsHide: true,
       timeout: 20_000,
     });
+    if (result.error && process.platform === "win32") {
+      result = spawnSync(`"${command}"`, args, {
+        cwd,
+        encoding: "utf8",
+        windowsHide: true,
+        timeout: 20_000,
+        shell: true,
+      });
+    }
     if (result.error) {
       if (process.platform === "win32" && attempts < 9) {
         attempts++;
@@ -347,6 +356,7 @@ function cppSource(code: string, fixture: Fixture) {
     return `#include <algorithm>
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 using namespace std;
 ${code}
 int main() {
@@ -360,6 +370,7 @@ int main() {
     return `#include <algorithm>
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 using namespace std;
 ${code}
 int main() {
@@ -380,6 +391,7 @@ int main() {
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 using namespace std;
 ${code}
 int main() {
@@ -390,6 +402,7 @@ int main() {
   }
   return `#include <iostream>
 #include <vector>
+#include <stdexcept>
 using namespace std;
 int main() {
   vector<int> array = {4, 8, 15};
@@ -480,8 +493,21 @@ function verifyLanguage(
     const program = process.platform === "win32" ? "example.exe" : "./example";
     writeFileSync(source, cppSource(code, fixture));
     const compilation = run("g++", [source, "-std=c++11", "-o", program], directory);
-    if (compilation.ok) waitForExecutablePolicyScan();
-    execution = compilation.ok ? runFreshExecutable(program, directory) : compilation;
+    if (!compilation.ok) {
+      return { status: "fail", reason: `g++ compilation error: ${compilation.reason}` };
+    }
+    waitForExecutablePolicyScan();
+    execution = runFreshExecutable(program, directory);
+    if (
+      !execution.ok &&
+      process.platform === "win32" &&
+      /Device Guard|EBUSY|EPERM|UNKNOWN/i.test(execution.reason)
+    ) {
+      return {
+        status: "not-run",
+        reason: `Windows execution policy blocked binary: ${execution.reason}`,
+      };
+    }
   } else {
     if (!toolchain.java) {
       return { status: "not-run", reason: "javac is unavailable" };
@@ -489,7 +515,20 @@ function verifyLanguage(
     const source = join(directory, "Main.java");
     writeFileSync(source, javaSource(code, fixture));
     const compilation = run("javac", [source], directory);
-    execution = compilation.ok ? run("java", ["-cp", directory, "Main"], directory) : compilation;
+    if (!compilation.ok) {
+      return { status: "fail", reason: `javac compilation error: ${compilation.reason}` };
+    }
+    execution = run("java", ["-cp", directory, "Main"], directory);
+    if (
+      !execution.ok &&
+      process.platform === "win32" &&
+      /Device Guard|EBUSY|EPERM|UNKNOWN/i.test(execution.reason)
+    ) {
+      return {
+        status: "not-run",
+        reason: `Windows execution policy blocked java: ${execution.reason}`,
+      };
+    }
   }
 
   if (!execution.ok) return { status: "fail", reason: execution.reason };

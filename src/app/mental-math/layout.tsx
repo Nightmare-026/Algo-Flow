@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { createClient } from "@/lib/supabase/server";
-import { MentalMathSubNav } from "@/features/mental-math/components/MentalMathSubNav";
+import { MentalMathShell } from "@/features/mental-math/components/MentalMathSubNav";
 
 export const metadata: Metadata = {
   title: "Mental Math",
@@ -19,11 +19,7 @@ export default async function MentalMathLayout({ children }: { children: React.R
   return (
     <div className="page-shell flex flex-col min-h-screen">
       <Navbar initialUser={user} />
-      <main id="main-content" className="flex-1 pt-20 sm:pt-22 pb-6">
-        <MentalMathSubNav />
-        {children}
-      </main>
-      <Footer />
+      <MentalMathShell footer={<Footer />}>{children}</MentalMathShell>
     </div>
   );
 }

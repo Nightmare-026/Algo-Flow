@@ -71,11 +71,32 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
     return result;
   }, [modules, searchQuery, selectedDifficulty]);
 
+  const tierCounts = useMemo(() => {
+    return {
+      all: modules.length,
+      foundational: modules.filter((m) => m.partNumber <= 1).length,
+      core: modules.filter((m) => m.partNumber >= 2 && m.partNumber <= 5).length,
+      intermediate: modules.filter((m) => m.partNumber >= 6 && m.partNumber <= 8).length,
+      advanced: modules.filter((m) => m.partNumber >= 9).length,
+    };
+  }, [modules]);
+
+  const tiers = useMemo(
+    () => [
+      { id: "all" as const, label: `All (${tierCounts.all})` },
+      { id: "foundational" as const, label: `Foundational (${tierCounts.foundational})` },
+      { id: "core" as const, label: `Core DSA (${tierCounts.core})` },
+      { id: "intermediate" as const, label: `Intermediate (${tierCounts.intermediate})` },
+      { id: "advanced" as const, label: `Advanced (${tierCounts.advanced})` },
+    ],
+    [tierCounts]
+  );
+
   return (
     <div id="curriculum-explorer" className="flex flex-col gap-8 scroll-mt-24">
-      {/* Learner Progress Banner (when progress exists) */}
+      {/* Progress Card (Only shown if user has progress) */}
       {completedKeys.size > 0 && (
-        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 neu-raised">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-surface border border-border neu-raised">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
               <Award className="w-5 h-5" />
@@ -105,55 +126,74 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
         </div>
       )}
 
-      {/* Search & Filter Controls */}
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          {/* Search input */}
-          <div className="relative w-full sm:flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search all 62 chapters, algorithms, data structures, or topics..."
-              className="w-full pl-11 pr-10 py-3 rounded-2xl border border-border bg-surface text-sm text-foreground placeholder:text-muted-foreground neu-inset focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                aria-label="Clear search"
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
+      {/* Search & Filter Bar */}
+      <div className="neu-raised flex flex-col gap-4 rounded-2xl p-4 lg:flex-row lg:items-center lg:justify-between border border-border">
+        {/* Search Input with Clear Button */}
+        <div className="relative w-full lg:max-w-md">
+          <label htmlFor="curriculum-search" className="sr-only">
+            Search chapters, algorithms, data structures, or topics
+          </label>
+          <Search
+            className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-text-muted"
+            aria-hidden="true"
+          />
+          <input
+            id="curriculum-search"
+            type="text"
+            role="searchbox"
+            placeholder="Search all 62 chapters, algorithms, data structures, or topics..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setSearchQuery("");
+            }}
+            className="h-11 w-full rounded-xl border border-border bg-bg-surface-inset py-2.5 pl-11 pr-10 text-sm text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+          />
+          {searchQuery ? (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
+              aria-label="Clear search"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          ) : (
+            <span
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center rounded border border-border bg-surface px-1.5 py-0.5 text-[10px] font-mono text-text-muted shadow-xs"
+              aria-hidden="true"
+            >
+              ESC
+            </span>
+          )}
+        </div>
 
-          {/* Difficulty Tier Filters */}
-          <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 custom-scrollbar">
-            {(
-              [
-                { id: "all", label: `All Parts (${modules.length})` },
-                { id: "foundational", label: "Foundational" },
-                { id: "core", label: "Core DSA" },
-                { id: "intermediate", label: "Intermediate" },
-                { id: "advanced", label: "Advanced" },
-              ] as const
-            ).map((tier) => (
+        {/* Difficulty Tier Filters */}
+        <div
+          className="flex w-full lg:w-auto items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-none"
+          role="tablist"
+          aria-label="Filter by curriculum tier"
+        >
+          {tiers.map((tier) => {
+            const selected = selectedDifficulty === tier.id;
+            return (
               <button
                 key={tier.id}
+                type="button"
+                role="tab"
+                aria-selected={selected}
                 onClick={() => setSelectedDifficulty(tier.id)}
                 className={cn(
-                  "px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer",
-                  selectedDifficulty === tier.id
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "border border-border bg-surface text-muted-foreground hover:text-foreground hover:bg-surface-raised neu-raised"
+                  "h-11 shrink-0 rounded-xl px-4 text-xs font-bold transition-colors duration-200 cursor-pointer select-none",
+                  selected
+                    ? "border border-primary/40 bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                    : "border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-text-primary hover:border-border-hover hover:bg-surface-hover"
                 )}
               >
                 {tier.label}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
 

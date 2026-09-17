@@ -74,7 +74,7 @@ export default function LeaderboardPage() {
   ];
 
   return (
-    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-8 pb-20 pt-4">
+    <div className="flex w-full flex-col gap-8 pb-20 pt-1">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>

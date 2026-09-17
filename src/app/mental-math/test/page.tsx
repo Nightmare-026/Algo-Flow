@@ -88,7 +88,7 @@ export default function TimedTestPage() {
   }
 
   return (
-    <div className="flex w-full flex-col px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-3 sm:gap-4">
+    <div className="flex w-full flex-col gap-3 sm:gap-4">
       {status === "countdown" && <CountdownOverlay onComplete={completeCountdown} />}
 
       <SessionHUD

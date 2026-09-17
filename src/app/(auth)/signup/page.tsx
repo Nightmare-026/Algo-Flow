@@ -148,11 +148,11 @@ export default async function SignupPage({
                 className="mt-0.5 h-4 w-4 shrink-0 rounded border-border text-primary focus:ring-primary accent-primary cursor-pointer"
               />
               <span>
-                I agree to the{" "}
+                I confirm I am 18 years of age or older (or have parental consent), agree to the{" "}
                 <Link href="/terms" className="font-bold text-primary hover:underline">
                   Terms of Service
-                </Link>{" "}
-                and acknowledge the{" "}
+                </Link>
+                , and acknowledge the{" "}
                 <Link href="/privacy" className="font-bold text-primary hover:underline">
                   Privacy Policy
                 </Link>

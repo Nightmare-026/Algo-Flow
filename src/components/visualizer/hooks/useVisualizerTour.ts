@@ -60,10 +60,12 @@ export function useVisualizerTour({ algorithmSlug, algorithmName }: UseVisualize
       if (localStorage.getItem("playwright-test-mode") === "true") {
         return;
       }
-      const hasSeenTour = localStorage.getItem(`visualizer-tour-${algorithmSlug}`);
-      if (!hasSeenTour) {
+      const hasSeenGlobalTour =
+        localStorage.getItem("visualizer-global-tour-seen") ||
+        localStorage.getItem(`visualizer-tour-${algorithmSlug}`);
+      if (!hasSeenGlobalTour) {
         setShowTour(true);
-        localStorage.setItem(`visualizer-tour-${algorithmSlug}`, "true");
+        localStorage.setItem("visualizer-global-tour-seen", "true");
       }
     }, 0);
 

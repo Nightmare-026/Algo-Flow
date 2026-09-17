@@ -30,7 +30,7 @@ const probingDelete = [
 ];
 
 export const hashTableCodeLineMappings = {
-  "division-hash-method": [line(2, 2, 2, 2, 2)],
+  "division-hash-method": [line(1, 1, 1, 1, 1), line(2, 2, 2, 2, 2)],
   "hash-insert": probingInsert,
   "linear-probing": probingInsert,
   "probing-insert": probingInsert,

@@ -157,8 +157,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }}
       />
       <Navbar />
-      <main id="main-content" className="flex-1 px-4 pb-24 pt-28 sm:px-6 lg:px-8 lg:pt-36">
-        <div className="mx-auto max-w-7xl">
+      <main id="main-content" className="flex-1 pb-24 pt-28 lg:pt-36">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb Bar */}
           <nav
             aria-label="Breadcrumb"

@@ -13,6 +13,7 @@ export type Database = {
           action_type: string;
           algorithm_id: string;
           created_at: string | null;
+          domain: string;
           id: string;
           metadata: Json | null;
           user_id: string;
@@ -21,6 +22,7 @@ export type Database = {
           action_type: string;
           algorithm_id: string;
           created_at?: string | null;
+          domain?: string;
           id?: string;
           metadata?: Json | null;
           user_id: string;
@@ -29,9 +31,46 @@ export type Database = {
           action_type?: string;
           algorithm_id?: string;
           created_at?: string | null;
+          domain?: string;
           id?: string;
           metadata?: Json | null;
           user_id?: string;
+        };
+        Relationships: [];
+      };
+      application_error_logs: {
+        Row: {
+          context: Json | null;
+          created_at: string;
+          error_message: string;
+          error_name: string;
+          error_stack: string | null;
+          id: string;
+          url: string | null;
+          user_agent: string | null;
+          user_id: string | null;
+        };
+        Insert: {
+          context?: Json | null;
+          created_at?: string;
+          error_message: string;
+          error_name: string;
+          error_stack?: string | null;
+          id?: string;
+          url?: string | null;
+          user_agent?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          context?: Json | null;
+          created_at?: string;
+          error_message?: string;
+          error_name?: string;
+          error_stack?: string | null;
+          id?: string;
+          url?: string | null;
+          user_agent?: string | null;
+          user_id?: string | null;
         };
         Relationships: [];
       };
@@ -56,48 +95,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      feedback: {
-        Row: {
-          id: string;
-          user_id: string | null;
-          type: Database["public"]["Enums"]["feedback_type"];
-          subject: string;
-          message: string;
-          rating: number | null;
-          email: string | null;
-          page_url: string | null;
-          user_agent: string | null;
-          status: Database["public"]["Enums"]["feedback_status"];
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id?: string | null;
-          type: Database["public"]["Enums"]["feedback_type"];
-          subject: string;
-          message: string;
-          rating?: number | null;
-          email?: string | null;
-          page_url?: string | null;
-          user_agent?: string | null;
-          status?: Database["public"]["Enums"]["feedback_status"];
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string | null;
-          type?: Database["public"]["Enums"]["feedback_type"];
-          subject?: string;
-          message?: string;
-          rating?: number | null;
-          email?: string | null;
-          page_url?: string | null;
-          user_agent?: string | null;
-          status?: Database["public"]["Enums"]["feedback_status"];
-          created_at?: string;
-        };
-        Relationships: [];
-      };
       daily_challenges: {
         Row: {
           algorithm_id: string;
@@ -116,6 +113,48 @@ export type Database = {
           challenge_date?: string;
           created_at?: string | null;
           id?: string;
+        };
+        Relationships: [];
+      };
+      feedback: {
+        Row: {
+          created_at: string;
+          email: string | null;
+          id: string;
+          message: string;
+          page_url: string | null;
+          rating: number | null;
+          status: Database["public"]["Enums"]["feedback_status"];
+          subject: string;
+          type: Database["public"]["Enums"]["feedback_type"];
+          user_agent: string | null;
+          user_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          email?: string | null;
+          id?: string;
+          message: string;
+          page_url?: string | null;
+          rating?: number | null;
+          status?: Database["public"]["Enums"]["feedback_status"];
+          subject: string;
+          type: Database["public"]["Enums"]["feedback_type"];
+          user_agent?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          email?: string | null;
+          id?: string;
+          message?: string;
+          page_url?: string | null;
+          rating?: number | null;
+          status?: Database["public"]["Enums"]["feedback_status"];
+          subject?: string;
+          type?: Database["public"]["Enums"]["feedback_type"];
+          user_agent?: string | null;
+          user_id?: string | null;
         };
         Relationships: [];
       };
@@ -493,18 +532,21 @@ export type Database = {
         Row: {
           current_streak: number | null;
           last_activity_date: string | null;
+          last_domain: string | null;
           max_streak: number | null;
           user_id: string;
         };
         Insert: {
           current_streak?: number | null;
           last_activity_date?: string | null;
+          last_domain?: string | null;
           max_streak?: number | null;
           user_id: string;
         };
         Update: {
           current_streak?: number | null;
           last_activity_date?: string | null;
+          last_domain?: string | null;
           max_streak?: number | null;
           user_id?: string;
         };
@@ -515,6 +557,9 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      get_user_dashboard_summary: { Args: { p_user_id: string }; Returns: Json };
+      get_user_quiz_score_sum: { Args: { p_user_id: string }; Returns: number };
+      get_user_unified_xp: { Args: { p_user_id?: string }; Returns: Json };
       mark_algorithm_completed: {
         Args: { p_algorithm_id: string };
         Returns: undefined;
@@ -525,16 +570,58 @@ export type Database = {
           p_score: number;
           p_total_questions: number;
         };
-        Returns: Database["public"]["Tables"]["quiz_attempts"]["Row"][];
+        Returns: {
+          algorithm_id: string;
+          created_at: string | null;
+          id: string;
+          score: number;
+          total_questions: number;
+          user_id: string;
+        }[];
+        SetofOptions: {
+          from: "*";
+          to: "quiz_attempts";
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
       };
-      touch_user_streak: {
-        Args: Record<PropertyKey, never>;
-        Returns: Database["public"]["Tables"]["user_streaks"]["Row"];
-      };
+      touch_user_streak:
+        | {
+            Args: { p_domain?: string };
+            Returns: {
+              current_streak: number | null;
+              last_activity_date: string | null;
+              last_domain: string | null;
+              max_streak: number | null;
+              user_id: string;
+            };
+            SetofOptions: {
+              from: "*";
+              to: "user_streaks";
+              isOneToOne: true;
+              isSetofReturn: false;
+            };
+          }
+        | {
+            Args: { p_domain?: string; p_timezone?: string };
+            Returns: {
+              current_streak: number | null;
+              last_activity_date: string | null;
+              last_domain: string | null;
+              max_streak: number | null;
+              user_id: string;
+            };
+            SetofOptions: {
+              from: "*";
+              to: "user_streaks";
+              isOneToOne: true;
+              isSetofReturn: false;
+            };
+          };
     };
     Enums: {
-      feedback_type: "bug_report" | "feature_request" | "rating" | "general";
       feedback_status: "new" | "reviewed" | "resolved" | "dismissed";
+      feedback_type: "bug_report" | "feature_request" | "rating" | "general";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -656,8 +743,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      feedback_type: ["bug_report", "feature_request", "rating", "general"] as const,
-      feedback_status: ["new", "reviewed", "resolved", "dismissed"] as const,
+      feedback_status: ["new", "reviewed", "resolved", "dismissed"],
+      feedback_type: ["bug_report", "feature_request", "rating", "general"],
     },
   },
 } as const;

@@ -189,7 +189,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         </aside>
 
         {/* MIDDLE CARD — Full height, scrollable reading article taking available space */}
-        <main
+        <article
           id="chapter-reader-container"
           className="flex-1 h-full min-w-0 overflow-y-auto custom-scrollbar rounded-2xl border border-border/80 bg-surface/90 shadow-[var(--shadow-raised)] p-5 sm:p-7 md:p-9"
         >
@@ -213,7 +213,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           </nav>
 
           <ChapterReader module={mod} chapter={ch} content={content} navigation={navigation} />
-        </main>
+        </article>
 
         {/* RIGHT CARD — Full height, scrollable table of contents */}
         <aside className="hidden lg:flex lg:w-[175px] xl:w-[200px] 2xl:w-[220px] h-full shrink-0 min-w-0 flex-col">

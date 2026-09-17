@@ -26,6 +26,7 @@ export interface VisualizerInputOptions {
   isDirected?: boolean;
   isWeighted?: boolean;
   matrixB?: number[];
+  probingStrategy?: "linear" | "quadratic" | "double-hashing";
 }
 
 export const defaultVisualizerInputOptions: VisualizerInputOptions = {
@@ -41,6 +42,7 @@ export const defaultVisualizerInputOptions: VisualizerInputOptions = {
   treeState: undefined,
   isDirected: false,
   isWeighted: false,
+  probingStrategy: "linear",
 };
 
 export function getDefaultVisualizerInputOptions(
@@ -186,5 +188,6 @@ export function clampOperationOptions(
     isDirected: options.isDirected ?? false,
     isWeighted: options.isWeighted ?? false,
     matrixB: options.matrixB,
+    probingStrategy: options.probingStrategy || "linear",
   };
 }
