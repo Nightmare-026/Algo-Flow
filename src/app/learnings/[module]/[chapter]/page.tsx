@@ -152,7 +152,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   };
 
   return (
-    <div className="h-[calc(100vh-4.5rem)] overflow-hidden w-full px-2.5 sm:px-3.5 py-2 sm:py-2.5 flex flex-col bg-background">
+    <div className="h-[calc(100vh-4.5rem)] overflow-hidden w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex flex-col bg-background">
       {/* Scroll Reading Progress Bar tied to the middle reader card */}
       <ReadingProgressBar targetId="chapter-reader-container" />
 

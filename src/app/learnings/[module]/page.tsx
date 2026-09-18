@@ -72,8 +72,8 @@ export default async function ModuleSyllabusPage({ params }: ModulePageProps) {
   const nextModule = currentIdx < allModules.length - 1 ? allModules[currentIdx + 1] : null;
 
   return (
-    <div className="min-h-screen py-10 md:py-16">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen px-4 py-10 sm:px-6 md:py-16 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         {/* Breadcrumb Navigation */}
         <nav
           aria-label="Breadcrumb"

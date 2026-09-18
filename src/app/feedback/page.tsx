@@ -44,8 +44,9 @@ export default async function FeedbackPage() {
       <Navbar initialUser={user} />
       <main
         id="main-content"
-        className="mx-auto w-full max-w-7xl flex-1 px-4 pb-24 pt-32 sm:px-6 lg:px-8"
+        className="flex-1 w-full px-4 pb-24 pt-32 sm:px-6 lg:px-8"
       >
+        <div className="mx-auto max-w-7xl">
         {/* Header Section */}
         <div className="text-center sm:text-left">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display text-text-primary tracking-tight">
@@ -81,6 +82,7 @@ export default async function FeedbackPage() {
               </div>
             );
           })}
+        </div>
         </div>
       </main>
       <Footer />

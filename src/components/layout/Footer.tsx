@@ -46,8 +46,8 @@ const footerSections = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-auto border-t border-border bg-surface/50 transition-colors duration-200">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+    <footer className="relative mt-auto border-t border-border bg-surface/50 transition-colors duration-200 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl py-12 lg:py-16">
         <div className="grid gap-8 sm:gap-10 grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-1 flex flex-col gap-4">

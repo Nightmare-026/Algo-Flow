@@ -69,10 +69,10 @@ export default function LearningsPage() {
   };
 
   return (
-    <div className="min-h-screen py-8 md:py-12">
+    <div className="min-h-screen px-4 py-8 sm:px-6 md:py-12 lg:px-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         {/* Streamlined Curriculum Header */}
         <header className="mb-8 md:mb-12">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 pb-6 border-b border-border/70">

@@ -66,8 +66,8 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
       : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur-xl transition-colors duration-200">
-      <nav aria-label="Primary navigation" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur-xl transition-colors duration-200 px-4 sm:px-6 lg:px-8">
+      <nav aria-label="Primary navigation" className="mx-auto max-w-7xl">
         <div className="flex h-18 items-center justify-between gap-4">
           {/* Brand Logo */}
           <Link
