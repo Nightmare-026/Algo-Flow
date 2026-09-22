@@ -89,7 +89,7 @@ export function CodeLanguages() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5 }}
-          className="neu-float overflow-hidden rounded-3xl border border-border bg-surface shadow-[var(--shadow-float)]"
+          className="neu-float overflow-hidden rounded-3xl border border-border bg-surface shadow-(--shadow-float)"
         >
           {/* Language Selector Tabs */}
           <div
@@ -113,7 +113,7 @@ export function CodeLanguages() {
                   className={cn(
                     "flex min-h-9 items-center gap-2 rounded-xl px-3.5 text-xs sm:text-[13px] font-bold transition-all duration-200 cursor-pointer select-none",
                     isActive
-                      ? "border border-primary/30 bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                      ? "border border-primary/30 bg-primary text-white shadow-(--shadow-raised-sm)"
                       : "text-text-secondary hover:bg-surface hover:text-text-primary"
                   )}
                 >
@@ -133,7 +133,7 @@ export function CodeLanguages() {
             </span>
             <button
               type="button"
-              className="inline-flex h-8 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-bold text-text-primary shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:text-primary active:scale-95 transition-all"
+              className="inline-flex h-8 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-bold text-text-primary shadow-(--shadow-raised-sm) hover:border-primary/40 hover:text-primary active:scale-95 transition-all"
               onClick={handleCopy}
               aria-label={`Copy ${activeLanguage.name} code`}
             >

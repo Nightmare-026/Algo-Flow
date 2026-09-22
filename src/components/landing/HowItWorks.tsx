@@ -63,7 +63,7 @@ export function HowItWorks() {
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-[var(--shadow-inset)] group-hover:scale-105 transition-transform">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-(--shadow-inset) group-hover:scale-105 transition-transform">
                     <Icon className="h-5 w-5" />
                   </div>
                   <span className="font-mono text-[11px] font-bold text-text-muted px-2 py-0.5 rounded-md bg-surface-hover border border-border">

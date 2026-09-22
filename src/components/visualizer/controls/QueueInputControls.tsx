@@ -5,6 +5,7 @@ import { AlertCircle, FileEdit, HardDriveDownload, Layers, Shuffle } from "lucid
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
+  parseInputNumber,
   parseNumberList,
   VisualizerInputOptions,
 } from "@/lib/validation/visualizer-input";
@@ -59,7 +60,7 @@ export function QueueInputControls({
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Random Queue Generator */}
           {onGenerate && (
-            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
               <Button
                 variant="ghost"
                 size="sm"
@@ -77,7 +78,7 @@ export function QueueInputControls({
           {onGenerate && (
             <form
               onSubmit={handleCustomSubmit}
-              className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+              className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
             >
               <FileEdit className="h-3 w-3 text-text-muted shrink-0" aria-hidden="true" />
               <input
@@ -88,7 +89,7 @@ export function QueueInputControls({
                   setCustomInput(event.target.value);
                   if (error) setError(null);
                 }}
-                className="h-6 w-24 sm:w-28 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-24 sm:w-28 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-(--shadow-inset) placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
                 aria-label="Initial queue elements"
               />
               <Button
@@ -102,31 +103,35 @@ export function QueueInputControls({
           )}
 
           {/* Capacity Pod */}
-          <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+          <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
             <Layers className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
             <span className="font-mono text-[10px] font-semibold text-text-secondary">
               Capacity:
             </span>
             <input
               type="number"
-              className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+              className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
               value={options.capacity}
               min={1}
               max={15}
-              onChange={(e) => updateOption("capacity", Number(e.target.value))}
+              onChange={(e) =>
+                updateOption("capacity", parseInputNumber(e.target.value, options.capacity))
+              }
               aria-label="Queue capacity"
             />
           </div>
 
           {/* Value / Enqueue Pod */}
-          <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+          <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
             <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
             <span className="font-mono text-[10px] font-semibold text-text-secondary">Value:</span>
             <input
               type="number"
-              className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+              className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
               value={options.value}
-              onChange={(e) => updateOption("value", Number(e.target.value))}
+              onChange={(e) =>
+                updateOption("value", parseInputNumber(e.target.value, options.value))
+              }
               aria-label="Value to enqueue"
             />
           </div>

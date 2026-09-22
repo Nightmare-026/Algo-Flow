@@ -45,7 +45,7 @@ export function StepLog() {
                 className={cn(
                   "w-full rounded-lg border p-2 text-left transition-all duration-150 cursor-pointer select-none",
                   isCurrent
-                    ? "border-primary/40 bg-primary-muted text-primary shadow-[var(--shadow-inset)]"
+                    ? "border-primary/40 bg-primary-muted text-primary shadow-(--shadow-inset)"
                     : "border-border bg-surface text-text-secondary hover:border-border-hover hover:text-text-primary"
                 )}
               >

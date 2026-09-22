@@ -32,10 +32,10 @@ export function ModeSelector() {
       href: "/mental-math/practice",
       title: "Practice Studio",
       description:
-        "Uncapped calculation sandbox. Configure 1–4 digit ranges, toggle 4-choice hints, and master mental math breakdown patterns.",
+        "Uncapped calculation sandbox. Configure 1â€“4 digit ranges, toggle 4-choice hints, and master mental math breakdown patterns.",
       badge: "Configurable",
       icon: BrainCircuit,
-      btnClass: "bg-primary text-white hover:bg-primary-hover shadow-[var(--shadow-raised-sm)]",
+      btnClass: "bg-primary text-white hover:bg-primary-hover shadow-(--shadow-raised-sm)",
       primaryCTA: "Open Studio",
       isFeatured: true,
     },
@@ -67,7 +67,7 @@ export function ModeSelector() {
         "Compete in today's official 10-problem seeded arithmetic challenge. Identical PRNG sequence for all global contenders.",
       badge: "Official Rank",
       icon: Trophy,
-      btnClass: "bg-primary text-white hover:bg-primary-hover shadow-[var(--shadow-raised-sm)]",
+      btnClass: "bg-primary text-white hover:bg-primary-hover shadow-(--shadow-raised-sm)",
       primaryCTA: "Play Today's Run",
       isFeatured: true,
     },
@@ -102,7 +102,7 @@ export function ModeSelector() {
             key={mode.id}
             href={mode.href}
             className={cn(
-              "neu-raised group relative p-6 sm:p-7 rounded-3xl border flex flex-col justify-between transition-all duration-300 hover:border-primary/40 hover:-translate-y-1 shadow-[var(--shadow-raised-sm)] hover:shadow-[var(--shadow-raised)] cursor-pointer",
+              "neu-raised group relative p-6 sm:p-7 rounded-3xl border flex flex-col justify-between transition-all duration-300 hover:border-primary/40 hover:-translate-y-1 shadow-(--shadow-raised-sm) hover:shadow-(--shadow-raised) cursor-pointer",
               mode.isFeatured ? "border-primary/30 bg-surface/90" : "border-border bg-surface"
             )}
             aria-label={`Open ${mode.title}`}
@@ -131,7 +131,7 @@ export function ModeSelector() {
                   "w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold font-display transition-all duration-200 active:scale-95",
                   mode.btnClass
                     ? mode.btnClass
-                    : "bg-surface group-hover:bg-surface-hover text-text-primary group-hover:text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                    : "bg-surface group-hover:bg-surface-hover text-text-primary group-hover:text-primary border border-border shadow-(--shadow-raised-sm)"
                 )}
               >
                 <span>{mode.primaryCTA}</span>

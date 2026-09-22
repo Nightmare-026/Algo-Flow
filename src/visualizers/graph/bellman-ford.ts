@@ -33,7 +33,7 @@ export function generateGraphBellmanFordSteps(
     id: uuidv4(),
     stepNumber: stepNumber++,
     title: "Initialize Bellman-Ford",
-    description: `Distance to source node ${startNodeId} is 0. All other nodes initialized to infinity.`,
+    description: `Distance to source node ${startNodeId} is 0, others infinity. Plan: relax all edges V-1 times, then one extra pass — any further relaxation means a reachable negative cycle.`,
     operation: "Bellman-Ford",
     actionType: "initialize",
     dataState: structuredClone(currentState),
@@ -54,8 +54,8 @@ export function generateGraphBellmanFordSteps(
     }
   }
 
-  // Relax edges |V| - 1 times
-  for (let iter = 1; iter <= Math.min(numVertices - 1, 3); iter++) {
+  // Relax edges |V| - 1 times (early exit on convergence via the Early Convergence step below)
+  for (let iter = 1; iter <= Math.max(numVertices - 1, 1); iter++) {
     let anyRelaxed = false;
 
     steps.push({

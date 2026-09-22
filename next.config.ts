@@ -19,15 +19,15 @@ const nextConfig: NextConfig = {
     const isDev = process.env.NODE_ENV === "development";
     const cspHeader = `
       default-src 'self';
-      script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://va.vercel-scripts.com;
+      script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://va.vercel-scripts.com https://www.googletagmanager.com;
       style-src 'self' 'unsafe-inline';
-      img-src 'self' blob: data: https:;
+      img-src 'self' blob: data: https: https://www.google-analytics.com https://*.googletagmanager.com;
       font-src 'self' data: https:;
       object-src 'none';
       base-uri 'self';
       form-action 'self';
       frame-ancestors 'none';
-      connect-src 'self' ${isDev ? "ws: wss: http://localhost:* http://127.0.0.1:*" : ""} https://*.supabase.co https://accounts.google.com https://github.com https://va.vercel-scripts.com https://*.upstash.io;
+      connect-src 'self' ${isDev ? "ws: wss: http://localhost:* http://127.0.0.1:*" : ""} https://*.supabase.co https://accounts.google.com https://github.com https://va.vercel-scripts.com https://*.upstash.io https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
       ${isDev ? "" : "upgrade-insecure-requests;"}
     `
       .replace(/\s{2,}/g, " ")

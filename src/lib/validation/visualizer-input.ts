@@ -12,6 +12,12 @@ export interface ParseNumberListResult {
   error: string | null;
 }
 
+export function parseInputNumber(value: string, fallback: number): number {
+  if (value.trim() === "") return fallback;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
 export interface VisualizerInputOptions {
   index: number;
   target: number;
@@ -170,12 +176,9 @@ export function clampOperationOptions(
   slug: string = ""
 ): VisualizerInputOptions {
   const allowEnd = slug.includes("insert");
-  const isAccess = slug.includes("access");
   const maxIndex = allowEnd ? length : length - 1;
   return {
-    index: isAccess
-      ? Math.min(Math.max(-20, options.index), 50)
-      : Math.min(Math.max(0, options.index), Math.max(0, maxIndex)),
+    index: Math.min(Math.max(0, options.index), Math.max(0, maxIndex)),
     target: options.target,
     value: options.value,
     capacity: Math.min(Math.max(length, options.capacity), 20),

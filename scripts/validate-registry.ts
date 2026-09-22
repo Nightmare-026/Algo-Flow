@@ -9,6 +9,7 @@
  */
 
 import { algorithms } from "../src/data/seed/algorithms";
+import { operations } from "../src/data/seed/operations";
 import { algorithmRegistry } from "../src/visualizers/registry/algorithm-registry";
 import { publicationRegistry } from "../src/visualizers/registry/publication-registry";
 import {
@@ -37,6 +38,32 @@ function requireText(value: unknown, where: string, field: string): void {
 
 const catalogBySlug = new Map<string, (typeof algorithms)[number]>();
 const supportedDataStructureIds = new Set<string>(DATA_STRUCTURE_IDS);
+const algorithmSlugs = new Set<string>(algorithms.map((algorithm) => algorithm.slug));
+
+// Operation ids must be unique (catalog one-to-one lookups rely on them).
+const operationIds = new Set<string>();
+const operationSlugs = new Set<string>();
+for (const operation of operations) {
+  const where = `operations.${operation.id || "<missing-id>"}`;
+  if (operationIds.has(operation.id)) {
+    report("error", where, `duplicate operation id (${operation.id})`);
+  }
+  operationIds.add(operation.id);
+  if (operationSlugs.has(operation.slug)) {
+    report("warning", where, `duplicate operation slug (${operation.slug})`);
+  }
+  operationSlugs.add(operation.slug);
+}
+
+// Prerequisites may reference algorithm slugs, operation slugs, or abstract
+// curriculum concepts. Anything else is a typo or a stale id.
+const CONCEPT_PREREQUISITES = new Set([
+  "recursion",
+  "queue",
+  "priority-queue",
+  "union-find",
+  "sorting",
+]);
 
 for (const algorithm of algorithms) {
   const where = `catalog.${algorithm.slug || "<missing-slug>"}`;
@@ -65,6 +92,37 @@ for (const algorithm of algorithms) {
     ["spaceComplexity", algorithm.spaceComplexity],
   ] as const) {
     requireText(value, where, field);
+  }
+
+  for (const field of [
+    "timeComplexityBest",
+    "timeComplexityAverage",
+    "timeComplexityWorst",
+    "spaceComplexity",
+  ] as const) {
+    const value = algorithm[field];
+    if (value && !/^O\([\s\S]+\)$/.test(value)) {
+      report("error", where, `${field} must be Big-O formatted (was "${value}")`);
+    }
+  }
+
+  if (algorithm.operationId) {
+    const matchingOperation = operations.find((operation) => operation.id === algorithm.operationId);
+    if (!matchingOperation) {
+      report("error", where, `operationId "${algorithm.operationId}" does not exist in the operations catalog`);
+    }
+  }
+
+  if (Array.isArray(algorithm.prerequisites)) {
+    for (const ref of algorithm.prerequisites) {
+      const resolves =
+        algorithmSlugs.has(ref) ||
+        operationSlugs.has(ref) ||
+        CONCEPT_PREREQUISITES.has(ref);
+      if (!resolves) {
+        report("error", where, `prerequisite "${ref}" does not resolve to an algorithm, operation, or known concept`);
+      }
+    }
   }
 
   if (!Array.isArray(algorithm.tags) || algorithm.tags.length === 0) {

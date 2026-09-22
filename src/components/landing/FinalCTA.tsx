@@ -36,7 +36,7 @@ export function FinalCTA() {
                 href="/visualizers"
                 className={buttonVariants({
                   size: "lg",
-                  className: "w-full sm:w-auto shadow-[var(--shadow-raised)]",
+                  className: "w-full sm:w-auto shadow-(--shadow-raised)",
                 })}
               >
                 <Compass className="h-4 w-4" />

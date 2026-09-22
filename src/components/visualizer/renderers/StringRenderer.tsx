@@ -6,13 +6,14 @@ import { VisualStepHighlights } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { getVisualElementClassName } from "../visual-state";
+import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 
 export function StringRenderer() {
   const { steps, currentStepIndex } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep || !currentStep.dataState) {
-    return null;
+    return <EmptyVisualizerState />;
   }
 
   const dataState = currentStep.dataState as StringVisualState;

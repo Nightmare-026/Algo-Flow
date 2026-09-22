@@ -39,7 +39,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
 
         <span
           className={cn(
-            "flex h-16 w-16 items-center justify-center rounded-2xl border shadow-[var(--shadow-raised-sm)] mb-3 transition-transform duration-300 hover:scale-105",
+            "flex h-16 w-16 items-center justify-center rounded-2xl border shadow-(--shadow-raised-sm) mb-3 transition-transform duration-300 hover:scale-105",
             isPerfect
               ? "border-warning/40 bg-warning-muted/40 text-warning"
               : isHighAccuracy
@@ -63,7 +63,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
             ? "Flawless Performance!"
             : isHighAccuracy
               ? "High-Velocity Solving!"
-              : "Session Finished — Keep Drilling!"}
+              : "Session Finished â€” Keep Drilling!"}
         </h1>
 
         <div className="flex items-baseline gap-2 mt-4">
@@ -149,9 +149,9 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
         <Link
           href="/mental-math"
-          className="w-full sm:w-auto neu-raised px-5 py-3 rounded-2xl text-xs font-bold font-display text-text-secondary hover:text-text-primary border border-border text-center transition-all shadow-[var(--shadow-raised-sm)] active:scale-95"
+          className="w-full sm:w-auto neu-raised px-5 py-3 rounded-2xl text-xs font-bold font-display text-text-secondary hover:text-text-primary border border-border text-center transition-all shadow-(--shadow-raised-sm) active:scale-95"
         >
-          ← Return to Hub
+          â† Return to Hub
         </Link>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -159,7 +159,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
             <button
               onClick={onDrillWeakness}
               type="button"
-              className="neu-raised flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-xs font-bold font-display text-warning border border-warning/30 bg-warning-muted/10 hover:bg-warning-muted/20 active:scale-95 transition-all shadow-[var(--shadow-raised-sm)] cursor-pointer"
+              className="neu-raised flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-xs font-bold font-display text-warning border border-warning/30 bg-warning-muted/10 hover:bg-warning-muted/20 active:scale-95 transition-all shadow-(--shadow-raised-sm) cursor-pointer"
             >
               <TrendingUp className="w-4 h-4" />
               <span>Drill Mistakes</span>
@@ -169,7 +169,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
           <button
             onClick={onRestart}
             type="button"
-            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-xs font-bold font-display bg-primary text-white hover:bg-primary-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-xs font-bold font-display bg-primary text-white hover:bg-primary-hover shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Practice Again</span>
@@ -235,7 +235,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
                       </span>
                       <div>
                         <p className="font-mono font-extrabold text-text-primary text-base">
-                          {ans.formattedExpression || ans.questionSignature.replace(/:/g, " • ")} ={" "}
+                          {ans.formattedExpression || ans.questionSignature.replace(/:/g, " â€¢ ")} ={" "}
                           {ans.correctAnswer !== undefined
                             ? ans.correctAnswer.toLocaleString()
                             : ""}
@@ -262,8 +262,8 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
                   </div>
 
                   {ans.explanation && (
-                    <div className="neu-inset ml-11 p-3 rounded-xl border border-border bg-surface-inset text-xs font-mono text-text-secondary leading-relaxed shadow-[var(--shadow-inset)]">
-                      <span className="font-bold text-primary mr-1.5">💡 Strategy:</span>
+                    <div className="neu-inset ml-11 p-3 rounded-xl border border-border bg-surface-inset text-xs font-mono text-text-secondary leading-relaxed shadow-(--shadow-inset)">
+                      <span className="font-bold text-primary mr-1.5">ðŸ’¡ Strategy:</span>
                       <span>{ans.explanation}</span>
                     </div>
                   )}

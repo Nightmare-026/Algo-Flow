@@ -29,7 +29,7 @@ export function PseudocodePanel({ slug, fallback, isVisible = true }: Pseudocode
 
   return (
     <section
-      className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-[var(--shadow-raised-sm)]"
+      className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-(--shadow-raised-sm)"
       aria-label="Pseudocode"
     >
       <div className="flex min-h-[38px] shrink-0 items-center justify-between border-b border-border bg-surface px-3">
@@ -44,7 +44,7 @@ export function PseudocodePanel({ slug, fallback, isVisible = true }: Pseudocode
       </div>
       <div
         ref={scrollContainerRef}
-        className="flex-1 overflow-auto bg-pseudocode-panel-bg p-3 font-mono text-[11px] leading-5 text-emerald-100/90 shadow-[var(--shadow-inset)] rounded-none"
+        className="flex-1 overflow-auto bg-pseudocode-panel-bg p-3 font-mono text-[11px] leading-5 text-emerald-100/90 shadow-(--shadow-inset) rounded-none"
         role="region"
         aria-label="Pseudocode lines"
         tabIndex={0}

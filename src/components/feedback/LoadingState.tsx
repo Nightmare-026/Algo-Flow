@@ -10,8 +10,8 @@ export function LoadingState() {
       <span className="sr-only">Loading page content</span>
       <div className="mx-auto max-w-6xl space-y-8" aria-hidden="true">
         <div className="space-y-3">
-          <div className="h-9 w-2/3 max-w-md rounded-2xl border border-border bg-surface shadow-[var(--shadow-raised-sm)] animate-pulse" />
-          <div className="h-5 w-full max-w-xl rounded-xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] animate-pulse" />
+          <div className="h-9 w-2/3 max-w-md rounded-2xl border border-border bg-surface shadow-(--shadow-raised-sm) animate-pulse" />
+          <div className="h-5 w-full max-w-xl rounded-xl border border-border bg-surface-inset shadow-(--shadow-inset) animate-pulse" />
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }, (_, index) => (

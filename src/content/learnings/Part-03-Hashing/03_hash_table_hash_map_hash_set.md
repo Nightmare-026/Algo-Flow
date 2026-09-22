@@ -36,8 +36,8 @@ As elements are inserted, the load factor $\alpha = n / m$ increases:
 - In **Separate Chaining**, chains grow to average depth $\alpha$. When $\alpha \gg 1$, search latency degenerates to an unacceptably slow $\Theta(n)$ linear traversal.
 - In **Open Addressing**, probe lengths increase rapidly. As $\alpha \to 1.0$, insertion time explodes toward infinity.
 
-#### The Rehashing Invariant ($\alpha \ge 0.75$)
-To guarantee expected $O(1)$ constant-time performance, whenever $\alpha$ reaches the threshold ($\alpha \ge 0.75$):
+#### The Rehashing Threshold (commonly $\alpha \ge 0.75$)
+With a suitable hash function and collision-resolution strategy, keeping the load factor controlled typically preserves expected $O(1)$ operations. A common threshold is $\alpha \ge 0.75$, at which point implementations often:
 1. Allocate a new backing array with approximately double capacity ($m_{\text{new}} \approx 2m_{\text{old}}$, chosen as the next prime number to mitigate modulo harmonic clustering).
 2. **Recompute all element indices**: Every single active key must be passed through the hash function modulo the new capacity:
    $$\text{New Index} = h(k) \pmod{m_{\text{new}}}$$
@@ -222,7 +222,7 @@ Let $|A| = n$ and $|B| = m$:
 ### 5. Key Takeaways
 
 1. **Rehashing Mechanics**: Dynamic rehashing requires recomputing new index slots for all existing elements via $h(k) \pmod{m_{\text{new}}}$; simple memory copying is invalid.
-2. **Treeification Defense**: Modern HashMaps prevent Hash-DoS degradation by converting bucket linked lists into Red-Black trees when chain length exceeds 8.
+2. **Treeification (Java HashMap implementation strategy)**: One particular Java `HashMap` implementation converts long bucket chains toward balanced-tree bins around chain length 8 (subject to additional capacity/treeification/untreeification conditions). This is an implementation strategy, not an inherent property of hash tables.
 3. **Compact Hash Tables**: Decoupling sparse indices from dense entries (as in Python 3.6+) eliminates empty gap memory waste and preserves insertion order.
 4. **Set Optimization**: Hash Sets reuse Hash Map key machinery with dummy sentinels; set intersection achieves optimal $O(\min(n, m))$ time by driving lookups from the smaller set.
 

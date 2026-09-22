@@ -2,6 +2,7 @@ import { VisualStep } from "@/types";
 import {
   createMatrixElements,
   generateDefaultMatrixB,
+  matrixSizeValidationSteps,
   MatrixElement,
   MatrixVisualState,
 } from "./types";
@@ -14,6 +15,8 @@ export function generateTransposeMatrixSteps(
 ): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
+  const sizeErr = matrixSizeValidationSteps(arr.length, rows, cols, "Transpose", stepNumber);
+  if (sizeErr) return sizeErr;
   const elements = createMatrixElements(arr, rows, cols);
 
   const baseState: MatrixVisualState = {
@@ -71,6 +74,8 @@ export function generateTransposeMatrixSteps(
 export function generateRotateMatrixSteps(arr: number[], rows: number, cols: number): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
+  const sizeErr = matrixSizeValidationSteps(arr.length, rows, cols, "Rotate", stepNumber);
+  if (sizeErr) return sizeErr;
   const elements = createMatrixElements(arr, rows, cols);
 
   const baseState: MatrixVisualState = {
@@ -215,6 +220,14 @@ export function generateMatrixMultiplicationSteps(
   const rowsB = cols;
   const colsB = cols; // Square or rectangular multiplication where result is rowsA x colsB
 
+  const sizeErr = matrixSizeValidationSteps(
+    arr.length,
+    rowsA,
+    colsA,
+    "Matrix Multiplication",
+    stepNumber
+  );
+  if (sizeErr) return sizeErr;
   const elementsA = createMatrixElements(arr, rowsA, colsA);
   const dataB =
     arrB && arrB.length >= rowsB * colsB
@@ -379,6 +392,8 @@ export function generateMatrixAdditionSteps(
   const steps: VisualStep[] = [];
   let stepNumber = 1;
 
+  const sizeErr = matrixSizeValidationSteps(arr.length, rows, cols, "Matrix Addition", stepNumber);
+  if (sizeErr) return sizeErr;
   const elementsA = createMatrixElements(arr, rows, cols);
   const dataB =
     arrB && arrB.length >= rows * cols
@@ -530,6 +545,14 @@ export function generateMatrixSubtractionSteps(
   const steps: VisualStep[] = [];
   let stepNumber = 1;
 
+  const sizeErr = matrixSizeValidationSteps(
+    arr.length,
+    rows,
+    cols,
+    "Matrix Subtraction",
+    stepNumber
+  );
+  if (sizeErr) return sizeErr;
   const elementsA = createMatrixElements(arr, rows, cols);
   const dataB =
     arrB && arrB.length >= rows * cols

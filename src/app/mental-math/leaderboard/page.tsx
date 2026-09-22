@@ -64,11 +64,11 @@ export default function LeaderboardPage() {
   const operations: Array<{ id: MathOperation | "all"; label: string }> = [
     { id: "all", label: "All Operations" },
     { id: "addition", label: "Addition (+)" },
-    { id: "subtraction", label: "Subtraction (−)" },
-    { id: "multiplication", label: "Multiplication (×)" },
-    { id: "division", label: "Division (÷)" },
-    { id: "squares", label: "Squares (x²)" },
-    { id: "roots", label: "Square Roots (√x)" },
+    { id: "subtraction", label: "Subtraction (âˆ’)" },
+    { id: "multiplication", label: "Multiplication (Ã—)" },
+    { id: "division", label: "Division (Ã·)" },
+    { id: "squares", label: "Squares (xÂ²)" },
+    { id: "roots", label: "Square Roots (âˆšx)" },
     { id: "percentages", label: "Percentages (%)" },
     { id: "mixed", label: "Mixed Operations" },
   ];
@@ -91,7 +91,7 @@ export default function LeaderboardPage() {
           <button
             onClick={handleRefresh}
             disabled={isLoading}
-            className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-border bg-surface px-3.5 text-xs font-bold text-text-secondary hover:text-text-primary hover:bg-surface-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
+            className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-border bg-surface px-3.5 text-xs font-bold text-text-secondary hover:text-text-primary hover:bg-surface-hover shadow-(--shadow-raised-sm) active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
             title="Refresh Leaderboard"
             aria-label="Refresh Leaderboard"
           >
@@ -99,7 +99,7 @@ export default function LeaderboardPage() {
           </button>
           <Link
             href="/mental-math/daily"
-            className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-5 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all"
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-5 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all"
           >
             <Trophy className="w-3.5 h-3.5" />
             <span>Play Today&apos;s Challenge</span>
@@ -114,7 +114,7 @@ export default function LeaderboardPage() {
           className={cn(
             "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-display transition-all cursor-pointer",
             activeTab === "daily"
-              ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+              ? "bg-primary text-white shadow-(--shadow-raised-sm)"
               : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
           )}
         >
@@ -126,7 +126,7 @@ export default function LeaderboardPage() {
           className={cn(
             "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-display transition-all cursor-pointer",
             activeTab === "speed"
-              ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+              ? "bg-primary text-white shadow-(--shadow-raised-sm)"
               : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
           )}
         >
@@ -138,7 +138,7 @@ export default function LeaderboardPage() {
           className={cn(
             "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold font-display transition-all cursor-pointer",
             activeTab === "test"
-              ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+              ? "bg-primary text-white shadow-(--shadow-raised-sm)"
               : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
           )}
         >
@@ -209,7 +209,7 @@ export default function LeaderboardPage() {
                 <span>Leaderboard Champion</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <h2 className="text-lg sm:text-xl font-extrabold font-display text-text-primary tracking-tight truncate max-w-[220px]">
+                <h2 className="text-lg sm:text-xl font-extrabold font-display text-text-primary tracking-tight truncate max-w-55">
                   {top1.displayName}
                 </h2>
                 {top1.isCurrentUser && (
@@ -300,8 +300,8 @@ export default function LeaderboardPage() {
             className={cn(
               "h-10 shrink-0 rounded-xl px-4 text-xs font-bold font-display transition-all duration-200 cursor-pointer select-none flex items-center justify-center whitespace-nowrap",
               selectedOp === op.id
-                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
-                : "border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-text-primary hover:bg-surface-hover active:scale-95"
+                ? "bg-primary text-white shadow-(--shadow-raised-sm)"
+                : "border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) hover:text-text-primary hover:bg-surface-hover active:scale-95"
             )}
           >
             {op.label}
@@ -310,7 +310,7 @@ export default function LeaderboardPage() {
       </div>
 
       {/* Leaderboard Table Container */}
-      <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-[var(--shadow-raised-sm)] bg-surface">
+      <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-(--shadow-raised-sm) bg-surface">
         {isLoading ? (
           <div className="py-16 flex flex-col items-center justify-center gap-3 text-center">
             <RefreshCw className="w-8 h-8 text-primary animate-spin" />
@@ -413,7 +413,7 @@ export default function LeaderboardPage() {
                     ? "/mental-math/speed"
                     : "/mental-math/test"
               }
-              className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+              className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
             >
               <span>
                 Start{" "}

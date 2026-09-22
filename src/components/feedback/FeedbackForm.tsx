@@ -114,13 +114,13 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
   /* ---- Success / Trace Confirmation State ---- */
   if (result?.success) {
     return (
-      <div className="neu-float rounded-3xl border border-border bg-surface p-8 sm:p-12 text-center shadow-[var(--shadow-raised)] space-y-6">
+      <div className="neu-float rounded-3xl border border-border bg-surface p-8 sm:p-12 text-center shadow-(--shadow-raised) space-y-6">
         <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary-muted px-3.5 py-1 text-xs font-bold font-mono uppercase tracking-wider text-primary shadow-xs">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <span>Submission Received &bull; Verified</span>
         </div>
 
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 text-primary shadow-[var(--shadow-glow-primary)]">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 text-primary shadow-(--shadow-glow-primary)">
           <CheckCircle2 className="h-8 w-8" />
         </div>
 
@@ -135,7 +135,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
         </div>
 
         {lastSubmission && (
-          <div className="max-w-md mx-auto rounded-2xl border border-border bg-bg-surface-inset p-4 text-left shadow-[var(--shadow-inset)]">
+          <div className="max-w-md mx-auto rounded-2xl border border-border bg-bg-surface-inset p-4 text-left shadow-(--shadow-inset)">
             <div className="flex items-center justify-between text-xs font-mono text-text-muted mb-1.5">
               <span>Category: {lastSubmission.typeLabel}</span>
               <span>Status: Queued</span>
@@ -164,7 +164,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
             className={buttonVariants({
               variant: "default",
               size: "lg",
-              className: "w-full sm:w-auto gap-2 shadow-[var(--shadow-raised)]",
+              className: "w-full sm:w-auto gap-2 shadow-(--shadow-raised)",
             })}
           >
             <Compass className="h-4 w-4" />
@@ -177,7 +177,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Category Selector — Componentized Shared Cards (FR-001 & FR-004) */}
+      {/* Category Selector â€” Componentized Shared Cards (FR-001 & FR-004) */}
       <div>
         <label className="block text-xs font-bold font-mono uppercase tracking-wider text-text-primary mb-3.5">
           What type of feedback?
@@ -212,15 +212,15 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                 className={cn(
                   "neu-raised group relative flex flex-col justify-between rounded-2xl p-5 text-left transition-all duration-200 cursor-pointer select-none",
                   isActive
-                    ? "border-primary/60 bg-surface shadow-[var(--shadow-glow-primary)] ring-1 ring-primary/30 -translate-y-0.5"
-                    : "border-border bg-surface text-text-secondary hover:border-primary/40 hover:bg-surface-hover hover:-translate-y-0.5 shadow-[var(--shadow-raised-sm)]"
+                    ? "border-primary/60 bg-surface shadow-(--shadow-glow-primary) ring-1 ring-primary/30 -translate-y-0.5"
+                    : "border-border bg-surface text-text-secondary hover:border-primary/40 hover:bg-surface-hover hover:-translate-y-0.5 shadow-(--shadow-raised-sm)"
                 )}
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div
                       className={cn(
-                        "flex h-10 w-10 items-center justify-center rounded-xl border shadow-[var(--shadow-inset)] transition-all duration-200",
+                        "flex h-10 w-10 items-center justify-center rounded-xl border shadow-(--shadow-inset) transition-all duration-200",
                         isActive
                           ? "border-primary/40 bg-primary-muted text-primary scale-105"
                           : "border-border bg-surface-inset text-text-muted group-hover:text-primary group-hover:scale-105"
@@ -258,8 +258,8 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
         </div>
       </div>
 
-      {/* Form Fields Card Shell — Always visible by default (FR-002 & FR-005) */}
-      <div className="neu-float rounded-3xl border border-border bg-surface p-6 sm:p-8 space-y-6 shadow-[var(--shadow-raised)]">
+      {/* Form Fields Card Shell â€” Always visible by default (FR-002 & FR-005) */}
+      <div className="neu-float rounded-3xl border border-border bg-surface p-6 sm:p-8 space-y-6 shadow-(--shadow-raised)">
         {/* Subject */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -314,7 +314,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                     onClick={() => setRating(starValue)}
                     onMouseEnter={() => setHoveredStar(starValue)}
                     onMouseLeave={() => setHoveredStar(0)}
-                    aria-label={`${starValue} star${starValue > 1 ? "s" : ""} — ${STAR_LABELS[starValue - 1]}`}
+                    aria-label={`${starValue} star${starValue > 1 ? "s" : ""} â€” ${STAR_LABELS[starValue - 1]}`}
                     className="group p-1.5 rounded-xl border border-border/60 bg-surface-inset hover:border-primary/40 hover:bg-primary-muted transition-all duration-150 cursor-pointer"
                   >
                     <Star
@@ -379,18 +379,18 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
             rows={5}
             placeholder={
               selectedType === "bug_report"
-                ? "1. Navigate to sorting visualizer\n2. Select 'Merge Sort'\n3. Click 'Play'\n4. Animation freezes at step 5…"
+                ? "1. Navigate to sorting visualizer\n2. Select 'Merge Sort'\n3. Click 'Play'\n4. Animation freezes at step 5â€¦"
                 : selectedType === "feature_request"
-                  ? "Describe the feature you'd like and how it would improve your DSA learning experience…"
+                  ? "Describe the feature you'd like and how it would improve your DSA learning experienceâ€¦"
                   : selectedType === "rating"
-                    ? "Tell us what you love about AlgoFlow or what we can do better…"
-                    : "Share any thoughts, observations, or suggestions…"
+                    ? "Tell us what you love about AlgoFlow or what we can do betterâ€¦"
+                    : "Share any thoughts, observations, or suggestionsâ€¦"
             }
-            className="min-h-[140px] w-full rounded-xl border border-border bg-bg-surface-inset p-3.5 text-sm text-text-primary shadow-[var(--shadow-inset)] transition-all duration-200 placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 resize-y"
+            className="min-h-[140px] w-full rounded-xl border border-border bg-bg-surface-inset p-3.5 text-sm text-text-primary shadow-(--shadow-inset) transition-all duration-200 placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 resize-y"
           />
         </div>
 
-        {/* Email Field — Visually marked optional (FR-005) */}
+        {/* Email Field â€” Visually marked optional (FR-005) */}
         {!isAuthenticated && (
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -438,13 +438,13 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
             className={buttonVariants({
               variant: "default",
               size: "lg",
-              className: "w-full sm:w-auto gap-2 shadow-[var(--shadow-raised)] font-bold",
+              className: "w-full sm:w-auto gap-2 shadow-(--shadow-raised) font-bold",
             })}
           >
             {isPending ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Submitting Feedback…</span>
+                <span>Submitting Feedbackâ€¦</span>
               </>
             ) : (
               <>

@@ -120,7 +120,7 @@ function WorkbenchPreview() {
       {/* Top Accent Strip with progress indication */}
       <div className="absolute inset-x-0 top-0 h-1 bg-border overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-primary via-emerald-400 to-secondary transition-all duration-300 ease-out"
+          className="h-full bg-linear-to-r from-primary via-emerald-400 to-secondary transition-all duration-300 ease-out"
           style={{ width: `${((stepIndex + 1) / fullPreviewTrace.length) * 100}%` }}
         />
       </div>
@@ -139,13 +139,13 @@ function WorkbenchPreview() {
       </div>
 
       {/* Array Canvas Well */}
-      <div className="mt-4 rounded-2xl border border-border bg-bg-surface-inset p-3.5 sm:p-5 shadow-[var(--shadow-inset)]">
+      <div className="mt-4 rounded-2xl border border-border bg-bg-surface-inset p-3.5 sm:p-5 shadow-(--shadow-inset)">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs">
           <span className="font-semibold text-text-secondary font-mono">
             Input: [{PREVIEW_INPUT.join(", ")}]
           </span>
           <span className="font-mono font-bold text-text-secondary bg-surface px-2 py-0.5 rounded border border-border">
-            Avg Time: O(n²)
+            Avg Time: O(nÂ²)
           </span>
         </div>
 
@@ -166,10 +166,10 @@ function WorkbenchPreview() {
                   className={cn(
                     "relative w-full rounded-t-xl border transition-colors duration-200",
                     isActive
-                      ? "border-primary bg-primary text-white shadow-[var(--shadow-glow-primary)]"
+                      ? "border-primary bg-primary text-white shadow-(--shadow-glow-primary)"
                       : isSettled
                         ? "border-secondary/40 bg-secondary-muted"
-                        : "border-border bg-surface shadow-[var(--shadow-raised-sm)]"
+                        : "border-border bg-surface shadow-(--shadow-raised-sm)"
                   )}
                 >
                   {isSettled ? (
@@ -195,7 +195,7 @@ function WorkbenchPreview() {
 
       {/* Dual Panel: Step Explanation & Synchronized Pseudocode */}
       <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1.15fr]">
-        <div className="rounded-2xl border border-border bg-surface p-4 shadow-[var(--shadow-raised-sm)] flex flex-col justify-between">
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-(--shadow-raised-sm) flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between gap-2">
               <p className="text-xs font-bold text-text-primary uppercase tracking-wide">
@@ -216,7 +216,7 @@ function WorkbenchPreview() {
           ) : null}
         </div>
 
-        <div className="overflow-hidden rounded-2xl bg-pseudocode-panel-bg p-3.5 font-mono text-[11px] leading-6 text-emerald-100 shadow-[var(--shadow-inset)] border border-emerald-900/30">
+        <div className="overflow-hidden rounded-2xl bg-pseudocode-panel-bg p-3.5 font-mono text-[11px] leading-6 text-emerald-100 shadow-(--shadow-inset) border border-emerald-900/30">
           {previewPseudocode.map((line, index) => {
             const isHighlight = getPreviewLine(step) === index + 1;
             return (
@@ -241,7 +241,7 @@ function WorkbenchPreview() {
       <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 cursor-pointer"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) hover:text-primary hover:border-primary/40 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 cursor-pointer"
           onClick={() => setStepIndex((current) => Math.max(0, current - 1))}
           disabled={stepIndex === 0}
           aria-label="Previous preview step"
@@ -253,7 +253,7 @@ function WorkbenchPreview() {
           <button
             type="button"
             onClick={reset}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 active:scale-95 cursor-pointer"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) hover:text-primary hover:border-primary/40 active:scale-95 cursor-pointer"
             aria-label="Restart preview"
             title="Restart simulation"
           >
@@ -267,7 +267,7 @@ function WorkbenchPreview() {
             }}
             disabled={reduceMotion === true}
             aria-pressed={isPlaying}
-            className="inline-flex h-10 min-w-32 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 cursor-pointer"
+            className="inline-flex h-10 min-w-32 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 cursor-pointer"
           >
             {isPlaying ? (
               <Pause className="h-3.5 w-3.5" />
@@ -280,7 +280,7 @@ function WorkbenchPreview() {
 
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary hover:border-primary/40 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 cursor-pointer"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) hover:text-primary hover:border-primary/40 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 cursor-pointer"
           onClick={() =>
             setStepIndex((current) => Math.min(fullPreviewTrace.length - 1, current + 1))
           }
@@ -337,7 +337,7 @@ export function HeroSection({
               href="/visualizers"
               className={buttonVariants({
                 size: "lg",
-                className: "group shadow-[var(--shadow-raised)]",
+                className: "group shadow-(--shadow-raised)",
               })}
             >
               <Compass className="h-4 w-4" />

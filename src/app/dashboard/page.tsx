@@ -300,10 +300,10 @@ export default async function DashboardPage() {
       <div className="mx-auto w-full max-w-7xl flex flex-col gap-8">
         {/* Local Dev Mode Isolation Notice */}
         {isMockSession && (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-primary/30 bg-primary-muted/20 px-4 py-3 text-xs text-primary shadow-[var(--shadow-raised-sm)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-primary/30 bg-primary-muted/20 px-4 py-3 text-xs text-primary shadow-(--shadow-raised-sm)">
             <div className="flex items-center gap-2.5">
               <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary text-white text-xs font-bold shrink-0">
-                🛠️
+                ðŸ› ï¸
               </span>
               <span>
                 <strong>Local Dev Mode Active:</strong> Logged in with local mock profile (
@@ -329,7 +329,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Unified Platform Streak Pill */}
-          <div className="flex items-center gap-3.5 bg-bg-surface-inset px-5 py-3 rounded-2xl border border-border shadow-[var(--shadow-inset)]">
+          <div className="flex items-center gap-3.5 bg-bg-surface-inset px-5 py-3 rounded-2xl border border-border shadow-(--shadow-inset)">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-warning-muted text-warning border border-warning/30">
               <Flame className="h-5 w-5 fill-current" />
             </span>
@@ -350,7 +350,7 @@ export default async function DashboardPage() {
           <StatCard
             title="Experience"
             value={unifiedXP.totalXP.toLocaleString()}
-            subtitle={`Level ${unifiedXP.level} • Authentic XP`}
+            subtitle={`Level ${unifiedXP.level} â€¢ Authentic XP`}
             icon={<Star className="w-4 h-4 fill-current" />}
             variant="primary"
           />
@@ -378,7 +378,7 @@ export default async function DashboardPage() {
             value={
               mentalMathStats?.personalBests?.fastestSpeedQPM
                 ? `${mentalMathStats.personalBests.fastestSpeedQPM} QPM`
-                : "—"
+                : "â€”"
             }
             subtitle={`${mentalMathStats?.totalQuestionsSolved || 0} solved (${mentalMathStats?.overallAccuracy || 0}% acc)`}
             icon={<BrainCircuit className="w-4 h-4" />}
@@ -420,7 +420,7 @@ export default async function DashboardPage() {
                     <span className="text-text-secondary">Linear Collections</span>
                     <span className="font-mono text-primary">{linearProgress}%</span>
                   </div>
-                  <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-[var(--shadow-inset)]">
+                  <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-(--shadow-inset)">
                     <div
                       className="bg-primary h-full rounded-full transition-all duration-500"
                       style={{ width: `${linearProgress}%` }}
@@ -437,7 +437,7 @@ export default async function DashboardPage() {
                     <span className="text-text-secondary">Hierarchical &amp; Graphs</span>
                     <span className="font-mono text-secondary">{nonLinearProgress}%</span>
                   </div>
-                  <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-[var(--shadow-inset)]">
+                  <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-(--shadow-inset)">
                     <div
                       className="bg-secondary h-full rounded-full transition-all duration-500"
                       style={{ width: `${nonLinearProgress}%` }}
@@ -454,7 +454,7 @@ export default async function DashboardPage() {
                     <span className="text-text-secondary">Hash Mappings</span>
                     <span className="font-mono text-accent">{hashProgress}%</span>
                   </div>
-                  <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-[var(--shadow-inset)]">
+                  <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-(--shadow-inset)">
                     <div
                       className="bg-accent h-full rounded-full transition-all duration-500"
                       style={{ width: `${hashProgress}%` }}
@@ -539,14 +539,14 @@ export default async function DashboardPage() {
                     </p>
                     <Link
                       href={`/visualizer/${nextAlgorithm.slug}`}
-                      className="mt-4 w-full min-h-10 bg-primary text-white text-xs font-bold font-display rounded-xl flex items-center justify-center gap-2 shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all"
+                      className="mt-4 w-full min-h-10 bg-primary text-white text-xs font-bold font-display rounded-xl flex items-center justify-center gap-2 shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all"
                     >
                       <Play className="w-3.5 h-3.5 fill-current" /> Launch Visualizer
                     </Link>
                   </div>
                 ) : (
                   <div className="text-xs font-bold text-success text-center py-6">
-                    🎉 You have completed all visualizers in the catalog!
+                    ðŸŽ‰ You have completed all visualizers in the catalog!
                   </div>
                 )}
               </div>
@@ -569,7 +569,7 @@ export default async function DashboardPage() {
               </p>
             </div>
             <Link href="/visualizers" className="text-xs font-bold text-primary hover:underline">
-              Browse All Data Structures →
+              Browse All Data Structures â†’
             </Link>
           </div>
 

@@ -50,7 +50,7 @@ export default async function TermsPage() {
             Terms of Service
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {TERMS_VERSION} • Effective Date: September 5, 2026
+            Version {TERMS_VERSION} â€¢ Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             Welcome to AlgoFlow (&quot;AlgoFlow&quot;, &quot;we&quot;, &quot;us&quot;, or
@@ -63,13 +63,13 @@ export default async function TermsPage() {
         </div>
 
         {/* Terms at a Glance (Executive Summary) */}
-        <div className="mt-10 neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
-          <h2 className="text-base font-bold font-display text-text-primary uppercase tracking-wider text-xs font-mono text-primary flex items-center gap-2">
+        <div className="mt-10 neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface shadow-(--shadow-raised-sm)">
+          <h2 className="font-bold uppercase tracking-wider text-xs font-mono text-primary flex items-center gap-2">
             <Scale className="w-4 h-4 text-primary" />
             <span>Key User Obligations at a Glance</span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-success" />
                 Educational Study License
@@ -80,7 +80,7 @@ export default async function TermsPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-success" />
                 Academic & Leaderboard Integrity
@@ -91,7 +91,7 @@ export default async function TermsPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-success" />
                 Intellectual Property Protection
@@ -102,7 +102,7 @@ export default async function TermsPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-success" />
                 Account Confidentiality
@@ -441,7 +441,7 @@ export default async function TermsPage() {
                 version will be published here with an updated Effective Date. Continued use of Algo
                 Flow following the posting of modifications indicates your binding acceptance.
               </p>
-              <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] mt-4">
+              <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset) mt-4">
                 <p className="font-bold text-text-primary text-xs">
                   Official Legal Contact & Notices:
                 </p>

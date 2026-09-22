@@ -61,14 +61,14 @@ export function GraphInputControls({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
           {hasStartNode && (
-            <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
                 Start Node:
               </span>
               <select
                 value={selectedNode}
                 onChange={(event) => onOptionsChange?.({ ...options, text: event.target.value })}
-                className="h-6 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none cursor-pointer"
+                className="h-6 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none cursor-pointer"
                 aria-label="Start Node"
               >
                 {graphNodes.map((node) => (
@@ -84,14 +84,14 @@ export function GraphInputControls({
             ref={editGraphButtonRef}
             type="button"
             onClick={() => setIsEditorOpen(true)}
-            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary-muted px-2.5 text-[11px] font-bold font-mono text-primary shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary hover:text-white hover:border-primary active:scale-95 cursor-pointer shrink-0"
+            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary-muted px-2.5 text-[11px] font-bold font-mono text-primary shadow-(--shadow-raised-sm) transition-all hover:bg-primary hover:text-white hover:border-primary active:scale-95 cursor-pointer shrink-0"
             title="Open Graph Canvas Editor"
           >
             <Edit3 className="h-3.5 w-3.5 shrink-0" />
             <span>Edit Graph Canvas</span>
           </button>
 
-          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 text-[10px] font-mono font-semibold text-text-secondary shadow-[var(--shadow-raised-sm)]">
+          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 text-[10px] font-mono font-semibold text-text-secondary shadow-(--shadow-raised-sm)">
             <Compass className="h-3.5 w-3.5 text-primary shrink-0" />
             <span>{badgeLabel}</span>
           </div>

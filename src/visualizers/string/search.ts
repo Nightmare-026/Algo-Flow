@@ -9,7 +9,49 @@ export function generateNaiveSearchSteps(text: string, pattern: string): VisualS
   const baseState: StringVisualState = { elements, patternElements };
 
   if (pattern.length === 0 || text.length === 0) {
-    return [];
+    steps.push({
+      id: `step-${stepNumber}`,
+      stepNumber,
+      title: "Empty Input",
+      description:
+        "Naive search needs a non-empty text and pattern. Provide both to run the visualization.",
+      operation: "Naive Search",
+      actionType: "error",
+      dataState: baseState,
+      highlights: {},
+      variables: { i: "-", j: "-" },
+      pseudocodeLine: 1,
+    });
+    return steps;
+  }
+
+  if (pattern.length > text.length) {
+    steps.push({
+      id: `step-${stepNumber}`,
+      stepNumber,
+      title: "Initialize Naive Search",
+      description: `Searching for pattern "${pattern}" in text "${text}".`,
+      operation: "Naive Search",
+      actionType: "initialize",
+      dataState: baseState,
+      highlights: {},
+      variables: { i: "-", j: "-" },
+      pseudocodeLine: 1,
+    });
+    stepNumber++;
+    steps.push({
+      id: `step-${stepNumber}`,
+      stepNumber,
+      title: "Pattern Longer Than Text",
+      description: `Pattern length ${pattern.length} exceeds text length ${text.length}, so no match is possible.`,
+      operation: "Naive Search",
+      actionType: "not-found",
+      dataState: baseState,
+      highlights: {},
+      variables: { i: "-", j: "-" },
+      pseudocodeLine: 5,
+    });
+    return steps;
   }
 
   steps.push({
@@ -422,7 +464,39 @@ export function generateRabinKarpSteps(text: string, pattern: string): VisualSte
   const patternElements = createStringElements(pattern);
   const baseState: StringVisualState = { elements, patternElements };
 
-  if (pattern.length === 0 || text.length === 0) return [];
+  if (pattern.length === 0 || text.length === 0) {
+    steps.push({
+      id: `step-${stepNumber}`,
+      stepNumber,
+      title: "Empty Input",
+      description:
+        "Rabin-Karp needs a non-empty text and pattern. Provide both to run the visualization.",
+      operation: "Rabin-Karp Search",
+      actionType: "error",
+      dataState: baseState,
+      highlights: {},
+      variables: { i: "-", pHash: "-", tHash: "-" },
+      pseudocodeLine: 1,
+    });
+    return steps;
+  }
+
+  if (pattern.length > text.length) {
+    stepNumber++;
+    steps.push({
+      id: `step-${stepNumber}`,
+      stepNumber,
+      title: "Pattern Longer Than Text",
+      description: `Pattern length ${pattern.length} exceeds text length ${text.length}, so no match is possible.`,
+      operation: "Rabin-Karp Search",
+      actionType: "not-found",
+      dataState: baseState,
+      highlights: {},
+      variables: { i: "-", pHash: "-", tHash: "-" },
+      pseudocodeLine: 5,
+    });
+    return steps;
+  }
 
   const n = text.length;
   const m = pattern.length;

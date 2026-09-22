@@ -5,6 +5,7 @@ import { AlertCircle, FileEdit, Search, Shuffle, Target, Database } from "lucide
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
+  parseInputNumber,
   parseNumberList,
   VisualizerInputOptions,
 } from "@/lib/validation/visualizer-input";
@@ -60,7 +61,7 @@ export function HashSetInputControls({
     <div className="flex flex-col gap-2 text-[11px]">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
-          <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+          <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
             <div className="flex items-center gap-1.5 pr-1">
               <span className="font-mono text-[10px] font-semibold text-text-muted">Elements</span>
               <input
@@ -93,7 +94,7 @@ export function HashSetInputControls({
 
           <form
             onSubmit={handleCustomSubmit}
-            className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
           >
             <FileEdit className="h-3.5 w-3.5 text-text-muted shrink-0" aria-hidden="true" />
             <input
@@ -114,15 +115,17 @@ export function HashSetInputControls({
           </form>
         </div>
 
-        <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)] lg:ml-auto">
+        <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm) lg:ml-auto">
           <label className="flex items-center gap-1.5 font-mono text-[10px] font-semibold text-text-secondary">
             <Database className="h-3 w-3 text-primary" aria-hidden="true" />
             <span className="hidden sm:inline">Capacity:</span>
             <input
               type="number"
               value={options.capacity}
-              onChange={(event) => updateOption("capacity", Number(event.target.value))}
-              className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+              onChange={(event) =>
+                updateOption("capacity", parseInputNumber(event.target.value, options.capacity))
+              }
+              className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
               min={1}
               max={20}
               aria-label="Set capacity size"
@@ -136,8 +139,10 @@ export function HashSetInputControls({
               <input
                 type="number"
                 value={options.value}
-                onChange={(event) => updateOption("value", Number(event.target.value))}
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                onChange={(event) =>
+                  updateOption("value", parseInputNumber(event.target.value, options.value))
+                }
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                 aria-label="Value to insert"
               />
             </label>
@@ -149,8 +154,10 @@ export function HashSetInputControls({
               <input
                 type="number"
                 value={options.target}
-                onChange={(event) => updateOption("target", Number(event.target.value))}
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                onChange={(event) =>
+                  updateOption("target", parseInputNumber(event.target.value, options.target))
+                }
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                 aria-label="Target search key"
               />
             </label>

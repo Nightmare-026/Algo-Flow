@@ -61,13 +61,13 @@ export default function MentalMathProgressPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-border bg-surface px-4 text-xs font-bold font-display text-text-secondary hover:text-text-primary hover:bg-surface-hover shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer"
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-border bg-surface px-4 text-xs font-bold font-display text-text-secondary hover:text-text-primary hover:bg-surface-hover shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer"
           >
             <span>Student Dashboard</span>
           </Link>
           <Link
             href="/mental-math/practice"
-            className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-5 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-5 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
             <span>Launch Practice</span>
@@ -77,7 +77,7 @@ export default function MentalMathProgressPage() {
 
       {/* 4 Summary Stat Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-[var(--shadow-raised-sm)]">
+        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-(--shadow-raised-sm)">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Total Solved
@@ -88,7 +88,7 @@ export default function MentalMathProgressPage() {
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {isHydrated ? totalSolved.toLocaleString() : "—"}
+              {isHydrated ? totalSolved.toLocaleString() : "â€”"}
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1">
               {totalSolved === 0 ? "Awaiting first run" : `${totalSessions} completed sessions`}
@@ -96,7 +96,7 @@ export default function MentalMathProgressPage() {
           </div>
         </div>
 
-        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-[var(--shadow-raised-sm)]">
+        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-(--shadow-raised-sm)">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Overall Accuracy
@@ -107,7 +107,7 @@ export default function MentalMathProgressPage() {
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {isHydrated && totalSolved > 0 ? `${accuracy}%` : "—"}
+              {isHydrated && totalSolved > 0 ? `${accuracy}%` : "â€”"}
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1 tabular-nums">
               {totalSolved === 0 ? "Calibrating" : `${totalCorrect} of ${totalSolved} correct`}
@@ -115,7 +115,7 @@ export default function MentalMathProgressPage() {
           </div>
         </div>
 
-        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-[var(--shadow-raised-sm)]">
+        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-(--shadow-raised-sm)">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Active Streak
@@ -126,7 +126,7 @@ export default function MentalMathProgressPage() {
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {isHydrated ? streak : "—"}{" "}
+              {isHydrated ? streak : "â€”"}{" "}
               <span className="text-sm font-normal text-text-muted">Days</span>
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1">
@@ -135,7 +135,7 @@ export default function MentalMathProgressPage() {
           </div>
         </div>
 
-        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-[var(--shadow-raised-sm)]">
+        <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-(--shadow-raised-sm)">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Fastest Pace
@@ -146,7 +146,7 @@ export default function MentalMathProgressPage() {
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {isHydrated && fastestSpeed > 0 ? fastestSpeed : "—"}
+              {isHydrated && fastestSpeed > 0 ? fastestSpeed : "â€”"}
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1">
               {fastestSpeed === 0 ? "Awaiting speed sprint" : "Questions per minute"}
@@ -171,7 +171,7 @@ export default function MentalMathProgressPage() {
       )}
 
       {/* Full History Log */}
-      <section className="neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface flex flex-col gap-4 shadow-[var(--shadow-raised-sm)]">
+      <section className="neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface flex flex-col gap-4 shadow-(--shadow-raised-sm)">
         <div>
           <h2 className="text-lg font-bold font-display text-text-primary tracking-tight">
             Complete Practice Session History
@@ -239,7 +239,7 @@ export default function MentalMathProgressPage() {
             </p>
             <Link
               href="/mental-math/practice"
-              className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+              className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
             >
               <span>Start Your First Drill</span>
             </Link>

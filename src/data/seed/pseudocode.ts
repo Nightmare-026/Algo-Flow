@@ -37,7 +37,7 @@ export const pseudocodeMap: Record<string, string> = {
   // Array Searching
   "linear-search": "for i from 0 to n-1:\n  if arr[i] == target:\n    return i\nreturn -1",
   "binary-search":
-    "low = 0, high = n-1\nwhile low <= high:\n  mid = (low + high) / 2\n  if arr[mid] == target: return mid\n  if arr[mid] < target: low = mid + 1\n  else: high = mid - 1\nreturn -1",
+    "Precondition: arr must be sorted\nlow = 0, high = n-1\nwhile low <= high:\n  mid = low + floor((high - low) / 2)\n  if arr[mid] == target: return mid\n  if arr[mid] < target: low = mid + 1\n  else: high = mid - 1\nreturn -1",
   "jump-search":
     "step = sqrt(n)\nprev = 0\nwhile arr[min(step, n)-1] < target:\n  prev = step\n  step += sqrt(n)\n  if prev >= n: return -1\nfor i from prev to min(step, n)-1:\n  if arr[i] == target: return i\nreturn -1",
   "interpolation-search":
@@ -135,9 +135,9 @@ export const pseudocodeMap: Record<string, string> = {
   bfs: "q.enqueue(start)\nvisited[start] = true\nwhile not q.isEmpty():\n  u = q.dequeue()\n  visit(u)\n  for v in adj[u]:\n    if not visited[v]:\n      visited[v] = true\n      q.enqueue(v)",
   dfs: "visited[u] = true\nvisit(u)\nfor v in adj[u]:\n  if not visited[v]:\n    dfs(v)",
   dijkstra:
-    "dist[start] = 0, dist[others] = inf\nwhile unvisited:\n  u = min(dist[unvisited])\n  for (v, w) in adj[u]:\n    if dist[u] + w < dist[v]: dist[v] = dist[u] + w",
+    "Precondition: all edge weights >= 0 (binary heap: O((V+E) log V); array min-scan: O(V^2))\ndist[start] = 0, dist[others] = inf\nwhile unvisited:\n  u = min(dist[unvisited])\n  for (v, w) in adj[u]:\n    if dist[u] + w < dist[v]: dist[v] = dist[u] + w",
   "bellman-ford":
-    "dist[src] = 0, dist[others] = inf\nfor i from 1 to |V|-1:\n  for (u, v, w) in edges:\n    if dist[u] + w < dist[v]: dist[v] = dist[u] + w\ncheck negative cycles",
+    "dist[src] = 0, dist[others] = inf\nfor i from 1 to |V|-1:\n  for (u, v, w) in edges:\n    if dist[u] + w < dist[v]: dist[v] = dist[u] + w\none more pass over all edges: if any dist can be relaxed, a reachable negative cycle exists",
   kruskal:
     "sort edges by weight\nfor (u, v, w) in edges:\n  if find(u) != find(v):\n    union(u, v)\n    add (u, v) to MST",
   prim: "inMST = {root}\nwhile |inMST| < |V|:\n  (u, v) = min cut edge\n  inMST.add(v)\n  add (u, v) to MST",

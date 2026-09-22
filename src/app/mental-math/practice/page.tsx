@@ -168,13 +168,13 @@ export default function PracticeGamePage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowConfig(true)}
-              className="py-3 px-6 rounded-2xl border border-border bg-surface text-text-primary text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] hover:bg-surface-hover active:scale-95 transition-all cursor-pointer"
+              className="py-3 px-6 rounded-2xl border border-border bg-surface text-text-primary text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-surface-hover active:scale-95 transition-all cursor-pointer"
             >
               Change Drill
             </button>
             <button
               onClick={resumeSession}
-              className="py-3 px-8 rounded-2xl bg-primary text-white text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+              className="py-3 px-8 rounded-2xl bg-primary text-white text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
             >
               Resume Practice
             </button>

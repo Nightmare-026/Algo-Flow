@@ -220,6 +220,13 @@ export const LEARNING_MODULES: LearningModule[] = [
           "Circular Ring Pointers",
           "Josephus Simulation",
         ],
+        visualizerLinks: [
+          {
+            slug: "linked-list-types",
+            title: "Linked List Types Compared",
+            description: "Compare Singly, Doubly, and Circular node layouts",
+          },
+        ],
       },
       {
         id: "specialized-linked-lists",

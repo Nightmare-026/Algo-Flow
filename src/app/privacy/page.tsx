@@ -49,7 +49,7 @@ export default async function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {PRIVACY_VERSION} • Effective Date: September 5, 2026
+            Version {PRIVACY_VERSION} â€¢ Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             At AlgoFlow (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), we believe that
@@ -62,24 +62,25 @@ export default async function PrivacyPage() {
         </div>
 
         {/* Privacy at a Glance (Executive Summary) */}
-        <div className="mt-10 neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
-          <h2 className="text-base font-bold font-display text-text-primary uppercase tracking-wider text-xs font-mono text-primary flex items-center gap-2">
+        <div className="mt-10 neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface shadow-(--shadow-raised-sm)">
+          <h2 className="font-bold uppercase tracking-wider text-xs font-mono text-primary flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-primary" />
             <span>Privacy Principles at a Glance</span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 Zero Commercial Ad Monetization
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
                 We never sell, rent, license, or monetize your personal data or activity telemetry
-                with third-party advertising networks.
+                with third-party advertising networks. We use Google Analytics 4 solely for anonymous,
+                aggregate traffic insights to improve the platform.
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 Anonymous Public Exploration
@@ -90,7 +91,7 @@ export default async function PrivacyPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 Minimalist OAuth (Google &amp; GitHub)
@@ -102,7 +103,7 @@ export default async function PrivacyPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 PostgreSQL Row-Level Security
@@ -353,6 +354,13 @@ export default async function PrivacyPage() {
                   logged-in state across Next.js server components and API routes.
                 </li>
                 <li>
+                  <strong>Analytics Cookies (Google Analytics 4):</strong> GA4 sets two cookies
+                  (<code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">_ga</code> and{" "}
+                  <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">_ga_&lt;container-id&gt;</code>)
+                  to collect anonymous, aggregate traffic metrics. GA4 advertising features are disabled;
+                  analytics data is never linked to your account identity.
+                </li>
+                <li>
                   <strong>Browser Local Storage:</strong> Used to store your UI preferences
                   (Light/Dark theme, sound toggle, practice session settings) directly on your
                   device without sending unnecessary telemetry to external servers.
@@ -408,7 +416,7 @@ export default async function PrivacyPage() {
                     </tr>
                     <tr>
                       <td className="p-3 font-bold text-text-primary">Google LLC</td>
-                      <td className="p-3">Google OAuth 2.0 Identity Provider (Optional SSO)</td>
+                      <td className="p-3">Google OAuth 2.0 Identity Provider (Optional SSO); Google Analytics 4 (aggregate traffic analytics)</td>
                       <td className="p-3">SOC 2, ISO 27001, Privacy Shield / DPA</td>
                     </tr>
                     <tr>
@@ -505,7 +513,7 @@ export default async function PrivacyPage() {
                 occur, we will update the version number and effective date at the top of this
                 document.
               </p>
-              <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] mt-4">
+              <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset) mt-4">
                 <p className="font-bold text-text-primary text-xs">
                   Official Privacy & Legal Contact:
                 </p>

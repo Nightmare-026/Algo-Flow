@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Braces, Play } from "lucide-react";
@@ -53,7 +53,7 @@ export function AuthVisual() {
           transition={{ duration: reducedMotion ? 0.01 : 0.55, delay: reducedMotion ? 0 : 0.38 }}
         >
           <div className="flex items-center justify-between gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white shadow-[var(--shadow-raised-sm)]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white shadow-(--shadow-raised-sm)">
               <Play className="h-4 w-4 fill-current" />
             </span>
             <div className="min-w-0 flex-1">
@@ -61,7 +61,7 @@ export function AuthVisual() {
                 <span>Binary search</span>
                 <span>04 / 07</span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-primary-muted shadow-[var(--shadow-inset)]">
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-primary-muted shadow-(--shadow-inset)">
                 <motion.div
                   className="h-full rounded-full bg-primary"
                   initial={reducedMotion ? false : { scaleX: 0 }}

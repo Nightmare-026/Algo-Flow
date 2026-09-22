@@ -137,7 +137,7 @@ export function MentalMathSidebar({ isCollapsed, onToggle }: SidebarProps) {
                 "relative group flex items-center rounded-xl transition-all duration-200 font-display text-xs font-bold tracking-tight outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 isCollapsed ? "justify-center h-10 w-full px-0" : "gap-3 px-3.5 py-2.5 w-full",
                 isActive
-                  ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                  ? "bg-primary text-white shadow-(--shadow-raised-sm)"
                   : "text-text-secondary hover:text-text-primary hover:bg-surface-hover active:scale-[0.98]"
               )}
             >

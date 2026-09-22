@@ -75,7 +75,7 @@ export function useVisualizerSaveSession(
       const result = await saveSession(
         algorithmId,
         name,
-        {},
+        { customSpeedMs },
         currentStepIndex,
         steps[currentStepIndex]?.dataState || {},
         speedLabel,

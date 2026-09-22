@@ -11,6 +11,7 @@ import {
   getVisualElementState,
 } from "@/components/visualizer/visual-state";
 import { cn } from "@/lib/utils";
+import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 
 function SingleStackBeaker({
   elements,
@@ -38,13 +39,13 @@ function SingleStackBeaker({
           <span>{label}</span>
         </div>
         <div className="text-[8px] font-mono font-semibold tracking-tight text-primary/70">
-          ↓ PUSH / POP (LIFO) ↑
+          â†“ PUSH / POP (LIFO) â†‘
         </div>
       </div>
 
       <div
         style={{ height: beakerHeight }}
-        className="relative flex w-28 sm:w-32 flex-col-reverse justify-start gap-1 overflow-visible rounded-b-xl border-b-4 border-x-4 border-border bg-bg-surface-light/35 p-1 pb-0 shadow-[var(--shadow-inset)]"
+        className="relative flex w-28 sm:w-32 flex-col-reverse justify-start gap-1 overflow-visible rounded-b-xl border-b-4 border-x-4 border-border bg-bg-surface-light/35 p-1 pb-0 shadow-(--shadow-inset)"
       >
         {/* Empty Stack TOP [-1] Indicator */}
         {isEmpty && (
@@ -142,7 +143,7 @@ function SingleStackBeaker({
       </div>
 
       {/* Chamber Pedestal Base */}
-      <div className="h-2 w-32 sm:w-36 rounded-full border-t-2 border-border/70 bg-surface shadow-[var(--shadow-raised-sm)] -mt-0.5" />
+      <div className="h-2 w-32 sm:w-36 rounded-full border-t-2 border-border/70 bg-surface shadow-(--shadow-raised-sm) -mt-0.5" />
       <div className="h-1 w-36 sm:w-40 rounded-full bg-border/30 -mt-0.5" />
     </div>
   );
@@ -153,7 +154,7 @@ export function StackRenderer() {
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep?.dataState) {
-    return null;
+    return <EmptyVisualizerState />;
   }
 
   const dataState = currentStep.dataState as StackVisualState;
@@ -172,14 +173,14 @@ export function StackRenderer() {
           <div className="text-[9px] font-mono font-semibold uppercase tracking-wider text-text-muted">
             Input Stream Scanner
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-1 p-1 rounded-xl border border-border bg-surface/90 shadow-[var(--shadow-raised-sm)] backdrop-blur-xs">
+          <div className="flex flex-wrap items-center justify-center gap-1 p-1 rounded-xl border border-border bg-surface/90 shadow-(--shadow-raised-sm) backdrop-blur-xs">
             {dataState.inputTokens.map((token, idx) => {
               const isCurrent = idx === dataState.activeTokenIndex;
               return (
                 <div
                   key={token.id}
                   className={cn(
-                    "relative flex h-8 min-w-[32px] px-2 items-center justify-center rounded-lg border font-mono text-xs font-bold transition-all",
+                    "relative flex h-8 min-w-8 px-2 items-center justify-center rounded-lg border font-mono text-xs font-bold transition-all",
                     isCurrent
                       ? "border-primary bg-primary/15 text-primary scale-110 shadow-sm ring-2 ring-primary/30"
                       : token.status === "matched"
@@ -194,7 +195,7 @@ export function StackRenderer() {
                   {token.label}
                   {isCurrent && (
                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px] font-black text-primary animate-pulse">
-                      ▼
+                      â–¼
                     </span>
                   )}
                 </div>
@@ -269,7 +270,7 @@ export function StackRenderer() {
           <div className="text-[9px] font-mono font-semibold uppercase tracking-wider text-text-muted">
             Postfix Output Stream
           </div>
-          <div className="flex flex-wrap items-center justify-center min-h-[32px] w-full gap-1 p-1.5 rounded-xl border border-border bg-surface/90 shadow-[var(--shadow-inset)] backdrop-blur-xs">
+          <div className="flex flex-wrap items-center justify-center min-h-8 w-full gap-1 p-1.5 rounded-xl border border-border bg-surface/90 shadow-(--shadow-inset) backdrop-blur-xs">
             {dataState.outputTokens.length === 0 ? (
               <span className="text-[10px] font-mono text-text-muted/60 italic">
                 Waiting for operands & popped operators...
@@ -294,15 +295,15 @@ export function StackRenderer() {
           <div className="text-[9px] font-mono font-semibold uppercase tracking-wider text-text-muted">
             Next Greater Element Map
           </div>
-          <div className="grid grid-flow-col auto-cols-max items-center justify-center gap-2 p-2 rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)] overflow-x-auto max-w-full">
+          <div className="grid grid-flow-col auto-cols-max items-center justify-center gap-2 p-2 rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm) overflow-x-auto max-w-full">
             {dataState.resultMapping.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col items-center p-1.5 rounded-lg border border-border bg-bg-surface-light min-w-[48px]"
+                className="flex flex-col items-center p-1.5 rounded-lg border border-border bg-bg-surface-light min-w-12"
               >
                 <span className="text-[9px] font-mono text-text-muted">[{item.index}]</span>
                 <span className="font-mono text-xs font-bold text-text-primary">{item.value}</span>
-                <span className="text-[9px] text-text-muted">↓</span>
+                <span className="text-[9px] text-text-muted">â†“</span>
                 <span
                   className={cn(
                     "font-mono text-xs font-black",

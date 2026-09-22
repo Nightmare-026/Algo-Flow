@@ -11,7 +11,7 @@ interface AccountSessionCardProps {
 
 export function AccountSessionCard({ email }: AccountSessionCardProps) {
   return (
-    <section className="neu-raised rounded-3xl p-6 sm:p-8 border border-border bg-surface flex flex-col justify-between gap-6 shadow-[var(--shadow-raised-sm)] h-full">
+    <section className="neu-raised rounded-3xl p-6 sm:p-8 border border-border bg-surface flex flex-col justify-between gap-6 shadow-(--shadow-raised-sm) h-full">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
@@ -32,7 +32,7 @@ export function AccountSessionCard({ email }: AccountSessionCardProps) {
         <form action={signout} className="shrink-0 self-start sm:self-auto">
           <button
             type="submit"
-            className="inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-xs font-bold font-display bg-error/10 hover:bg-error text-error hover:text-white border border-error/30 shadow-[var(--shadow-raised-sm)] transition-all active:scale-95 cursor-pointer"
+            className="inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-xs font-bold font-display bg-error/10 hover:bg-error text-error hover:text-white border border-error/30 shadow-(--shadow-raised-sm) transition-all active:scale-95 cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>

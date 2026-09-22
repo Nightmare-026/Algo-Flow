@@ -11,7 +11,7 @@ export function StepExplanation() {
     return (
       <div className="flex h-full items-center justify-center rounded-none border border-border bg-surface p-6 text-sm text-text-muted">
         <Info className="mr-2 h-4 w-4 opacity-50" />
-        <span>Preparing step explanation…</span>
+        <span>Preparing step explanationâ€¦</span>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export function StepExplanation() {
         )}
 
         {currentStep.variables && Object.keys(currentStep.variables).length > 0 && (
-          <div className="rounded-lg border border-border bg-bg-surface-inset p-2.5 shadow-[var(--shadow-inset)]">
+          <div className="rounded-lg border border-border bg-bg-surface-inset p-2.5 shadow-(--shadow-inset)">
             <div className="flex items-center gap-1 mb-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">
               <Variable className="h-3 w-3 text-primary" />
               Active Variable State
@@ -64,7 +64,7 @@ export function StepExplanation() {
               {Object.entries(currentStep.variables).map(([key, value]) => (
                 <div
                   key={key}
-                  className="flex items-center rounded-md border border-border bg-surface px-2 py-0.5 text-xs font-mono font-bold shadow-[var(--shadow-raised-sm)]"
+                  className="flex items-center rounded-md border border-border bg-surface px-2 py-0.5 text-xs font-mono font-bold shadow-(--shadow-raised-sm)"
                 >
                   <span className="text-primary">{key}</span>
                   <span className="mx-1 text-text-muted">=</span>

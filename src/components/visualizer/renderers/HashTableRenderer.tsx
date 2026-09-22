@@ -6,6 +6,7 @@ import { VisualStepHighlights } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { getVisualElementClassName } from "../visual-state";
+import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 import { Calculator, ArrowRight, CornerDownRight, Database, Layers } from "lucide-react";
 
 export function HashTableRenderer() {
@@ -13,7 +14,7 @@ export function HashTableRenderer() {
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep || !currentStep.dataState) {
-    return null;
+    return <EmptyVisualizerState />;
   }
 
   const dataState = currentStep.dataState as HashTableVisualState;
@@ -81,7 +82,7 @@ export function HashTableRenderer() {
           <div className="flex items-center gap-2">
             <div className="flex flex-col">
               <span className="text-[9px] uppercase tracking-wider font-semibold text-text-muted">
-                Load Factor (α)
+                Load Factor (Î±)
               </span>
               <div className="flex items-center gap-1.5">
                 <span
@@ -143,7 +144,7 @@ export function HashTableRenderer() {
           /* ================= DUAL TABLE SYNCHRONIZED REHASH VIEW ================= */
           <div className="flex flex-col lg:flex-row items-stretch justify-center gap-4 lg:gap-8 w-full max-w-5xl">
             {/* Old Table Column */}
-            <div className="flex-1 flex flex-col items-center rounded-2xl border border-border/80 bg-surface/50 p-3 sm:p-4 shadow-sm min-w-[260px]">
+            <div className="flex-1 flex flex-col items-center rounded-2xl border border-border/80 bg-surface/50 p-3 sm:p-4 shadow-sm min-w-65">
               <div className="w-full flex items-center justify-between pb-2 mb-3 border-b border-border">
                 <div className="flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-text-muted" />
@@ -156,7 +157,7 @@ export function HashTableRenderer() {
                 </span>
               </div>
 
-              <div className="flex flex-col gap-2 w-full max-h-[480px] overflow-y-auto pr-1">
+              <div className="flex flex-col gap-2 w-full max-h-120 overflow-y-auto pr-1">
                 {dataState.rehash.oldBuckets.map((entry, index) => {
                   const isOldActive =
                     dataState.rehash?.activeOldIndex === index ||
@@ -187,7 +188,7 @@ export function HashTableRenderer() {
                       </div>
 
                       <div className="flex-1 flex items-center justify-center h-8 sm:h-9 rounded-lg border border-dashed border-border/60 bg-bg-base/30 font-mono text-sm font-bold text-text-primary">
-                        {entry ? entry.key : <span className="text-text-muted/40">—</span>}
+                        {entry ? entry.key : <span className="text-text-muted/40">â€”</span>}
                       </div>
                     </div>
                   );
@@ -200,13 +201,13 @@ export function HashTableRenderer() {
               <div className="rounded-full border border-primary/40 bg-primary/10 p-2 text-primary shadow-xs">
                 <ArrowRight className="h-5 w-5" />
               </div>
-              <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-center max-w-[90px]">
+              <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-center max-w-22.5">
                 Re-hash k mod {dataState.tableSize}
               </span>
             </div>
 
             {/* New Table Column */}
-            <div className="flex-1 flex flex-col items-center rounded-2xl border border-border/80 bg-surface/50 p-3 sm:p-4 shadow-sm min-w-[260px]">
+            <div className="flex-1 flex flex-col items-center rounded-2xl border border-border/80 bg-surface/50 p-3 sm:p-4 shadow-sm min-w-65">
               <div className="w-full flex items-center justify-between pb-2 mb-3 border-b border-border">
                 <div className="flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-success" />
@@ -219,7 +220,7 @@ export function HashTableRenderer() {
                 </span>
               </div>
 
-              <div className="flex flex-col gap-2 w-full max-h-[480px] overflow-y-auto pr-1">
+              <div className="flex flex-col gap-2 w-full max-h-120 overflow-y-auto pr-1">
                 {(dataState.buckets as (HashEntry | null)[]).map((entry, index) => {
                   const bucketId = `bucket-${index}`;
                   const isNewActive =
@@ -371,10 +372,10 @@ export function HashTableRenderer() {
                   </div>
 
                   {/* Linked List Chain Nodes */}
-                  <div className="flex flex-1 items-center gap-2 overflow-x-auto py-1 px-1 min-h-[48px]">
+                  <div className="flex flex-1 items-center gap-2 overflow-x-auto py-1 px-1 min-h-12">
                     {chain.length === 0 ? (
                       <div className="flex items-center gap-1.5 rounded-lg border border-dashed border-border/60 px-3 py-1.5 text-xs font-mono text-text-muted/50">
-                        <span>∅</span>
+                        <span>âˆ…</span>
                         <span className="text-[10px]">NULL</span>
                       </div>
                     ) : (

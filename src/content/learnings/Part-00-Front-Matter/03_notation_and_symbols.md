@@ -102,7 +102,7 @@ $$O(1) < O(\log n) < O(\sqrt{n}) < O(n) < O(n \log n) < O(n^2) < O(n^3) < O(2^n)
 
 ## 4. Universal Pseudocode Specification Standard
 
-To ensure algorithms transfer seamlessly across C++, Java, Python, Go, and Rust, every algorithm in this curriculum follows a language-independent pseudocode standard.
+To ensure algorithms transfer seamlessly across the four workstation languages (JavaScript, Python, C++, and Java), every algorithm in this curriculum follows a language-independent pseudocode standard.
 
 ### Syntax Specifications
 

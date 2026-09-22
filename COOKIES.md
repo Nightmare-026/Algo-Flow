@@ -1,19 +1,20 @@
 # Algo Flow — Cookie Policy & Local Storage Transparency
 
-**Effective Date**: September 5, 2026  
-**Version**: 2026-09-05  
+**Effective Date**: September 22, 2026  
+**Version**: 2026-09-22  
 **Maintainer**: Nightmare / Algo Flow Team  
 **Contact**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  
 **Web Version**: [https://algo-flow.vercel.app/cookies](https://algo-flow.vercel.app/cookies)  
 
 ---
 
-## 1. Zero-Ad-Tracker Policy
+## 1. Privacy-First Analytics Policy
 
 Algo Flow enforces a strict **Zero-Ad-Tracker** commitment:
-- **No Third-Party Advertising Trackers**: We do not deploy commercial ad networks, behavioral profiling tags, or cross-site tracking beacons (such as Google Ads, Meta Pixel, or commercial analytics trackers).
+- **No Third-Party Advertising Trackers**: We do not deploy commercial ad networks, behavioral profiling tags, or cross-site tracking beacons (such as Google Ads, Meta Pixel, or retargeting cookies).
 - **No Commercial Data Brokerage**: We never sell or license your browsing telemetry, device identifiers, or visualizer interaction habits.
-- **Minimalist Technical Footprint**: We utilize only strictly essential authentication cookies and client-side browser local storage to save your UI preferences.
+- **Privacy-Focused Analytics**: We use Google Analytics 4 (GA4) solely to understand aggregate traffic patterns, page performance, and feature adoption. GA4 data is never used for advertising, remarketing, or behavioral profiling. We also use Vercel Web Analytics, which operates entirely cookie-less.
+- **Minimalist Technical Footprint**: Beyond the analytics and authentication cookies listed below, we utilize only client-side browser local storage to save your UI preferences.
 
 ---
 
@@ -30,7 +31,25 @@ Authentication cookies are required for identity verification and secure session
 
 ---
 
-## 3. Browser Local Storage (Client-Side Preferences)
+## 3. Analytics Cookies (Google Analytics 4)
+
+We use Google Analytics 4 (GA4) to collect anonymous, aggregate insights about how learners use Algo Flow — such as which algorithms are most visited, page load performance, and navigation patterns. This data helps us prioritize educational content and improve platform reliability.
+
+| Cookie Name | Provider / Source | Purpose & Classification | Expiration | Security Flags |
+| :--- | :--- | :--- | :--- | :--- |
+| `_ga` | Google Analytics 4 | Distinguishes unique visitors using a randomly generated anonymous identifier | 2 Years | `SameSite=Lax`, `Secure` |
+| `_ga_<container-id>` | Google Analytics 4 | Persists session state (e.g., page view count within a session) | 2 Years | `SameSite=Lax`, `Secure` |
+
+**What GA4 does NOT do on Algo Flow:**
+- Does not enable advertising features, remarketing, or user-level profiling.
+- Does not link analytics data to your Algo Flow account identity.
+- Does not share data with third-party advertisers.
+
+*Privacy-First Web Telemetry:* In addition to GA4, Algo Flow uses Vercel Web Analytics for Core Web Vitals monitoring. Vercel Web Analytics operates completely **cookie-less** — it does not use cookies, does not persist identifiers across sessions, and does not store personal data.
+
+---
+
+## 4. Browser Local Storage (Client-Side Preferences)
 
 We use HTML5 Browser `localStorage` to save your UI preferences locally on your physical device without transmitting unnecessary tracking payloads to remote servers:
 
@@ -45,7 +64,7 @@ We use HTML5 Browser `localStorage` to save your UI preferences locally on your 
 
 ---
 
-## 4. Managing and Clearing Storage
+## 5. Managing and Clearing Storage
 
 You maintain complete sovereignty over your browser storage at all times:
 - **Browser Settings**: You can clear all cookies and local storage items at any time through your web browser settings (Chrome, Firefox, Safari, Edge, or Brave).
@@ -54,7 +73,7 @@ You maintain complete sovereignty over your browser storage at all times:
 
 ---
 
-## 5. Contact & Regulatory Inquiries
+## 6. Contact & Regulatory Inquiries
 
 For questions or inquiries regarding our Cookie Policy or data storage practices:  
 **Email**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  

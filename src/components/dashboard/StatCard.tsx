@@ -59,7 +59,7 @@ export function StatCard({
       <div className="mt-4">
         <div className="text-3xl font-extrabold font-display text-text-primary">{value}</div>
         {typeof progress === "number" && (
-          <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-[var(--shadow-inset)] mt-2">
+          <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-(--shadow-inset) mt-2">
             <div
               className={cn("h-full rounded-full transition-all duration-500", progressBg)}
               style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}

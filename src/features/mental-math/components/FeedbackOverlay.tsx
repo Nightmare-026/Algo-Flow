@@ -79,7 +79,7 @@ export function FeedbackOverlay({
       </div>
 
       {explanation && !isCorrect && (
-        <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset text-xs font-mono text-text-secondary leading-relaxed shadow-[var(--shadow-inset)]">
+        <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset text-xs font-mono text-text-secondary leading-relaxed shadow-(--shadow-inset)">
           <p className="font-bold text-text-primary mb-1 uppercase tracking-wider text-[10px]">
             Mental Strategy:
           </p>
@@ -93,7 +93,7 @@ export function FeedbackOverlay({
           <button
             onClick={onRetry}
             type="button"
-            className="neu-raised flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-text-secondary hover:text-text-primary border border-border active:scale-95 transition-all shadow-[var(--shadow-raised-sm)] cursor-pointer"
+            className="neu-raised flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-text-secondary hover:text-text-primary border border-border active:scale-95 transition-all shadow-(--shadow-raised-sm) cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Retry Problem [R]</span>
@@ -104,7 +104,7 @@ export function FeedbackOverlay({
           onClick={onNext}
           type="button"
           className={cn(
-            "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer",
+            "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer",
             isCorrect ? "bg-success hover:bg-success/90" : "bg-primary hover:bg-primary-hover"
           )}
         >

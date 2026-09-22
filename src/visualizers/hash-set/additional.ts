@@ -5,7 +5,13 @@ function visualStep(input: Omit<VisualStep, "id">): VisualStep {
   return { id: uuidv4(), ...input, codeLine: input.codeLine ?? input.pseudocodeLine };
 }
 
-import { createInitialHashSetState, HashSetEntry, HashSetVisualState } from "./types";
+import {
+  createInitialHashSetState,
+  HashSetEntry,
+  HashSetVisualState,
+  normalizeBucketIndex,
+  isValidTableSize,
+} from "./types";
 
 function entryIds(state: HashSetVisualState) {
   return (state.buckets as (HashSetEntry | null)[])
@@ -14,15 +20,16 @@ function entryIds(state: HashSetVisualState) {
 }
 
 function initializeHashSet(values: number[], size: number): HashSetVisualState {
-  const state = createInitialHashSetState(size, "linear-probing");
+  const safeSize = isValidTableSize(size) ? size : 11;
+  const state = createInitialHashSetState(safeSize, "linear-probing");
   const buckets = state.buckets as (HashSetEntry | null)[];
   for (const value of new Set(values)) {
-    let index = value % size;
-    while (buckets[index]) index = (index + 1) % size;
+    let index = normalizeBucketIndex(value, safeSize);
+    while (buckets[index]) index = (index + 1) % safeSize;
     buckets[index] = { id: uuidv4(), key: value };
     state.elementCount++;
   }
-  state.loadFactor = state.elementCount / size;
+  state.loadFactor = state.elementCount / safeSize;
   return state;
 }
 

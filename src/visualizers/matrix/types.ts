@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { VisualStep } from "@/types";
 
 export interface MatrixElement {
   id: string; // Unique ID to track element across animations for Framer Motion layout
@@ -29,11 +30,36 @@ export function createMatrixElements(arr: number[], rows: number, cols: number):
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const idx = r * cols + c;
-      const val = idx < arr.length ? arr[idx] : 0; // Pad with 0 if arr is smaller
-      elements.push({ id: uuidv4(), value: val, originalRow: r, originalCol: c });
+      if (idx >= arr.length) break; // Never fabricate cells the user did not provide.
+      elements.push({ id: uuidv4(), value: arr[idx], originalRow: r, originalCol: c });
     }
   }
   return elements;
+}
+
+export function matrixSizeValidationSteps(
+  arrLength: number,
+  rows: number,
+  cols: number,
+  operation: string,
+  stepNumber: number
+): VisualStep[] | null {
+  const expected = rows * cols;
+  if (arrLength === expected) return null;
+  return [
+    {
+      id: `step-${stepNumber}`,
+      stepNumber,
+      title: "Matrix Size Mismatch",
+      description: `A ${rows} × ${cols} matrix needs exactly ${expected} values, but ${arrLength} were provided. Enter exactly ${expected} comma-separated values or adjust the matrix size.`,
+      operation,
+      actionType: "error",
+      dataState: { rows, cols, elements: [] } as MatrixVisualState,
+      highlights: {},
+      variables: {},
+      pseudocodeLine: 1,
+    },
+  ];
 }
 
 export function generateDefaultMatrixB(

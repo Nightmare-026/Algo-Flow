@@ -33,18 +33,18 @@ export function StepTimeline() {
 
       {/* Mobile viewport: range scrubber with comfortable touch area */}
       <div
-        className="group relative sm:hidden flex h-6 w-full min-w-0 items-center rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-[var(--shadow-inset)]"
+        className="group relative sm:hidden flex h-6 w-full min-w-0 items-center rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-(--shadow-inset)"
         role="group"
         aria-label="Select execution step"
       >
         <div className="relative h-2 w-full overflow-hidden rounded-full">
           <div
-            className="h-full bg-gradient-to-r from-primary/80 to-primary rounded-full transition-[width] duration-75 ease-out"
+            className="h-full bg-linear-to-r from-primary/80 to-primary rounded-full transition-[width] duration-75 ease-out"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
         <div
-          className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-primary border-2 border-surface shadow-[var(--shadow-raised-sm)]"
+          className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-primary border-2 border-surface shadow-(--shadow-raised-sm)"
           style={{ left: `${clampedThumbPosition}%` }}
           aria-hidden="true"
         />
@@ -64,21 +64,21 @@ export function StepTimeline() {
       <div className="hidden sm:block w-full min-w-0">
         {isContinuous ? (
           <div
-            className="group relative flex h-2.5 w-full min-w-0 items-center rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-[var(--shadow-inset)]"
+            className="group relative flex h-2.5 w-full min-w-0 items-center rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-(--shadow-inset)"
             role="group"
             aria-label="Select execution step"
           >
             {/* Progress fill bar */}
             <div className="relative h-full w-full overflow-hidden rounded-full">
               <div
-                className="h-full bg-gradient-to-r from-primary/80 to-primary rounded-full transition-[width] duration-75 ease-out"
+                className="h-full bg-linear-to-r from-primary/80 to-primary rounded-full transition-[width] duration-75 ease-out"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
 
             {/* Glowing thumb indicator */}
             <div
-              className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-primary border-2 border-surface shadow-[var(--shadow-raised-sm)] transition-transform duration-75 group-hover:scale-125"
+              className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-primary border-2 border-surface shadow-(--shadow-raised-sm) transition-transform duration-75 group-hover:scale-125"
               style={{ left: `${clampedThumbPosition}%` }}
               aria-hidden="true"
             />
@@ -97,7 +97,7 @@ export function StepTimeline() {
           </div>
         ) : (
           <div
-            className="flex h-2.5 w-full min-w-0 items-stretch gap-0.5 overflow-hidden rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-[var(--shadow-inset)]"
+            className="flex h-2.5 w-full min-w-0 items-stretch gap-0.5 overflow-hidden rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-(--shadow-inset)"
             role="group"
             aria-label="Select execution step"
           >

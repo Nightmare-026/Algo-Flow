@@ -75,7 +75,7 @@ export function InspectorPanel({
       <div className="flex h-full flex-col overflow-hidden p-3 gap-3">
         {/* Unified 4-Segment Mobile Tab Bar */}
         <div
-          className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-bg-surface-inset border border-border shadow-[var(--shadow-inset)] shrink-0"
+          className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-bg-surface-inset border border-border shadow-(--shadow-inset) shrink-0"
           role="tablist"
           aria-label="Inspector panels"
         >
@@ -89,7 +89,7 @@ export function InspectorPanel({
             className={cn(
               "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
               mobileTab === "pseudocode"
-                ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
                 : "text-text-muted hover:text-text-primary active:scale-95"
             )}
           >
@@ -105,7 +105,7 @@ export function InspectorPanel({
             className={cn(
               "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
               mobileTab === "code"
-                ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
                 : "text-text-muted hover:text-text-primary active:scale-95"
             )}
           >
@@ -121,7 +121,7 @@ export function InspectorPanel({
             className={cn(
               "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
               mobileTab === "explanation"
-                ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
                 : "text-text-muted hover:text-text-primary active:scale-95"
             )}
           >
@@ -137,7 +137,7 @@ export function InspectorPanel({
             className={cn(
               "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
               mobileTab === "log"
-                ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
                 : "text-text-muted hover:text-text-primary active:scale-95"
             )}
           >
@@ -224,7 +224,7 @@ export function InspectorPanel({
             className={cn(
               "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
               activeRightTab === "pseudocode"
-                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                ? "bg-primary text-white shadow-(--shadow-raised-sm)"
                 : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
             )}
           >
@@ -240,7 +240,7 @@ export function InspectorPanel({
             className={cn(
               "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
               activeRightTab === "code"
-                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                ? "bg-primary text-white shadow-(--shadow-raised-sm)"
                 : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
             )}
           >
@@ -302,7 +302,7 @@ export function InspectorPanel({
             className={cn(
               "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
               activeLowerTab === "explanation"
-                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                ? "bg-primary text-white shadow-(--shadow-raised-sm)"
                 : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
             )}
           >
@@ -318,7 +318,7 @@ export function InspectorPanel({
             className={cn(
               "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
               activeLowerTab === "log"
-                ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                ? "bg-primary text-white shadow-(--shadow-raised-sm)"
                 : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
             )}
           >

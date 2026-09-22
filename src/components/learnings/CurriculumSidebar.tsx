@@ -29,13 +29,13 @@ interface CurriculumSidebarProps {
 /** Cleans LaTeX symbols like ($\alpha$) for human-readable sidebar display */
 function formatSubtopicTitle(title: string): string {
   return title
-    .replace(/\(\$\\alpha\$\)/g, "(α)")
+    .replace(/\(\$\\alpha\$\)/g, "(Î±)")
     .replace(/\$([^\$]+)\$/g, "$1")
-    .replace(/\\alpha/g, "α")
-    .replace(/\\theta/g, "θ")
-    .replace(/\\omega/g, "Ω")
-    .replace(/\\le/g, "≤")
-    .replace(/\\ge/g, "≥");
+    .replace(/\\alpha/g, "Î±")
+    .replace(/\\theta/g, "Î¸")
+    .replace(/\\omega/g, "Î©")
+    .replace(/\\le/g, "â‰¤")
+    .replace(/\\ge/g, "â‰¥");
 }
 
 export function CurriculumSidebar({
@@ -219,11 +219,11 @@ export function CurriculumSidebar({
       itemScope
       itemType="https://schema.org/SiteNavigationElement"
       className={cn(
-        "flex flex-col h-full overflow-hidden rounded-2xl border border-border/80 bg-surface shadow-[var(--shadow-raised)] p-3 select-none transition-colors",
+        "flex flex-col h-full overflow-hidden rounded-2xl border border-border/80 bg-surface shadow-(--shadow-raised) p-3 select-none transition-colors",
         className
       )}
     >
-      {/* ─── HEADER: Clean, Editorial Branding ─── */}
+      {/* â”€â”€â”€ HEADER: Clean, Editorial Branding â”€â”€â”€ */}
       <div className="flex flex-col pb-2.5 border-b border-border/60 shrink-0 gap-2 mb-2.5">
         <div className="flex items-center justify-between gap-2">
           {/* Brand Icon & Title */}
@@ -298,7 +298,7 @@ export function CurriculumSidebar({
         )}
       </div>
 
-      {/* ─── SEARCH / FILTER BAR ─── */}
+      {/* â”€â”€â”€ SEARCH / FILTER BAR â”€â”€â”€ */}
       <div className="relative mb-2 shrink-0">
         <Search
           className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/60 pointer-events-none"
@@ -347,7 +347,7 @@ export function CurriculumSidebar({
         </div>
       )}
 
-      {/* ─── MAIN CURRICULUM TREE: Unified Single-Scroll Architecture ─── */}
+      {/* â”€â”€â”€ MAIN CURRICULUM TREE: Unified Single-Scroll Architecture â”€â”€â”€ */}
       <ol
         ref={scrollContainerRef}
         role="list"
@@ -395,7 +395,7 @@ export function CurriculumSidebar({
                     : "bg-surface-raised/40 hover:bg-surface-raised border-border/40 hover:border-border/70"
                 )}
               >
-                {/* ── MODULE HEADER TRIGGER ── */}
+                {/* â”€â”€ MODULE HEADER TRIGGER â”€â”€ */}
                 <button
                   type="button"
                   id={`mod-header-${mod.slug}`}
@@ -464,7 +464,7 @@ export function CurriculumSidebar({
                   </div>
                 </button>
 
-                {/* ── EXPANDED MODULE CHAPTERS LIST (Hierarchical Tree) ── */}
+                {/* â”€â”€ EXPANDED MODULE CHAPTERS LIST (Hierarchical Tree) â”€â”€ */}
                 {isOpen && (
                   <ol
                     id={`mod-chapters-${mod.slug}`}
@@ -575,7 +575,7 @@ export function CurriculumSidebar({
                               </div>
                             </div>
 
-                            {/* ── ACTIVE CHAPTER SUBTOPICS (Direct On-Page Jump Anchors) ── */}
+                            {/* â”€â”€ ACTIVE CHAPTER SUBTOPICS (Direct On-Page Jump Anchors) â”€â”€ */}
                             {isCurrentChapter && (
                               <div className="ml-3 pl-3 my-1 border-l-2 border-primary/30 space-y-0.5">
                                 <div className="flex items-center justify-between text-[10px] font-mono text-primary/80 px-1 py-0.5">
@@ -642,7 +642,7 @@ export function CurriculumSidebar({
                               </div>
                             )}
 
-                            {/* ── NON-ACTIVE CHAPTER EXPANDED TOPICS PREVIEW ── */}
+                            {/* â”€â”€ NON-ACTIVE CHAPTER EXPANDED TOPICS PREVIEW â”€â”€ */}
                             {!isCurrentChapter && isTopicsExpanded && ch.topicsCovered && (
                               <div className="ml-3 pl-3 my-1 border-l-2 border-border/50 space-y-0.5">
                                 <div className="text-[10px] font-mono text-muted-foreground/80 px-1 py-0.5 font-semibold flex items-center gap-1">

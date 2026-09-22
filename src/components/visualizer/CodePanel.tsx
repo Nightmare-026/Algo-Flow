@@ -190,7 +190,7 @@ export function CodePanel({
 
   return (
     <section
-      className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-[var(--shadow-raised-sm)]"
+      className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-(--shadow-raised-sm)"
       aria-label="Source code"
     >
       <div className="flex min-h-[38px] shrink-0 items-center justify-between border-b border-border bg-surface px-2">
@@ -213,7 +213,7 @@ export function CodePanel({
                 className={cn(
                   "min-h-7 rounded px-2 text-[11px] font-semibold transition-all cursor-pointer select-none",
                   isActive
-                    ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+                    ? "bg-primary text-white shadow-(--shadow-raised-sm)"
                     : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
                 )}
               >
@@ -247,7 +247,7 @@ export function CodePanel({
         role="tabpanel"
         aria-labelledby={`code-tab-${activeLang}`}
         aria-busy={!isDocumentReady && Boolean(codeString)}
-        className="group relative flex-1 overflow-auto bg-code-panel-bg shadow-[var(--shadow-inset)]"
+        className="group relative flex-1 overflow-auto bg-code-panel-bg shadow-(--shadow-inset)"
       >
         {isDocumentReady && htmlContent && codeString ? (
           <div
@@ -257,7 +257,7 @@ export function CodePanel({
           />
         ) : (
           <div className="flex h-full items-center justify-center p-4 text-center text-xs text-emerald-100/50">
-            {codeString ? "Loading syntax highlighter…" : "Code example unavailable."}
+            {codeString ? "Loading syntax highlighterâ€¦" : "Code example unavailable."}
           </div>
         )}
       </div>

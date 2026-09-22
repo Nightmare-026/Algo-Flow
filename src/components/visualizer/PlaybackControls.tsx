@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { usePlaybackStore, getActiveSpeedMs } from "@/stores/playback-store";
 
 const controlClass =
-  "inline-flex min-h-9 min-w-9 sm:min-h-8 sm:min-w-8 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35 cursor-pointer";
+  "inline-flex min-h-9 min-w-9 sm:min-h-8 sm:min-w-8 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) transition-all hover:border-primary/40 hover:text-primary active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-35 cursor-pointer";
 
 export function PlaybackControls() {
   const {
@@ -79,6 +79,9 @@ export function PlaybackControls() {
 
       if (event.key === " " || event.key === "k" || event.key === "K") {
         event.preventDefault();
+        // A focused button already activates on Space natively; letting both
+        // fire would toggle play/pause twice (a no-op) on every press.
+        if ((activeElement as HTMLElement).tagName === "BUTTON") return;
         if (totalSteps > 0) {
           if (isPlaying) pause();
           else play();
@@ -86,15 +89,15 @@ export function PlaybackControls() {
       } else if (event.key === "ArrowLeft" || event.key === "j" || event.key === "J") {
         event.preventDefault();
         previousStep();
+      } else if (event.shiftKey && event.key === "ArrowRight") {
+        event.preventDefault();
+        skipToEnd();
       } else if (event.key === "ArrowRight") {
         event.preventDefault();
         nextStep();
       } else if (event.key === "r" || event.key === "R") {
         event.preventDefault();
         restart();
-      } else if (event.shiftKey && event.key === "ArrowRight") {
-        event.preventDefault();
-        skipToEnd();
       } else if (event.key === "p" || event.key === "P") {
         event.preventDefault();
         // Practice Mode toggle is handled in VisualizerLayout
@@ -158,7 +161,7 @@ export function PlaybackControls() {
         onClick={isPlaying ? pause : play}
         disabled={totalSteps === 0}
         aria-pressed={isPlaying}
-        className="mx-0.5 inline-flex min-h-10 min-w-10 sm:min-h-9 sm:min-w-9 items-center justify-center rounded-xl bg-primary text-white shadow-[var(--shadow-raised-sm)] transition-all hover:bg-primary-hover active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+        className="mx-0.5 inline-flex min-h-10 min-w-10 sm:min-h-9 sm:min-w-9 items-center justify-center rounded-xl bg-primary text-white shadow-(--shadow-raised-sm) transition-all hover:bg-primary-hover active:scale-95 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
         title={isPlaying ? "Pause" : "Play"}
         aria-label={isPlaying ? "Pause playback" : "Play visualization"}
         aria-keyshortcuts="Space k"
@@ -205,7 +208,7 @@ export function PlaybackControls() {
           </button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-64 rounded-2xl border border-border bg-surface p-4 text-text-primary shadow-[var(--shadow-float)]"
+          className="w-64 rounded-2xl border border-border bg-surface p-4 text-text-primary shadow-(--shadow-float)"
           align="end"
         >
           <div className="space-y-4">

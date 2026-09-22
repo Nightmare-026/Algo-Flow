@@ -43,7 +43,7 @@ export function ReadingProgressBar({ targetId }: { targetId?: string }) {
       aria-hidden="true"
     >
       <div
-        className="h-full bg-gradient-to-r from-primary to-accent transition-all duration-75 ease-out shadow-[0_0_10px_rgba(21,128,61,0.5)]"
+        className="h-full bg-linear-to-r from-primary to-accent transition-all duration-75 ease-out shadow-[0_0_10px_rgba(21,128,61,0.5)]"
         style={{ width: `${progress}%` }}
       />
     </div>

@@ -114,7 +114,7 @@ export default function TimedTestPage() {
           </p>
           <button
             onClick={resumeSession}
-            className="py-3 px-8 rounded-2xl bg-primary text-white text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="py-3 px-8 rounded-2xl bg-primary text-white text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
           >
             Resume Assessment
           </button>

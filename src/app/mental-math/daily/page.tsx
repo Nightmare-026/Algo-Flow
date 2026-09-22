@@ -129,7 +129,7 @@ export default function DailyChallengePage() {
               href="/mental-math/leaderboard"
               className="text-xs font-bold text-primary hover:underline"
             >
-              View Full Standings →
+              View Full Standings â†’
             </Link>
           </div>
 
@@ -166,7 +166,7 @@ export default function DailyChallengePage() {
   if (status === "idle") {
     return (
       <div className="flex w-full flex-col px-4 max-w-3xl mx-auto gap-6">
-        <div className="neu-float rounded-3xl p-6 sm:p-10 border border-border text-center flex flex-col items-center shadow-[var(--shadow-raised)]">
+        <div className="neu-float rounded-3xl p-6 sm:p-10 border border-border text-center flex flex-col items-center shadow-(--shadow-raised)">
           <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-inset text-primary border border-border shadow-inner mb-3">
             <Trophy className="w-8 h-8" />
           </span>
@@ -184,7 +184,7 @@ export default function DailyChallengePage() {
 
           <button
             onClick={handleStartDaily}
-            className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-primary px-8 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-primary px-8 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
           >
             <span>Start Today&apos;s Challenge</span>
             <ArrowRight className="w-4 h-4" />
@@ -192,7 +192,7 @@ export default function DailyChallengePage() {
         </div>
 
         {/* Daily Standings */}
-        <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-[var(--shadow-raised-sm)]">
+        <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-(--shadow-raised-sm)">
           <h2 className="text-lg font-bold font-display text-text-primary tracking-tight">
             Today&apos;s Top Solvers
           </h2>

@@ -59,7 +59,7 @@ export function FloatingSelect({
             aria-expanded={open}
             aria-haspopup="listbox"
             aria-label={label}
-            className="group relative flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border border-border bg-bg-surface-inset px-4 pb-1 pt-5 text-left text-sm text-text-primary shadow-[var(--shadow-inset)] transition-all duration-200 hover:border-border-hover focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="group relative flex h-14 w-full cursor-pointer items-center justify-between rounded-xl border border-border bg-bg-surface-inset px-4 pb-1 pt-5 text-left text-sm text-text-primary shadow-(--shadow-inset) transition-all duration-200 hover:border-border-hover focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           >
             {/* Floating Label */}
             <span
@@ -102,7 +102,7 @@ export function FloatingSelect({
           <PopoverPrimitive.Content
             align="start"
             sideOffset={6}
-            className="z-50 w-[var(--radix-popover-trigger-width)] max-h-60 overflow-y-auto rounded-2xl border border-border bg-surface p-1.5 text-text-primary shadow-[var(--shadow-float)] backdrop-blur-xl animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
+            className="z-50 w-(--radix-popover-trigger-width) max-h-60 overflow-y-auto rounded-2xl border border-border bg-surface p-1.5 text-text-primary shadow-(--shadow-float) backdrop-blur-xl animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
             role="listbox"
             aria-labelledby={id}
           >
@@ -119,8 +119,8 @@ export function FloatingSelect({
                     className={cn(
                       "flex min-h-10 w-full cursor-pointer items-center justify-between rounded-xl px-3.5 py-2 text-xs font-semibold transition-all duration-150 select-none",
                       isSelected
-                        ? "bg-primary-muted text-primary font-bold shadow-[var(--shadow-inset)]"
-                        : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:shadow-[var(--shadow-raised-sm)]"
+                        ? "bg-primary-muted text-primary font-bold shadow-(--shadow-inset)"
+                        : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:shadow-(--shadow-raised-sm)"
                     )}
                   >
                     <span>{option.label}</span>

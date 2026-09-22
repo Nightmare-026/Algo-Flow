@@ -2,7 +2,8 @@ import { algorithms } from "@/data/seed/algorithms";
 import { operations } from "@/data/seed/operations";
 import type { CodeExample, DifficultyLevel, PriorityLevel } from "@/types";
 import {
-  defaultVisualizerInputOptions,
+  clampOperationOptions,
+  getDefaultVisualizerInputOptions,
   type VisualizerInputOptions,
 } from "@/lib/validation/visualizer-input";
 import { algorithmRegistry } from "./algorithm-registry";
@@ -147,8 +148,15 @@ function composeDefinition(algorithm: (typeof algorithms)[number]): ComposedPubl
     },
     spaceComplexity: algorithm.spaceComplexity,
     tags: algorithm.tags,
-    defaultInput: [15, 23, 4, 8, 42, 16],
-    defaultOptions: structuredClone(defaultVisualizerInputOptions),
+    defaultInput:
+      algorithm.slug === "row-column-sorted-search"
+        ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        : [4, 8, 15, 16, 23, 42],
+    defaultOptions: clampOperationOptions(
+      getDefaultVisualizerInputOptions(algorithm.slug, algorithm.dataStructureId),
+      algorithm.slug === "row-column-sorted-search" ? 16 : 6,
+      algorithm.slug
+    ),
     generateSteps: implementation.generateSteps,
     codeExamples: indexCodeExamples(implementation.getCodeExamples(algorithm.slug, algorithm.id)),
     pseudocode: getVisualizerPseudocode(

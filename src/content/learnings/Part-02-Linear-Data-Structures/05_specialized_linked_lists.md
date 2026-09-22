@@ -156,7 +156,7 @@ CLASS SkipList:
 
 ### 1. The Hardware Reality: Cache Misses in Node Lists
 
-In a standard singly linked list, each node stores a single 4-byte value and an 8-byte pointer ($16$ bytes with padding). When the CPU reads a node, the memory bus transfers an entire **64-byte Cache Line** into L1 data cache. Because nodes are non-contiguous, the remaining $48$ bytes of the fetched cache line are wasted. Traversing $n$ elements triggers nearly $n$ separate CPU cache misses.
+As an illustrative example (typical 64-bit ABI with padding), a singly linked list node holding a 4-byte value and an 8-byte pointer may occupy $16$ bytes. When the CPU reads a node, the memory subsystem typically transfers a cache line (commonly 64 bytes on modern x86-64/ARM) into cache. Because nodes can be non-contiguous, much of a fetched line may go unused, and traversing $n$ scattered nodes can trigger on the order of $n$ cache misses (exact behavior depends on allocator, hardware, and workload).
 
 ### 2. Chunked Array Architecture
 

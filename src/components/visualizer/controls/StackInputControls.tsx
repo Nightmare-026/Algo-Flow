@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
+  parseInputNumber,
   parseNumberList,
   VisualizerInputOptions,
 } from "@/lib/validation/visualizer-input";
@@ -107,31 +108,31 @@ export function StackInputControls({
   const getOperationHint = () => {
     switch (slug) {
       case "stack-push":
-        return "LIFO • Inserts at top • O(1)";
+        return "LIFO â€¢ Inserts at top â€¢ O(1)";
       case "stack-pop":
-        return "LIFO • Removes from top • O(1)";
+        return "LIFO â€¢ Removes from top â€¢ O(1)";
       case "stack-peek":
-        return "Reads top element without removal • O(1)";
+        return "Reads top element without removal â€¢ O(1)";
       case "stack-is-empty":
-        return "Checks if top == -1 (size == 0) • O(1)";
+        return "Checks if top == -1 (size == 0) â€¢ O(1)";
       case "stack-is-full":
-        return "Checks if size == capacity • O(1)";
+        return "Checks if size == capacity â€¢ O(1)";
       case "stack-size":
-        return "Returns top + 1 • O(1)";
+        return "Returns top + 1 â€¢ O(1)";
       case "array-stack":
-        return "Array implementation with top index pointer • O(1)";
+        return "Array implementation with top index pointer â€¢ O(1)";
       case "balanced-parentheses":
-        return "Validates reverse-matching of (), {}, [] brackets • O(n)";
+        return "Validates reverse-matching of (), {}, [] brackets â€¢ O(n)";
       case "infix-to-postfix":
-        return "Shunting-Yard conversion using operator precedence • O(n)";
+        return "Shunting-Yard conversion using operator precedence â€¢ O(n)";
       case "postfix-evaluation":
-        return "Arithmetic evaluation using operand stack • O(n)";
+        return "Arithmetic evaluation using operand stack â€¢ O(n)";
       case "min-stack":
-        return "Dual-stack architecture supporting getMin() • O(1)";
+        return "Dual-stack architecture supporting getMin() â€¢ O(1)";
       case "next-greater-element":
-        return "Monotonic decreasing stack interview pattern • O(n)";
+        return "Monotonic decreasing stack interview pattern â€¢ O(n)";
       default:
-        return "Stack LIFO Data Structure • O(1)";
+        return "Stack LIFO Data Structure â€¢ O(1)";
     }
   };
 
@@ -141,7 +142,7 @@ export function StackInputControls({
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Presets for String-Based Applications */}
           {isParentheses && (
-            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-(--shadow-raised-sm)">
               <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
                 Presets:
               </span>
@@ -176,7 +177,7 @@ export function StackInputControls({
           )}
 
           {isInfix && (
-            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-(--shadow-raised-sm)">
               <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
                 Presets:
               </span>
@@ -208,7 +209,7 @@ export function StackInputControls({
           )}
 
           {isPostfix && (
-            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-(--shadow-raised-sm)">
               <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
                 Presets:
               </span>
@@ -233,7 +234,7 @@ export function StackInputControls({
 
           {/* Presets for NGE and MinStack */}
           {isNGE && onGenerate && (
-            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-(--shadow-raised-sm)">
               <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
                 Presets:
               </span>
@@ -273,7 +274,7 @@ export function StackInputControls({
           )}
 
           {isMinStack && onGenerate && (
-            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-(--shadow-raised-sm)">
               <span className="font-mono text-[9px] font-semibold text-text-muted px-1">
                 Presets:
               </span>
@@ -314,7 +315,7 @@ export function StackInputControls({
 
           {/* Presets for standard stack operations */}
           {!isStringBased && !isNGE && !isMinStack && onGenerate && (
-            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-1.5 shadow-(--shadow-raised-sm)">
               <Button
                 variant="ghost"
                 size="sm"
@@ -353,7 +354,7 @@ export function StackInputControls({
           {/* Custom Input (String for expression algorithms, Numbers for standard stack) */}
           <form
             onSubmit={handleCustomSubmit}
-            className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
           >
             {isStringBased ? (
               <Code2 className="h-3 w-3 text-text-muted shrink-0" aria-hidden="true" />
@@ -376,7 +377,7 @@ export function StackInputControls({
                 setCustomInput(event.target.value);
                 if (error) setError(null);
               }}
-              className="h-6 w-28 sm:w-36 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
+              className="h-6 w-28 sm:w-36 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-(--shadow-inset) placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
               aria-label="Custom input value"
             />
             <Button
@@ -390,18 +391,20 @@ export function StackInputControls({
 
           {/* Capacity Pod (Hidden on expression algorithms where capacity is managed internally) */}
           {!isStringBased && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
               <Layers className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
                 Capacity:
               </span>
               <input
                 type="number"
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                 value={capacity}
                 min={1}
                 max={15}
-                onChange={(e) => updateOption("capacity", Number(e.target.value))}
+                onChange={(e) =>
+                  updateOption("capacity", parseInputNumber(e.target.value, options.capacity))
+                }
                 aria-label="Stack capacity"
               />
             </div>
@@ -409,16 +412,18 @@ export function StackInputControls({
 
           {/* Value to Push (ONLY shown on stack-push) */}
           {isPush && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)] animate-in fade-in">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm) animate-in fade-in">
               <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
                 Push Value:
               </span>
               <input
                 type="number"
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                 value={options.value ?? 50}
-                onChange={(e) => updateOption("value", Number(e.target.value))}
+                onChange={(e) =>
+                  updateOption("value", parseInputNumber(e.target.value, options.value))
+                }
                 aria-label="Value to push"
               />
             </div>

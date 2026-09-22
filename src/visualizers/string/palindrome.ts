@@ -7,7 +7,22 @@ export function generatePalindromeCheckSteps(text: string): VisualStep[] {
   const elements = createStringElements(text);
   const baseState: StringVisualState = { elements };
 
-  if (text.length === 0) return [];
+  if (text.length === 0) {
+    steps.push({
+      id: `step-${stepNumber}`,
+      stepNumber,
+      title: "Empty Input",
+      description:
+        "Palindrome check needs a non-empty string. Provide text to run the visualization.",
+      operation: "Palindrome Check",
+      actionType: "error",
+      dataState: baseState,
+      highlights: {},
+      variables: { left: "-", right: "-" },
+      pseudocodeLine: 1,
+    });
+    return steps;
+  }
 
   steps.push({
     id: `step-${stepNumber}`,

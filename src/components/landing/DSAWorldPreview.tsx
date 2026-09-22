@@ -15,7 +15,7 @@ const previewLayers = [
   {
     title: "2. Control the Timeline",
     description:
-      "Play, pause, inspect one step at a time, adjust speed scaling (0.25x - 4x), or scrub freely.",
+      "Play, pause, inspect one step at a time, adjust speed scaling (0.25x - 2.0x), or scrub freely.",
     detail: "Step 07 / 18",
     Icon: PlayCircle,
   },
@@ -82,10 +82,10 @@ export function DSAWorldPreview() {
             >
               <div>
                 <div className="mb-4 flex items-center justify-between gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-[var(--shadow-inset)] group-hover:scale-105 transition-transform">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-(--shadow-inset) group-hover:scale-105 transition-transform">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <span className="rounded-lg border border-border bg-bg-surface-inset px-2.5 py-0.5 font-mono text-[10px] font-bold text-text-muted shadow-[var(--shadow-inset)]">
+                  <span className="rounded-lg border border-border bg-bg-surface-inset px-2.5 py-0.5 font-mono text-[10px] font-bold text-text-muted shadow-(--shadow-inset)">
                     {detail}
                   </span>
                 </div>

@@ -41,79 +41,79 @@ const ALL_OPERATIONS: OperationInfo[] = [
     description:
       "Rapid mental summing, multi-digit column carrying, and left-to-right partial sum decomposition.",
     formulaSample: "48 + 76 = 124",
-    complexityTiers: "1–4 Digits",
+    complexityTiers: "1â€“4 Digits",
     icon: Plus,
   },
   {
     id: "subtraction",
     name: "Subtraction",
-    symbol: "−",
+    symbol: "âˆ’",
     category: "basic",
     categoryLabel: "Basic Arithmetic",
     description:
       "Instant difference computation, 10s/100s complements, and zero-borrow subtraction.",
-    formulaSample: "94 − 38 = 56",
-    complexityTiers: "1–4 Digits",
+    formulaSample: "94 âˆ’ 38 = 56",
+    complexityTiers: "1â€“4 Digits",
     icon: Minus,
   },
   {
     id: "multiplication",
     name: "Multiplication",
-    symbol: "×",
+    symbol: "Ã—",
     category: "basic",
     categoryLabel: "Basic Arithmetic",
     description:
       "Times tables, grid cross-products, doubling & halving, and near-base algebraic distribution.",
-    formulaSample: "24 × 7 = 168",
-    complexityTiers: "1–4 Digits",
+    formulaSample: "24 Ã— 7 = 168",
+    complexityTiers: "1â€“4 Digits",
     icon: X,
   },
   {
     id: "division",
     name: "Division",
-    symbol: "÷",
+    symbol: "Ã·",
     category: "basic",
     categoryLabel: "Basic Arithmetic",
     description:
       "Clean integer quotients, rapid factor reduction, and chunking division without scratchpads.",
-    formulaSample: "168 ÷ 4 = 42",
-    complexityTiers: "1–4 Digits",
+    formulaSample: "168 Ã· 4 = 42",
+    complexityTiers: "1â€“4 Digits",
     icon: Divide,
   },
   {
     id: "squares",
-    name: "Squares (x²)",
-    symbol: "x²",
+    name: "Squares (xÂ²)",
+    symbol: "xÂ²",
     category: "powers",
     categoryLabel: "Powers & Radicals",
     description:
-      "Squaring numbers from 11² to 99² using (a+b)² algebraic identities and base-50 anchors.",
-    formulaSample: "15² = 225",
-    complexityTiers: "1–3 Digits",
+      "Squaring numbers from 11Â² to 99Â² using (a+b)Â² algebraic identities and base-50 anchors.",
+    formulaSample: "15Â² = 225",
+    complexityTiers: "1â€“3 Digits",
     icon: Superscript,
   },
   {
     id: "cubes",
-    name: "Cubes (x³)",
-    symbol: "x³",
+    name: "Cubes (xÂ³)",
+    symbol: "xÂ³",
     category: "powers",
     categoryLabel: "Powers & Radicals",
     description:
-      "Rapid cubic exponentiation (1³ to 25³) leveraging binomial expansion (a+b)³ and terminal digit patterns.",
-    formulaSample: "12³ = 1,728",
-    complexityTiers: "1–2 Digits",
+      "Rapid cubic exponentiation (1Â³ to 25Â³) leveraging binomial expansion (a+b)Â³ and terminal digit patterns.",
+    formulaSample: "12Â³ = 1,728",
+    complexityTiers: "1â€“2 Digits",
     icon: Box,
   },
   {
     id: "roots",
-    name: "Square Roots (√x)",
-    symbol: "√x",
+    name: "Square Roots (âˆšx)",
+    symbol: "âˆšx",
     category: "powers",
     categoryLabel: "Powers & Radicals",
     description:
       "Radical root extraction for perfect squares by analyzing terminal digits and bounding intervals.",
-    formulaSample: "√144 = 12",
-    complexityTiers: "1–4 Digits",
+    formulaSample: "âˆš144 = 12",
+    complexityTiers: "1â€“4 Digits",
     icon: Radical,
   },
   {
@@ -131,11 +131,11 @@ const ALL_OPERATIONS: OperationInfo[] = [
   {
     id: "mixed",
     name: "Mixed Operations",
-    symbol: "±×÷",
+    symbol: "Â±Ã—Ã·",
     category: "mixed",
     categoryLabel: "Comprehensive",
     description:
-      "Dynamic interleaving of all arithmetic operations (+, −, ×, ÷) to develop versatile cognitive reflexes.",
+      "Dynamic interleaving of all arithmetic operations (+, âˆ’, Ã—, Ã·) to develop versatile cognitive reflexes.",
     formulaSample: "Dynamic Random Ops",
     complexityTiers: "All Ranges",
     icon: Shuffle,
@@ -172,7 +172,7 @@ export function OperationsExplorer() {
   return (
     <div className="flex flex-col gap-6">
       {/* Search & Filter Bar with Balanced Alignment */}
-      <div className="neu-raised flex flex-col gap-3.5 rounded-2xl p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between border border-border shadow-[var(--shadow-raised-sm)] bg-surface">
+      <div className="neu-raised flex flex-col gap-3.5 rounded-2xl p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between border border-border shadow-(--shadow-raised-sm) bg-surface">
         {/* Search Input */}
         <div className="relative w-full lg:max-w-md shrink-0">
           <label htmlFor="operation-search" className="sr-only">
@@ -191,7 +191,7 @@ export function OperationsExplorer() {
             onKeyDown={(e) => {
               if (e.key === "Escape") setSearchQuery("");
             }}
-            className="h-11 w-full rounded-xl border border-border bg-surface-inset py-2.5 pl-10 pr-10 text-xs sm:text-sm font-medium text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-muted/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
+            className="h-11 w-full rounded-xl border border-border bg-surface-inset py-2.5 pl-10 pr-10 text-xs sm:text-sm font-medium text-text-primary shadow-(--shadow-inset) placeholder:text-text-muted/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
           />
           {searchQuery ? (
             <button
@@ -235,8 +235,8 @@ export function OperationsExplorer() {
                 className={cn(
                   "h-11 shrink-0 rounded-xl px-3.5 text-xs font-bold font-display transition-all duration-200 cursor-pointer select-none flex items-center justify-center gap-1.5 whitespace-nowrap",
                   selected
-                    ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
-                    : "border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-text-primary hover:bg-surface-hover active:scale-95"
+                    ? "bg-primary text-white shadow-(--shadow-raised-sm)"
+                    : "border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) hover:text-text-primary hover:bg-surface-hover active:scale-95"
                 )}
               >
                 <span>{cat.label}</span>
@@ -264,7 +264,7 @@ export function OperationsExplorer() {
         >
           Showing {filteredOperations.length} of {ALL_OPERATIONS.length} operations
         </p>
-        <span className="text-xs font-mono font-semibold text-primary">1–4 Digit Configurable</span>
+        <span className="text-xs font-mono font-semibold text-primary">1â€“4 Digit Configurable</span>
       </div>
 
       {/* Operation Cards Grid - Perfectly balanced 3x3 layout on desktop */}
@@ -288,7 +288,7 @@ export function OperationsExplorer() {
               >
                 <Link
                   href={`/mental-math/practice?operation=${op.id}&autostart=true`}
-                  className="neu-raised group flex h-full flex-col justify-between rounded-3xl border border-border bg-surface p-6 shadow-[var(--shadow-raised-sm)] hover:border-primary/50 hover:-translate-y-1 hover:shadow-[var(--shadow-raised)] transition-all duration-200 relative overflow-hidden cursor-pointer"
+                  className="neu-raised group flex h-full flex-col justify-between rounded-3xl border border-border bg-surface p-6 shadow-(--shadow-raised-sm) hover:border-primary/50 hover:-translate-y-1 hover:shadow-(--shadow-raised) transition-all duration-200 relative overflow-hidden cursor-pointer"
                   aria-label={`Launch ${op.name} calculation drill`}
                 >
                   <div>
@@ -357,7 +357,7 @@ export function OperationsExplorer() {
               setSearchQuery("");
               setActiveCategory("all");
             }}
-            className="mt-5 min-h-10 rounded-xl bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-[var(--shadow-raised-sm)] cursor-pointer"
+            className="mt-5 min-h-10 rounded-xl bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-(--shadow-raised-sm) cursor-pointer"
           >
             Reset Filters
           </button>

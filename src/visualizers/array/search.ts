@@ -103,9 +103,9 @@ export function generateBinarySearchSteps(arr: number[], target: number): Visual
   let stepCount = 1;
 
   const isSortedBefore = arr.every((val, i) => i === 0 || val >= arr[i - 1]);
-  let initDesc = `Array must be sorted for Binary Search. Target: ${target}.`;
+  let initDesc = `Precondition: array must be sorted. Searching sorted array for target ${target}. Invariant: if present, the target stays inside [low, high].`;
   if (!isSortedBefore) {
-    initDesc = `Array was automatically sorted. Target: ${target}.`;
+    initDesc = `Precondition violated: input was unsorted, so a sorted copy is used. Binary Search requires sorted data. Target: ${target}.`;
   }
 
   steps.push({
@@ -409,12 +409,15 @@ export function generateInterpolationSearchSteps(arr: number[], target: number):
       break;
     }
 
-    const pos =
+    const rawPos =
       low +
       Math.floor(
         ((high - low) / (elements[high].value - elements[low].value)) *
           (target - elements[low].value)
       );
+    // Float rounding on skewed distributions can push the estimate outside
+    // [low, high]; clamp so elements[pos] is always defined.
+    const pos = Math.min(high, Math.max(low, rawPos));
 
     const probeParts: VisualStep["highlights"][] = [currentTarget([elements[pos].id])];
     if (low !== pos) probeParts.push(pointerOn([elements[low].id]));

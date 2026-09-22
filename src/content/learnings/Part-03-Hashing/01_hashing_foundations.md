@@ -168,9 +168,9 @@ Because dynamic doubling occurs geometrically, dynamic rehashing runs in **amort
 ### 4. Key Takeaways
 
 1. **Direct Addressing vs. Hashing**: Direct addressing trades infinite memory for $O(1)$ lookups; hashing achieves expected $O(1)$ performance in compact memory by mapping keys into $[0, m-1]$.
-2. **Prime Moduli**: The division method requires prime table sizes $m$ to prevent low-order bitmasking collisions.
+2. **Prime Moduli (classical division-method guidance)**: The classical division method is often taught with prime table sizes $m$ to reduce clustering; modern implementations may instead use power-of-two capacities with hash mixing.
 3. **The Birthday Paradox**: Collisions occur with $50\%$ probability after only $O(\sqrt{m})$ insertions ($23$ keys for $m = 365$).
-4. **Load Factor Governance**: Maintaining load factor $\alpha \le 0.75$ guarantees that search, insert, and delete operations execute in expected $O(1)$ time.
+4. **Load Factor Governance**: With a suitable hash function and appropriate collision-resolution strategy, operations are typically expected $O(1)$ at controlled load factors (e.g. $\alpha \le 0.75$ as a common threshold). Expected cost also depends on hash quality, key distribution, resizing strategy, and implementation details.
 
 ---
 

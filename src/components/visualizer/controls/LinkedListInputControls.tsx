@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
+  parseInputNumber,
   parseNumberList,
   validateIndex,
   VisualizerInputOptions,
@@ -100,7 +101,7 @@ export function LinkedListInputControls({
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Pod 1: List Size & Randomizer */}
           {onGenerate && (
-            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
               <div className="flex items-center gap-1.5 pr-1">
                 <span className="font-mono text-[10px] font-semibold text-text-muted">Size</span>
                 <input
@@ -164,7 +165,7 @@ export function LinkedListInputControls({
           {onGenerate && (
             <form
               onSubmit={handleCustomSubmit}
-              className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+              className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
             >
               <FileEdit className="h-3 w-3 text-text-muted shrink-0" aria-hidden="true" />
               <input
@@ -175,7 +176,7 @@ export function LinkedListInputControls({
                   setCustomInput(event.target.value);
                   if (error) setError(null);
                 }}
-                className="h-6 w-24 sm:w-32 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-24 sm:w-32 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-(--shadow-inset) placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
                 aria-label="Custom comma-separated list"
               />
               <Button
@@ -190,7 +191,7 @@ export function LinkedListInputControls({
 
           {/* Pod 3: Operation Parameters */}
           {showTarget && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
               <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
                 Target:
@@ -200,16 +201,18 @@ export function LinkedListInputControls({
                 name="target"
                 type="number"
                 inputMode="numeric"
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                 value={options.target}
-                onChange={(event) => updateOption("target", Number(event.target.value))}
+                onChange={(event) =>
+                  updateOption("target", parseInputNumber(event.target.value, options.target))
+                }
                 aria-label="Target value"
               />
             </div>
           )}
 
           {showValue && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
               {showPosition && (
                 <>
                   <span className="font-mono text-[10px] font-semibold text-text-secondary">
@@ -223,11 +226,13 @@ export function LinkedListInputControls({
                     max={dataLength}
                     step={1}
                     inputMode="numeric"
-                    className="h-6 w-12 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                    className="h-6 w-12 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                     value={options.index}
                     aria-invalid={Boolean(displayError)}
                     aria-describedby={displayError ? errorId : undefined}
-                    onChange={(event) => updateOption("index", Number(event.target.value))}
+                    onChange={(event) =>
+                      updateOption("index", parseInputNumber(event.target.value, options.index))
+                    }
                     aria-label="Position"
                   />
                   <span className="h-3.5 w-px bg-border mx-0.5" />
@@ -241,9 +246,11 @@ export function LinkedListInputControls({
                 type="number"
                 step={1}
                 inputMode="numeric"
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                 value={options.value}
-                onChange={(event) => updateOption("value", Number(event.target.value))}
+                onChange={(event) =>
+                  updateOption("value", parseInputNumber(event.target.value, options.value))
+                }
                 aria-label="Value"
               />
             </div>
@@ -251,7 +258,7 @@ export function LinkedListInputControls({
 
           {/* Pod 4: Informative Status Pills for zero-arg operations */}
           {slug === "sll-delete-head" && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-(--shadow-raised-sm) text-[10px] text-text-muted">
               <Info className="h-3 w-3 text-primary shrink-0" />
               <span>
                 Operation: <strong className="text-text-primary">Delete Head</strong> unlinks first
@@ -261,7 +268,7 @@ export function LinkedListInputControls({
           )}
 
           {slug === "sll-delete-tail" && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-(--shadow-raised-sm) text-[10px] text-text-muted">
               <Info className="h-3 w-3 text-primary shrink-0" />
               <span>
                 Operation: <strong className="text-text-primary">Delete Tail</strong> unlinks last
@@ -271,7 +278,7 @@ export function LinkedListInputControls({
           )}
 
           {slug === "sll-reverse" && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-(--shadow-raised-sm) text-[10px] text-text-muted">
               <Info className="h-3 w-3 text-primary shrink-0" />
               <span>
                 Operation: <strong className="text-text-primary">Reverse</strong> flips links
@@ -281,7 +288,7 @@ export function LinkedListInputControls({
           )}
 
           {slug === "sll-find-middle" && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-(--shadow-raised-sm) text-[10px] text-text-muted">
               <Info className="h-3 w-3 text-primary shrink-0" />
               <span>
                 Operation: <strong className="text-text-primary">Find Middle</strong> uses fast/slow
@@ -291,7 +298,7 @@ export function LinkedListInputControls({
           )}
 
           {slug === "sll-traversal" && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-[var(--shadow-raised-sm)] text-[10px] text-text-muted">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-(--shadow-raised-sm) text-[10px] text-text-muted">
               <Info className="h-3 w-3 text-primary shrink-0" />
               <span>
                 Operation: <strong className="text-text-primary">Sequential Traversal</strong>{" "}

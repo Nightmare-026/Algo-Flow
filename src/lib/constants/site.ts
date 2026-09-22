@@ -9,6 +9,6 @@ export const CURRICULUM_STATS = {
   totalModules: 12,
   totalChapters: 62,
   totalTopics: 168,
-  totalAlgorithms: 137,
+  totalAlgorithms: 138,
   totalProblems: 525,
 } as const;

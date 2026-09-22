@@ -61,21 +61,21 @@ export function ConfigModal({
       case "addition":
         return "+";
       case "subtraction":
-        return "−";
+        return "âˆ’";
       case "multiplication":
-        return "×";
+        return "Ã—";
       case "division":
-        return "÷";
+        return "Ã·";
       case "squares":
-        return "²";
+        return "Â²";
       case "cubes":
-        return "³";
+        return "Â³";
       case "roots":
-        return "√";
+        return "âˆš";
       case "percentages":
         return "%";
       case "mixed":
-        return "±×÷";
+        return "Â±Ã—Ã·";
     }
   };
 
@@ -86,19 +86,19 @@ export function ConfigModal({
     shortDesc: string;
   }> = [
     { id: "addition", label: "Addition", symbol: "+", shortDesc: "Summation & partial adds" },
-    { id: "subtraction", label: "Subtraction", symbol: "−", shortDesc: "Difference & borrows" },
+    { id: "subtraction", label: "Subtraction", symbol: "âˆ’", shortDesc: "Difference & borrows" },
     {
       id: "multiplication",
       label: "Multiplication",
-      symbol: "×",
+      symbol: "Ã—",
       shortDesc: "Cross-products & tables",
     },
-    { id: "division", label: "Division", symbol: "÷", shortDesc: "Integer quotient splits" },
-    { id: "squares", label: "Squares", symbol: "x²", shortDesc: "Base powers & identities" },
-    { id: "cubes", label: "Cubes", symbol: "x³", shortDesc: "Powers of 3 & binomials" },
-    { id: "roots", label: "Square Roots", symbol: "√x", shortDesc: "Perfect square extraction" },
+    { id: "division", label: "Division", symbol: "Ã·", shortDesc: "Integer quotient splits" },
+    { id: "squares", label: "Squares", symbol: "xÂ²", shortDesc: "Base powers & identities" },
+    { id: "cubes", label: "Cubes", symbol: "xÂ³", shortDesc: "Powers of 3 & binomials" },
+    { id: "roots", label: "Square Roots", symbol: "âˆšx", shortDesc: "Perfect square extraction" },
     { id: "percentages", label: "Percentages", symbol: "%", shortDesc: "Benchmark proportions" },
-    { id: "mixed", label: "Mixed Ops", symbol: "±×÷", shortDesc: "Interleaved arithmetic" },
+    { id: "mixed", label: "Mixed Ops", symbol: "Â±Ã—Ã·", shortDesc: "Interleaved arithmetic" },
   ];
 
   const difficulties: Array<{
@@ -108,7 +108,7 @@ export function ConfigModal({
     tag: string;
   }> = [
     { id: "easy", label: "Easy", desc: "No carries / friendly factors", tag: "0 Carries" },
-    { id: "medium", label: "Medium", desc: "Single carry / borrow steps", tag: "1–2 Carries" },
+    { id: "medium", label: "Medium", desc: "Single carry / borrow steps", tag: "1â€“2 Carries" },
     { id: "hard", label: "Hard", desc: "Complex regrouping & borrows", tag: "Multi-Carry" },
     {
       id: "expert",
@@ -154,21 +154,21 @@ export function ConfigModal({
     if (operation === "squares") {
       sampleLeft = digitCountLeft === 1 ? 7 : digitCountLeft === 2 ? 25 : 125;
       return {
-        formula: `${sampleLeft}² = ${sampleLeft * sampleLeft}`,
-        desc: `Squaring ${digitCountLeft}-digit integers (${digitCountLeft === 1 ? "1–9" : digitCountLeft === 2 ? "10–99" : "100–999"})`,
+        formula: `${sampleLeft}Â² = ${sampleLeft * sampleLeft}`,
+        desc: `Squaring ${digitCountLeft}-digit integers (${digitCountLeft === 1 ? "1â€“9" : digitCountLeft === 2 ? "10â€“99" : "100â€“999"})`,
       };
     }
     if (operation === "cubes") {
       sampleLeft = digitCountLeft === 1 ? 5 : digitCountLeft === 2 ? 12 : 25;
       return {
-        formula: `${sampleLeft}³ = ${(sampleLeft * sampleLeft * sampleLeft).toLocaleString()}`,
-        desc: `Cubic powers of ${digitCountLeft}-digit base integers (${digitCountLeft === 1 ? "1–9" : digitCountLeft === 2 ? "10–25" : "25–50"})`,
+        formula: `${sampleLeft}Â³ = ${(sampleLeft * sampleLeft * sampleLeft).toLocaleString()}`,
+        desc: `Cubic powers of ${digitCountLeft}-digit base integers (${digitCountLeft === 1 ? "1â€“9" : digitCountLeft === 2 ? "10â€“25" : "25â€“50"})`,
       };
     }
     if (operation === "roots") {
       const rootBase = digitCountLeft === 1 ? 6 : digitCountLeft === 2 ? 14 : 45;
       return {
-        formula: `√${rootBase * rootBase} = ${rootBase}`,
+        formula: `âˆš${rootBase * rootBase} = ${rootBase}`,
         desc: `Extracting square root for a ${digitCountLeft}-digit answer`,
       };
     }
@@ -184,7 +184,7 @@ export function ConfigModal({
         [sampleLeft, sampleRight] = [sampleRight, sampleLeft];
       }
       return {
-        formula: `${sampleLeft} − ${sampleRight} = ${sampleLeft - sampleRight}`,
+        formula: `${sampleLeft} âˆ’ ${sampleRight} = ${sampleLeft - sampleRight}`,
         desc: `${digitCountLeft}-digit minuend minus ${digitCountRight}-digit subtrahend`,
       };
     }
@@ -192,13 +192,13 @@ export function ConfigModal({
       const divisor = digitCountRight === 1 ? 4 : 12;
       const dividend = divisor * (digitCountLeft === 1 ? 6 : digitCountLeft === 2 ? 28 : 142);
       return {
-        formula: `${dividend} ÷ ${divisor} = ${dividend / divisor}`,
+        formula: `${dividend} Ã· ${divisor} = ${dividend / divisor}`,
         desc: `${digitCountLeft}-digit dividend divided by ${digitCountRight}-digit divisor`,
       };
     }
     if (operation === "multiplication") {
       return {
-        formula: `${sampleLeft} × ${sampleRight} = ${(sampleLeft * sampleRight).toLocaleString()}`,
+        formula: `${sampleLeft} Ã— ${sampleRight} = ${(sampleLeft * sampleRight).toLocaleString()}`,
         desc: `${digitCountLeft}-digit number multiplied by ${digitCountRight}-digit factor`,
       };
     }
@@ -215,7 +215,7 @@ export function ConfigModal({
   return (
     <form
       onSubmit={handleSubmit}
-      className="neu-float w-full max-w-7xl mx-auto p-6 sm:p-8 lg:p-10 rounded-3xl border border-border bg-surface/95 shadow-[var(--shadow-raised)] backdrop-blur-md flex flex-col gap-8"
+      className="neu-float w-full max-w-7xl mx-auto p-6 sm:p-8 lg:p-10 rounded-3xl border border-border bg-surface/95 shadow-(--shadow-raised) backdrop-blur-md flex flex-col gap-8"
     >
       {/* Top Header Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-border/80">
@@ -231,7 +231,7 @@ export function ConfigModal({
             type="button"
             onClick={handleResetDefaults}
             title="Reset to default settings"
-            className="flex items-center gap-1.5 text-xs font-bold font-display text-text-muted hover:text-text-primary px-3 py-2 rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-bold font-display text-text-muted hover:text-text-primary px-3 py-2 rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Defaults</span>
@@ -242,7 +242,7 @@ export function ConfigModal({
               type="button"
               onClick={onCancel}
               title="Cancel (Esc)"
-              className="flex items-center gap-1.5 text-xs font-bold font-display text-text-muted hover:text-text-primary px-3 py-2 rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)] active:scale-95 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-bold font-display text-text-muted hover:text-text-primary px-3 py-2 rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
               <span>Cancel</span>
@@ -283,7 +283,7 @@ export function ConfigModal({
                     className={cn(
                       "neu-raised p-3 rounded-2xl border text-left flex items-center justify-between gap-2.5 transition-all duration-150 active:scale-95 cursor-pointer relative overflow-hidden group",
                       isSelected
-                        ? "border-primary bg-primary-muted/40 text-primary shadow-[var(--shadow-inset)] ring-2 ring-primary/40"
+                        ? "border-primary bg-primary-muted/40 text-primary shadow-(--shadow-inset) ring-2 ring-primary/40"
                         : "border-border text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border-primary/30"
                     )}
                   >
@@ -315,7 +315,7 @@ export function ConfigModal({
           </div>
 
           {/* 2. Operand Digit Length Controls */}
-          <div className="neu-raised p-4 sm:p-5 rounded-2xl border border-border bg-surface flex flex-col gap-3.5 shadow-[var(--shadow-raised-sm)]">
+          <div className="neu-raised p-4 sm:p-5 rounded-2xl border border-border bg-surface flex flex-col gap-3.5 shadow-(--shadow-raised-sm)">
             <div className="flex justify-between items-center">
               <label className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
                 <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary text-white text-[10px] font-extrabold">
@@ -330,19 +330,19 @@ export function ConfigModal({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {/* Left Operand Digits */}
-              <div className="neu-inset p-3 rounded-xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col gap-2">
+              <div className="neu-inset p-3 rounded-xl border border-border bg-surface-inset shadow-(--shadow-inset) flex flex-col gap-2">
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="font-bold text-text-primary">
                     {isUnaryOp ? "Base Number" : "Left Number"}
                   </span>
                   <span className="font-mono font-bold text-primary text-[10px]">
                     {digitCountLeft === 1
-                      ? "1–9 (1d)"
+                      ? "1â€“9 (1d)"
                       : digitCountLeft === 2
-                        ? "10–99 (2d)"
+                        ? "10â€“99 (2d)"
                         : digitCountLeft === 3
-                          ? "100–999 (3d)"
-                          : "1k–9.9k (4d)"}
+                          ? "100â€“999 (3d)"
+                          : "1kâ€“9.9k (4d)"}
                   </span>
                 </div>
                 <div className="grid grid-cols-4 gap-1">
@@ -365,7 +365,7 @@ export function ConfigModal({
               </div>
 
               {/* Right Operand Digits */}
-              <div className="neu-inset p-3 rounded-xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] flex flex-col gap-2">
+              <div className="neu-inset p-3 rounded-xl border border-border bg-surface-inset shadow-(--shadow-inset) flex flex-col gap-2">
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="font-bold text-text-primary">
                     {isUnaryOp ? "Operand Mode" : "Right Number"}
@@ -374,12 +374,12 @@ export function ConfigModal({
                     {isUnaryOp
                       ? "Single Operand"
                       : digitCountRight === 1
-                        ? "1–9 (1d)"
+                        ? "1â€“9 (1d)"
                         : digitCountRight === 2
-                          ? "10–99 (2d)"
+                          ? "10â€“99 (2d)"
                           : digitCountRight === 3
-                            ? "100–999 (3d)"
-                            : "1k–9.9k (4d)"}
+                            ? "100â€“999 (3d)"
+                            : "1kâ€“9.9k (4d)"}
                   </span>
                 </div>
 
@@ -387,10 +387,10 @@ export function ConfigModal({
                   <div className="flex items-center justify-center h-8 px-2 rounded-lg border border-border/60 bg-surface text-[10px] font-mono text-text-muted text-center">
                     Single base{" "}
                     {operation === "squares"
-                      ? "power (x²)"
+                      ? "power (xÂ²)"
                       : operation === "cubes"
-                        ? "cubic power (x³)"
-                        : "root (√x)"}
+                        ? "cubic power (xÂ³)"
+                        : "root (âˆšx)"}
                   </div>
                 ) : (
                   <div className="grid grid-cols-4 gap-1">
@@ -440,7 +440,7 @@ export function ConfigModal({
                     className={cn(
                       "neu-raised p-3 rounded-2xl border text-left transition-all duration-150 active:scale-95 cursor-pointer flex flex-col justify-between gap-1.5",
                       isSelected
-                        ? "border-primary bg-primary-muted/40 text-primary shadow-[var(--shadow-inset)] ring-2 ring-primary/30"
+                        ? "border-primary bg-primary-muted/40 text-primary shadow-(--shadow-inset) ring-2 ring-primary/30"
                         : "border-border text-text-secondary hover:bg-surface-hover hover:text-text-primary"
                     )}
                   >
@@ -472,7 +472,7 @@ export function ConfigModal({
           {/* 4. Session Rules: Problem Count, Format & Timer */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* Problem Volume */}
-            <div className="neu-raised p-3 rounded-2xl border border-border bg-surface flex flex-col justify-between gap-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="neu-raised p-3 rounded-2xl border border-border bg-surface flex flex-col justify-between gap-2 shadow-(--shadow-raised-sm)">
               <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
                 <Zap className="w-3 h-3 text-primary" />
                 <span>Problem Count</span>
@@ -500,7 +500,7 @@ export function ConfigModal({
             </div>
 
             {/* Input Mode */}
-            <div className="neu-raised p-3 rounded-2xl border border-border bg-surface flex flex-col justify-between gap-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="neu-raised p-3 rounded-2xl border border-border bg-surface flex flex-col justify-between gap-2 shadow-(--shadow-raised-sm)">
               <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
                 <Keyboard className="w-3 h-3 text-primary" />
                 <span>Input Format</span>
@@ -536,7 +536,7 @@ export function ConfigModal({
             </div>
 
             {/* Timer Pacing */}
-            <div className="neu-raised p-3 rounded-2xl border border-border bg-surface flex flex-col justify-between gap-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="neu-raised p-3 rounded-2xl border border-border bg-surface flex flex-col justify-between gap-2 shadow-(--shadow-raised-sm)">
               <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
                 <Clock className="w-3 h-3 text-primary" />
                 <span>Timer Pacing</span>
@@ -572,7 +572,7 @@ export function ConfigModal({
 
         {/* RIGHT COLUMN: Live Problem Inspector & Launch Card (5 cols) */}
         <div className="lg:col-span-5 flex flex-col gap-4 lg:sticky lg:top-28">
-          <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between gap-6 shadow-[var(--shadow-raised-sm)]">
+          <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between gap-6 shadow-(--shadow-raised-sm)">
             <div>
               <div className="flex items-center justify-between gap-2 pb-3 border-b border-border/80">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
@@ -592,7 +592,7 @@ export function ConfigModal({
               </div>
 
               {/* Big Math Preview */}
-              <div className="neu-inset p-5 rounded-2xl border border-primary/30 bg-surface-inset shadow-[var(--shadow-inset)] text-center my-4">
+              <div className="neu-inset p-5 rounded-2xl border border-primary/30 bg-surface-inset shadow-(--shadow-inset) text-center my-4">
                 <div className="font-mono text-3xl sm:text-4xl font-extrabold text-primary tracking-tight">
                   {liveSample.formula}
                 </div>
@@ -628,7 +628,7 @@ export function ConfigModal({
             <div className="flex flex-col gap-2 pt-2">
               <button
                 type="submit"
-                className="w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-primary px-6 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+                className="w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-primary px-6 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
               >
                 <span>Launch Practice Drill</span>
                 <ArrowRight className="w-4 h-4" />
@@ -636,7 +636,7 @@ export function ConfigModal({
               <p className="text-[10px] font-mono text-text-muted text-center">
                 Press{" "}
                 <kbd className="px-1 py-0.5 rounded bg-surface border border-border text-[9px] font-bold text-text-primary">
-                  Enter ↵
+                  Enter â†µ
                 </kbd>{" "}
                 to launch drill
               </p>

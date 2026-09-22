@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
+  parseInputNumber,
   parseNumberList,
   validateCapacity,
   validateIndex,
@@ -103,7 +104,7 @@ export function ArrayInputControls({
         {/* Left Section: Generators & Custom Input */}
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Pod 1: Data Size & Presets */}
-          <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+          <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
             <div className="flex items-center gap-1.5 pr-1">
               <span className="font-mono text-[10px] font-semibold text-text-muted">Size</span>
               <input
@@ -159,7 +160,7 @@ export function ArrayInputControls({
           {/* Pod 2: Custom Number List Form */}
           <form
             onSubmit={handleCustomSubmit}
-            className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
           >
             <FileEdit className="h-3.5 w-3.5 text-text-muted shrink-0" aria-hidden="true" />
             <input
@@ -184,7 +185,7 @@ export function ArrayInputControls({
 
         {/* Right Section: Context Parameters Pod (if applicable) */}
         {hasContextParams && (
-          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)] lg:ml-auto">
+          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm) lg:ml-auto">
             {needsTarget(slug) && (
               <label className="flex items-center gap-1.5 font-mono text-[10px] font-semibold text-text-secondary">
                 <Search className="h-3 w-3 text-primary" aria-hidden="true" />
@@ -192,8 +193,10 @@ export function ArrayInputControls({
                 <input
                   type="number"
                   value={options.target}
-                  onChange={(event) => updateOption("target", Number(event.target.value))}
-                  className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                  onChange={(event) =>
+                    updateOption("target", parseInputNumber(event.target.value, options.target))
+                  }
+                  className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                   aria-label="Target search value"
                 />
               </label>
@@ -206,8 +209,10 @@ export function ArrayInputControls({
                 <input
                   type="number"
                   value={options.value}
-                  onChange={(event) => updateOption("value", Number(event.target.value))}
-                  className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                  onChange={(event) =>
+                    updateOption("value", parseInputNumber(event.target.value, options.value))
+                  }
+                  className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                   aria-label="Value"
                 />
               </label>
@@ -224,8 +229,10 @@ export function ArrayInputControls({
                   placeholder="0"
                   aria-invalid={Boolean(fieldError)}
                   aria-describedby={fieldError ? "array-input-error" : undefined}
-                  onChange={(event) => updateOption("index", Number(event.target.value))}
-                  className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                  onChange={(event) =>
+                    updateOption("index", parseInputNumber(event.target.value, options.index))
+                  }
+                  className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                   aria-label="Index"
                 />
               </label>
@@ -240,8 +247,10 @@ export function ArrayInputControls({
                   value={options.capacity}
                   aria-invalid={Boolean(fieldError)}
                   aria-describedby={fieldError ? "array-input-error" : undefined}
-                  onChange={(event) => updateOption("capacity", Number(event.target.value))}
-                  className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                  onChange={(event) =>
+                    updateOption("capacity", parseInputNumber(event.target.value, options.capacity))
+                  }
+                  className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                   aria-label="Capacity"
                 />
               </label>

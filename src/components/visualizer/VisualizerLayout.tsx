@@ -141,12 +141,12 @@ export function VisualizerLayout({
     >
       <div aria-hidden={showTour} className="flex flex-col flex-1 min-h-0 overflow-hidden">
         {/* Top Workstation Header */}
-        <header className="flex shrink-0 flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border bg-surface/80 backdrop-blur-md px-3 sm:px-4 py-2 shadow-[var(--shadow-raised-sm)] z-30">
+        <header className="flex shrink-0 flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border bg-surface/80 backdrop-blur-md px-3 sm:px-4 py-2 shadow-(--shadow-raised-sm) z-30">
           <div className="flex items-center justify-between gap-2 w-full sm:w-auto sm:flex-1 min-w-0">
             <div className="flex items-center gap-2 min-w-0">
               <Link
                 href={`/visualizers/${algorithm.dataStructureId.replace("ds_", "").replace("_", "-")}`}
-                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-all hover:border-primary/40 hover:text-primary active:scale-95 shadow-[var(--shadow-raised-sm)]"
+                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-all hover:border-primary/40 hover:text-primary active:scale-95 shadow-(--shadow-raised-sm)"
                 aria-label="Back to category"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
@@ -182,7 +182,7 @@ export function VisualizerLayout({
               <button
                 onClick={() => setShowInspector(!showInspector)}
                 className={cn(
-                  "inline-flex h-8 items-center gap-1 px-2.5 rounded-xl border text-xs font-bold transition-all shadow-[var(--shadow-raised-sm)] active:scale-95 cursor-pointer",
+                  "inline-flex h-8 items-center gap-1 px-2.5 rounded-xl border text-xs font-bold transition-all shadow-(--shadow-raised-sm) active:scale-95 cursor-pointer",
                   showInspector
                     ? "bg-primary text-white border-primary"
                     : "border-primary/40 bg-primary-muted text-primary hover:bg-primary hover:text-white"
@@ -209,7 +209,7 @@ export function VisualizerLayout({
             <div className="flex items-center gap-1.5 shrink-0">
               <Link
                 href={`/quizzes/${algorithm.id}`}
-                className="inline-flex min-h-8 sm:min-h-9 items-center gap-1.5 rounded-xl border border-primary/40 bg-primary-muted px-2.5 sm:px-3 text-xs font-bold text-primary shadow-[var(--shadow-raised-sm)] hover:bg-primary hover:text-white transition-all active:scale-95"
+                className="inline-flex min-h-8 sm:min-h-9 items-center gap-1.5 rounded-xl border border-primary/40 bg-primary-muted px-2.5 sm:px-3 text-xs font-bold text-primary shadow-(--shadow-raised-sm) hover:bg-primary hover:text-white transition-all active:scale-95"
                 title="Take Knowledge Quiz"
               >
                 <Trophy className="h-3.5 w-3.5" />
@@ -219,7 +219,7 @@ export function VisualizerLayout({
               <button
                 onClick={() => setIsPracticeMode(!isPracticeMode)}
                 className={cn(
-                  "min-h-8 sm:min-h-9 rounded-xl px-2.5 sm:px-3 text-xs font-bold transition-all shadow-[var(--shadow-raised-sm)] border active:scale-95 cursor-pointer",
+                  "min-h-8 sm:min-h-9 rounded-xl px-2.5 sm:px-3 text-xs font-bold transition-all shadow-(--shadow-raised-sm) border active:scale-95 cursor-pointer",
                   isPracticeMode
                     ? "bg-primary text-white border-primary"
                     : "border-border bg-surface text-text-secondary hover:text-text-primary hover:border-border-hover"
@@ -234,7 +234,7 @@ export function VisualizerLayout({
               <button
                 onClick={handleToggleBookmark}
                 className={cn(
-                  "inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-border bg-surface transition-all shadow-[var(--shadow-raised-sm)] hover:border-primary/40 active:scale-95 cursor-pointer",
+                  "inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-border bg-surface transition-all shadow-(--shadow-raised-sm) hover:border-primary/40 active:scale-95 cursor-pointer",
                   isBookmarked
                     ? "text-warning border-warning/40"
                     : "text-text-muted hover:text-primary"
@@ -252,7 +252,7 @@ export function VisualizerLayout({
               <button
                 onClick={handleSaveSession}
                 disabled={isSaving}
-                className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 disabled:opacity-40 cursor-pointer"
+                className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-(--shadow-raised-sm) transition-all hover:border-primary/40 hover:text-primary active:scale-95 disabled:opacity-40 cursor-pointer"
                 title="Save Session State"
                 aria-label="Save Session"
               >
@@ -261,7 +261,7 @@ export function VisualizerLayout({
 
               <button
                 onClick={handleShare}
-                className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
+                className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-(--shadow-raised-sm) transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
                 title="Share Visualizer Link"
                 aria-label="Share"
               >
@@ -284,7 +284,7 @@ export function VisualizerLayout({
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 450, damping: 30 }}
               aria-live="polite"
-              className="fixed right-4 top-16 z-[70] flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3 text-xs font-bold text-text-primary shadow-[var(--shadow-float)] backdrop-blur-md"
+              className="fixed right-4 top-16 z-[70] flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3 text-xs font-bold text-text-primary shadow-(--shadow-float) backdrop-blur-md"
             >
               <span>{statusMessage}</span>
               {statusMessage.toLowerCase().includes("log in") && (
@@ -305,7 +305,7 @@ export function VisualizerLayout({
           <div className="flex min-w-0 w-full flex-1 flex-col h-full min-h-0 lg:w-0 lg:flex-1">
             <div className="relative flex flex-1 flex-col overflow-hidden bg-background min-h-0">
               {controls && (
-                <div className="w-full shrink-0 border-b border-border bg-surface/50 p-2 sm:p-2.5 shadow-[var(--shadow-raised-sm)]">
+                <div className="w-full shrink-0 border-b border-border bg-surface/50 p-2 sm:p-2.5 shadow-(--shadow-raised-sm)">
                   {controls}
                 </div>
               )}
@@ -331,7 +331,7 @@ export function VisualizerLayout({
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.92, opacity: 0, y: 10 }}
                         transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                        className="neu-float w-full max-w-md rounded-3xl border border-border bg-surface p-6 shadow-[var(--shadow-float)]"
+                        className="neu-float w-full max-w-md rounded-3xl border border-border bg-surface p-6 shadow-(--shadow-float)"
                       >
                         <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
                           Interactive Challenge
@@ -351,7 +351,7 @@ export function VisualizerLayout({
                               className={cn(
                                 "w-full rounded-xl border p-3.5 text-left text-xs font-bold transition-all cursor-pointer select-none",
                                 practiceSelected === opt
-                                  ? "border-primary bg-primary-muted text-primary shadow-[var(--shadow-inset)]"
+                                  ? "border-primary bg-primary-muted text-primary shadow-(--shadow-inset)"
                                   : "border-border bg-surface text-text-secondary hover:border-border-hover hover:text-text-primary",
                                 practiceFeedback === "correct" &&
                                   opt === practiceAnswer &&
@@ -376,7 +376,7 @@ export function VisualizerLayout({
                           <button
                             onClick={handlePracticeSubmit}
                             disabled={!practiceSelected || practiceFeedback === "correct"}
-                            className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover disabled:opacity-40 cursor-pointer"
+                            className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover disabled:opacity-40 cursor-pointer"
                           >
                             Submit Answer
                           </button>
@@ -387,7 +387,7 @@ export function VisualizerLayout({
                 </AnimatePresence>
 
                 {/* Floating Step Badge */}
-                <div className="neu-inset absolute right-4 top-4 rounded-xl px-3 py-1.5 text-xs font-mono font-bold text-text-primary border border-border shadow-[var(--shadow-inset)] backdrop-blur-md">
+                <div className="neu-inset absolute right-4 top-4 rounded-xl px-3 py-1.5 text-xs font-mono font-bold text-text-primary border border-border shadow-(--shadow-inset) backdrop-blur-md">
                   {totalSteps > 0 ? (
                     `Step ${currentStepIndex + 1} / ${totalSteps}`
                   ) : (
@@ -398,7 +398,7 @@ export function VisualizerLayout({
                 {/* Fullscreen Button */}
                 <button
                   onClick={handleFullscreen}
-                  className="absolute bottom-4 right-4 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-[var(--shadow-raised-sm)] transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
+                  className="absolute bottom-4 right-4 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-(--shadow-raised-sm) transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
                   title="Toggle Fullscreen Canvas"
                   aria-label="Fullscreen Canvas"
                 >
@@ -424,7 +424,7 @@ export function VisualizerLayout({
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.92, opacity: 0, y: 10 }}
                     transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                    className="neu-float w-full max-w-md rounded-3xl border border-border bg-surface p-6 shadow-[var(--shadow-float)] max-h-[85vh] overflow-y-auto"
+                    className="neu-float w-full max-w-md rounded-3xl border border-border bg-surface p-6 shadow-(--shadow-float) max-h-[85vh] overflow-y-auto"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h2
@@ -448,14 +448,14 @@ export function VisualizerLayout({
                       <dl className="grid grid-cols-[auto_1fr] gap-2">
                         <dt className="font-mono font-bold text-text-secondary kbd-style">Space</dt>
                         <dd className="text-text-secondary">Play / Pause</dd>
-                        <dt className="font-mono font-bold text-text-secondary kbd-style">← / J</dt>
+                        <dt className="font-mono font-bold text-text-secondary kbd-style">â† / J</dt>
                         <dd className="text-text-secondary">Previous Step</dd>
-                        <dt className="font-mono font-bold text-text-secondary kbd-style">→ / L</dt>
+                        <dt className="font-mono font-bold text-text-secondary kbd-style">â†’ / L</dt>
                         <dd className="text-text-secondary">Next Step</dd>
                         <dt className="font-mono font-bold text-text-secondary kbd-style">R</dt>
                         <dd className="text-text-secondary">Restart</dd>
                         <dt className="font-mono font-bold text-text-secondary kbd-style">
-                          Shift + →
+                          Shift + â†’
                         </dt>
                         <dd className="text-text-secondary">Jump to End</dd>
                       </dl>
@@ -494,7 +494,7 @@ export function VisualizerLayout({
             </AnimatePresence>
 
             {/* VCR Playback Controls & Timeline Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-border bg-surface px-3 py-2 pb-safe z-20 shadow-[var(--shadow-raised-sm)] shrink-0 w-full min-w-0">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-border bg-surface px-3 py-2 pb-safe z-20 shadow-(--shadow-raised-sm) shrink-0 w-full min-w-0">
               <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-2 shrink-0">
                 <PlaybackControls />
                 <div className="sm:hidden">
@@ -536,7 +536,7 @@ export function VisualizerLayout({
                   animate={{ y: 0 }}
                   exit={{ y: "100%" }}
                   transition={{ type: "spring", damping: 30, stiffness: 350 }}
-                  className="fixed inset-x-0 bottom-0 z-10 flex h-[80vh] max-h-[85vh] w-full flex-col rounded-t-3xl border-t border-border bg-surface shadow-[var(--shadow-float)] pb-safe overflow-hidden"
+                  className="fixed inset-x-0 bottom-0 z-10 flex h-[80vh] max-h-[85vh] w-full flex-col rounded-t-3xl border-t border-border bg-surface shadow-(--shadow-float) pb-safe overflow-hidden"
                 >
                   {/* Header with Title and Close Button */}
                   <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-2.5 bg-surface/95 backdrop-blur-md">
@@ -613,7 +613,7 @@ export function VisualizerLayout({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 10 }}
               transition={{ type: "spring", stiffness: 400, damping: 28 }}
-              className="neu-float w-full max-w-md rounded-3xl border border-border bg-surface p-6 shadow-[var(--shadow-float)] focus:outline-none"
+              className="neu-float w-full max-w-md rounded-3xl border border-border bg-surface p-6 shadow-(--shadow-float) focus:outline-none"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 id="tour-title" className="text-xl font-bold font-display text-text-primary">
@@ -665,14 +665,14 @@ export function VisualizerLayout({
                       {tourStep < tourSteps.length - 1 ? (
                         <button
                           onClick={nextTourStep}
-                          className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover cursor-pointer"
+                          className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover cursor-pointer"
                         >
                           Next
                         </button>
                       ) : (
                         <button
                           onClick={closeTour}
-                          className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover cursor-pointer"
+                          className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover cursor-pointer"
                         >
                           Get Started
                         </button>

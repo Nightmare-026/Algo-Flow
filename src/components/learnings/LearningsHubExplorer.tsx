@@ -147,7 +147,7 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
             onKeyDown={(e) => {
               if (e.key === "Escape") setSearchQuery("");
             }}
-            className="h-11 w-full rounded-xl border border-border bg-bg-surface-inset py-2.5 pl-11 pr-10 text-sm text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="h-11 w-full rounded-xl border border-border bg-bg-surface-inset py-2.5 pl-11 pr-10 text-sm text-text-primary shadow-(--shadow-inset) placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           />
           {searchQuery ? (
             <button
@@ -186,8 +186,8 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
                 className={cn(
                   "h-11 shrink-0 rounded-xl px-4 text-xs font-bold transition-colors duration-200 cursor-pointer select-none",
                   selected
-                    ? "border border-primary/40 bg-primary text-white shadow-[var(--shadow-raised-sm)]"
-                    : "border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-text-primary hover:border-border-hover hover:bg-surface-hover"
+                    ? "border border-primary/40 bg-primary text-white shadow-(--shadow-raised-sm)"
+                    : "border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) hover:text-text-primary hover:border-border-hover hover:bg-surface-hover"
                 )}
               >
                 {tier.label}
@@ -235,7 +235,7 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
                 key={mod.id}
                 itemScope
                 itemType="https://schema.org/Course"
-                className="group flex flex-col justify-between rounded-3xl border border-border/80 bg-surface/90 p-6 neu-raised hover:border-primary/40 hover:shadow-[var(--shadow-raised)] transition-all duration-300"
+                className="group flex flex-col justify-between rounded-3xl border border-border/80 bg-surface/90 p-6 neu-raised hover:border-primary/40 hover:shadow-(--shadow-raised) transition-all duration-300"
               >
                 <meta itemProp="provider" content="AlgoFlow" />
                 <meta

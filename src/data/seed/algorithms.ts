@@ -458,7 +458,9 @@ const catalogOnlyAlgorithms: Algorithm[] = [
     slug: "priority-queue-enqueue",
     difficulty: "medium",
     average: "O(n)",
-    shortDescription: "Insert an element into a priority queue maintaining priority order.",
+    worst: "O(n)",
+    shortDescription:
+      "Insert into a sorted-array priority queue at the matching priority slot (shifts elements).",
     tags: ["queue", "priority-queue", "enqueue"],
     visualizerType: "queue",
     priority: "P0",
@@ -470,8 +472,10 @@ const catalogOnlyAlgorithms: Algorithm[] = [
     name: "Priority Queue Dequeue",
     slug: "priority-queue-dequeue",
     difficulty: "easy",
-    average: "O(1)",
-    shortDescription: "Remove and return the element with the highest priority from the queue.",
+    average: "O(n)",
+    worst: "O(n)",
+    shortDescription:
+      "Remove the highest-priority element from a sorted-array priority queue (shifts remaining elements).",
     tags: ["queue", "priority-queue", "dequeue"],
     visualizerType: "queue",
     priority: "P0",
@@ -1041,9 +1045,9 @@ const rawAlgorithms: Algorithm[] = [
     timeComplexityAverage: "O(n + m)",
     timeComplexityWorst: "O(n + m)",
     spaceComplexity: "O(n + m)",
-    shortDescription: "Combine two sorted arrays while preserving sorted order.",
+    shortDescription: "Merge two sorted halves of an array while preserving sorted order.",
     longDescription:
-      "Takes two sorted arrays and merges them into a single sorted array by picking the smaller of the available elements.",
+      "Splits the array into two halves, each already sorted, and merges them into a single sorted array by picking the smaller of the available elements.",
     prerequisites: [],
     tags: ["array", "merge"],
     visualizerType: "array",
@@ -1166,7 +1170,7 @@ const rawAlgorithms: Algorithm[] = [
     shortDescription: "Repeatedly divide the sorted search space in half.",
     longDescription:
       "A fast search algorithm that finds the position of a target value within a sorted array. It compares the target value to the middle element of the array.",
-    prerequisites: ["alg_arr_sort_bubble"], // Needs sorted array
+    prerequisites: ["bubble-sort"], // Needs sorted array
     tags: ["array", "search"],
     visualizerType: "array",
     priority: "P0",
@@ -1186,7 +1190,7 @@ const rawAlgorithms: Algorithm[] = [
     shortDescription: "Search a sorted array by jumping fixed-size blocks before a local scan.",
     longDescription:
       "A fast search algorithm for ordered arrays that checks fewer elements than linear search by jumping ahead by fixed steps.",
-    prerequisites: ["alg_arr_sort_bubble"],
+    prerequisites: ["bubble-sort"],
     tags: ["array", "search"],
     visualizerType: "array",
     priority: "P1",
@@ -1207,7 +1211,7 @@ const rawAlgorithms: Algorithm[] = [
       "Estimate the likely position of a target in uniformly distributed sorted data.",
     longDescription:
       "An improvement over binary search for instances where the values in a sorted array are uniformly distributed. It probes the position depending on the value being searched.",
-    prerequisites: ["alg_arr_sort_bubble"],
+    prerequisites: ["bubble-sort"],
     tags: ["array", "search"],
     visualizerType: "array",
     priority: "P1",
@@ -1227,9 +1231,9 @@ const rawAlgorithms: Algorithm[] = [
     timeComplexityWorst: "O(n²)",
     spaceComplexity: "O(1)",
     shortDescription:
-      "Repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.",
+      "Repeatedly traverses the list, compares adjacent elements, and swaps them when they are out of order.",
     longDescription:
-      "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order. The pass through the list is repeated until the list is sorted.",
+      "Bubble sort, sometimes referred to as sinking sort, is a simple sorting algorithm that repeatedly traverses the list, compares adjacent elements and swaps them when they are out of order. The pass through the list is repeated until the list is sorted. With an early-exit flag, the best case is Theta(n); otherwise average and worst cases are Theta(n^2) with Theta(1) auxiliary space.",
     prerequisites: ["access-by-index"],
     tags: ["sort", "basics"],
     visualizerType: "array",
@@ -1311,7 +1315,7 @@ const rawAlgorithms: Algorithm[] = [
     spaceComplexity: "O(log n)",
     shortDescription: "Pick a pivot and partition elements around it recursively.",
     longDescription:
-      "A divide-and-conquer algorithm that works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays according to whether they are less than or greater than the pivot.",
+      "A divide-and-conquer algorithm that works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays according to whether they are less than or greater than the pivot. Expected time is Theta(n log n) with balanced partitions; worst case is Theta(n^2) with auxiliary stack Theta(log n) balanced and Theta(n) worst-case.",
     prerequisites: [],
     tags: ["array", "sort"],
     visualizerType: "array",
@@ -1819,9 +1823,10 @@ const rawAlgorithms: Algorithm[] = [
     timeComplexityAverage: "O((V + E) log V)",
     timeComplexityWorst: "O((V + E) log V)",
     spaceComplexity: "O(V)",
-    shortDescription: "Find shortest paths from a source to all vertices in a weighted graph.",
+    shortDescription:
+      "Find shortest paths from a source in a graph with non-negative edge weights.",
     longDescription:
-      "Dijkstra's algorithm uses a priority queue to iteratively select the unvisited vertex with smallest tentative distance, relaxing all incident edges.",
+      "Dijkstra's algorithm requires non-negative edge weights. It uses a priority queue (binary heap: O((V + E) log V); simple array min-selection: O(V^2)) to iteratively select the unvisited vertex with smallest tentative distance, relaxing all incident edges. Use Bellman-Ford for negative edges.",
     prerequisites: ["priority-queue", "bfs"],
     tags: ["graph", "shortest-path", "greedy"],
     visualizerType: "graph",
@@ -1839,9 +1844,9 @@ const rawAlgorithms: Algorithm[] = [
     timeComplexityAverage: "O(V * E)",
     timeComplexityWorst: "O(V * E)",
     spaceComplexity: "O(V)",
-    shortDescription: "Compute shortest paths and detect negative weight cycles.",
+    shortDescription: "Compute shortest paths with negative edges and detect negative cycles.",
     longDescription:
-      "Bellman-Ford relaxes all edges |V| - 1 times to find shortest paths even with negative weights, and identifies negative cycles.",
+      "Bellman-Ford relaxes all edges |V| - 1 times, then performs one additional pass: if any distance can still be relaxed, a reachable negative-weight cycle exists.",
     prerequisites: ["dijkstra"],
     tags: ["graph", "shortest-path", "dynamic-programming"],
     visualizerType: "graph",
@@ -2125,7 +2130,7 @@ const rawAlgorithms: Algorithm[] = [
     shortDescription: "Find a target in a matrix by checking each cell.",
     longDescription:
       "A naive search that traverses the entire matrix row by row until the target value is found. Suitable for unsorted matrices.",
-    prerequisites: ["alg_matrix_traversal_row"],
+    prerequisites: ["row-wise-traversal"],
     tags: ["matrix", "search"],
     visualizerType: "matrix",
     priority: "P0",
@@ -2199,14 +2204,14 @@ const rawAlgorithms: Algorithm[] = [
     name: "Rotate Matrix 90 Degrees",
     slug: "rotate-matrix-90",
     difficulty: "medium",
-    timeComplexityBest: "O(n?)",
-    timeComplexityAverage: "O(n?)",
-    timeComplexityWorst: "O(n?)",
+    timeComplexityBest: "O(rows * cols)",
+    timeComplexityAverage: "O(rows * cols)",
+    timeComplexityWorst: "O(rows * cols)",
     spaceComplexity: "O(1)",
     shortDescription: "Rotate a square matrix using transpose and row reversal.",
     longDescription:
       "Rotates a square matrix 90 degrees clockwise in-place by first transposing the matrix and then reversing each row.",
-    prerequisites: ["alg_matrix_transpose"],
+    prerequisites: ["transpose-matrix"],
     tags: ["matrix", "transform"],
     visualizerType: "matrix",
     priority: "P1",

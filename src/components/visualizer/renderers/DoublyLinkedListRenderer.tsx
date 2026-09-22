@@ -7,13 +7,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { getVisualElementClassName } from "../visual-state";
+import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 
 export function DoublyLinkedListRenderer() {
   const { steps, currentStepIndex } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep || !currentStep.dataState) {
-    return null;
+    return <EmptyVisualizerState />;
   }
 
   const dataState = currentStep.dataState as DoublyLinkedListVisualState;

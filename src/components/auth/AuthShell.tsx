@@ -44,7 +44,7 @@ export function AuthShell({
                 className="group flex min-h-10 items-center gap-2.5 rounded-xl pr-2"
                 aria-label="AlgoFlow home"
               >
-                <span className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+                <span className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface-inset shadow-(--shadow-inset)">
                   <Image
                     src="/logo.png"
                     alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
@@ -60,7 +60,7 @@ export function AuthShell({
               </Link>
               {user ? (
                 <Link href="/dashboard" className="text-xs font-bold text-primary hover:underline">
-                  Dashboard →
+                  Dashboard â†’
                 </Link>
               ) : null}
             </div>
@@ -77,7 +77,7 @@ export function AuthShell({
                   className={cn(
                     "flex min-h-9 items-center justify-center rounded-lg text-xs font-bold transition-all",
                     activeTab === "login"
-                      ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                      ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
                       : "text-text-muted hover:text-text-primary"
                   )}
                 >
@@ -89,7 +89,7 @@ export function AuthShell({
                   className={cn(
                     "flex min-h-9 items-center justify-center rounded-lg text-xs font-bold transition-all",
                     activeTab === "signup"
-                      ? "bg-surface text-primary border border-border shadow-[var(--shadow-raised-sm)]"
+                      ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
                       : "text-text-muted hover:text-text-primary"
                   )}
                 >

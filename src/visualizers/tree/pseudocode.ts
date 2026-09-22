@@ -100,8 +100,10 @@ export function getTreePseudocode(slug: string): string[] {
     case "trie-search":
       return [
         "function searchTrie(root, word):",
-        "    for char in word: if not child: return false; node = child",
-        "    return node.isEndOfWord",
+        "    curr = root; for each character c in word:",
+        "        if curr.children[c] does not exist: return false",
+        "        curr = curr.children[c]",
+        "    return curr.isEndOfWord",
       ];
     default:
       return [];

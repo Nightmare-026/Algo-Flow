@@ -20,9 +20,11 @@ Character sequences and multi-dimensional matrices represent two vital linear ab
 
 ### 1. Conceptual & Physical Memory Representation
 
-At the physical hardware layer, a string is a specialized contiguous array of numeric integers representing character code points. The memory address of any character $S[i]$ is calculated via pointer arithmetic:
+Abstractly, a string is a sequence of characters (or code units). One common implementation stores code units contiguously, where the address of unit $S[i]$ can be computed as:
 
 $$\text{Address}(S[i]) = \alpha + (i \times \text{sizeof}(\text{Code Unit}))$$
+
+Actual string internals depend on the language and runtime (and may involve small-string optimization, ropes, views, or other representations).
 
 Two primary architectural models govern how strings are demarcated in memory:
 
@@ -31,10 +33,10 @@ C-style strings (`char*`) are unbroken arrays of 1-byte ASCII values terminated 
 - **Memory Footprint**: A string of length $n$ requires $n + 1$ physical bytes.
 - **Length Calculation**: Determining string length requires scanning every byte until `'\0'` is encountered, executing in $\Theta(n)$ time.
 
-#### B. Modern Length-Prefixed Strings
-Modern systems (Rust `String`, Go `string`, Java `String`, C++ `std::string`) store strings as a compact stack-allocated descriptor referencing a heap-allocated buffer.
-- **Descriptor Layout**: Contains a pointer to the backing buffer (`8 bytes`), explicit length $n$ (`8 bytes`), and capacity $C$ (`8 bytes`).
-- **Length Calculation**: Reading the length is an instant $O(1)$ header inspection.
+#### B. Length-Prefixed Strings (One Common Implementation Pattern)
+Some implementations (for example, certain Rust/Go/C++ string types) use a small descriptor referencing a backing buffer, often with pointer, length, and (where applicable) capacity fields. Sizes depend on ABI and implementation.
+- **Typical Descriptor (example on a 64-bit ABI)**: pointer (`8 bytes`), length $n$ (`8 bytes`), and where present capacity $C$ (`8 bytes`). Java `String` internals are JVM-implementation details, Go `string` is not a generic pointer+length+capacity triple, and C++ `std::string` commonly uses small-string optimization.
+- **Length Calculation**: Reading a stored length field is typically $O(1)$ where such a field exists.
 
 #### Memory Layout Comparison: Storing `"DSA"`
 
@@ -133,8 +135,10 @@ Logical 2D View:
 
 | Mapping Scheme | Language Ecosystem | Physical Storage Sequence | Addressing Formula for Element $M[i][j]$ |
 | :--- | :--- | :--- | :--- |
-| **Row-Major Order** | C, C++, Java, Python, C# | Row 0 followed by Row 1: `[10, 20, 30, 40, 50, 60]` | $\text{Address}(M[i][j]) = \alpha + (i \times C + j) \times S$ |
-| **Column-Major Order** | Fortran, MATLAB, Julia, R | Col 0, Col 1, Col 2: `[10, 40, 20, 50, 30, 60]` | $\text{Address}(M[i][j]) = \alpha + (j \times R + i) \times S$ |
+| **Row-Major Order** | e.g. C/C++ rectangular arrays; many C#, Python/NumPy defaults | Row 0 followed by Row 1: `[10, 20, 30, 40, 50, 60]` | $\text{Address}(M[i][j]) = \alpha + (i \times C + j) \times S$ |
+| **Column-Major Order** | e.g. Fortran, MATLAB, Julia, R defaults | Col 0, Col 1, Col 2: `[10, 40, 20, 50, 30, 60]` | $\text{Address}(M[i][j]) = \alpha + (j \times R + i) \times S$ |
+
+Row-major vs column-major describes how a multidimensional dataset is laid out in memory. Languages and libraries can use different representations: Java `int[][]` is an array of arrays (not one flat C-style block), Python nested lists are lists of object references, and numerical libraries may choose either layout.
 
 ---
 
@@ -148,12 +152,12 @@ Row-Major Storage: [ Row 0 (10, 20, 30) | Row 1 (40, 50, 60) ]
 Traversal Pattern A: Row-by-Row (Outer loop i, Inner loop j)
 Address Sequence: α+0, α+4, α+8, α+12, α+16, α+20
 Hardware Behavior: Contiguous streaming access. L1 cache prefetcher saturates line buffer.
-Result: 93%+ Cache Hit Rate (~1 ns per read).
+Result: high cache-hit rate in this illustrative example (exact hit rates depend on CPU, cache levels, and workload).
 
 Traversal Pattern B: Column-by-Column (Outer loop j, Inner loop i)
 Address Sequence: α+0, α+12, α+4, α+16, α+8, α+20
 Hardware Behavior: Strided jumps of C * sizeof(Element). Cache lines evicted before reuse.
-Result: Repeated Cache Misses (~50-100 ns latency per read). 10x-50x slower!
+Result: repeated cache misses in this illustrative example — a miss can be substantially more expensive than a hit (exact latency depends on CPU, cache level, memory subsystem, and access pattern).
 ```
 
 > 💡 **Architectural Principle**:  
@@ -224,16 +228,16 @@ $$\text{Step 2: Reverse Rows } = \begin{pmatrix} 7 & 4 & 1 \\ 8 & 5 & 2 \\ 9 & 6
 
 #### Staircase Search Step-by-Step Trace (Target $= 23$)
 
+Precondition: each row sorted left-to-right AND each column sorted top-to-bottom.
+
 Given matrix:
-$$\begin{pmatrix} 10 & 15 & 25 & 30 \\ 12 & 18 & 23 & 35 \\ 14 & 20 & 28 & 40 \end{pmatrix}$$
+$$\begin{pmatrix} 10 & 15 & 20 & 30 \\ 12 & 18 & 23 & 35 \\ 14 & 22 & 28 & 40 \end{pmatrix}$$
 
 | Step | Current Position $(r, c)$ | Value $M[r][c]$ | Comparison vs Target ($23$) | Decision & Movement | Remaining Search Window |
 | :---: | :---: | :---: | :---: | :--- | :--- |
 | **0** | $(0, 3)$ | `30` | $30 > 23$ | Value too high $\implies c \leftarrow c - 1$ | Columns $[0 \dots 2]$, Rows $[0 \dots 2]$ |
-| **1** | $(0, 2)$ | `25` | $25 > 23$ | Value too high $\implies c \leftarrow c - 1$ | Columns $[0 \dots 1]$, Rows $[0 \dots 2]$ |
-| **2** | $(0, 1)$ | `15` | $15 < 23$ | Value too low $\implies r \leftarrow r + 1$ | Columns $[0 \dots 1]$, Rows $[1 \dots 2]$ |
-| **3** | $(1, 1)$ | `18` | $18 < 23$ | Value too low $\implies r \leftarrow r + 1$ | Columns $[0 \dots 1]$, Rows $[2 \dots 2]$ |
-| **4** | $(2, 1)$ | `20` | $20 < 23$ | Value too low $\implies$ No rows left, but check col 2: backtrack or re-evaluate | Found in col 2 at $(1, 2)$! |
+| **1** | $(0, 2)$ | `20` | $20 < 23$ | Value too low $\implies r \leftarrow r + 1$ | Columns $[0 \dots 2]$, Rows $[1 \dots 2]$ |
+| **2** | $(1, 2)$ | `23` | $23 = 23$ | Found at $(1, 2)$! | Target located |
 
 ```text
 FUNCTION StaircaseSearch(M: 2D Array, R: Integer, C: Integer, target: Integer) -> Boolean:
@@ -255,7 +259,7 @@ FUNCTION StaircaseSearch(M: 2D Array, R: Integer, C: Integer, target: Integer) -
 
 ### 6. Key Takeaways
 
-1. **String Architectures**: C-style strings trade memory overhead ($+1$ byte) for $O(n)$ length scans; modern length-prefixed strings provide $O(1)$ length operations at the cost of a 24-byte stack descriptor.
+1. **String Architectures**: C-style strings trade memory overhead ($+1$ byte) for $O(n)$ length scans; length-prefixed implementations typically provide $O(1)$ length operations (descriptor size varies by language, ABI, and implementation).
 2. **Avoid Repeated Concatenations**: In immutable languages, `s = s + ch` creates an $O(n^2)$ quadratic allocation cascade; accumulate in a mutable buffer.
 3. **Hardware Stride Alignment**: Row-major languages require row-outer column-inner loop orderings to exploit CPU cache-line prefetching.
 4. **Symmetric Decomposition**: Rotating a square matrix $90^\circ$ clockwise equals `Transpose + ReverseRows`, executable in-place in $O(N^2)$ time and $O(1)$ space.

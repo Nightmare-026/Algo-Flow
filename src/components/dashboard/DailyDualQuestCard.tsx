@@ -40,7 +40,7 @@ export function DailyDualQuestCard({
         </div>
 
         {/* Quest Completion Tracker Badge */}
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-bg-surface-inset border border-border shadow-[var(--shadow-inset)] w-fit">
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-bg-surface-inset border border-border shadow-(--shadow-inset) w-fit">
           <span className="text-[11px] font-mono font-bold text-text-muted uppercase">
             Quests Completed:
           </span>
@@ -58,7 +58,7 @@ export function DailyDualQuestCard({
           </span>
           {allDone && (
             <span className="text-xs text-success flex items-center gap-1 font-bold">
-              ★ Duo Bonus Active
+              â˜… Duo Bonus Active
             </span>
           )}
         </div>
@@ -114,7 +114,7 @@ export function DailyDualQuestCard({
                   : `/visualizer/${dsaAlgorithm?.slug || ""}`
               }
               className={cn(
-                "inline-flex min-h-9 items-center gap-1.5 rounded-xl px-4 text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] transition-all active:scale-95",
+                "inline-flex min-h-9 items-center gap-1.5 rounded-xl px-4 text-xs font-bold font-display shadow-(--shadow-raised-sm) transition-all active:scale-95",
                 dsaCompleted
                   ? "border border-border bg-surface text-text-primary hover:bg-surface-hover"
                   : "bg-primary text-white hover:bg-primary-hover"
@@ -169,7 +169,7 @@ export function DailyDualQuestCard({
             <Link
               href="/mental-math/daily"
               className={cn(
-                "inline-flex min-h-9 items-center gap-1.5 rounded-xl px-4 text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] transition-all active:scale-95",
+                "inline-flex min-h-9 items-center gap-1.5 rounded-xl px-4 text-xs font-bold font-display shadow-(--shadow-raised-sm) transition-all active:scale-95",
                 mathCompleted
                   ? "border border-border bg-surface text-text-primary hover:bg-surface-hover"
                   : "bg-secondary text-white hover:bg-secondary-hover"

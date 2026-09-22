@@ -52,7 +52,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-1 flex flex-col gap-4">
             <Link href="/" className="inline-flex min-h-11 items-center gap-3 rounded-xl pr-2">
-              <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
+              <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm)">
                 <Image
                   src="/logo.png"
                   alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
@@ -71,7 +71,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <span>
-                {catalogStats.visualizerCount} Published Algorithms • {catalogStats.structureCount}{" "}
+                {catalogStats.visualizerCount} Published Algorithms â€¢ {catalogStats.structureCount}{" "}
                 Data Structures
               </span>
             </div>
@@ -101,7 +101,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex items-center justify-center border-t border-border pt-8 text-xs text-text-muted text-center">
-          <p>© {new Date().getFullYear()} AlgoFlow by Nightmare. All Rights Reserved.</p>
+          <p>Â© {new Date().getFullYear()} AlgoFlow by Nightmare. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

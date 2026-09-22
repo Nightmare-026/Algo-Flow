@@ -97,7 +97,7 @@ export function generateUpdateByValueSteps(
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Update by Value",
-    description: `Replacing all occurrences of ${target} with ${newValue}.`,
+    description: `Replacing the first occurrence of ${target} with ${newValue}.`,
     operation: "update",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
@@ -135,6 +135,7 @@ export function generateUpdateByValueSteps(
         highlights: succeeded([elements[i].id]),
         codeLine: 4,
       });
+      break;
     }
   }
 
@@ -163,23 +164,39 @@ export function generateMergeSortedArraysSteps(arr: number[]): VisualStep[] {
   const n = elements.length;
 
   const mid = Math.floor(n / 2);
-  const left = elements.slice(0, mid).sort((a, b) => a.value - b.value);
-  const right = elements.slice(mid).sort((a, b) => a.value - b.value);
-
-  for (let i = 0; i < mid; i++) elements[i] = left[i];
-  for (let i = mid; i < n; i++) elements[i] = right[i - mid];
 
   steps.push({
     id: `step-${stepCount}`,
     stepNumber: stepCount++,
     title: "Start Merge",
-    description: "Assuming left half and right half are sorted. Merging them.",
+    description: "Assuming the two halves are already sorted. Merging them.",
     operation: "merge",
     actionType: "initialize",
     dataState: { elements: structuredClone(elements) } as ArrayVisualState,
     highlights: {},
     codeLine: 1,
   });
+
+  const leftUnsorted = elements
+    .slice(0, mid)
+    .some((el, i, s) => i > 0 && s[i - 1].value > el.value);
+  const rightUnsorted = elements.slice(mid).some((el, i, s) => i > 0 && s[i - 1].value > el.value);
+
+  if (leftUnsorted || rightUnsorted) {
+    steps.push({
+      id: `step-${stepCount}`,
+      stepNumber: stepCount++,
+      title: "Halves Not Sorted",
+      description:
+        "Merge requires each half of the array to already be sorted. The array contains out-of-order elements, so the merged result would not be sorted.",
+      operation: "merge",
+      actionType: "error",
+      dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+      highlights: {},
+      codeLine: 2,
+    });
+    return steps;
+  }
 
   const merged: ArrayElement[] = [];
   let i = 0;

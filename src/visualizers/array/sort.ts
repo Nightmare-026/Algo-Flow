@@ -824,6 +824,22 @@ export function generateCountingSortSteps(arr: number[]): VisualStep[] {
     }
   }
 
+  const MAX_COUNTING_VALUE = 10000;
+  if (max > MAX_COUNTING_VALUE) {
+    steps.push({
+      id: `step-${stepCount}`,
+      stepNumber: stepCount++,
+      title: "Value Range Too Large",
+      description: `Maximum value ${max} exceeds the visualizer limit of ${MAX_COUNTING_VALUE}. Counting sort needs a count array of size max + 1; use smaller values.`,
+      operation: "sort",
+      actionType: "error",
+      dataState: { elements: structuredClone(elements) } as ArrayVisualState,
+      highlights: {},
+      codeLine: 2,
+    });
+    return steps;
+  }
+
   const count = new Array(max + 1).fill(0);
 
   steps.push({

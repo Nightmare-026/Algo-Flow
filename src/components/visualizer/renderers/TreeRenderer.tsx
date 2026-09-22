@@ -9,6 +9,7 @@ import { VisualStepHighlights } from "@/types";
 import { ReactFlow, Node, Edge, Background, BackgroundVariant } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { getVisualElementState } from "../visual-state";
+import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 
 function getNodeColor(id: string, highlights: VisualStepHighlights) {
   const state = getVisualElementState(highlights, id);
@@ -206,7 +207,7 @@ export function TreeRenderer() {
   }, [dataState.root, currentStep?.highlights, reducedMotion]);
 
   if (!currentStep || !currentStep.dataState) {
-    return null;
+    return <EmptyVisualizerState />;
   }
 
   return (

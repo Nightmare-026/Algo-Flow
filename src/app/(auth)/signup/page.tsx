@@ -48,7 +48,7 @@ export default async function SignupPage({
     >
       {!ACCOUNT_REGISTRATION_AVAILABLE ? (
         <div className="text-center">
-          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-warning-muted text-warning shadow-[var(--shadow-inset)]">
+          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-warning-muted text-warning shadow-(--shadow-inset)">
             <ShieldAlert className="h-8 w-8" aria-hidden="true" />
           </span>
           <div
@@ -66,7 +66,7 @@ export default async function SignupPage({
         </div>
       ) : params.success ? (
         <div className="text-center">
-          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success-muted text-success shadow-[var(--shadow-inset)]">
+          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success-muted text-success shadow-(--shadow-inset)">
             <MailCheck className="h-8 w-8" aria-hidden="true" />
           </span>
           <Callout variant="success" title="Verification email sent" dismissible className="mt-6">
@@ -139,7 +139,7 @@ export default async function SignupPage({
               required
             />
 
-            <label className="flex items-start gap-3 rounded-xl border border-border bg-surface p-3.5 text-xs leading-relaxed text-text-secondary cursor-pointer shadow-[var(--shadow-raised-sm)] transition-colors hover:border-primary/40">
+            <label className="flex items-start gap-3 rounded-xl border border-border bg-surface p-3.5 text-xs leading-relaxed text-text-secondary cursor-pointer shadow-(--shadow-raised-sm) transition-colors hover:border-primary/40">
               <input
                 type="checkbox"
                 name="legal_accepted"

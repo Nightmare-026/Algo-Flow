@@ -6,7 +6,12 @@ import {
   getChapterNavigation,
   getCurriculumStats,
 } from "@/lib/learnings/registry";
-import { extractTableOfContents, getParsedChapter, slugifyHeading } from "@/lib/learnings/content";
+import {
+  extractTableOfContents,
+  getParsedChapter,
+  renderMathInMarkdown,
+  slugifyHeading,
+} from "@/lib/learnings/content";
 import fs from "fs";
 import path from "path";
 
@@ -131,5 +136,16 @@ More details.
     expect(parsed?.readingTimeMinutes).toBeGreaterThan(0);
     expect(parsed?.htmlContent).toContain("<h2");
     expect(parsed?.htmlContent).toContain('id="1-data-vs-information"');
+  });
+
+  it("should preserve unicode letters when slugifying", () => {
+    expect(slugifyHeading("Café & Crème")).toBe("café-crème");
+    expect(slugifyHeading("100 — Hash Table")).toBe("100-hash-table");
+  });
+
+  it("should render real inline math but protect currency/prose dollar signs", () => {
+    expect(renderMathInMarkdown("Runs in $O(n)$ time")).toContain('class="katex"');
+    expect(renderMathInMarkdown("Pay $5 and get $3 back")).not.toContain("katex");
+    expect(renderMathInMarkdown(`\`\$cost = 5\` stays intact`)).toContain("$cost = 5");
   });
 });

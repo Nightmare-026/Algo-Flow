@@ -88,7 +88,8 @@ export function generateStringInsertSteps(
   const steps: VisualStep[] = [];
   let stepNumber = 1;
   const elements = createStringElements(text);
-  const insertIndex = parseInt(indexStr || "0", 10);
+  const parsedIndex = parseInt(indexStr || "0", 10);
+  const insertIndex = Number.isInteger(parsedIndex) ? parsedIndex : NaN;
   const insertChar = char || "X";
 
   steps.push({
@@ -103,7 +104,7 @@ export function generateStringInsertSteps(
     variables: { i: insertIndex, char: insertChar },
   });
 
-  if (insertIndex < 0 || insertIndex > elements.length) {
+  if (!Number.isInteger(insertIndex) || insertIndex < 0 || insertIndex > elements.length) {
     stepNumber++;
     steps.push({
       id: `step-${stepNumber}`,
@@ -123,7 +124,7 @@ export function generateStringInsertSteps(
   // but we can simulate the result.
   const newElements = [
     ...elements.slice(0, insertIndex),
-    { id: `new-${Date.now()}`, char: insertChar },
+    { id: `inserted-${stepNumber}`, char: insertChar },
     ...elements.slice(insertIndex),
   ];
 
@@ -161,7 +162,7 @@ export function generateStringDeleteSteps(text: string, indexStr?: string): Visu
     variables: { i: deleteIndex },
   });
 
-  if (deleteIndex < 0 || deleteIndex >= elements.length) {
+  if (!Number.isInteger(deleteIndex) || deleteIndex < 0 || deleteIndex >= elements.length) {
     stepNumber++;
     steps.push({
       id: `step-${stepNumber}`,
@@ -218,7 +219,7 @@ export function generateStringReplaceSteps(
     variables: { i: replaceIndex, char: replaceChar },
   });
 
-  if (replaceIndex < 0 || replaceIndex >= elements.length) {
+  if (!Number.isInteger(replaceIndex) || replaceIndex < 0 || replaceIndex >= elements.length) {
     stepNumber++;
     steps.push({
       id: `step-${stepNumber}`,

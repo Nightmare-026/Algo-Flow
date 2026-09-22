@@ -4,8 +4,28 @@ import {
   HashTableVisualState,
   HashEntry,
   createInitialHashTableState,
+  normalizeBucketIndex,
+  isValidTableSize,
   ProbingStrategy,
 } from "./types";
+
+function invalidSizeSteps(size: number, operation: string): VisualStep[] {
+  return [
+    {
+      id: uuidv4(),
+      stepNumber: 1,
+      title: "Invalid Table Size",
+      description: `Table size must be a whole number of at least 1 (received ${size}). Increase the capacity and retry.`,
+      operation,
+      actionType: "error",
+      dataState: createInitialHashTableState(1, "linear-probing"),
+      highlights: {},
+      codeLine: 1,
+      pseudocodeLine: 1,
+      variables: { Size: size },
+    },
+  ];
+}
 
 function getStrategyName(strategy: ProbingStrategy = "linear"): string {
   if (strategy === "quadratic") return "Quadratic Probing";
@@ -30,7 +50,7 @@ function computeProbeIndex(
   }
   if (strategy === "double-hashing") {
     const modulus = Math.max(1, tableSize - 1);
-    const h2 = 1 + (key % modulus);
+    const h2 = 1 + normalizeBucketIndex(key, modulus);
     const offset = probeIndex * h2;
     const index = (h1 + offset) % tableSize;
     return {
@@ -63,7 +83,7 @@ function initializeState(
 
   for (const val of initialArray) {
     if (state.elementCount >= tableSize) break;
-    const h1 = val % tableSize;
+    const h1 = normalizeBucketIndex(val, tableSize);
     let found = false;
     let firstTombstone = -1;
 
@@ -102,6 +122,7 @@ export function generateLinearProbingInsertSteps(
   tableSize: number = 7,
   strategy: ProbingStrategy = "linear"
 ): VisualStep[] {
+  if (!isValidTableSize(tableSize)) return invalidSizeSteps(tableSize, "Insert");
   const steps: VisualStep[] = [];
   const state = initializeState(initialArray, tableSize, strategy);
   const buckets = state.buckets as (HashEntry | null)[];
@@ -142,7 +163,7 @@ export function generateLinearProbingInsertSteps(
     return steps;
   }
 
-  const h1 = valueToInsert % tableSize;
+  const h1 = normalizeBucketIndex(valueToInsert, tableSize);
   state.activeFormula = `h1(${valueToInsert}) = ${valueToInsert} % ${tableSize} = ${h1}`;
 
   steps.push({
@@ -315,6 +336,7 @@ export function generateLinearProbingSearchSteps(
   tableSize: number = 7,
   strategy: ProbingStrategy = "linear"
 ): VisualStep[] {
+  if (!isValidTableSize(tableSize)) return invalidSizeSteps(tableSize, "Search");
   const steps: VisualStep[] = [];
   const state = initializeState(initialArray, tableSize, strategy);
   const buckets = state.buckets as (HashEntry | null)[];
@@ -338,7 +360,7 @@ export function generateLinearProbingSearchSteps(
     variables: { Target: targetValue, Size: tableSize, Strategy: strategyTitle },
   });
 
-  const h1 = targetValue % tableSize;
+  const h1 = normalizeBucketIndex(targetValue, tableSize);
   state.activeFormula = `h1(${targetValue}) = ${targetValue} % ${tableSize} = ${h1}`;
 
   steps.push({
@@ -486,6 +508,7 @@ export function generateLinearProbingDeleteSteps(
   tableSize: number = 7,
   strategy: ProbingStrategy = "linear"
 ): VisualStep[] {
+  if (!isValidTableSize(tableSize)) return invalidSizeSteps(tableSize, "Delete");
   const steps: VisualStep[] = [];
   const state = initializeState(initialArray, tableSize, strategy);
   const buckets = state.buckets as (HashEntry | null)[];
@@ -509,7 +532,7 @@ export function generateLinearProbingDeleteSteps(
     variables: { Target: targetValue, Size: tableSize, Strategy: strategyTitle },
   });
 
-  const h1 = targetValue % tableSize;
+  const h1 = normalizeBucketIndex(targetValue, tableSize);
   state.activeFormula = `h1(${targetValue}) = ${targetValue} % ${tableSize} = ${h1}`;
 
   steps.push({

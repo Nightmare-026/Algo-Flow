@@ -25,7 +25,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
   // 1. Initial State: No practice history yet -> Intelligent Diagnostic Calibration Overview
   if (!hasHistory) {
     return (
-      <div className="neu-raised p-6 sm:p-7 rounded-3xl border border-border bg-surface flex flex-col justify-between h-full shadow-[var(--shadow-raised-sm)]">
+      <div className="neu-raised p-6 sm:p-7 rounded-3xl border border-border bg-surface flex flex-col justify-between h-full shadow-(--shadow-raised-sm)">
         <div>
           <div className="flex items-center gap-2.5 mb-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-inset border border-border text-primary shadow-inner">
@@ -88,7 +88,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
         <div className="mt-6 pt-4 border-t border-border/60">
           <Link
             href="/mental-math/test"
-            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-primary text-white text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-primary text-white text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
             <span>Run Benchmark Assessment</span>
@@ -101,7 +101,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
   // 2. Practice done, but no bottlenecks identified
   if (!topWeakness) {
     return (
-      <div className="neu-raised p-6 sm:p-7 rounded-3xl border border-border bg-surface flex flex-col justify-between h-full shadow-[var(--shadow-raised-sm)]">
+      <div className="neu-raised p-6 sm:p-7 rounded-3xl border border-border bg-surface flex flex-col justify-between h-full shadow-(--shadow-raised-sm)">
         <div>
           <div className="flex items-center gap-2.5 mb-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-inset border border-border text-primary shadow-inner">
@@ -125,7 +125,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
         <div className="mt-6 pt-4 border-t border-border/60">
           <Link
             href="/mental-math/speed"
-            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-primary text-white text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-primary text-white text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 fill-current" />
             <span>Launch Speed Sprint</span>
@@ -137,7 +137,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
 
   // 3. Bottleneck identified -> targeted practice card
   return (
-    <div className="neu-raised p-6 sm:p-7 rounded-3xl border border-primary/30 bg-surface flex flex-col justify-between h-full shadow-[var(--shadow-raised-sm)]">
+    <div className="neu-raised p-6 sm:p-7 rounded-3xl border border-primary/30 bg-surface flex flex-col justify-between h-full shadow-(--shadow-raised-sm)">
       <div>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -166,7 +166,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
       <div className="mt-6 pt-4 border-t border-border/60">
         <Link
           href={`/mental-math/practice?mode=weakness&operation=${topWeakness.operation}`}
-          className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-primary text-white text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+          className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-xl bg-primary text-white text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Launch Targeted Drill</span>

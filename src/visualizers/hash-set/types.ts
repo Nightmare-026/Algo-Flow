@@ -20,6 +20,18 @@ export interface HashSetVisualState {
   loadFactor: number;
 }
 
+/**
+ * Normalizes a raw hash remainder into a valid bucket index.
+ * JS `%` keeps the sign of the dividend, so negative keys need wrapping.
+ */
+export function normalizeBucketIndex(key: number, size: number): number {
+  return ((key % size) + size) % size;
+}
+
+export function isValidTableSize(size: number): boolean {
+  return Number.isInteger(size) && size >= 1;
+}
+
 export function createInitialHashSetState(
   size: number,
   resolution: CollisionResolutionType

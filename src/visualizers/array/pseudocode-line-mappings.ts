@@ -10,7 +10,7 @@ const mappings: Readonly<Record<string, LineMap>> = {
   "reverse-traversal": { 2: 1, 4: 3, 6: 2 },
   "range-traversal": { 2: 1, 3: 2, 4: 2, 6: 4, 8: 3 },
   "linear-search": { 2: 1, 4: 3, 5: 4, 8: 5 },
-  "binary-search": { 2: 2, 4: 4, 6: 5, 8: 6, 10: 7, 13: 8 },
+  "binary-search": { 2: 3, 4: 5, 6: 6, 8: 7, 10: 8, 13: 9 },
   "jump-search": { 1: 9, 2: 1, 4: 3, 7: 7, 8: 8, 10: 8, 13: 9 },
   "interpolation-search": { 1: 7, 2: 1, 6: 3, 7: 4, 9: 5, 10: 4, 11: 6, 14: 7 },
   "bubble-sort": { 2: 1, 6: 5, 8: 6, 13: 2, 16: 1 },

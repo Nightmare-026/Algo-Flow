@@ -47,29 +47,29 @@ export default async function CookiesPage() {
             Cookie Policy
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {COOKIE_VERSION} • Effective Date: September 5, 2026
+            Version {COOKIE_VERSION} â€¢ Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             At AlgoFlow, we believe in radical transparency. We operate a strict{" "}
             <strong>Zero-Ad-Tracker</strong> policy: we never deploy commercial advertising cookies,
-            cross-site tracking beacons, or behavioral monitoring scripts. This document details the
-            small set of essential cookies and browser storage tokens required to operate the
-            platform securely.
+            cross-site tracking beacons, or behavioral monitoring scripts. We use Google Analytics 4
+            (GA4) solely for anonymous, aggregate traffic insights to improve the platform. This
+            document details the cookies and browser storage tokens used to operate the platform.
           </p>
           <LegalNav currentPath="/cookies" />
         </div>
 
         {/* Cookie Principles at a Glance */}
-        <div className="mt-10 neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface shadow-[var(--shadow-raised-sm)]">
-          <h2 className="text-base font-bold font-display text-text-primary uppercase tracking-wider text-xs font-mono text-primary flex items-center gap-2">
+        <div className="mt-10 neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface shadow-(--shadow-raised-sm)">
+          <h2 className="font-bold uppercase tracking-wider text-xs font-mono text-primary flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-primary" />
             <span>Cookie Principles at a Glance</span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-success" />
-                Zero Commercial Tracking
+                Zero Commercial Ad Tracking
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
                 No third-party ad networks, no retargeting pixels, and no data harvesting brokers
@@ -77,18 +77,18 @@ export default async function CookiesPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-success" />
-                Strictly Necessary Cookies Only
+                Privacy-Focused Analytics
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                HTTP cookies are utilized strictly for authenticating logged-in sessions via secure,
-                encrypted Supabase Auth tokens.
+                We use Google Analytics 4 solely for anonymous, aggregate traffic insights. GA4
+                is never used for advertising, remarketing, or profiling.
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <Lock className="w-4 h-4 text-primary" />
                 Secure HttpOnly Attributes
@@ -99,7 +99,7 @@ export default async function CookiesPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]">
+            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <Sliders className="w-4 h-4 text-primary" />
                 Local Storage for Preferences
@@ -132,7 +132,7 @@ export default async function CookiesPage() {
               </p>
               <p>
                 In addition to standard HTTP cookies, modern web applications utilize{" "}
-                <strong>HTML5 Local Storage</strong>—a secure client-side storage mechanism that
+                <strong>HTML5 Local Storage</strong>â€”a secure client-side storage mechanism that
                 allows settings (such as your chosen visual theme) to persist on your device without
                 sending redundant network traffic to external servers with every page request.
               </p>
@@ -151,8 +151,9 @@ export default async function CookiesPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                We maintain an exhaustive and minimal list of cookies. All cookies on AlgoFlow are
-                classified as <strong>Strictly Necessary</strong>:
+                We maintain an exhaustive and minimal list of cookies. Authentication cookies on AlgoFlow are
+                classified as <strong>Strictly Necessary</strong>, and analytics cookies are classified
+                as <strong>Performance / Analytics</strong>:
               </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border border-border rounded-xl overflow-hidden mt-2">
@@ -171,7 +172,7 @@ export default async function CookiesPage() {
                         Maintains authenticated session state via Supabase Auth
                       </td>
                       <td className="p-3 font-mono">
-                        Strictly Necessary • HttpOnly, Secure, SameSite
+                        Strictly Necessary â€¢ HttpOnly, Secure, SameSite
                       </td>
                       <td className="p-3">Session / 1 Year</td>
                     </tr>
@@ -182,17 +183,44 @@ export default async function CookiesPage() {
                       <td className="p-3">
                         Allows automatic cryptographic renewal of expired session tokens
                       </td>
-                      <td className="p-3 font-mono">Strictly Necessary • HttpOnly, Secure</td>
+                      <td className="p-3 font-mono">Strictly Necessary â€¢ HttpOnly, Secure</td>
                       <td className="p-3">Session / 1 Year</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-mono font-bold text-text-primary">_ga</td>
+                      <td className="p-3">
+                        Distinguishes unique visitors using a randomly generated anonymous identifier (Google Analytics 4)
+                      </td>
+                      <td className="p-3 font-mono">
+                        Performance / Analytics â€¢ SameSite=Lax, Secure
+                      </td>
+                      <td className="p-3">2 Years</td>
+                    </tr>
+                    <tr>
+                      <td className="p-3 font-mono font-bold text-text-primary">
+                        _ga_&lt;container-id&gt;
+                      </td>
+                      <td className="p-3">
+                        Persists session state (e.g., page view count within a session) for Google Analytics 4
+                      </td>
+                      <td className="p-3 font-mono">
+                        Performance / Analytics â€¢ SameSite=Lax, Secure
+                      </td>
+                      <td className="p-3">2 Years</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <p className="text-xs text-text-muted mt-3">
-                <em>Privacy-First Web Telemetry:</em> AlgoFlow uses Vercel Web Analytics to monitor
+                <em>Privacy-First Web Telemetry:</em> In addition to GA4, AlgoFlow uses Vercel Web Analytics to monitor
                 platform health and Core Web Vitals. Vercel Web Analytics operates completely
-                <strong>cookie-less</strong>—it does not use cookies, does not persist identifiers
+                <strong> cookie-less</strong>â€”it does not use cookies, does not persist identifiers
                 across sites, and does not store personal data.
+              </p>
+              <p className="text-xs text-text-muted mt-2">
+                <em>GA4 restrictions on AlgoFlow:</em> Google Analytics advertising features, remarketing,
+                and user-level profiling are <strong>disabled</strong>. Analytics data is never linked to your
+                AlgoFlow account identity or shared with third-party advertisers.
               </p>
             </div>
           </section>
@@ -304,18 +332,18 @@ export default async function CookiesPage() {
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>Google Chrome:</strong> Settings → Privacy and security → Cookies and
+                  <strong>Google Chrome:</strong> Settings â†’ Privacy and security â†’ Cookies and
                   other site data.
                 </li>
                 <li>
-                  <strong>Mozilla Firefox:</strong> Options → Privacy &amp; Security → Cookies and
+                  <strong>Mozilla Firefox:</strong> Options â†’ Privacy &amp; Security â†’ Cookies and
                   Site Data.
                 </li>
                 <li>
-                  <strong>Apple Safari:</strong> Preferences → Privacy → Manage Website Data.
+                  <strong>Apple Safari:</strong> Preferences â†’ Privacy â†’ Manage Website Data.
                 </li>
                 <li>
-                  <strong>Microsoft Edge:</strong> Settings → Cookies and site permissions → Manage
+                  <strong>Microsoft Edge:</strong> Settings â†’ Cookies and site permissions â†’ Manage
                   and delete cookies and site data.
                 </li>
               </ul>
@@ -342,7 +370,7 @@ export default async function CookiesPage() {
                 If you have questions about our use of cookies, local storage, or data protection
                 standards, please contact our team:
               </p>
-              <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] mt-4">
+              <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset) mt-4">
                 <p className="font-bold text-text-primary text-xs">Official Privacy Office:</p>
                 <p className="text-xs text-text-secondary mt-1">
                   AlgoFlow Data Protection Representative

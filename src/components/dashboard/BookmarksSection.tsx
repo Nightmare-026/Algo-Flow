@@ -50,7 +50,7 @@ export function BookmarksSection({ bookmarks }: BookmarksSectionProps) {
                     )}
                   </div>
                   {item.shortDescription && (
-                    <p className="text-[11px] text-text-muted truncate mt-0.5 max-w-[220px]">
+                    <p className="text-[11px] text-text-muted truncate mt-0.5 max-w-55">
                       {item.shortDescription}
                     </p>
                   )}
@@ -58,7 +58,7 @@ export function BookmarksSection({ bookmarks }: BookmarksSectionProps) {
 
                 <Link
                   href={`/visualizer/${item.slug}`}
-                  className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover shadow-[var(--shadow-raised-sm)] transition-transform active:scale-95 shrink-0"
+                  className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover shadow-(--shadow-raised-sm) transition-transform active:scale-95 shrink-0"
                   aria-label={`Launch ${item.name} visualizer`}
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
@@ -70,7 +70,7 @@ export function BookmarksSection({ bookmarks }: BookmarksSectionProps) {
           <div className="neu-inset p-5 rounded-2xl border border-border text-center flex flex-col items-center justify-center">
             <Bookmark className="w-6 h-6 text-text-muted mb-2 stroke-[1.5]" />
             <p className="text-xs font-bold text-text-primary">No bookmarks yet</p>
-            <p className="text-[11px] text-text-secondary mt-1 max-w-[220px]">
+            <p className="text-[11px] text-text-secondary mt-1 max-w-55">
               Click the bookmark icon on any algorithm simulation to save it here for instant
               review.
             </p>

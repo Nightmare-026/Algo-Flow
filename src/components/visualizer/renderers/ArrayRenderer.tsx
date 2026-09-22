@@ -10,13 +10,14 @@ import {
   getVisualElementState,
 } from "@/components/visualizer/visual-state";
 import { cn } from "@/lib/utils";
+import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 
 export function ArrayRenderer() {
   const { steps, currentStepIndex, reducedMotion } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep?.dataState) {
-    return null;
+    return <EmptyVisualizerState />;
   }
 
   const dataState = currentStep.dataState as ArrayVisualState;

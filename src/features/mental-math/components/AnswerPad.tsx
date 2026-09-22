@@ -92,14 +92,14 @@ export function AnswerPad({
   const renderModeSwitcher = () => {
     if (!onToggleHints) return null;
     return (
-      <div className="flex items-center justify-center gap-1.5 p-1 rounded-2xl bg-surface-inset border border-border text-[11px] font-display font-bold shadow-[var(--shadow-inset)] mb-1">
+      <div className="flex items-center justify-center gap-1.5 p-1 rounded-2xl bg-surface-inset border border-border text-[11px] font-display font-bold shadow-(--shadow-inset) mb-1">
         <button
           type="button"
           onClick={() => hintsEnabled && onToggleHints()}
           className={cn(
             "px-3.5 py-1.5 rounded-xl transition-all select-none cursor-pointer flex items-center gap-1.5",
             !hintsEnabled
-              ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+              ? "bg-primary text-white shadow-(--shadow-raised-sm)"
               : "text-text-secondary hover:text-text-primary"
           )}
         >
@@ -112,7 +112,7 @@ export function AnswerPad({
           className={cn(
             "px-3.5 py-1.5 rounded-xl transition-all select-none cursor-pointer flex items-center gap-1.5",
             hintsEnabled
-              ? "bg-primary text-white shadow-[var(--shadow-raised-sm)]"
+              ? "bg-primary text-white shadow-(--shadow-raised-sm)"
               : "text-text-secondary hover:text-text-primary"
           )}
         >
@@ -131,7 +131,7 @@ export function AnswerPad({
         </kbd>
         <span>Submit</span>
       </span>
-      <span>•</span>
+      <span>â€¢</span>
       {hintsEnabled ? (
         <span className="flex items-center gap-1">
           <kbd className="px-1.5 py-0.5 rounded bg-surface border border-border text-[9px] font-bold shadow-xs">
@@ -152,7 +152,7 @@ export function AnswerPad({
 
   if (hintsEnabled) {
     return (
-      <div className="w-full h-full min-h-[300px] sm:min-h-[360px] lg:min-h-[380px] flex flex-col justify-between rounded-2xl sm:rounded-3xl border border-border/80 bg-surface/90 backdrop-blur-xl p-4 sm:p-5 lg:p-6 shadow-[var(--shadow-raised-sm)] neu-raised transition-all">
+      <div className="w-full h-full min-h-[300px] sm:min-h-[360px] lg:min-h-[380px] flex flex-col justify-between rounded-2xl sm:rounded-3xl border border-border/80 bg-surface/90 backdrop-blur-xl p-4 sm:p-5 lg:p-6 shadow-(--shadow-raised-sm) neu-raised transition-all">
         {onToggleHints && (
           <div className="flex items-center justify-between w-full border-b border-border/60 pb-2.5 mb-2">
             <span className="text-[11px] font-bold font-display uppercase tracking-wider text-text-muted">
@@ -178,7 +178,7 @@ export function AnswerPad({
                 onClick={() => onOptionSelect(idx)}
                 disabled={isAnswered}
                 className={cn(
-                  "neu-raised group relative flex items-center justify-between p-3.5 sm:p-5 rounded-2xl border transition-all duration-150 text-left font-mono font-extrabold text-xl sm:text-2xl shadow-[var(--shadow-raised-sm)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer min-h-[64px] sm:min-h-[80px]",
+                  "neu-raised group relative flex items-center justify-between p-3.5 sm:p-5 rounded-2xl border transition-all duration-150 text-left font-mono font-extrabold text-xl sm:text-2xl shadow-(--shadow-raised-sm) active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer min-h-[64px] sm:min-h-[80px]",
                   isSelected &&
                     !isAnswered &&
                     "border-primary bg-primary-muted/20 ring-2 ring-primary/20",
@@ -206,7 +206,7 @@ export function AnswerPad({
 
   // Direct Input & Tactile Keypad Mode
   return (
-    <div className="w-full h-full min-h-[300px] sm:min-h-[360px] lg:min-h-[380px] flex flex-col justify-between rounded-2xl sm:rounded-3xl border border-border/80 bg-surface/90 backdrop-blur-xl p-4 sm:p-5 lg:p-6 shadow-[var(--shadow-raised-sm)] neu-raised transition-all">
+    <div className="w-full h-full min-h-[300px] sm:min-h-[360px] lg:min-h-[380px] flex flex-col justify-between rounded-2xl sm:rounded-3xl border border-border/80 bg-surface/90 backdrop-blur-xl p-4 sm:p-5 lg:p-6 shadow-(--shadow-raised-sm) neu-raised transition-all">
       {onToggleHints && (
         <div className="flex items-center justify-between w-full border-b border-border/60 pb-2.5 mb-2">
           <span className="text-[11px] font-bold font-display uppercase tracking-wider text-text-muted">
@@ -235,7 +235,7 @@ export function AnswerPad({
             disabled={isAnswered}
             autoFocus
             placeholder="Type answer..."
-            className="neu-inset w-full h-12 sm:h-13 rounded-xl sm:rounded-2xl px-4 text-center font-mono tabular-nums text-2xl sm:text-3xl font-extrabold text-text-primary placeholder:text-text-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all shadow-[var(--shadow-inset)]"
+            className="neu-inset w-full h-12 sm:h-13 rounded-xl sm:rounded-2xl px-4 text-center font-mono tabular-nums text-2xl sm:text-3xl font-extrabold text-text-primary placeholder:text-text-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all shadow-(--shadow-inset)"
             aria-label="Enter calculation answer"
           />
         </div>
@@ -244,7 +244,7 @@ export function AnswerPad({
           type="submit"
           disabled={isAnswered || currentInput.trim() === ""}
           className={cn(
-            "flex h-12 sm:h-13 px-5 sm:px-6 items-center justify-center gap-1.5 rounded-xl sm:rounded-2xl font-display font-bold text-xs uppercase tracking-wider text-white shadow-[var(--shadow-raised-sm)] transition-all active:scale-95",
+            "flex h-12 sm:h-13 px-5 sm:px-6 items-center justify-center gap-1.5 rounded-xl sm:rounded-2xl font-display font-bold text-xs uppercase tracking-wider text-white shadow-(--shadow-raised-sm) transition-all active:scale-95",
             currentInput.trim() !== "" && !isAnswered
               ? "bg-primary hover:bg-primary-hover cursor-pointer"
               : "bg-surface-inset border border-border text-text-muted cursor-not-allowed opacity-60"
@@ -264,7 +264,7 @@ export function AnswerPad({
             onClick={() => handleKeypadDigit(digit)}
             disabled={isAnswered}
             type="button"
-            className="neu-raised h-10 sm:h-11 lg:h-12 rounded-xl flex items-center justify-center font-mono text-lg sm:text-xl font-bold text-text-primary hover:bg-surface-hover hover:border-primary/40 active:scale-95 transition-all shadow-[var(--shadow-raised-sm)] select-none cursor-pointer border border-border/70"
+            className="neu-raised h-10 sm:h-11 lg:h-12 rounded-xl flex items-center justify-center font-mono text-lg sm:text-xl font-bold text-text-primary hover:bg-surface-hover hover:border-primary/40 active:scale-95 transition-all shadow-(--shadow-raised-sm) select-none cursor-pointer border border-border/70"
           >
             {digit}
           </button>
@@ -273,7 +273,7 @@ export function AnswerPad({
           onClick={handleKeypadClear}
           disabled={isAnswered || currentInput === ""}
           type="button"
-          className="neu-raised h-10 sm:h-11 lg:h-12 rounded-xl flex items-center justify-center text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted hover:text-error hover:border-error/40 hover:bg-surface-hover active:scale-95 transition-all shadow-[var(--shadow-raised-sm)] select-none cursor-pointer border border-border/70 disabled:opacity-40"
+          className="neu-raised h-10 sm:h-11 lg:h-12 rounded-xl flex items-center justify-center text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted hover:text-error hover:border-error/40 hover:bg-surface-hover active:scale-95 transition-all shadow-(--shadow-raised-sm) select-none cursor-pointer border border-border/70 disabled:opacity-40"
           aria-label="Clear input"
         >
           Clear
@@ -282,7 +282,7 @@ export function AnswerPad({
           onClick={() => handleKeypadDigit("0")}
           disabled={isAnswered}
           type="button"
-          className="neu-raised h-10 sm:h-11 lg:h-12 rounded-xl flex items-center justify-center font-mono text-lg sm:text-xl font-bold text-text-primary hover:bg-surface-hover hover:border-primary/40 active:scale-95 transition-all shadow-[var(--shadow-raised-sm)] select-none cursor-pointer border border-border/70"
+          className="neu-raised h-10 sm:h-11 lg:h-12 rounded-xl flex items-center justify-center font-mono text-lg sm:text-xl font-bold text-text-primary hover:bg-surface-hover hover:border-primary/40 active:scale-95 transition-all shadow-(--shadow-raised-sm) select-none cursor-pointer border border-border/70"
         >
           0
         </button>
@@ -290,7 +290,7 @@ export function AnswerPad({
           onClick={handleKeypadBackspace}
           disabled={isAnswered || currentInput === ""}
           type="button"
-          className="neu-raised h-10 sm:h-11 lg:h-12 rounded-xl flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/40 hover:bg-surface-hover active:scale-95 transition-all shadow-[var(--shadow-raised-sm)] select-none cursor-pointer border border-border/70 disabled:opacity-40"
+          className="neu-raised h-10 sm:h-11 lg:h-12 rounded-xl flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/40 hover:bg-surface-hover active:scale-95 transition-all shadow-(--shadow-raised-sm) select-none cursor-pointer border border-border/70 disabled:opacity-40"
           aria-label="Backspace"
         >
           <Delete className="w-4 h-4" />

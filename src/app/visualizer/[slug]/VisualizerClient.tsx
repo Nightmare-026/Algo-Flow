@@ -41,11 +41,20 @@ export function VisualizerClient({
 }) {
   const slug = algorithm.slug;
   const { loadSteps, reset } = usePlaybackStore();
-  const [visualizerData, setVisualizerData] = useState<VisualizerInputData>(() =>
-    algorithm.dataStructureId === "ds_matrix"
-      ? [15, 23, 4, 8, 42, 16, 9, 31, 7, 18, 27, 12, 36, 2, 21, 11]
-      : [15, 23, 4, 8, 42, 16]
-  );
+  const [visualizerData, setVisualizerData] = useState<VisualizerInputData>(() => {
+    if (algorithm.dataStructureId === "ds_matrix") {
+      // Row-column sorted search requires a monotonic grid; default to ascending 4x4.
+      if (slug === "row-column-sorted-search") {
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+      }
+      return [15, 23, 4, 8, 42, 16, 9, 31, 7, 18, 27, 12, 36, 2, 21, 11];
+    }
+    // Sorted-input algorithms must default to sorted data with a visible precondition.
+    if (["binary-search", "jump-search", "interpolation-search"].includes(slug)) {
+      return [4, 8, 15, 16, 23, 42];
+    }
+    return [15, 23, 4, 8, 42, 16];
+  });
   const [options, setOptions] = useState<VisualizerInputOptions>(() =>
     getDefaultVisualizerInputOptions(algorithm.slug, algorithm.dataStructureId)
   );
@@ -62,6 +71,16 @@ export function VisualizerClient({
     () => clampOperationOptions(options, dataLength, slug),
     [dataLength, options, slug]
   );
+
+  // Keep the stored options in sync with the clamped range whenever the data
+  // size changes, so the input controls never display a value that differs
+  // from the one the generator actually uses.
+  const [prevDataLength, setPrevDataLength] = useState(dataLength);
+  if (prevDataLength !== dataLength) {
+    setPrevDataLength(dataLength);
+    setOptions((current) => clampOperationOptions(current, dataLength, slug));
+  }
+
   const steps = useMemo(
     () => definition?.generateSteps(visualizerData as never, clampedOptions) ?? [],
     [visualizerData, clampedOptions, definition]

@@ -5,7 +5,7 @@
 
 ---
 
-Unlike contiguous arrays that rely on physical hardware adjacency for element ordering, linked lists build logical sequences through explicit directional pointers scattered across heap memory. This architectural decoupling enables true $O(1)$ dynamic insertions and deletions at the list boundary without memory reallocations or element shifts, but trades away constant-time indexing and hardware cache locality. This chapter details non-contiguous node topologies, memory alignment overheads, boundary-pointer manipulation invariants, the three-pointer in-place reversal state machine, and the mathematical proof underpinning Floyd's Tortoise and Hare cycle detection algorithm.
+Unlike contiguous arrays that rely on physical hardware adjacency for element ordering, linked lists build logical sequences through explicit directional pointers scattered across heap memory. This architectural decoupling enables $O(1)$ insertions and deletions at the head without memory reallocations or element shifts (tail deletion on a singly linked list remains $\Theta(n)$ without a predecessor pointer; see the complexity table below), but trades away constant-time indexing and hardware cache locality. This chapter details non-contiguous node topologies, memory alignment overheads, boundary-pointer manipulation invariants, the three-pointer in-place reversal state machine, and the mathematical proof underpinning Floyd's Tortoise and Hare cycle detection algorithm.
 
 ### Learning Objectives
 - Contrast the physical heap allocation and CPU cache-line miss rates of linked nodes against contiguous memory arrays.
@@ -51,7 +51,7 @@ While an array requires an unbroken contiguous block of memory, linked list node
 | **Node 3 (`TAIL`)** | `0x15C8` | `30` | `NULL` (`0x0`) | Terminal Sentinel (End of List) |
 
 > ⚠️ **Memory Overhead & Cache Penalty**:  
-> Storing a 4-byte integer in a linked list node consumes $16\text{ bytes}$ in physical RAM due to pointer storage ($8\text{ bytes}$) and 64-bit alignment padding ($4\text{ bytes}$), representing a **$300\%$ memory penalty** over a flat array. Furthermore, because adjacent logical nodes reside at distant heap addresses, traversing links causes frequent CPU L1/L2 cache misses.
+> Example (particular 64-bit ABI with alignment/padding): storing a 4-byte integer in a linked list node may occupy $16\text{ bytes}$ (value + $8\text{-byte}$ pointer + padding), an illustrative **$300\%$ memory penalty** over a flat array. Actual node size varies by ABI, alignment, headers, and allocator. Furthermore, because adjacent logical nodes can reside at distant heap addresses, traversing links often causes frequent CPU cache misses.
 
 ---
 

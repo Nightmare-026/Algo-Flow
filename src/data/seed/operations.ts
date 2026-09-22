@@ -673,32 +673,14 @@ export const operations: Operation[] = [
     isPublished: true,
   },
 
-  // ==================== GRAPH OPERATIONS ====================
-  {
-    id: "op_graph_traversal",
-    dataStructureId: "ds_graph",
-    name: "Traversal",
-    slug: "traversal",
-    description: "Breadth-First and Depth-First exploration.",
-    displayOrder: 1,
-    isPublished: true,
-  },
+  // ==================== GRAPH OPERATIONS (supplemental) ====================
   {
     id: "op_graph_shortest_path",
     dataStructureId: "ds_graph",
     name: "Shortest Path",
     slug: "shortest-path",
     description: "Dijkstra and Bellman-Ford shortest paths.",
-    displayOrder: 2,
-    isPublished: true,
-  },
-  {
-    id: "op_graph_mst",
-    dataStructureId: "ds_graph",
-    name: "Minimum Spanning Tree",
-    slug: "mst",
-    description: "Kruskal and Prim spanning trees.",
-    displayOrder: 3,
+    displayOrder: 1,
     isPublished: true,
   },
   {
@@ -707,7 +689,7 @@ export const operations: Operation[] = [
     name: "Ordering",
     slug: "ordering",
     description: "Topological Sort of DAGs.",
-    displayOrder: 4,
+    displayOrder: 2,
     isPublished: true,
   },
   {
@@ -716,7 +698,7 @@ export const operations: Operation[] = [
     name: "Connectivity & Cycles",
     slug: "connectivity",
     description: "Cycle Detection and Connected Components.",
-    displayOrder: 5,
+    displayOrder: 3,
     isPublished: true,
   },
 ];

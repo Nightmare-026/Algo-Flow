@@ -69,7 +69,7 @@ export function generateTrieSearchSteps(word = "CODE"): VisualStep[] {
     dataState: { root: structuredClone(root) } satisfies TreeVisualState,
     highlights: { active: currentNode ? [currentNode.id] : [] },
     codeLine: 5,
-    pseudocodeLine: 3,
+    pseudocodeLine: 5,
     variables: { Word: word, Found: true, IsEndOfWord: true },
   });
 

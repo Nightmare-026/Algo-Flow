@@ -28,11 +28,11 @@ export function ErrorState({
         initial={{ opacity: 0, scale: 0.96, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="neu-float w-full max-w-lg rounded-3xl border border-border bg-surface p-8 sm:p-10 text-center shadow-[var(--shadow-float)]"
+        className="neu-float w-full max-w-lg rounded-3xl border border-border bg-surface p-8 sm:p-10 text-center shadow-(--shadow-float)"
         role="alert"
         aria-live="assertive"
       >
-        <span className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-error/20 bg-error-muted text-error shadow-[var(--shadow-raised-sm)]">
+        <span className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-error/20 bg-error-muted text-error shadow-(--shadow-raised-sm)">
           <AlertTriangle aria-hidden="true" className="h-8 w-8" />
         </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-text-primary">
@@ -49,7 +49,7 @@ export function ErrorState({
             <Button
               onClick={onRetry}
               size="lg"
-              className="shadow-[var(--shadow-raised-sm)] cursor-pointer"
+              className="shadow-(--shadow-raised-sm) cursor-pointer"
             >
               <RotateCcw aria-hidden="true" className="h-4 w-4" />
               Try again
@@ -59,7 +59,7 @@ export function ErrorState({
             href="/visualizers"
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
-              "no-underline shadow-[var(--shadow-raised-sm)]"
+              "no-underline shadow-(--shadow-raised-sm)"
             )}
           >
             <Compass className="h-4 w-4" />

@@ -1,5 +1,5 @@
 import { VisualStep } from "@/types";
-import { createMatrixElements, MatrixVisualState } from "./types";
+import { createMatrixElements, matrixSizeValidationSteps, MatrixVisualState } from "./types";
 
 export function generateMatrixSearchSteps(
   arr: number[],
@@ -9,6 +9,8 @@ export function generateMatrixSearchSteps(
 ): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
+  const sizeErr = matrixSizeValidationSteps(arr.length, rows, cols, "Matrix Search", stepNumber);
+  if (sizeErr) return sizeErr;
   const elements = createMatrixElements(arr, rows, cols);
 
   const baseState: MatrixVisualState = {
@@ -115,6 +117,14 @@ export function generateSortedMatrixSearchSteps(
 ): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
+  const sizeErr = matrixSizeValidationSteps(
+    arr.length,
+    rows,
+    cols,
+    "Sorted Matrix Search",
+    stepNumber
+  );
+  if (sizeErr) return sizeErr;
   const elements = createMatrixElements(arr, rows, cols);
 
   const baseState: MatrixVisualState = {

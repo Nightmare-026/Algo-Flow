@@ -7,6 +7,7 @@ import { VisualStepHighlights } from "@/types";
 import { ReactFlow, Node, Edge, MarkerType, Background, BackgroundVariant } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { getVisualElementState } from "../visual-state";
+import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 
 // Helper functions extracted outside component - stable references, no memoisation needed
 function getNodeColor(id: string, highlights: VisualStepHighlights) {
@@ -91,7 +92,7 @@ export function GraphRenderer() {
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep || !currentStep.dataState) {
-    return null;
+    return <EmptyVisualizerState />;
   }
 
   const dataState = currentStep.dataState as GraphVisualState;

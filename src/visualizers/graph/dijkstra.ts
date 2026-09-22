@@ -35,7 +35,7 @@ export function generateGraphDijkstraSteps(
     id: uuidv4(),
     stepNumber: stepNumber++,
     title: "Initialize Dijkstra",
-    description: `Set distance to start node ${startNodeId} to 0 and all others to infinity.`,
+    description: `Precondition: all edge weights must be non-negative. Set distance to start node ${startNodeId} to 0 and all others to infinity.`,
     operation: "Dijkstra",
     actionType: "initialize",
     dataState: structuredClone(currentState),

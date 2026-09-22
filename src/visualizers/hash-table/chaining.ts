@@ -1,12 +1,36 @@
 import { v4 as uuidv4 } from "uuid";
 import { VisualStep } from "@/types";
-import { HashTableVisualState, HashEntry, createInitialHashTableState } from "./types";
+import {
+  HashTableVisualState,
+  HashEntry,
+  createInitialHashTableState,
+  normalizeBucketIndex,
+  isValidTableSize,
+} from "./types";
+
+function invalidSizeSteps(size: number, operation: string): VisualStep[] {
+  return [
+    {
+      id: uuidv4(),
+      stepNumber: 1,
+      title: "Invalid Table Size",
+      description: `Table size must be a whole number of at least 1 (received ${size}). Increase the capacity and retry.`,
+      operation,
+      actionType: "error",
+      dataState: createInitialHashTableState(1, "chaining"),
+      highlights: {},
+      codeLine: 1,
+      pseudocodeLine: 1,
+      variables: { Size: size },
+    },
+  ];
+}
 
 function initializeState(initialArray: number[], tableSize: number): HashTableVisualState {
   const state = createInitialHashTableState(tableSize, "chaining");
   const buckets = state.buckets as HashEntry[][];
   for (const val of initialArray) {
-    const idx = val % tableSize;
+    const idx = normalizeBucketIndex(val, tableSize);
     // Check for duplicates
     if (!buckets[idx].find((entry) => entry.key === val)) {
       buckets[idx].push({ id: uuidv4(), key: val });
@@ -22,6 +46,7 @@ export function generateChainingInsertSteps(
   valueToInsert: number,
   tableSize: number = 7
 ): VisualStep[] {
+  if (!isValidTableSize(tableSize)) return invalidSizeSteps(tableSize, "Insert");
   const steps: VisualStep[] = [];
   const state = initializeState(initialArray, tableSize);
   const buckets = state.buckets as HashEntry[][];
@@ -41,7 +66,7 @@ export function generateChainingInsertSteps(
     variables: { Key: valueToInsert, Size: tableSize },
   });
 
-  const hashIndex = valueToInsert % tableSize;
+  const hashIndex = normalizeBucketIndex(valueToInsert, tableSize);
   state.activeFormula = `h(${valueToInsert}) = ${valueToInsert} % ${tableSize} = ${hashIndex}`;
   steps.push({
     id: uuidv4(),
@@ -123,6 +148,7 @@ export function generateChainingSearchSteps(
   targetValue: number,
   tableSize: number = 7
 ): VisualStep[] {
+  if (!isValidTableSize(tableSize)) return invalidSizeSteps(tableSize, "Search");
   const steps: VisualStep[] = [];
   const state = initializeState(initialArray, tableSize);
   const buckets = state.buckets as HashEntry[][];
@@ -142,7 +168,7 @@ export function generateChainingSearchSteps(
     variables: { Target: targetValue, Size: tableSize },
   });
 
-  const hashIndex = targetValue % tableSize;
+  const hashIndex = normalizeBucketIndex(targetValue, tableSize);
   state.activeFormula = `h(${targetValue}) = ${targetValue} % ${tableSize} = ${hashIndex}`;
   steps.push({
     id: uuidv4(),
@@ -236,6 +262,7 @@ export function generateChainingDeleteSteps(
   targetValue: number,
   tableSize: number = 7
 ): VisualStep[] {
+  if (!isValidTableSize(tableSize)) return invalidSizeSteps(tableSize, "Delete");
   const steps: VisualStep[] = [];
   const state = initializeState(initialArray, tableSize);
   const buckets = state.buckets as HashEntry[][];
@@ -255,7 +282,7 @@ export function generateChainingDeleteSteps(
     variables: { Target: targetValue, Size: tableSize },
   });
 
-  const hashIndex = targetValue % tableSize;
+  const hashIndex = normalizeBucketIndex(targetValue, tableSize);
   state.activeFormula = `h(${targetValue}) = ${targetValue} % ${tableSize} = ${hashIndex}`;
   steps.push({
     id: uuidv4(),

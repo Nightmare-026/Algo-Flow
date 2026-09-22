@@ -85,12 +85,12 @@ export function ActivityItem({ activity: act, algorithms }: ActivityItemProps) {
   const timeLabel = formatRelativeTime(act.created_at);
 
   const subtext = isMentalMath
-    ? `${mmMetadata?.accuracy ?? 100}% accuracy • ${timeLabel}`
-    : `${alg?.difficulty ? alg.difficulty.charAt(0).toUpperCase() + alg.difficulty.slice(1) : "Algorithm"} • ${timeLabel}`;
+    ? `${mmMetadata?.accuracy ?? 100}% accuracy â€¢ ${timeLabel}`
+    : `${alg?.difficulty ? alg.difficulty.charAt(0).toUpperCase() + alg.difficulty.slice(1) : "Algorithm"} â€¢ ${timeLabel}`;
 
   return (
     <div className="flex items-center gap-3.5 p-2.5 sm:p-3 rounded-2xl border border-transparent hover:border-border hover:bg-surface-hover/80 transition-all group">
-      <div className="flex h-10 w-10 rounded-xl bg-bg-surface-inset border border-border shadow-[var(--shadow-inset)] items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
+      <div className="flex h-10 w-10 rounded-xl bg-bg-surface-inset border border-border shadow-(--shadow-inset) items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
         {isMentalMath ? (
           act.action_type === "daily_completed" ? (
             <Zap className="w-4 h-4 text-warning fill-current" />

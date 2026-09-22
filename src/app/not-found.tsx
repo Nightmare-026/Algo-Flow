@@ -10,7 +10,7 @@ export default function NotFound() {
       className="flex min-h-screen items-center justify-center bg-background px-4 py-16 text-foreground"
     >
       <section className="neu-float w-full max-w-lg rounded-3xl p-8 sm:p-10 text-center border border-border">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] text-primary">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset) text-primary">
           <SearchX aria-hidden="true" className="h-10 w-10" />
         </div>
         <p className="font-mono text-xs font-bold uppercase tracking-widest text-primary">

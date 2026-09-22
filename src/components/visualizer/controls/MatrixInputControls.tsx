@@ -5,6 +5,7 @@ import { AlertCircle, Shuffle, SortAsc, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
+  parseInputNumber,
   parseNumberList,
   VisualizerInputOptions,
 } from "@/lib/validation/visualizer-input";
@@ -113,7 +114,7 @@ export function MatrixInputControls({
       }
       if (resultA.values.length !== expectedLengthA) {
         setError(
-          `Matrix A requires exactly ${expectedLengthA} values for ${rows} × ${cols}. Got ${resultA.values.length}.`
+          `Matrix A requires exactly ${expectedLengthA} values for ${rows} Ã— ${cols}. Got ${resultA.values.length}.`
         );
         return;
       }
@@ -156,7 +157,7 @@ export function MatrixInputControls({
     }
     if (result.values.length !== expectedLengthA) {
       setError(
-        `Enter exactly ${expectedLengthA} values for the selected ${rows} × ${cols} matrix.`
+        `Enter exactly ${expectedLengthA} values for the selected ${rows} Ã— ${cols} matrix.`
       );
       return;
     }
@@ -171,7 +172,7 @@ export function MatrixInputControls({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Dimensions & Presets Pod */}
-          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
             {squareOnly ? (
               <label className="flex items-center gap-1.5 cursor-pointer">
                 <span className="font-mono text-[10px] font-semibold text-text-muted">Size:</span>
@@ -185,7 +186,7 @@ export function MatrixInputControls({
                   className="h-1.5 w-14 cursor-pointer accent-primary"
                 />
                 <span className="min-w-6 text-center font-mono text-[10px] font-bold text-primary">
-                  {rows}×{cols}
+                  {rows}Ã—{cols}
                 </span>
               </label>
             ) : (
@@ -257,7 +258,7 @@ export function MatrixInputControls({
           {isDual ? (
             <form
               onSubmit={handleDualCustomSubmit}
-              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
             >
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
                 A({expectedLengthA}):
@@ -295,7 +296,7 @@ export function MatrixInputControls({
           ) : (
             <form
               onSubmit={handleSingleCustomSubmit}
-              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
             >
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
                 Vals({expectedLengthA}):
@@ -322,7 +323,7 @@ export function MatrixInputControls({
 
           {/* Target Pod */}
           {needsTarget(slug) && (
-            <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]">
+            <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
               <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
                 Target:
@@ -330,10 +331,13 @@ export function MatrixInputControls({
               <input
                 id={`${fieldId}-target`}
                 type="number"
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-[var(--shadow-inset)] focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
                 value={options.target}
                 onChange={(event) =>
-                  onOptionsChange?.({ ...options, target: Number(event.target.value) })
+                  onOptionsChange?.({
+                    ...options,
+                    target: parseInputNumber(event.target.value, options.target),
+                  })
                 }
                 aria-label="Target value"
               />

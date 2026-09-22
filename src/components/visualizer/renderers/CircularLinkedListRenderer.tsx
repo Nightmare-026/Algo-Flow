@@ -7,13 +7,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ArrowDown, ArrowRight, RotateCw } from "lucide-react";
 import { getVisualElementClassName } from "../visual-state";
+import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 
 export function CircularLinkedListRenderer() {
   const { steps, currentStepIndex } = usePlaybackStore();
   const currentStep = steps[currentStepIndex];
 
   if (!currentStep || !currentStep.dataState) {
-    return null;
+    return <EmptyVisualizerState />;
   }
 
   const dataState = currentStep.dataState as CircularLinkedListVisualState;

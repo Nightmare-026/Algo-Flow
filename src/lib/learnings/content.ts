@@ -18,9 +18,11 @@ export function slugifyHeading(text: string): string {
 
   return plainText
     .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
     .trim()
-    .replace(/\s+/g, "-");
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 /**
@@ -102,8 +104,10 @@ export function renderMathInMarkdown(markdown: string): string {
     }
   });
 
-  // Replace inline math ($...$) - ensure not empty and not multiple $$
-  text = text.replace(/(?<!\$)\$([^\$\n]+?)\$(?!\$)/g, (_, math) => {
+  // Replace inline math ($...$) - only when it looks like math, never prose
+  // (e.g. "$5 and $3", currency figures, or stray dollar signs) or adjacent
+  // to a closing $ that runs into a digit on the far side.
+  text = text.replace(/(?<![\w$])\$([^\$\n]+?)\$(?![\$\d])/g, (_, math) => {
     try {
       return katex.renderToString(math.trim(), {
         displayMode: false,
@@ -171,7 +175,9 @@ export async function getParsedChapter(
         heading({ tokens, depth, text }) {
           const rawText = text || "";
           let slug = slugifyHeading(rawText);
-          if (!slug) slug = depth <= 2 ? "section" : "heading";
+          // Fallbacks must match extractTableOfContents, otherwise TOC
+          // permalinks point at ids the rendered headings never receive.
+          if (!slug) slug = depth <= 2 ? "section" : "subsection";
 
           const count = renderSlugCounts.get(slug) || 0;
           renderSlugCounts.set(slug, count + 1);

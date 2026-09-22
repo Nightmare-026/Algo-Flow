@@ -1,13 +1,37 @@
 import { v4 as uuidv4 } from "uuid";
 import { VisualStep } from "@/types";
-import { HashSetVisualState, HashSetEntry, createInitialHashSetState } from "./types";
+import {
+  HashSetVisualState,
+  HashSetEntry,
+  createInitialHashSetState,
+  normalizeBucketIndex,
+  isValidTableSize,
+} from "./types";
+
+function invalidSizeSteps(size: number, operation: string): VisualStep[] {
+  return [
+    {
+      id: uuidv4(),
+      stepNumber: 1,
+      title: "Invalid Set Size",
+      description: `Set size must be a whole number of at least 1 (received ${size}). Increase the capacity and retry.`,
+      operation,
+      actionType: "error",
+      dataState: createInitialHashSetState(1, "linear-probing"),
+      highlights: {},
+      codeLine: 1,
+      pseudocodeLine: 1,
+      variables: { Size: size },
+    },
+  ];
+}
 
 function initializeState(initialArray: number[], setSize: number): HashSetVisualState {
   const state = createInitialHashSetState(setSize, "linear-probing");
   const buckets = state.buckets as (HashSetEntry | null)[];
   for (const val of initialArray) {
     if (state.elementCount >= setSize) break;
-    let idx = val % setSize;
+    let idx = normalizeBucketIndex(val, setSize);
     while (buckets[idx] !== null && !buckets[idx]!.isDeleted) {
       if (buckets[idx]!.key === val) break;
       idx = (idx + 1) % setSize;
@@ -26,6 +50,7 @@ export function generateHashSetInsertSteps(
   valueToInsert: number,
   setSize: number = 7
 ): VisualStep[] {
+  if (!isValidTableSize(setSize)) return invalidSizeSteps(setSize, "Insert");
   const steps: VisualStep[] = [];
   const state = initializeState(initialArray, setSize);
   const buckets = state.buckets as (HashSetEntry | null)[];
@@ -62,7 +87,7 @@ export function generateHashSetInsertSteps(
     return steps;
   }
 
-  const hashIndex = valueToInsert % setSize;
+  const hashIndex = normalizeBucketIndex(valueToInsert, setSize);
   steps.push({
     id: uuidv4(),
     stepNumber: stepNumber++,

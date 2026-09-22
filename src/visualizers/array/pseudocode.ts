@@ -39,9 +39,10 @@ export function getAlgorithmPseudocode(slug: string): string[] {
     case "binary-search":
       return [
         "function binarySearch(array, target):",
+        "    // Precondition: array must be sorted",
         "    low = 0, high = array.length - 1",
         "    while low <= high:",
-        "        mid = (low + high) / 2",
+        "        mid = low + floor((high - low) / 2)",
         "        if array[mid] == target: return mid",
         "        if array[mid] < target: low = mid + 1",
         "        else: high = mid - 1",

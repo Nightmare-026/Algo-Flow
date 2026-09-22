@@ -45,7 +45,7 @@ export default async function LoginPage({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <p className="font-bold text-primary flex items-center gap-1.5">
-                <span>🛠️</span> Local Dev Mode Active
+                <span>ðŸ› ï¸</span> Local Dev Mode Active
               </p>
               <p className="text-text-secondary mt-0.5">
                 You can bypass login and explore the dashboard directly with a mock developer
@@ -54,9 +54,9 @@ export default async function LoginPage({
             </div>
             <Link
               href="/dashboard"
-              className="inline-flex min-h-9 items-center justify-center rounded-xl bg-primary px-4 text-xs font-bold text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all shrink-0"
+              className="inline-flex min-h-9 items-center justify-center rounded-xl bg-primary px-4 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all shrink-0"
             >
-              Open Dashboard →
+              Open Dashboard â†’
             </Link>
           </div>
         </div>

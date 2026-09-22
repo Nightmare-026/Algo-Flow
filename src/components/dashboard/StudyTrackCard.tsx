@@ -36,7 +36,7 @@ export function StudyTrackCard({
     >
       <div>
         <div className="flex justify-between items-start mb-4">
-          <div className="flex h-11 w-11 rounded-xl bg-surface-inset border border-border shadow-[var(--shadow-inset)] items-center justify-center text-primary group-hover:scale-105 transition-transform">
+          <div className="flex h-11 w-11 rounded-xl bg-surface-inset border border-border shadow-(--shadow-inset) items-center justify-center text-primary group-hover:scale-105 transition-transform">
             {icon}
           </div>
           <span className="bg-primary-muted text-primary border border-primary/20 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase">
@@ -57,7 +57,7 @@ export function StudyTrackCard({
             </span>
             <span className="text-primary">{percent}%</span>
           </div>
-          <div className="w-full bg-bg-surface-inset h-1.5 rounded-full overflow-hidden border border-border shadow-[var(--shadow-inset)]">
+          <div className="w-full bg-bg-surface-inset h-1.5 rounded-full overflow-hidden border border-border shadow-(--shadow-inset)">
             <div
               className="bg-primary h-full rounded-full transition-all duration-500"
               style={{ width: `${percent}%` }}

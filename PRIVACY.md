@@ -1,7 +1,7 @@
 # Algo Flow — Privacy Policy
 
-**Effective Date**: September 5, 2026  
-**Version**: 2026-09-05  
+**Effective Date**: September 22, 2026  
+**Version**: 2026-09-22  
 **Maintainer**: Nightmare / Algo Flow Team  
 **Contact**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  
 **Web Version**: [https://algo-flow.vercel.app/privacy](https://algo-flow.vercel.app/privacy)
@@ -12,6 +12,7 @@
 
 - **Zero Commercial Data Selling**: We never sell, rent, or monetize your personal information or practice telemetry with advertisers.
 - **Zero Third-Party Ad Trackers**: We do not load advertising scripts, invasive cross-site cookies, or surveillance beacons.
+- **Privacy-Focused Analytics**: We use Google Analytics 4 (GA4) solely for aggregate traffic analysis and feature adoption metrics. GA4 data is never used for advertising, remarketing, or behavioral profiling.
 - **Anonymous Guest Exploration**: You can access all 137 visualizers, code execution panels, and calculation sandboxes without creating an account or providing personal details.
 - **PostgreSQL Row-Level Security (RLS)**: User data stored in Supabase is cryptographically restricted to your authenticated user ID.
 
@@ -30,7 +31,10 @@
 - Preferred code language in the inspector (Python, C++, Java, JavaScript).
 - Timeline playback speed preference.
 
-### C. Technical & Security Logs
+### C. Anonymous Analytics Data
+- Google Analytics 4 (GA4) collects anonymous, aggregate usage metrics such as page views, session duration, referral sources, browser type, and geographic region (country-level). This data cannot be linked to your personal identity or Algo Flow account.
+
+### D. Technical & Security Logs
 - Standard HTTP request metadata (IP address, user-agent, timestamp) used solely for rate limiting, edge DDoS mitigation, and error diagnostics.
 
 ---
@@ -67,7 +71,7 @@ When you authenticate via **Google OAuth 2.0** or **GitHub OAuth**:
 | :--- | :--- | :--- |
 | **Supabase Inc.** | PostgreSQL Database, Auth, RLS Storage | SOC 2 Type II, ISO 27001, HIPAA compliant |
 | **Vercel Inc.** | Edge CDN, Global Serverless Hosting & Cookie-less Web Analytics | SOC 2 Type II, ISO 27001, Cookie-less Telemetry |
-| **Google LLC** | Google OAuth 2.0 Identity Provider | SOC 2, ISO 27001, Privacy Shield / DPA |
+| **Google LLC** | Google OAuth 2.0 Identity Provider; Google Analytics 4 (aggregate traffic analytics) | SOC 2, ISO 27001, Privacy Shield / DPA |
 | **GitHub Inc. / Microsoft** | GitHub OAuth 2.0 Identity Provider | SOC 2, ISO 27001, Microsoft Enterprise DPA |
 
 ---

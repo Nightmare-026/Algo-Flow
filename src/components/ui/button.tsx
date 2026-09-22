@@ -8,13 +8,13 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variants: Record<NonNullable<ButtonProps["variant"]>, string> = {
   default:
-    "border border-primary/30 bg-primary text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover hover:border-primary active:scale-[0.98]",
+    "border border-primary/30 bg-primary text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover hover:border-primary active:scale-[0.98]",
   secondary:
-    "border border-border bg-surface text-foreground shadow-[var(--shadow-raised-sm)] hover:bg-surface-hover hover:border-border-hover active:scale-[0.98]",
+    "border border-border bg-surface text-foreground shadow-(--shadow-raised-sm) hover:bg-surface-hover hover:border-border-hover active:scale-[0.98]",
   ghost:
     "border border-transparent text-muted-foreground hover:bg-primary-muted hover:text-primary active:scale-[0.98]",
   outline:
-    "border border-border bg-surface/50 text-foreground shadow-[var(--shadow-raised-sm)] hover:border-primary/50 hover:bg-surface-hover hover:text-primary active:scale-[0.98]",
+    "border border-border bg-surface/50 text-foreground shadow-(--shadow-raised-sm) hover:border-primary/50 hover:bg-surface-hover hover:text-primary active:scale-[0.98]",
   destructive:
     "border border-destructive/40 bg-destructive text-destructive-foreground hover:brightness-95 active:scale-[0.98]",
 };

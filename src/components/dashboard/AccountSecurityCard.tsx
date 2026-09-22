@@ -16,7 +16,7 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
   const [state, formAction, isPending] = useActionState(setAccountPassword, null);
 
   return (
-    <section className="neu-raised rounded-3xl p-6 sm:p-8 border border-border bg-surface flex flex-col justify-between gap-6 shadow-[var(--shadow-raised-sm)] h-full">
+    <section className="neu-raised rounded-3xl p-6 sm:p-8 border border-border bg-surface flex flex-col justify-between gap-6 shadow-(--shadow-raised-sm) h-full">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
@@ -38,7 +38,7 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
           className={cn(
-            "inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-xs font-bold font-display shadow-[var(--shadow-raised-sm)] transition-all active:scale-95 cursor-pointer shrink-0 self-start sm:self-auto",
+            "inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-xs font-bold font-display shadow-(--shadow-raised-sm) transition-all active:scale-95 cursor-pointer shrink-0 self-start sm:self-auto",
             isOpen
               ? "border border-border bg-surface text-text-secondary hover:bg-surface-hover"
               : "bg-primary text-white hover:bg-primary-hover"
@@ -132,7 +132,7 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
               <button
                 type="submit"
                 disabled={isPending}
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-[var(--shadow-raised-sm)] hover:bg-primary-hover active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
               >
                 <Lock className="w-3.5 h-3.5" />
                 <span>{isPending ? "Setting Password..." : "Save Account Password"}</span>

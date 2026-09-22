@@ -1,5 +1,5 @@
 import { VisualStep } from "@/types";
-import { createMatrixElements, MatrixVisualState } from "./types";
+import { createMatrixElements, matrixSizeValidationSteps, MatrixVisualState } from "./types";
 
 export function generateRowWiseTraversalSteps(
   arr: number[],
@@ -8,6 +8,14 @@ export function generateRowWiseTraversalSteps(
 ): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
+  const sizeErr = matrixSizeValidationSteps(
+    arr.length,
+    rows,
+    cols,
+    "Row-wise Traversal",
+    stepNumber
+  );
+  if (sizeErr) return sizeErr;
   const elements = createMatrixElements(arr, rows, cols);
 
   const baseState: MatrixVisualState = {
@@ -84,6 +92,14 @@ export function generateColWiseTraversalSteps(
 ): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
+  const sizeErr = matrixSizeValidationSteps(
+    arr.length,
+    rows,
+    cols,
+    "Column-wise Traversal",
+    stepNumber
+  );
+  if (sizeErr) return sizeErr;
   const elements = createMatrixElements(arr, rows, cols);
 
   const baseState: MatrixVisualState = {
@@ -160,6 +176,8 @@ export function generateSpiralTraversalSteps(
 ): VisualStep[] {
   const steps: VisualStep[] = [];
   let stepNumber = 1;
+  const sizeErr = matrixSizeValidationSteps(arr.length, rows, cols, "Spiral Traversal", stepNumber);
+  if (sizeErr) return sizeErr;
   const elements = createMatrixElements(arr, rows, cols);
 
   const baseState: MatrixVisualState = {

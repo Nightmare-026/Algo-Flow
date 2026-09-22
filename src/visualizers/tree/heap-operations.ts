@@ -166,7 +166,7 @@ export function generateHeapifySteps(data: number[] = [4, 10, 3, 5, 1]): VisualS
     id: uuidv4(),
     stepNumber: stepNumber++,
     title: "Initialize Heapify (Build Max-Heap)",
-    description: `Starting bottom-up heapify on array [${heap.join(", ")}].`,
+    description: `Starting bottom-up heapify on array [${heap.join(", ")}]. A binary heap is stored compactly as an array: parent(i)=floor((i-1)/2), left(i)=2i+1, right(i)=2i+2.`,
     operation: "Heapify",
     actionType: "initialize",
     dataState: { root: structuredClone(root) } satisfies TreeVisualState,

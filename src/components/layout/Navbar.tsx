@@ -75,7 +75,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
             className="group flex min-h-11 items-center gap-3 rounded-xl pr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="AlgoFlow home"
           >
-            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-[var(--shadow-raised-sm)] transition-transform duration-200 group-hover:scale-105">
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm) transition-transform duration-200 group-hover:scale-105">
               <Image
                 src="/logo.png"
                 alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
@@ -103,14 +103,14 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   className={cn(
                     "relative inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors duration-200 z-10 select-none",
                     active
-                      ? "font-bold text-white shadow-[var(--shadow-raised-sm)]"
+                      ? "font-bold text-white shadow-(--shadow-raised-sm)"
                       : "text-text-secondary hover:text-text-primary hover:bg-surface-hover/60"
                   )}
                 >
                   {active && (
                     <motion.div
                       layoutId="activeNavPill"
-                      className="absolute inset-0 rounded-xl border border-primary/30 bg-primary shadow-[var(--shadow-raised-sm)] -z-10"
+                      className="absolute inset-0 rounded-xl border border-primary/30 bg-primary shadow-(--shadow-raised-sm) -z-10"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -137,7 +137,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   href="/dashboard"
                   title={`Signed in as ${user.email} - View Dashboard`}
                   aria-label={`Go to dashboard for ${user.email}`}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface font-display text-sm font-bold text-text-primary shadow-[var(--shadow-raised-sm)] transition-colors duration-200 hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface font-display text-sm font-bold text-text-primary shadow-(--shadow-raised-sm) transition-colors duration-200 hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25"
                 >
                   {(
                     user.user_metadata?.first_name ||
@@ -164,7 +164,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-[var(--shadow-raised-sm)] hover:text-primary active:scale-95 md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) hover:text-primary active:scale-95 md:hidden"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation"
@@ -208,7 +208,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                         className={cn(
                           "flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition-colors",
                           active
-                            ? "border border-primary/30 bg-primary font-bold text-white shadow-[var(--shadow-raised-sm)]"
+                            ? "border border-primary/30 bg-primary font-bold text-white shadow-(--shadow-raised-sm)"
                             : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
                         )}
                       >

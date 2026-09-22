@@ -32,9 +32,9 @@ $$\text{Address}(A[i]) = \alpha + (i \times S)$$
 where:
 - $\alpha$ is the **Base Address** (physical address of the first byte of $A[0]$).
 - $i$ is the **Zero-Based Index** ($0 \le i < N$).
-- $S$ is the **Element Size** in bytes (e.g., $S = 4$ for a 32-bit integer, $S = 8$ for a 64-bit pointer or float).
+- $S$ is the **Element Size** in bytes (example on a typical implementation: $S = 4$ for a 32-bit integer; a C `double` is commonly 8 bytes while `float` is commonly 4 bytes — exact sizes depend on ABI, alignment, and language).
 
-Because integer multiplication and pointer addition execute in a single CPU cycle, calculating $\text{Address}(A[i])$ does not require scanning intermediate elements $A[0 \dots i-1]$. This is why array indexing is strictly $O(1)$.
+Because address arithmetic avoids scanning intermediate elements $A[0 \dots i-1]$ (illustratively a few fast CPU operations, exact timing varies by microarchitecture), array indexing is $O(1)$.
 
 ```
 Physical Layout in RAM:
@@ -62,11 +62,10 @@ The primary performance advantage of arrays over pointer-linked nodes is **Hardw
 
 1. **Cache Lines**: The CPU memory controller does not read individual bytes from RAM. Instead, it transfers memory in fixed blocks called **Cache Lines** (typically 64 bytes on modern x86-64 and ARM architectures).
 2. **L1/L2 Prefetching**: When the processor reads $A[0]$ (4 bytes), the memory controller loads the entire 64-byte block containing $A[0 \dots 15]$ directly into the L1 data cache in a single memory transaction.
-3. **Latency Differential**:
-   - Accessing L1 Cache: $\approx 1\text{ ns}$ ($\approx 4\text{ CPU cycles}$).
-   - Accessing Main Memory (RAM): $\approx 50\text{--}100\text{ ns}$ ($\approx 150\text{--}300\text{ CPU cycles}$).
+3. **Latency Differential (illustrative example; exact numbers vary)**:
+   - Accessing L1 cache is typically an order of magnitude faster than main memory (exact latencies depend on CPU, cache level, memory subsystem, workload, and access pattern).
 
-Consequently, traversing a static array sequentially incurs a cache miss only once every 16 elements (for 4-byte integers), allowing the hardware prefetcher to stream data seamlessly. Pointer-based structures (like linked lists) scatter nodes across the heap, causing nearly every node traversal to incur a full cache miss.
+Consequently, in this illustrative 64-byte-line / 4-byte-integer example, sequential traversal may incur roughly one cache miss per 16 elements, allowing the hardware prefetcher to stream data effectively. Pointer-based structures (like linked lists) can scatter nodes across the heap, often causing more frequent cache misses than contiguous arrays.
 
 ---
 
@@ -171,13 +170,15 @@ CLASS StaticArray:
 
 A two-dimensional array $M[R][C]$ with $R$ rows and $C$ columns must be linearized into physical 1D RAM:
 
-1. **Row-Major Order (C, C++, Python, Java)**: Consecutive elements of a row are stored adjacently.
+1. **Row-Major Order (e.g. C/C++ rectangular arrays; many C#/NumPy defaults)**: Consecutive elements of a row are stored adjacently.
    $$\text{Address}(M[i][j]) = \alpha + (i \times C + j) \times S$$
-2. **Column-Major Order (Fortran, MATLAB, R)**: Consecutive elements of a column are stored adjacently.
+2. **Column-Major Order (e.g. Fortran, MATLAB, R defaults)**: Consecutive elements of a column are stored adjacently.
    $$\text{Address}(M[i][j]) = \alpha + (j \times R + i) \times S$$
 
-> 💡 **Performance Rule**:  
-> In Row-Major languages, always iterate rows in the outer loop and columns in the inner loop (`for i: for j:`). Inverting this order (`for j: for i:`) causes a cache miss on every single memory access, degrading throughput by up to $10\times$ to $20\times$.
+Layout is a property of the representation, not of a language as a whole (e.g. Java `int[][]` is an array of arrays; Python nested lists hold object references; libraries may choose either layout).
+
+> 💡 **Performance Guideline (illustrative)**:  
+> For row-major layouts, prefer rows in the outer loop and columns in the inner loop (`for i: for j:`). Inverting the order can substantially degrade throughput in cache-sensitive cases (exact effect depends on hardware and problem size).
 
 ---
 

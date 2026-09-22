@@ -20,9 +20,9 @@ const OPERATIONS_META: OperationMeta[] = [
   { id: "subtraction", name: "Subtraction", icon: Minus },
   { id: "multiplication", name: "Multiplication", icon: X },
   { id: "division", name: "Division", icon: Divide },
-  { id: "squares", name: "Squares (x²)", icon: Superscript },
-  { id: "cubes", name: "Cubes (x³)", icon: Box },
-  { id: "roots", name: "Square Roots (√x)", icon: Radical },
+  { id: "squares", name: "Squares (xÂ²)", icon: Superscript },
+  { id: "cubes", name: "Cubes (xÂ³)", icon: Box },
+  { id: "roots", name: "Square Roots (âˆšx)", icon: Radical },
   { id: "percentages", name: "Percentages (%)", icon: Percent },
   { id: "mixed", name: "Mixed Operations", icon: Shuffle },
 ];
@@ -34,7 +34,7 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
   );
 
   return (
-    <div className="neu-raised p-6 sm:p-7 rounded-3xl border border-border bg-surface flex flex-col justify-between h-full shadow-[var(--shadow-raised-sm)]">
+    <div className="neu-raised p-6 sm:p-7 rounded-3xl border border-border bg-surface flex flex-col justify-between h-full shadow-(--shadow-raised-sm)">
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
@@ -76,7 +76,7 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
             return (
               <div
                 key={op.id}
-                className="neu-inset p-3.5 sm:p-4 rounded-2xl border border-border bg-surface-inset flex flex-col gap-2.5 shadow-[var(--shadow-inset)] transition-colors"
+                className="neu-inset p-3.5 sm:p-4 rounded-2xl border border-border bg-surface-inset flex flex-col gap-2.5 shadow-(--shadow-inset) transition-colors"
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2.5">
@@ -102,7 +102,7 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
                     className={cn(
                       "h-full rounded-full transition-all duration-700 ease-out",
                       hasAttempts
-                        ? "bg-gradient-to-r from-primary to-emerald-400 shadow-sm"
+                        ? "bg-linear-to-r from-primary to-emerald-400 shadow-sm"
                         : "bg-transparent"
                     )}
                     style={{ width: `${hasAttempts ? levelPercent : 0}%` }}
@@ -116,7 +116,7 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
                       : "0 drills"}
                   </span>
                   <span className={cn(hasAttempts ? "font-semibold text-text-secondary" : "")}>
-                    {hasAttempts ? `${stat.accuracy}% acc` : "—"}
+                    {hasAttempts ? `${stat.accuracy}% acc` : "â€”"}
                   </span>
                 </div>
               </div>

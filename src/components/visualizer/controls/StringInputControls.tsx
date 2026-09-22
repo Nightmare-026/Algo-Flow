@@ -78,7 +78,7 @@ export function StringInputControls({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Presets Pod */}
-          <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-[var(--shadow-raised-sm)]">
+          <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-(--shadow-raised-sm)">
             <Button
               type="button"
               size="sm"
@@ -109,7 +109,7 @@ export function StringInputControls({
           {/* Custom String Input Form Pod */}
           <form
             onSubmit={handleCustomSubmit}
-            className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-[var(--shadow-raised-sm)]"
+            className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
           >
             <Type className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
             <span className="font-mono text-[10px] font-semibold text-text-secondary">Text:</span>
@@ -118,7 +118,7 @@ export function StringInputControls({
               className="h-6 w-24 sm:w-28 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted uppercase"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              placeholder="TEXT…"
+              placeholder="TEXTâ€¦"
               aria-label="Custom text"
             />
 
@@ -134,7 +134,7 @@ export function StringInputControls({
                   className="h-6 w-16 sm:w-20 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted uppercase"
                   value={patternInput}
                   onChange={(e) => setPatternInput(e.target.value)}
-                  placeholder="PAT…"
+                  placeholder="PATâ€¦"
                   aria-label="Pattern to match"
                 />
               </>

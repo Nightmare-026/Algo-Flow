@@ -271,7 +271,7 @@ export const arrayMutationPublicationArtifacts: Record<
     arrayOperationCodeLineMappings["update-by-value"],
     [4, 8, 15, 8],
     options({ target: 8, value: 23 }),
-    [4, 23, 15, 23],
+    [4, 23, 15, 8],
     "update",
     operationLegend
   ),

@@ -52,7 +52,7 @@ export function CalculationDisplay({
     return (
       <div
         className={cn(
-          "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-2xl sm:rounded-3xl border transition-all duration-300 backdrop-blur-xl p-4 sm:p-6 lg:p-8 shadow-[var(--shadow-raised-sm)] neu-raised relative overflow-hidden select-none",
+          "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-2xl sm:rounded-3xl border transition-all duration-300 backdrop-blur-xl p-4 sm:p-6 lg:p-8 shadow-(--shadow-raised-sm) neu-raised relative overflow-hidden select-none",
           isAnswered
             ? isCorrect
               ? "border-success/50 bg-success-muted/10 shadow-[0_0_40px_rgba(34,197,94,0.15)]"
@@ -75,11 +75,11 @@ export function CalculationDisplay({
             {isAnswered ? (
               isCorrect ? (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
-                  Correct ✓
+                  Correct âœ“
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
-                  Incorrect ✗
+                  Incorrect âœ—
                 </span>
               )
             ) : (
@@ -93,7 +93,7 @@ export function CalculationDisplay({
         {/* Vertical Calculation Rule Box */}
         <div className="flex-1 flex items-center justify-center my-2 sm:my-4">
           <div
-            className="neu-inset relative inline-flex flex-col items-end px-6 sm:px-10 py-4 sm:py-6 rounded-2xl sm:rounded-3xl border border-border bg-surface-inset shadow-[var(--shadow-inset)]"
+            className="neu-inset relative inline-flex flex-col items-end px-6 sm:px-10 py-4 sm:py-6 rounded-2xl sm:rounded-3xl border border-border bg-surface-inset shadow-(--shadow-inset)"
             style={{ minWidth: `${Math.max(160, maxLen * 32)}px` }}
           >
             {/* Top Operand */}
@@ -120,7 +120,7 @@ export function CalculationDisplay({
             {/* Answer Preview */}
             <div
               className={cn(
-                "font-mono tabular-nums text-3xl sm:text-5xl font-extrabold tracking-wider min-h-[2.75rem] sm:min-h-[3.25rem] flex items-center justify-end w-full",
+                "font-mono tabular-nums text-3xl sm:text-5xl font-extrabold tracking-wider min-h-11 sm:min-h-[3.25rem] flex items-center justify-end w-full",
                 isAnswered
                   ? isCorrect
                     ? "text-success"
@@ -164,7 +164,7 @@ export function CalculationDisplay({
   return (
     <div
       className={cn(
-        "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-2xl sm:rounded-3xl border transition-all duration-300 backdrop-blur-xl p-4 sm:p-6 lg:p-8 shadow-[var(--shadow-raised-sm)] neu-raised relative overflow-hidden select-none",
+        "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-2xl sm:rounded-3xl border transition-all duration-300 backdrop-blur-xl p-4 sm:p-6 lg:p-8 shadow-(--shadow-raised-sm) neu-raised relative overflow-hidden select-none",
         isAnswered
           ? isCorrect
             ? "border-success/50 bg-success-muted/10 shadow-[0_0_40px_rgba(34,197,94,0.15)]"
@@ -187,11 +187,11 @@ export function CalculationDisplay({
           {isAnswered ? (
             isCorrect ? (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
-                Correct ✓
+                Correct âœ“
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
-                Incorrect ✗
+                Incorrect âœ—
               </span>
             )
           ) : (
@@ -204,14 +204,14 @@ export function CalculationDisplay({
 
       {/* Main Calculation Stage */}
       <div className="flex-1 flex items-center justify-center w-full my-2 sm:my-4">
-        <div className="neu-inset relative inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-5 sm:px-8 py-4 sm:py-6 rounded-2xl sm:rounded-3xl border border-border bg-surface-inset transition-all duration-300 select-none shadow-[var(--shadow-inset)] max-w-full">
+        <div className="neu-inset relative inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-5 sm:px-8 py-4 sm:py-6 rounded-2xl sm:rounded-3xl border border-border bg-surface-inset transition-all duration-300 select-none shadow-(--shadow-inset) max-w-full">
           {signature.operation === "squares" ? (
             <div className="flex items-center">
               <span className="font-mono tabular-nums text-3xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight">
                 {op1}
               </span>
               <span className="font-mono text-xl sm:text-3xl font-bold text-primary -mt-4 sm:-mt-6 ml-0.5">
-                ²
+                Â²
               </span>
             </div>
           ) : signature.operation === "cubes" ? (
@@ -220,13 +220,13 @@ export function CalculationDisplay({
                 {op1}
               </span>
               <span className="font-mono text-xl sm:text-3xl font-bold text-primary -mt-4 sm:-mt-6 ml-0.5">
-                ³
+                Â³
               </span>
             </div>
           ) : signature.operation === "roots" ? (
             <div className="flex items-center gap-1">
               <span className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold text-primary">
-                √
+                âˆš
               </span>
               <span className="font-mono tabular-nums text-3xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight">
                 {op1}
