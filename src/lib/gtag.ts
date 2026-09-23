@@ -23,12 +23,7 @@ declare global {
 // ---------- helpers ----------
 
 /** Send a custom GA4 event. */
-export function trackEvent(
-  action: string,
-  category: string,
-  label?: string,
-  value?: number,
-): void {
+export function trackEvent(action: string, category: string, label?: string, value?: number): void {
   if (typeof window === "undefined" || !window.gtag || !GA_MEASUREMENT_ID) return;
 
   window.gtag("event", action, {

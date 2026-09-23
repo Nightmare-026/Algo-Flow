@@ -235,7 +235,8 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
                       </span>
                       <div>
                         <p className="font-mono font-extrabold text-text-primary text-base">
-                          {ans.formattedExpression || ans.questionSignature.replace(/:/g, " â€¢ ")} ={" "}
+                          {ans.formattedExpression || ans.questionSignature.replace(/:/g, " â€¢ ")}{" "}
+                          ={" "}
                           {ans.correctAnswer !== undefined
                             ? ans.correctAnswer.toLocaleString()
                             : ""}

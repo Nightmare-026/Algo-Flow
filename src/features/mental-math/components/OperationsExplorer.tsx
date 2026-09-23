@@ -264,7 +264,9 @@ export function OperationsExplorer() {
         >
           Showing {filteredOperations.length} of {ALL_OPERATIONS.length} operations
         </p>
-        <span className="text-xs font-mono font-semibold text-primary">1â€“4 Digit Configurable</span>
+        <span className="text-xs font-mono font-semibold text-primary">
+          1â€“4 Digit Configurable
+        </span>
       </div>
 
       {/* Operation Cards Grid - Perfectly balanced 3x3 layout on desktop */}

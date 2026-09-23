@@ -109,8 +109,8 @@ export default function MentalMathHubPage() {
                 Distributive Multipliers
               </h3>
               <p className="text-xs text-text-secondary mt-2 leading-relaxed">
-                Decompose non-trivial factors into friendly anchors (e.g. Ã—25 = Ã—100Ã·4, Ã—9 = Ã—10âˆ’1)
-                or leverage doubling and halving symmetries.
+                Decompose non-trivial factors into friendly anchors (e.g. Ã—25 = Ã—100Ã·4, Ã—9 =
+                Ã—10âˆ’1) or leverage doubling and halving symmetries.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
@@ -127,8 +127,8 @@ export default function MentalMathHubPage() {
                 Anchor Squaring (aÂ±b)Â²
               </h3>
               <p className="text-xs text-text-secondary mt-2 leading-relaxed">
-                Square numbers close to base-50 anchors instantly using (50Â±d)Â² = (25Â±d)Ã—100 + dÂ².
-                Solves two-digit squares in under 2 seconds.
+                Square numbers close to base-50 anchors instantly using (50Â±d)Â² = (25Â±d)Ã—100 +
+                dÂ². Solves two-digit squares in under 2 seconds.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
