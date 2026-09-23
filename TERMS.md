@@ -1,7 +1,7 @@
 # Algo Flow — Terms of Service
 
-**Effective Date**: September 5, 2026  
-**Version**: 2026-09-05  
+**Effective Date**: September 23, 2026  
+**Version**: 2026-09-23  
 **Maintainer**: Nightmare / Algo Flow Team  
 **Contact**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  
 **Web Version**: [https://algo-flow.vercel.app/terms](https://algo-flow.vercel.app/terms)
@@ -23,7 +23,8 @@ You must be at least **13 years of age** (or at least **16 years of age** in the
 ## 3. Educational Platform Scope
 
 Algo Flow provides interactive Computer Science visualizers and computational training software, including:
-- **137+ Algorithm & Data Structure Visualizers**: Real-time animation, step-by-step state tracking, timeline scrubbing, and speed adjustment across linear, tree, graph, sorting, searching, hashing, matrix, and dynamic programming algorithms.
+- **138 Algorithm & Data Structure Visualizers**: Real-time animation, step-by-step state tracking, timeline scrubbing, and speed adjustment across 12 data structure categories (Arrays, Linked Lists, Doubly Linked Lists, Circular Linked Lists, Stacks, Queues, Hash Tables, Hash Sets, Trees, Graphs, Matrices, and Strings).
+- **62-Chapter Academic Curriculum**: University-grade syllabus covering foundations through advanced problem solving with 525+ interview problems.
 - **Synchronized Multi-Language Source Code**: Synchronized pseudocode and verified implementations in **Python, C++, Java, and JavaScript**.
 - **Mental Math Calculation Studio**: Operation drills, 60s speed sprints, timed tests, and global daily challenges.
 - **Student Dashboard & Analytics**: Study streaks, XP points, saved bookmarks, and completion metrics.

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { LegalNav } from "@/components/legal/LegalNav";
+import { catalogStats } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -75,8 +76,8 @@ export default async function PrivacyPage() {
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
                 We never sell, rent, license, or monetize your personal data or activity telemetry
-                with third-party advertising networks. We use Google Analytics 4 solely for anonymous,
-                aggregate traffic insights to improve the platform.
+                with third-party advertising networks. We use Google Analytics 4 solely for
+                pseudonymous, aggregate traffic insights to improve the platform.
               </p>
             </div>
 
@@ -86,8 +87,8 @@ export default async function PrivacyPage() {
                 Anonymous Public Exploration
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                All 137 algorithm visualizers, code execution workspaces, and training sandboxes can
-                be explored anonymously without an account.
+                All {catalogStats.visualizerCount} algorithm visualizers, code execution workspaces,
+                and training sandboxes can be explored anonymously without an account.
               </p>
             </div>
 
@@ -319,10 +320,11 @@ export default async function PrivacyPage() {
                   users.
                 </li>
                 <li>
-                  <strong>Public Educational Content Isolation:</strong> All 137 algorithm
-                  visualizer specifications, step generators, and code templates are statically
-                  compiled and completely segregated from user database records, requiring zero
-                  authentication or data-collection overhead to run.
+                  <strong>Public Educational Content Isolation:</strong> All{" "}
+                  {catalogStats.visualizerCount} algorithm visualizer specifications, step
+                  generators, and code templates are statically compiled and completely segregated
+                  from user database records, requiring zero authentication or data-collection
+                  overhead to run.
                 </li>
                 <li>
                   <strong>End-to-End Transport Encryption:</strong> All communications between your
@@ -354,11 +356,17 @@ export default async function PrivacyPage() {
                   logged-in state across Next.js server components and API routes.
                 </li>
                 <li>
-                  <strong>Analytics Cookies (Google Analytics 4):</strong> GA4 sets two cookies
-                  (<code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">_ga</code> and{" "}
-                  <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">_ga_&lt;container-id&gt;</code>)
-                  to collect anonymous, aggregate traffic metrics. GA4 advertising features are disabled;
-                  analytics data is never linked to your account identity.
+                  <strong>Analytics Cookies (Google Analytics 4):</strong> GA4 sets two cookies (
+                  <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">
+                    _ga
+                  </code>{" "}
+                  and{" "}
+                  <code className="font-mono text-xs bg-surface-inset px-1 py-0.5 rounded border border-border">
+                    _ga_&lt;container-id&gt;
+                  </code>
+                  ) to collect pseudonymous, aggregate traffic metrics using random client
+                  identifiers. GA4 advertising features are disabled; analytics data is never linked
+                  to your account identity.
                 </li>
                 <li>
                   <strong>Browser Local Storage:</strong> Used to store your UI preferences
@@ -405,7 +413,9 @@ export default async function PrivacyPage() {
                     <tr>
                       <td className="p-3 font-bold text-text-primary">Supabase Inc.</td>
                       <td className="p-3">Postgres Database, Auth Engine, RLS Storage</td>
-                      <td className="p-3">SOC 2 Type II, ISO 27001, HIPAA compliant</td>
+                      <td className="p-3">
+                        SOC 2 Type II, ISO 27001 (HIPAA support available via Enterprise BAA)
+                      </td>
                     </tr>
                     <tr>
                       <td className="p-3 font-bold text-text-primary">Vercel Inc.</td>
@@ -416,8 +426,14 @@ export default async function PrivacyPage() {
                     </tr>
                     <tr>
                       <td className="p-3 font-bold text-text-primary">Google LLC</td>
-                      <td className="p-3">Google OAuth 2.0 Identity Provider (Optional SSO); Google Analytics 4 (aggregate traffic analytics)</td>
-                      <td className="p-3">SOC 2, ISO 27001, Privacy Shield / DPA</td>
+                      <td className="p-3">
+                        Google OAuth 2.0 Identity Provider (Optional SSO); Google Analytics 4
+                        (aggregate traffic analytics)
+                      </td>
+                      <td className="p-3">
+                        SOC 2, ISO 27001, EU-U.S. Data Privacy Framework (DPF) / Standard
+                        Contractual Clauses (SCCs)
+                      </td>
                     </tr>
                     <tr>
                       <td className="p-3 font-bold text-text-primary">GitHub Inc. / Microsoft</td>

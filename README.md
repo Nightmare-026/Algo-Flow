@@ -205,7 +205,7 @@ algo-flow/
 │   │   ├── (auth)/             # Authentication workflows (login, signup, reset)
 │   │   ├── auth/callback/      # Supabase OAuth token exchange route
 │   │   ├── dashboard/          # Protected user telemetry & progress dashboard
-│   │   ├── visualizer/[slug]/  # Dynamic workstation runtime for 137+ algorithms
+│   │   ├── visualizer/[slug]/  # Dynamic workstation runtime for 138 algorithms
 │   │   ├── visualizers/        # Searchable algorithmic catalog & category filters
 │   │   ├── mental-math/        # Interactive mental calculation studio
 │   │   ├── quizzes/            # Algorithmic comprehension assessment suites

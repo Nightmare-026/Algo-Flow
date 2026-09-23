@@ -1,7 +1,7 @@
 # Algo Flow — Cookie Policy & Local Storage Transparency
 
-**Effective Date**: September 22, 2026  
-**Version**: 2026-09-22  
+**Effective Date**: September 23, 2026  
+**Version**: 2026-09-23  
 **Maintainer**: Nightmare / Algo Flow Team  
 **Contact**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  
 **Web Version**: [https://algo-flow.vercel.app/cookies](https://algo-flow.vercel.app/cookies)  
@@ -33,11 +33,11 @@ Authentication cookies are required for identity verification and secure session
 
 ## 3. Analytics Cookies (Google Analytics 4)
 
-We use Google Analytics 4 (GA4) to collect anonymous, aggregate insights about how learners use Algo Flow — such as which algorithms are most visited, page load performance, and navigation patterns. This data helps us prioritize educational content and improve platform reliability.
+We use Google Analytics 4 (GA4) to collect pseudonymous, aggregate insights about how learners use Algo Flow — such as which algorithms are most visited, page load performance, and navigation patterns. This data helps us prioritize educational content and improve platform reliability.
 
 | Cookie Name | Provider / Source | Purpose & Classification | Expiration | Security Flags |
 | :--- | :--- | :--- | :--- | :--- |
-| `_ga` | Google Analytics 4 | Distinguishes unique visitors using a randomly generated anonymous identifier | 2 Years | `SameSite=Lax`, `Secure` |
+| `_ga` | Google Analytics 4 | Distinguishes unique visitors using a randomly generated pseudonymous client identifier | 2 Years | `SameSite=Lax`, `Secure` |
 | `_ga_<container-id>` | Google Analytics 4 | Persists session state (e.g., page view count within a session) | 2 Years | `SameSite=Lax`, `Secure` |
 
 **What GA4 does NOT do on Algo Flow:**
@@ -68,7 +68,7 @@ We use HTML5 Browser `localStorage` to save your UI preferences locally on your 
 
 You maintain complete sovereignty over your browser storage at all times:
 - **Browser Settings**: You can clear all cookies and local storage items at any time through your web browser settings (Chrome, Firefox, Safari, Edge, or Brave).
-- **Guest Mode**: You can explore all 137 algorithm visualizers and code execution modules without logging in.
+- **Guest Mode**: You can explore all 138 algorithm visualizers and code execution modules without logging in.
 - **Account Deletion**: Deleting your account from the Student Dashboard purges all remote database records immediately.
 
 ---

@@ -112,10 +112,17 @@ export function VisualizerClient({
     algorithm.dataStructureId === "ds_tree" || algorithm.dataStructureId === "ds_graph";
 
   const canvasContent = !isReady ? (
-    <div className="flex h-full w-full items-center justify-center">
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex h-full w-full items-center justify-center"
+    >
       <div className="flex flex-col items-center gap-3">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
-        <span className="text-sm text-muted-foreground">Loading visualizer…</span>
+        <span className="text-sm text-muted-foreground">
+          Initializing {algorithm.name} workstation…
+        </span>
+        <span className="sr-only">Loading interactive visualizer state and canvas</span>
       </div>
     </div>
   ) : isImplemented && Renderer ? (

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { LegalNav } from "@/components/legal/LegalNav";
+import { catalogStats } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -167,10 +168,10 @@ export default async function TermsPage() {
               <p>AlgoFlow provides interactive Computer Science education tools, including:</p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>137 Visualizer Workstations:</strong> Dynamic, deterministic execution
-                  traces across 12 data structure categories (Arrays, Linked Lists, Doubly Linked
-                  Lists, Circular Linked Lists, Stacks, Queues, Hash Tables, Hash Sets, Trees,
-                  Graphs, Matrices, and Strings).
+                  <strong>{catalogStats.visualizerCount} Visualizer Workstations:</strong> Dynamic,
+                  deterministic execution traces across 12 data structure categories (Arrays, Linked
+                  Lists, Doubly Linked Lists, Circular Linked Lists, Stacks, Queues, Hash Tables,
+                  Hash Sets, Trees, Graphs, Matrices, and Strings).
                 </li>
                 <li>
                   <strong>Synchronized Multi-Language Source Code:</strong> Interactive code panels

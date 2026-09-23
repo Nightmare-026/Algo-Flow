@@ -83,8 +83,8 @@ export default async function CookiesPage() {
                 Privacy-Focused Analytics
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                We use Google Analytics 4 solely for anonymous, aggregate traffic insights. GA4
-                is never used for advertising, remarketing, or profiling.
+                We use Google Analytics 4 solely for anonymous, aggregate traffic insights. GA4 is
+                never used for advertising, remarketing, or profiling.
               </p>
             </div>
 
@@ -132,9 +132,11 @@ export default async function CookiesPage() {
               </p>
               <p>
                 In addition to standard HTTP cookies, modern web applications utilize{" "}
-                <strong>HTML5 Local Storage</strong>â€”a secure client-side storage mechanism that
-                allows settings (such as your chosen visual theme) to persist on your device without
-                sending redundant network traffic to external servers with every page request.
+                <strong>HTML5 Local Storage</strong>—a client-side persistent storage mechanism that
+                allows non-sensitive preferences (such as your chosen visual theme) to persist on
+                your device without sending redundant network traffic to external servers with every
+                page request. Local storage is never used for authentication credentials or
+                sensitive cryptographic keys.
               </p>
             </div>
           </section>
@@ -151,9 +153,9 @@ export default async function CookiesPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                We maintain an exhaustive and minimal list of cookies. Authentication cookies on AlgoFlow are
-                classified as <strong>Strictly Necessary</strong>, and analytics cookies are classified
-                as <strong>Performance / Analytics</strong>:
+                We maintain an exhaustive and minimal list of cookies. Authentication cookies on
+                AlgoFlow are classified as <strong>Strictly Necessary</strong>, and analytics
+                cookies are classified as <strong>Performance / Analytics</strong>:
               </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border border-border rounded-xl overflow-hidden mt-2">
@@ -172,7 +174,7 @@ export default async function CookiesPage() {
                         Maintains authenticated session state via Supabase Auth
                       </td>
                       <td className="p-3 font-mono">
-                        Strictly Necessary â€¢ HttpOnly, Secure, SameSite
+                        Strictly Necessary &bull; HttpOnly, Secure, SameSite
                       </td>
                       <td className="p-3">Session / 1 Year</td>
                     </tr>
@@ -183,16 +185,17 @@ export default async function CookiesPage() {
                       <td className="p-3">
                         Allows automatic cryptographic renewal of expired session tokens
                       </td>
-                      <td className="p-3 font-mono">Strictly Necessary â€¢ HttpOnly, Secure</td>
+                      <td className="p-3 font-mono">Strictly Necessary &bull; HttpOnly, Secure</td>
                       <td className="p-3">Session / 1 Year</td>
                     </tr>
                     <tr>
                       <td className="p-3 font-mono font-bold text-text-primary">_ga</td>
                       <td className="p-3">
-                        Distinguishes unique visitors using a randomly generated anonymous identifier (Google Analytics 4)
+                        Distinguishes unique visitors using a randomly generated pseudonymous client
+                        identifier (Google Analytics 4)
                       </td>
                       <td className="p-3 font-mono">
-                        Performance / Analytics â€¢ SameSite=Lax, Secure
+                        Performance / Analytics &bull; SameSite=Lax, Secure
                       </td>
                       <td className="p-3">2 Years</td>
                     </tr>
@@ -201,10 +204,11 @@ export default async function CookiesPage() {
                         _ga_&lt;container-id&gt;
                       </td>
                       <td className="p-3">
-                        Persists session state (e.g., page view count within a session) for Google Analytics 4
+                        Persists session state (e.g., page view count within a session) for Google
+                        Analytics 4
                       </td>
                       <td className="p-3 font-mono">
-                        Performance / Analytics â€¢ SameSite=Lax, Secure
+                        Performance / Analytics &bull; SameSite=Lax, Secure
                       </td>
                       <td className="p-3">2 Years</td>
                     </tr>
@@ -212,15 +216,17 @@ export default async function CookiesPage() {
                 </table>
               </div>
               <p className="text-xs text-text-muted mt-3">
-                <em>Privacy-First Web Telemetry:</em> In addition to GA4, AlgoFlow uses Vercel Web Analytics to monitor
-                platform health and Core Web Vitals. Vercel Web Analytics operates completely
-                <strong> cookie-less</strong>â€”it does not use cookies, does not persist identifiers
+                <em>Privacy-First Web Telemetry:</em> In addition to GA4, AlgoFlow uses Vercel Web
+                Analytics to monitor platform health and Core Web Vitals. Vercel Web Analytics
+                operates completely
+                <strong> cookie-less</strong>—it does not use cookies, does not persist identifiers
                 across sites, and does not store personal data.
               </p>
               <p className="text-xs text-text-muted mt-2">
-                <em>GA4 restrictions on AlgoFlow:</em> Google Analytics advertising features, remarketing,
-                and user-level profiling are <strong>disabled</strong>. Analytics data is never linked to your
-                AlgoFlow account identity or shared with third-party advertisers.
+                <em>GA4 restrictions on AlgoFlow:</em> Google Analytics advertising features,
+                remarketing, and user-level profiling are <strong>disabled</strong>. Analytics data
+                is never linked to your AlgoFlow account identity or shared with third-party
+                advertisers.
               </p>
             </div>
           </section>
@@ -336,15 +342,15 @@ export default async function CookiesPage() {
                   other site data.
                 </li>
                 <li>
-                  <strong>Mozilla Firefox:</strong> Options â†’ Privacy &amp; Security â†’ Cookies and
-                  Site Data.
+                  <strong>Mozilla Firefox:</strong> Options â†’ Privacy &amp; Security â†’ Cookies
+                  and Site Data.
                 </li>
                 <li>
                   <strong>Apple Safari:</strong> Preferences â†’ Privacy â†’ Manage Website Data.
                 </li>
                 <li>
-                  <strong>Microsoft Edge:</strong> Settings â†’ Cookies and site permissions â†’ Manage
-                  and delete cookies and site data.
+                  <strong>Microsoft Edge:</strong> Settings â†’ Cookies and site permissions â†’
+                  Manage and delete cookies and site data.
                 </li>
               </ul>
               <p className="text-xs text-text-muted mt-2">

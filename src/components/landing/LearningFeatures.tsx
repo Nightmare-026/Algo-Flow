@@ -1,13 +1,13 @@
 "use client";
 
-import { Bookmark, Code2, Gauge, Network, Trophy, BrainCircuit } from "lucide-react";
+import { Bookmark, Code2, Gauge, Network, Trophy, BookOpen } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
 const features = [
   {
     title: "Granular Playback Controls",
     description:
-      "Full VCR-style transport: play, pause, step forward/backward, jump to start/end, and scrub with 0.25x â€“ 2.0x speed scaling.",
+      "Full VCR-style transport: play, pause, step forward/backward, jump to start/end, and scrub with 0.25x – 2.0x speed scaling.",
     Icon: Gauge,
   },
   {
@@ -23,10 +23,10 @@ const features = [
     Icon: Code2,
   },
   {
-    title: "Mental Math Arithmetic Trainer",
+    title: "62-Chapter Academic Curriculum",
     description:
-      "Train calculation speed, multi-digit arithmetic, and operator fluency with 60s sprints, timed tests, and official daily challenges.",
-    Icon: BrainCircuit,
+      "Comprehensive, university-grade syllabus across 12 parts from physical hardware bit encodings and asymptotic proofs to advanced graph theory and 525+ interview problems.",
+    Icon: BookOpen,
   },
   {
     title: "Interactive Step Predictor",

@@ -1924,9 +1924,10 @@ const rawAlgorithms: Algorithm[] = [
     timeComplexityAverage: "O(V + E)",
     timeComplexityWorst: "O(V + E)",
     spaceComplexity: "O(V)",
-    shortDescription: "Detect cycles in directed and undirected graphs via 3-color DFS.",
+    shortDescription:
+      "Detect cycles in graphs via DFS: 3-color state classification for directed graphs and parent-edge tracking for undirected graphs.",
     longDescription:
-      "Uses 3-state (White/Gray/Black) DFS traversal to find back-edges representing cycles in the graph.",
+      "Uses 3-state (White/Gray/Black) DFS traversal to find back-edges representing cycles in directed graphs, and parent-edge tracking in undirected graphs.",
     prerequisites: ["dfs"],
     tags: ["graph", "cycle", "dfs"],
     visualizerType: "graph",

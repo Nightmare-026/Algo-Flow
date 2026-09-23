@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { LegalNav } from "@/components/legal/LegalNav";
+import { catalogStats } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "License Agreement",
@@ -71,9 +72,10 @@ export default async function LicensePage() {
                 Permitted: Personal Study & Learning
               </p>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                You are encouraged to explore, interact with, and learn from all 137 published
-                algorithm visualizers across 12 data structure categories, code panels, and mental
-                calculation drills for your personal education.
+                You are encouraged to explore, interact with, and learn from all{" "}
+                {catalogStats.visualizerCount} published algorithm visualizers across 12 data
+                structure categories, code panels, and mental calculation drills for your personal
+                education.
               </p>
             </div>
 

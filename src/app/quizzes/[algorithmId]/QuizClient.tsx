@@ -10,6 +10,7 @@ import {
   Compass,
   CheckCircle2,
   XCircle,
+  BookOpen,
 } from "lucide-react";
 import { Algorithm } from "@/types";
 import { QuestionData } from "@/data/seed/questions";
@@ -116,13 +117,30 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
               : "Good effort! Review the step-by-step visualizer and try again to master this algorithm."}
           </p>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => {
+                setCurrentIndex(0);
+                setSelectedOption(null);
+                setIsAnswered(false);
+                setScore(0);
+                setIsFinished(false);
+              }}
+            >
+              <RotateCcw className="h-4 w-4" />
+              Retake Quiz
+            </Button>
             <Link
               href={`/visualizer/${algorithm.slug}`}
               className={buttonVariants({ variant: "outline", size: "lg" })}
             >
-              <RotateCcw className="h-4 w-4" />
               Review Visualizer
+            </Link>
+            <Link href="/learnings" className={buttonVariants({ variant: "outline", size: "lg" })}>
+              <BookOpen className="h-4 w-4" />
+              Read Curriculum
             </Link>
             <Link href="/dashboard" className={buttonVariants({ size: "lg" })}>
               <Compass className="h-4 w-4" />
@@ -230,9 +248,19 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
         {/* Explanation Callout */}
         {isAnswered && (
           <div className="rounded-2xl bg-bg-surface-inset p-5 border border-border mt-6 shadow-[var(--shadow-inset)] animate-in slide-in-from-bottom-2 duration-200">
-            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary mb-1.5">
-              Explanation
-            </h2>
+            <div className="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary">
+                Explanation
+              </h2>
+              <Link
+                href={`/visualizer/${algorithm.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono font-medium text-primary hover:underline flex items-center gap-1"
+              >
+                Inspect in Visualizer &rarr;
+              </Link>
+            </div>
             <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
               {currentQ.explanation}
             </p>

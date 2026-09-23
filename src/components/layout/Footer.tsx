@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { catalogStats } from "@/lib/catalog";
 
-const footerSections = [
+export const footerSections = [
   {
     title: "Platform",
     links: [
@@ -27,9 +27,10 @@ const footerSections = [
     title: "Learning",
     links: [
       { label: "DSA Curriculum", href: "/learnings" },
-      { label: "How it works", href: "/#how-it-works" },
-      { label: "Multi-Language Code", href: "/#code-languages" },
-      { label: "Study Features", href: "/#features" },
+      { label: "Curriculum Roadmap", href: "/learnings/front-matter/dsa-roadmap" },
+      { label: "Complexity Reference", href: "/learnings/front-matter/complexity-quick-ref" },
+      { label: "Academic Methodology", href: "/learnings/front-matter/cover-and-purpose" },
+      { label: "Problem Bank (525+)", href: "/learnings/problem-bank-and-revision" },
     ],
   },
   {
@@ -71,8 +72,8 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <span>
-                {catalogStats.visualizerCount} Published Algorithms â€¢ {catalogStats.structureCount}{" "}
-                Data Structures
+                {catalogStats.visualizerCount} Published Algorithms â€¢{" "}
+                {catalogStats.structureCount} Data Structures
               </span>
             </div>
           </div>

@@ -8,7 +8,7 @@ const steps = [
     step: "01",
     title: "Pick an Algorithm",
     description:
-      "Explore 12 core data structure categories or filter by operation (Sorting, Search, Trees, Graphs, DP).",
+      "Explore 12 core data structure categories (Linear, Trees & Graphs, Hash-Based) or search across 138 interactive visualizers.",
     Icon: MousePointer2,
   },
   {
