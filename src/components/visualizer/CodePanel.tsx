@@ -193,7 +193,7 @@ export function CodePanel({
       className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-(--shadow-raised-sm)"
       aria-label="Source code"
     >
-      <div className="flex min-h-[38px] shrink-0 items-center justify-between border-b border-border bg-surface px-2">
+      <div className="flex min-h-9.5 shrink-0 items-center justify-between border-b border-border bg-surface px-2">
         <div
           className="hide-scrollbar flex items-center gap-1 overflow-x-auto"
           role="tablist"
@@ -252,7 +252,7 @@ export function CodePanel({
         {isDocumentReady && htmlContent && codeString ? (
           <div
             ref={codeContainerRef}
-            className="code-lines p-3 font-mono text-[11px] leading-5 [&_.line]:-mx-1.5 [&_.line]:px-1.5 [&_.line]:py-0.5 [&_.line]:transition-all [&_pre]:!m-0 [&_pre]:!bg-transparent"
+            className="code-lines p-3 font-mono text-[11px] leading-5 [&_.line]:-mx-1.5 [&_.line]:px-1.5 [&_.line]:py-0.5 [&_.line]:transition-all [&_pre]:m-0! [&_pre]:bg-transparent!"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
         ) : (

@@ -32,7 +32,7 @@ export function PseudocodePanel({ slug, fallback, isVisible = true }: Pseudocode
       className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-(--shadow-raised-sm)"
       aria-label="Pseudocode"
     >
-      <div className="flex min-h-[38px] shrink-0 items-center justify-between border-b border-border bg-surface px-3">
+      <div className="flex min-h-9.5 shrink-0 items-center justify-between border-b border-border bg-surface px-3">
         <h2 className="text-[10px] font-mono font-bold uppercase tracking-wider text-text-primary">
           Pseudocode
         </h2>
