@@ -5,7 +5,7 @@ import { MatrixElement, MatrixGridData, MatrixVisualState } from "@/visualizers/
 import { VisualStepHighlights } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { getVisualElementClassName } from "../visual-state";
+import { getVisualElementState, getVisualStateClassName, VisualElementState } from "../visual-state";
 import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 
 interface SingleMatrixGridProps {
@@ -19,6 +19,20 @@ interface SingleMatrixGridProps {
   cellSize?: "sm" | "md" | "lg";
 }
 
+function resolveMatrixElementState(
+  highlights: VisualStepHighlights,
+  candidates: (string | undefined)[]
+): VisualElementState {
+  for (const id of candidates) {
+    if (!id) continue;
+    const state = getVisualElementState(highlights, id);
+    if (state !== "default") {
+      return state;
+    }
+  }
+  return "default";
+}
+
 function SingleMatrixGrid({
   label,
   rows,
@@ -29,6 +43,47 @@ function SingleMatrixGrid({
   matrixKey = "matrix",
   cellSize = "md",
 }: SingleMatrixGridProps) {
+  const isDual = matrixKey === "matrixA" || matrixKey === "matrixB" || matrixKey === "resultMatrix";
+  const isSingle = !isDual;
+
+  // Identify active row & column to highlight axis headers for spatial orientation
+  let activeRow: number | null = null;
+  let activeCol: number | null = null;
+
+  for (let cellIndex = 0; cellIndex < elements.length; cellIndex++) {
+    const element = elements[cellIndex];
+    const gridRow = Math.floor(cellIndex / cols);
+    const gridCol = cellIndex % cols;
+    const idStr = cellIndex.toString();
+    const origIdStr = (element.originalRow * cols + element.originalCol).toString();
+    const r = gridRow;
+    const c = gridCol;
+
+    const candidateIds = [
+      element.id,
+      `${matrixKey}-${idStr}`,
+      `${matrixKey}-${r}-${c}`,
+      matrixKey === "matrixA" ? `a-${idStr}` : undefined,
+      matrixKey === "matrixA" ? `a-${r}-${c}` : undefined,
+      matrixKey === "matrixB" ? `b-${idStr}` : undefined,
+      matrixKey === "matrixB" ? `b-${r}-${c}` : undefined,
+      isResult ? `res-${idStr}` : undefined,
+      isResult ? `res-${r}-${c}` : undefined,
+      isSingle ? idStr : undefined,
+      isSingle ? `${r}-${c}` : undefined,
+      isSingle ? origIdStr : undefined,
+      isSingle ? `${element.originalRow}-${element.originalCol}` : undefined,
+    ];
+
+    const hasPointer = candidateIds.some((id) => id && highlights.pointer?.includes(id));
+    const elState = resolveMatrixElementState(highlights, candidateIds);
+    if (hasPointer || elState === "current" || elState === "compared" || elState === "found" || elState === "swapped") {
+      activeRow = r;
+      activeCol = c;
+      break;
+    }
+  }
+
   const gridStyle = {
     display: "grid",
     gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
@@ -77,47 +132,91 @@ function SingleMatrixGrid({
         {/* Column Headers */}
         <div className="flex w-full mb-1 ml-6">
           <div style={gridStyle} className="w-full">
-            {Array.from({ length: cols }).map((_, c) => (
-              <div
-                key={`${matrixKey}-col-${c}`}
-                className={cn(
-                  "flex justify-center text-[11px] text-text-muted font-mono opacity-70",
-                  headerDimension
-                )}
-              >
-                c{c}
-              </div>
-            ))}
+            {Array.from({ length: cols }).map((_, c) => {
+              const isActive = activeCol === c;
+              return (
+                <div
+                  key={`${matrixKey}-col-${c}`}
+                  className={cn(
+                    "flex justify-center text-[11px] font-mono transition-colors duration-150",
+                    headerDimension,
+                    isActive
+                      ? "text-primary font-bold opacity-100 scale-105"
+                      : "text-text-muted opacity-70"
+                  )}
+                >
+                  c{c}
+                </div>
+              );
+            })}
           </div>
         </div>
 
         <div className="flex">
           {/* Row Labels */}
           <div className="flex flex-col gap-1.5 mr-1.5 pt-1">
-            {Array.from({ length: rows }).map((_, r) => (
-              <div
-                key={`${matrixKey}-row-${r}`}
-                className={cn(
-                  "flex items-center justify-end text-[11px] text-text-muted font-mono opacity-70 pr-1.5",
-                  rowHeaderDimension
-                )}
-              >
-                r{r}
-              </div>
-            ))}
+            {Array.from({ length: rows }).map((_, r) => {
+              const isActive = activeRow === r;
+              return (
+                <div
+                  key={`${matrixKey}-row-${r}`}
+                  className={cn(
+                    "flex items-center justify-end text-[11px] font-mono transition-colors duration-150 pr-1.5",
+                    rowHeaderDimension,
+                    isActive
+                      ? "text-primary font-bold opacity-100 scale-105"
+                      : "text-text-muted opacity-70"
+                  )}
+                >
+                  r{r}
+                </div>
+              );
+            })}
           </div>
 
           <div style={gridStyle}>
             <AnimatePresence mode="popLayout">
-              {elements.map((element) => {
-                const flatIndex = element.originalRow * cols + element.originalCol;
-                const idStr = flatIndex.toString();
-                const isPointer =
-                  highlights.pointer?.includes(element.id) || highlights.pointer?.includes(idStr);
+              {elements.map((element, cellIndex) => {
+                const gridRow = Math.floor(cellIndex / cols);
+                const gridCol = cellIndex % cols;
+                const idStr = cellIndex.toString();
+                const origIdStr = (element.originalRow * cols + element.originalCol).toString();
+                const r = gridRow;
+                const c = gridCol;
 
-                const elementClass =
-                  getVisualElementClassName(highlights, element.id) ||
-                  getVisualElementClassName(highlights, idStr);
+                const candidateIds = [
+                  element.id,
+                  `${matrixKey}-${idStr}`,
+                  `${matrixKey}-${r}-${c}`,
+                  matrixKey === "matrixA" ? `a-${idStr}` : undefined,
+                  matrixKey === "matrixA" ? `a-${r}-${c}` : undefined,
+                  matrixKey === "matrixB" ? `b-${idStr}` : undefined,
+                  matrixKey === "matrixB" ? `b-${r}-${c}` : undefined,
+                  isResult ? `res-${idStr}` : undefined,
+                  isResult ? `res-${r}-${c}` : undefined,
+                  isSingle ? idStr : undefined,
+                  isSingle ? `${r}-${c}` : undefined,
+                  isSingle ? origIdStr : undefined,
+                  isSingle ? `${element.originalRow}-${element.originalCol}` : undefined,
+                ];
+
+                const isPointer = candidateIds.some((id) => id && highlights.pointer?.includes(id));
+                const state = resolveMatrixElementState(highlights, candidateIds);
+
+                const isDefault = state === "default";
+                const elementClass = isDefault && isResult
+                  ? "border-primary/25 bg-bg-surface text-text-primary"
+                  : getVisualStateClassName(state);
+
+                const valStr = String(element.value);
+                const fontScale =
+                  valStr.length >= 5
+                    ? "text-[10px] sm:text-xs tracking-tighter"
+                    : valStr.length >= 4
+                      ? "text-xs sm:text-sm tracking-tight"
+                      : valStr.length >= 3
+                        ? "text-sm sm:text-base tracking-tight"
+                        : "";
 
                 return (
                   <motion.div
@@ -131,9 +230,10 @@ function SingleMatrixGrid({
                       opacity: { duration: 0.2 },
                     }}
                     className={cn(
-                      "visual-element relative flex items-center justify-center rounded-xl border-2 font-bold transition-all duration-200 shadow-sm font-mono",
+                      "visual-element relative flex items-center justify-center rounded-xl border-2 font-bold transition-all duration-200 shadow-sm font-mono tabular-nums select-none",
                       cellDimensions,
-                      elementClass || (isResult ? "border-primary/20 bg-bg-surface" : "")
+                      fontScale,
+                      elementClass
                     )}
                   >
                     {element.value}

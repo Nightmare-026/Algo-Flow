@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { AlertCircle, Shuffle, SortAsc, Target } from "lucide-react";
+import { AlertCircle, Shuffle, SortAsc, Target, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   defaultVisualizerInputOptions,
@@ -36,12 +36,14 @@ export function MatrixInputControls({
   const isMultiplication = slug === "matrix-multiplication";
   const squareOnly = slug === "rotate-matrix-90";
 
-  const [rows, setRows] = useState(defaultRows);
-  const [cols, setCols] = useState(squareOnly ? defaultRows : defaultCols);
+  const rows = options.rows || defaultRows;
+  const cols = squareOnly ? rows : (options.cols || defaultCols);
+
   const [customInputA, setCustomInputA] = useState("");
   const [customInputB, setCustomInputB] = useState("");
   const [customInputSingle, setCustomInputSingle] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [partialInputSingle, setPartialInputSingle] = useState<number[] | null>(null);
   const fieldId = useId();
 
   const expectedLengthA = rows * cols;
@@ -56,18 +58,57 @@ export function MatrixInputControls({
     });
   };
 
+  const generateDataForDimensions = (r: number, c: number, sorted: boolean = false): number[] => {
+    const len = r * c;
+    if (sorted || slug === "row-column-sorted-search") {
+      return Array.from({ length: len }, (_, i) => i + 1);
+    }
+    const defaults = [15, 23, 4, 8, 42, 16, 9, 31, 7, 18, 27, 12, 36, 2, 21, 11, 14, 29, 33, 5, 19, 25, 38, 10, 3, 17, 30, 22, 13, 6, 28, 40, 1, 20, 35, 24];
+    return Array.from({ length: len }, (_, i) => defaults[i % defaults.length] ?? ((i * 7 + 13) % 89 + 10));
+  };
+
+  const generateDataBForDimensions = (r: number, c: number): number[] => {
+    const len = isMultiplication ? c * c : r * c;
+    const defaultsB = [3, 7, 2, 5, 8, 1, 9, 4, 6, 2, 8, 3, 5, 7, 1, 4, 9, 5, 2, 8, 1, 6, 3, 7, 4, 8, 2, 5, 1, 9, 6, 3, 7, 2, 8, 4];
+    return Array.from({ length: len }, (_, i) => defaultsB[i % defaultsB.length] ?? ((i * 5 + 11) % 89 + 10));
+  };
+
+  const handleDimensionChange = (nextRows: number, nextCols: number) => {
+    setError(null);
+    setPartialInputSingle(null);
+    const newArrA = generateDataForDimensions(nextRows, nextCols);
+    if (isDual) {
+      const newArrB = generateDataBForDimensions(nextRows, nextCols);
+      commitDimensions(nextRows, nextCols, newArrB);
+      onGenerate(newArrA);
+    } else {
+      commitDimensions(nextRows, nextCols);
+      onGenerate(newArrA);
+    }
+  };
+
   const setSquareSize = (size: number) => {
-    setRows(size);
-    setCols(size);
-    commitDimensions(size, size);
+    handleDimensionChange(size, size);
   };
 
   const generateRandom = () => {
     setError(null);
-    const newArrA = Array.from(
-      { length: expectedLengthA },
-      () => Math.floor(Math.random() * 99) + 1
-    );
+    setPartialInputSingle(null);
+    let newArrA: number[];
+
+    if (slug === "row-column-sorted-search") {
+      let current = Math.floor(Math.random() * 5) + 1;
+      newArrA = [];
+      for (let i = 0; i < expectedLengthA; i++) {
+        newArrA.push(current);
+        current += Math.floor(Math.random() * 4) + 1;
+      }
+    } else {
+      newArrA = Array.from(
+        { length: expectedLengthA },
+        () => Math.floor(Math.random() * 99) + 1
+      );
+    }
 
     if (isDual) {
       const newArrB = Array.from(
@@ -84,6 +125,7 @@ export function MatrixInputControls({
 
   const generateSorted = () => {
     setError(null);
+    setPartialInputSingle(null);
     const newArrA = Array.from({ length: expectedLengthA }, (_, index) => index + 1);
 
     if (isDual) {
@@ -153,18 +195,44 @@ export function MatrixInputControls({
     const result = parseNumberList(customInputSingle, 100);
     if (result.error) {
       setError(result.error);
+      setPartialInputSingle(null);
       return;
     }
     if (result.values.length !== expectedLengthA) {
-      setError(
-        `Enter exactly ${expectedLengthA} values for the selected ${rows} × ${cols} matrix.`
-      );
+      if (result.values.length < expectedLengthA) {
+        setPartialInputSingle(result.values);
+        setError(
+          `Entered ${result.values.length} of ${expectedLengthA} values for ${rows} × ${cols}.`
+        );
+      } else {
+        setPartialInputSingle(null);
+        setError(
+          `Entered ${result.values.length} values, but ${rows} × ${cols} only needs ${expectedLengthA}.`
+        );
+      }
       return;
     }
 
     setError(null);
+    setPartialInputSingle(null);
     commitDimensions(rows, cols);
     onGenerate(result.values);
+  };
+
+  const handleAutoPad = () => {
+    if (!partialInputSingle) return;
+    const needed = expectedLengthA - partialInputSingle.length;
+    if (needed <= 0) return;
+    const lastVal = partialInputSingle[partialInputSingle.length - 1] ?? 0;
+    const padded = [...partialInputSingle];
+    for (let i = 1; i <= needed; i++) {
+      padded.push(lastVal + i);
+    }
+    setError(null);
+    setPartialInputSingle(null);
+    setCustomInputSingle(padded.join(", "));
+    commitDimensions(rows, cols);
+    onGenerate(padded);
   };
 
   return (
@@ -201,8 +269,7 @@ export function MatrixInputControls({
                     value={rows}
                     onChange={(event) => {
                       const nextRows = Number(event.target.value);
-                      setRows(nextRows);
-                      commitDimensions(nextRows, cols);
+                      handleDimensionChange(nextRows, cols);
                     }}
                     className="h-1.5 w-12 cursor-pointer accent-primary"
                   />
@@ -221,8 +288,7 @@ export function MatrixInputControls({
                     value={cols}
                     onChange={(event) => {
                       const nextCols = Number(event.target.value);
-                      setCols(nextCols);
-                      commitDimensions(rows, nextCols);
+                      handleDimensionChange(rows, nextCols);
                     }}
                     className="h-1.5 w-12 cursor-pointer accent-primary"
                   />
@@ -261,26 +327,26 @@ export function MatrixInputControls({
               className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
             >
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
-                A({expectedLengthA}):
+                A({rows}×{cols}):
               </span>
               <input
                 id={`${fieldId}-custom-a`}
                 type="text"
-                placeholder="e.g. 1, 2..."
-                className="h-6 w-24 sm:w-28 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
+                placeholder={`${expectedLengthA} vals`}
+                className="h-6 w-20 sm:w-24 border-none bg-transparent px-1 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
                 value={customInputA}
                 onChange={(event) => setCustomInputA(event.target.value)}
                 aria-invalid={Boolean(error)}
               />
               <span className="h-3.5 w-px bg-border mx-0.5" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
-                B({expectedLengthB}):
+                B({isMultiplication ? `${cols}×${cols}` : `${rows}×${cols}`}):
               </span>
               <input
                 id={`${fieldId}-custom-b`}
                 type="text"
-                placeholder="e.g. 3, 4..."
-                className="h-6 w-24 sm:w-28 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
+                placeholder={`${expectedLengthB} vals`}
+                className="h-6 w-20 sm:w-24 border-none bg-transparent px-1 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
                 value={customInputB}
                 onChange={(event) => setCustomInputB(event.target.value)}
                 aria-invalid={Boolean(error)}
@@ -350,10 +416,20 @@ export function MatrixInputControls({
         <div
           id={`${fieldId}-error`}
           role="alert"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-error/30 bg-error-muted px-2.5 py-1 text-[10px] font-semibold text-error animate-in fade-in slide-in-from-top-1"
+          className="inline-flex flex-wrap items-center gap-1.5 rounded-lg border border-error/30 bg-error-muted px-2.5 py-1 text-[10px] font-semibold text-error animate-in fade-in slide-in-from-top-1"
         >
           <AlertCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
           <span>{error}</span>
+          {partialInputSingle && partialInputSingle.length < expectedLengthA && (
+            <button
+              type="button"
+              onClick={handleAutoPad}
+              className="inline-flex items-center gap-1 rounded bg-error/10 px-1.5 py-0.5 text-[10px] font-bold text-error hover:bg-error/20 transition-colors cursor-pointer"
+            >
+              <Wand2 className="h-2.5 w-2.5" />
+              Auto-pad to {expectedLengthA}
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -48,6 +48,10 @@ export function getVisualElementState(
   return "default";
 }
 
+export function getVisualStateClassName(state: VisualElementState): string {
+  return stateClasses[state];
+}
+
 export function getVisualElementClassName(highlights: VisualStepHighlights, id: string) {
   return stateClasses[getVisualElementState(highlights, id)];
 }
