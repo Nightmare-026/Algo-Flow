@@ -78,7 +78,7 @@ export default function MentalMathHubPage() {
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
-              48 + 37 â†’ 78 + 7 = 85
+              48 + 37 → 78 + 7 = 85
             </div>
           </div>
 
@@ -96,7 +96,7 @@ export default function MentalMathHubPage() {
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
-              100 âˆ’ 63 â†’ (90âˆ’60)+(10âˆ’3) = 37
+              100 − 63 → (90−60)+(10−3) = 37
             </div>
           </div>
 
@@ -109,12 +109,12 @@ export default function MentalMathHubPage() {
                 Distributive Multipliers
               </h3>
               <p className="text-xs text-text-secondary mt-2 leading-relaxed">
-                Decompose non-trivial factors into friendly anchors (e.g. Ã—25 = Ã—100Ã·4, Ã—9 =
-                Ã—10âˆ’1) or leverage doubling and halving symmetries.
+                Decompose non-trivial factors into friendly anchors (e.g. ×25 = ×100÷4, ×9 = ×10−1)
+                or leverage doubling and halving symmetries.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
-              16 Ã— 25 â†’ 4 Ã— 100 = 400
+              16 × 25 → 4 × 100 = 400
             </div>
           </div>
 
@@ -124,15 +124,15 @@ export default function MentalMathHubPage() {
                 04
               </span>
               <h3 className="text-base font-bold font-display text-text-primary tracking-tight">
-                Anchor Squaring (aÂ±b)Â²
+                Anchor Squaring (a±b)Â²
               </h3>
               <p className="text-xs text-text-secondary mt-2 leading-relaxed">
-                Square numbers close to base-50 anchors instantly using (50Â±d)Â² = (25Â±d)Ã—100 +
-                dÂ². Solves two-digit squares in under 2 seconds.
+                Square numbers close to base-50 anchors instantly using (50±d)Â² = (25±d)×100 + dÂ².
+                Solves two-digit squares in under 2 seconds.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
-              53Â² â†’ (25+3)Ã—100 + 3Â² = 2,809
+              53Â² → (25+3)×100 + 3Â² = 2,809
             </div>
           </div>
         </div>

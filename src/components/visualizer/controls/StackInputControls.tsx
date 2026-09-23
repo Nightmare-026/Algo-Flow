@@ -108,31 +108,31 @@ export function StackInputControls({
   const getOperationHint = () => {
     switch (slug) {
       case "stack-push":
-        return "LIFO â€¢ Inserts at top â€¢ O(1)";
+        return "LIFO • Inserts at top • O(1)";
       case "stack-pop":
-        return "LIFO â€¢ Removes from top â€¢ O(1)";
+        return "LIFO • Removes from top • O(1)";
       case "stack-peek":
-        return "Reads top element without removal â€¢ O(1)";
+        return "Reads top element without removal • O(1)";
       case "stack-is-empty":
-        return "Checks if top == -1 (size == 0) â€¢ O(1)";
+        return "Checks if top == -1 (size == 0) • O(1)";
       case "stack-is-full":
-        return "Checks if size == capacity â€¢ O(1)";
+        return "Checks if size == capacity • O(1)";
       case "stack-size":
-        return "Returns top + 1 â€¢ O(1)";
+        return "Returns top + 1 • O(1)";
       case "array-stack":
-        return "Array implementation with top index pointer â€¢ O(1)";
+        return "Array implementation with top index pointer • O(1)";
       case "balanced-parentheses":
-        return "Validates reverse-matching of (), {}, [] brackets â€¢ O(n)";
+        return "Validates reverse-matching of (), {}, [] brackets • O(n)";
       case "infix-to-postfix":
-        return "Shunting-Yard conversion using operator precedence â€¢ O(n)";
+        return "Shunting-Yard conversion using operator precedence • O(n)";
       case "postfix-evaluation":
-        return "Arithmetic evaluation using operand stack â€¢ O(n)";
+        return "Arithmetic evaluation using operand stack • O(n)";
       case "min-stack":
-        return "Dual-stack architecture supporting getMin() â€¢ O(1)";
+        return "Dual-stack architecture supporting getMin() • O(1)";
       case "next-greater-element":
-        return "Monotonic decreasing stack interview pattern â€¢ O(n)";
+        return "Monotonic decreasing stack interview pattern • O(n)";
       default:
-        return "Stack LIFO Data Structure â€¢ O(1)";
+        return "Stack LIFO Data Structure • O(1)";
     }
   };
 

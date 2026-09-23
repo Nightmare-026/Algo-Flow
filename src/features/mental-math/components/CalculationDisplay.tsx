@@ -75,11 +75,11 @@ export function CalculationDisplay({
             {isAnswered ? (
               isCorrect ? (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
-                  Correct âœ“
+                  Correct ✓
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
-                  Incorrect âœ—
+                  Incorrect ✗
                 </span>
               )
             ) : (
@@ -187,11 +187,11 @@ export function CalculationDisplay({
           {isAnswered ? (
             isCorrect ? (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
-                Correct âœ“
+                Correct ✓
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
-                Incorrect âœ—
+                Incorrect ✗
               </span>
             )
           ) : (
@@ -226,7 +226,7 @@ export function CalculationDisplay({
           ) : signature.operation === "roots" ? (
             <div className="flex items-center gap-1">
               <span className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold text-primary">
-                âˆš
+                √
               </span>
               <span className="font-mono tabular-nums text-3xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight">
                 {op1}

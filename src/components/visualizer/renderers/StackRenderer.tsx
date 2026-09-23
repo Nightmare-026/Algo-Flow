@@ -39,7 +39,7 @@ function SingleStackBeaker({
           <span>{label}</span>
         </div>
         <div className="text-[8px] font-mono font-semibold tracking-tight text-primary/70">
-          â†“ PUSH / POP (LIFO) â†‘
+          ← “ PUSH / POP (LIFO) ← ‘
         </div>
       </div>
 
@@ -195,7 +195,7 @@ export function StackRenderer() {
                   {token.label}
                   {isCurrent && (
                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px] font-black text-primary animate-pulse">
-                      â–¼
+                      ▼
                     </span>
                   )}
                 </div>
@@ -303,7 +303,7 @@ export function StackRenderer() {
               >
                 <span className="text-[9px] font-mono text-text-muted">[{item.index}]</span>
                 <span className="font-mono text-xs font-bold text-text-primary">{item.value}</span>
-                <span className="text-[9px] text-text-muted">â†“</span>
+                <span className="text-[9px] text-text-muted">← “</span>
                 <span
                   className={cn(
                     "font-mono text-xs font-black",

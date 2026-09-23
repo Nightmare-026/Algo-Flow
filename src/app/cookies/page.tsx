@@ -47,7 +47,7 @@ export default async function CookiesPage() {
             Cookie Policy
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {COOKIE_VERSION} â€¢ Effective Date: September 5, 2026
+            Version {COOKIE_VERSION} • Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             At AlgoFlow, we believe in radical transparency. We operate a strict{" "}
@@ -338,19 +338,19 @@ export default async function CookiesPage() {
               </p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-xs sm:text-sm">
                 <li>
-                  <strong>Google Chrome:</strong> Settings â†’ Privacy and security â†’ Cookies and
+                  <strong>Google Chrome:</strong> Settings → Privacy and security → Cookies and
                   other site data.
                 </li>
                 <li>
-                  <strong>Mozilla Firefox:</strong> Options â†’ Privacy &amp; Security â†’ Cookies
-                  and Site Data.
+                  <strong>Mozilla Firefox:</strong> Options → Privacy &amp; Security → Cookies and
+                  Site Data.
                 </li>
                 <li>
-                  <strong>Apple Safari:</strong> Preferences â†’ Privacy â†’ Manage Website Data.
+                  <strong>Apple Safari:</strong> Preferences → Privacy → Manage Website Data.
                 </li>
                 <li>
-                  <strong>Microsoft Edge:</strong> Settings â†’ Cookies and site permissions â†’
-                  Manage and delete cookies and site data.
+                  <strong>Microsoft Edge:</strong> Settings → Cookies and site permissions → Manage
+                  and delete cookies and site data.
                 </li>
               </ul>
               <p className="text-xs text-text-muted mt-2">

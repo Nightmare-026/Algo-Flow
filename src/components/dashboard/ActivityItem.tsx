@@ -85,8 +85,8 @@ export function ActivityItem({ activity: act, algorithms }: ActivityItemProps) {
   const timeLabel = formatRelativeTime(act.created_at);
 
   const subtext = isMentalMath
-    ? `${mmMetadata?.accuracy ?? 100}% accuracy â€¢ ${timeLabel}`
-    : `${alg?.difficulty ? alg.difficulty.charAt(0).toUpperCase() + alg.difficulty.slice(1) : "Algorithm"} â€¢ ${timeLabel}`;
+    ? `${mmMetadata?.accuracy ?? 100}% accuracy • ${timeLabel}`
+    : `${alg?.difficulty ? alg.difficulty.charAt(0).toUpperCase() + alg.difficulty.slice(1) : "Algorithm"} • ${timeLabel}`;
 
   return (
     <div className="flex items-center gap-3.5 p-2.5 sm:p-3 rounded-2xl border border-transparent hover:border-border hover:bg-surface-hover/80 transition-all group">

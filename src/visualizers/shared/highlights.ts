@@ -1,9 +1,9 @@
-﻿/**
- * Phase 3 â€” Highlights helpers.
+/**
+ * Phase 3 — Highlights helpers.
  *
  * These helpers return strictly canonical `VisualStepHighlights` shapes
- * (bucket â†’ ids[]). Algorithm files call them instead of building
- * inverted-shape literals â€” which were the source of A-03 / RR-01.
+ * (bucket → ids[]). Algorithm files call them instead of building
+ * inverted-shape literals — which were the source of A-03 / RR-01.
  */
 
 import type { VisualStepHighlights } from "@/types";

@@ -118,7 +118,7 @@ export function StringInputControls({
               className="h-6 w-24 sm:w-28 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted uppercase"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              placeholder="TEXTâ€¦"
+              placeholder="TEXT…"
               aria-label="Custom text"
             />
 
@@ -134,7 +134,7 @@ export function StringInputControls({
                   className="h-6 w-16 sm:w-20 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted uppercase"
                   value={patternInput}
                   onChange={(e) => setPatternInput(e.target.value)}
-                  placeholder="PATâ€¦"
+                  placeholder="PAT…"
                   aria-label="Pattern to match"
                 />
               </>

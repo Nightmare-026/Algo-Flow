@@ -41,7 +41,7 @@ export function MentalMathRadar({ stats }: MentalMathRadarProps) {
             </div>
             <div className="mt-1">
               <p className="text-base font-extrabold font-display text-text-primary tabular-nums">
-                {fastestQPM > 0 ? `${fastestQPM}` : "â€”"}
+                {fastestQPM > 0 ? `${fastestQPM}` : "—"}
               </p>
               <p className="text-[9px] font-mono text-text-muted">QPM</p>
             </div>
@@ -54,7 +54,7 @@ export function MentalMathRadar({ stats }: MentalMathRadarProps) {
             </div>
             <div className="mt-1">
               <p className="text-base font-extrabold font-display text-text-primary tabular-nums">
-                {totalSolved > 0 ? `${accuracy}%` : "â€”"}
+                {totalSolved > 0 ? `${accuracy}%` : "—"}
               </p>
               <p className="text-[9px] font-mono text-text-muted">Precision</p>
             </div>

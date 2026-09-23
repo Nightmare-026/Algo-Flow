@@ -50,7 +50,7 @@ export default async function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {PRIVACY_VERSION} â€¢ Effective Date: September 5, 2026
+            Version {PRIVACY_VERSION} • Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             At AlgoFlow (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), we believe that

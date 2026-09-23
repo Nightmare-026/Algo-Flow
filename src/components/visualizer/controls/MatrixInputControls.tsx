@@ -114,7 +114,7 @@ export function MatrixInputControls({
       }
       if (resultA.values.length !== expectedLengthA) {
         setError(
-          `Matrix A requires exactly ${expectedLengthA} values for ${rows} Ã— ${cols}. Got ${resultA.values.length}.`
+          `Matrix A requires exactly ${expectedLengthA} values for ${rows} × ${cols}. Got ${resultA.values.length}.`
         );
         return;
       }
@@ -157,7 +157,7 @@ export function MatrixInputControls({
     }
     if (result.values.length !== expectedLengthA) {
       setError(
-        `Enter exactly ${expectedLengthA} values for the selected ${rows} Ã— ${cols} matrix.`
+        `Enter exactly ${expectedLengthA} values for the selected ${rows} × ${cols} matrix.`
       );
       return;
     }
@@ -186,7 +186,7 @@ export function MatrixInputControls({
                   className="h-1.5 w-14 cursor-pointer accent-primary"
                 />
                 <span className="min-w-6 text-center font-mono text-[10px] font-bold text-primary">
-                  {rows}Ã—{cols}
+                  {rows}×{cols}
                 </span>
               </label>
             ) : (

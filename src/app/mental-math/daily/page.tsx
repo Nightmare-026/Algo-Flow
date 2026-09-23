@@ -129,7 +129,7 @@ export default function DailyChallengePage() {
               href="/mental-math/leaderboard"
               className="text-xs font-bold text-primary hover:underline"
             >
-              View Full Standings â†’
+              View Full Standings →
             </Link>
           </div>
 

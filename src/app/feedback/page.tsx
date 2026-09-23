@@ -8,7 +8,7 @@ import { ShieldCheck, CheckCircle2, UserCheck } from "lucide-react";
 export const metadata: Metadata = {
   title: "Feedback",
   description:
-    "Share your feedback with AlgoFlow â€” report bugs, request new features, rate your experience, or send us a message. We read every submission.",
+    "Share your feedback with AlgoFlow — report bugs, request new features, rate your experience, or send us a message. We read every submission.",
   alternates: { canonical: "/feedback" },
 };
 
@@ -60,7 +60,7 @@ export default async function FeedbackPage() {
             <FeedbackForm isAuthenticated={!!user} />
           </div>
 
-          {/* Trust Block â€” Shared Card Component */}
+          {/* Trust Block — Shared Card Component */}
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {TRUST_ITEMS.map((item) => {
               const Icon = item.icon;

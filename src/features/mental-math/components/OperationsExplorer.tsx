@@ -41,79 +41,79 @@ const ALL_OPERATIONS: OperationInfo[] = [
     description:
       "Rapid mental summing, multi-digit column carrying, and left-to-right partial sum decomposition.",
     formulaSample: "48 + 76 = 124",
-    complexityTiers: "1â€“4 Digits",
+    complexityTiers: "1–4 Digits",
     icon: Plus,
   },
   {
     id: "subtraction",
     name: "Subtraction",
-    symbol: "âˆ’",
+    symbol: "−",
     category: "basic",
     categoryLabel: "Basic Arithmetic",
     description:
       "Instant difference computation, 10s/100s complements, and zero-borrow subtraction.",
-    formulaSample: "94 âˆ’ 38 = 56",
-    complexityTiers: "1â€“4 Digits",
+    formulaSample: "94 − 38 = 56",
+    complexityTiers: "1–4 Digits",
     icon: Minus,
   },
   {
     id: "multiplication",
     name: "Multiplication",
-    symbol: "Ã—",
+    symbol: "×",
     category: "basic",
     categoryLabel: "Basic Arithmetic",
     description:
       "Times tables, grid cross-products, doubling & halving, and near-base algebraic distribution.",
-    formulaSample: "24 Ã— 7 = 168",
-    complexityTiers: "1â€“4 Digits",
+    formulaSample: "24 × 7 = 168",
+    complexityTiers: "1–4 Digits",
     icon: X,
   },
   {
     id: "division",
     name: "Division",
-    symbol: "Ã·",
+    symbol: "÷",
     category: "basic",
     categoryLabel: "Basic Arithmetic",
     description:
       "Clean integer quotients, rapid factor reduction, and chunking division without scratchpads.",
-    formulaSample: "168 Ã· 4 = 42",
-    complexityTiers: "1â€“4 Digits",
+    formulaSample: "168 ÷ 4 = 42",
+    complexityTiers: "1–4 Digits",
     icon: Divide,
   },
   {
     id: "squares",
-    name: "Squares (xÂ²)",
-    symbol: "xÂ²",
+    name: "Squares (x²)",
+    symbol: "x²",
     category: "powers",
     categoryLabel: "Powers & Radicals",
     description:
-      "Squaring numbers from 11Â² to 99Â² using (a+b)Â² algebraic identities and base-50 anchors.",
-    formulaSample: "15Â² = 225",
-    complexityTiers: "1â€“3 Digits",
+      "Squaring numbers from 11² to 99² using (a+b)² algebraic identities and base-50 anchors.",
+    formulaSample: "15² = 225",
+    complexityTiers: "1–3 Digits",
     icon: Superscript,
   },
   {
     id: "cubes",
-    name: "Cubes (xÂ³)",
-    symbol: "xÂ³",
+    name: "Cubes (x³)",
+    symbol: "x³",
     category: "powers",
     categoryLabel: "Powers & Radicals",
     description:
-      "Rapid cubic exponentiation (1Â³ to 25Â³) leveraging binomial expansion (a+b)Â³ and terminal digit patterns.",
-    formulaSample: "12Â³ = 1,728",
-    complexityTiers: "1â€“2 Digits",
+      "Rapid cubic exponentiation (1³ to 25³) leveraging binomial expansion (a+b)³ and terminal digit patterns.",
+    formulaSample: "12³ = 1,728",
+    complexityTiers: "1–2 Digits",
     icon: Box,
   },
   {
     id: "roots",
-    name: "Square Roots (âˆšx)",
-    symbol: "âˆšx",
+    name: "Square Roots (√x)",
+    symbol: "√x",
     category: "powers",
     categoryLabel: "Powers & Radicals",
     description:
       "Radical root extraction for perfect squares by analyzing terminal digits and bounding intervals.",
-    formulaSample: "âˆš144 = 12",
-    complexityTiers: "1â€“4 Digits",
+    formulaSample: "√144 = 12",
+    complexityTiers: "1–4 Digits",
     icon: Radical,
   },
   {
@@ -131,11 +131,11 @@ const ALL_OPERATIONS: OperationInfo[] = [
   {
     id: "mixed",
     name: "Mixed Operations",
-    symbol: "Â±Ã—Ã·",
+    symbol: "±×÷",
     category: "mixed",
     categoryLabel: "Comprehensive",
     description:
-      "Dynamic interleaving of all arithmetic operations (+, âˆ’, Ã—, Ã·) to develop versatile cognitive reflexes.",
+      "Dynamic interleaving of all arithmetic operations (+, −, ×, ÷) to develop versatile cognitive reflexes.",
     formulaSample: "Dynamic Random Ops",
     complexityTiers: "All Ranges",
     icon: Shuffle,
@@ -264,9 +264,7 @@ export function OperationsExplorer() {
         >
           Showing {filteredOperations.length} of {ALL_OPERATIONS.length} operations
         </p>
-        <span className="text-xs font-mono font-semibold text-primary">
-          1â€“4 Digit Configurable
-        </span>
+        <span className="text-xs font-mono font-semibold text-primary">1–4 Digit Configurable</span>
       </div>
 
       {/* Operation Cards Grid - Perfectly balanced 3x3 layout on desktop */}

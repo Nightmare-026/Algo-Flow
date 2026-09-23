@@ -48,7 +48,7 @@ export default async function LicensePage() {
             License Agreement
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {LICENSE_VERSION} â€¢ Copyright Â© 2026 Nightmare. All Rights Reserved.
+            Version {LICENSE_VERSION} • Copyright © 2026 Nightmare. All Rights Reserved.
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             This agreement governs the intellectual property rights, source code, interactive
@@ -135,8 +135,8 @@ export default async function LicensePage() {
                 of <strong>Nightmare</strong> (the &quot;Copyright Holder&quot;).
               </p>
               <p>
-                All rights, title, and interest in and to the Softwareâ€”including all worldwide
-                copyrights, trade secrets, trademarks, patents, and moral rightsâ€”are retained
+                All rights, title, and interest in and to the Software—including all worldwide
+                copyrights, trade secrets, trademarks, patents, and moral rights—are retained
                 exclusively by the Copyright Holder. No title, ownership, or intellectual property
                 rights are conveyed or transferred under this Agreement.
               </p>

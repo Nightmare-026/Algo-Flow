@@ -51,7 +51,7 @@ export default async function TermsPage() {
             Terms of Service
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {TERMS_VERSION} â€¢ Effective Date: September 5, 2026
+            Version {TERMS_VERSION} • Effective Date: September 5, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             Welcome to AlgoFlow (&quot;AlgoFlow&quot;, &quot;we&quot;, &quot;us&quot;, or

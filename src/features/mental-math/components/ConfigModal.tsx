@@ -61,21 +61,21 @@ export function ConfigModal({
       case "addition":
         return "+";
       case "subtraction":
-        return "âˆ’";
+        return "−";
       case "multiplication":
-        return "Ã—";
+        return "×";
       case "division":
-        return "Ã·";
+        return "÷";
       case "squares":
         return "Â²";
       case "cubes":
         return "Â³";
       case "roots":
-        return "âˆš";
+        return "√";
       case "percentages":
         return "%";
       case "mixed":
-        return "Â±Ã—Ã·";
+        return "±×÷";
     }
   };
 
@@ -86,19 +86,19 @@ export function ConfigModal({
     shortDesc: string;
   }> = [
     { id: "addition", label: "Addition", symbol: "+", shortDesc: "Summation & partial adds" },
-    { id: "subtraction", label: "Subtraction", symbol: "âˆ’", shortDesc: "Difference & borrows" },
+    { id: "subtraction", label: "Subtraction", symbol: "−", shortDesc: "Difference & borrows" },
     {
       id: "multiplication",
       label: "Multiplication",
-      symbol: "Ã—",
+      symbol: "×",
       shortDesc: "Cross-products & tables",
     },
-    { id: "division", label: "Division", symbol: "Ã·", shortDesc: "Integer quotient splits" },
-    { id: "squares", label: "Squares", symbol: "xÂ²", shortDesc: "Base powers & identities" },
-    { id: "cubes", label: "Cubes", symbol: "xÂ³", shortDesc: "Powers of 3 & binomials" },
-    { id: "roots", label: "Square Roots", symbol: "âˆšx", shortDesc: "Perfect square extraction" },
+    { id: "division", label: "Division", symbol: "÷", shortDesc: "Integer quotient splits" },
+    { id: "squares", label: "Squares", symbol: "x²", shortDesc: "Base powers & identities" },
+    { id: "cubes", label: "Cubes", symbol: "x³", shortDesc: "Powers of 3 & binomials" },
+    { id: "roots", label: "Square Roots", symbol: "√x", shortDesc: "Perfect square extraction" },
     { id: "percentages", label: "Percentages", symbol: "%", shortDesc: "Benchmark proportions" },
-    { id: "mixed", label: "Mixed Ops", symbol: "Â±Ã—Ã·", shortDesc: "Interleaved arithmetic" },
+    { id: "mixed", label: "Mixed Ops", symbol: "±×÷", shortDesc: "Interleaved arithmetic" },
   ];
 
   const difficulties: Array<{
@@ -108,7 +108,7 @@ export function ConfigModal({
     tag: string;
   }> = [
     { id: "easy", label: "Easy", desc: "No carries / friendly factors", tag: "0 Carries" },
-    { id: "medium", label: "Medium", desc: "Single carry / borrow steps", tag: "1â€“2 Carries" },
+    { id: "medium", label: "Medium", desc: "Single carry / borrow steps", tag: "1–2 Carries" },
     { id: "hard", label: "Hard", desc: "Complex regrouping & borrows", tag: "Multi-Carry" },
     {
       id: "expert",
@@ -155,20 +155,20 @@ export function ConfigModal({
       sampleLeft = digitCountLeft === 1 ? 7 : digitCountLeft === 2 ? 25 : 125;
       return {
         formula: `${sampleLeft}Â² = ${sampleLeft * sampleLeft}`,
-        desc: `Squaring ${digitCountLeft}-digit integers (${digitCountLeft === 1 ? "1â€“9" : digitCountLeft === 2 ? "10â€“99" : "100â€“999"})`,
+        desc: `Squaring ${digitCountLeft}-digit integers (${digitCountLeft === 1 ? "1–9" : digitCountLeft === 2 ? "10–99" : "100–999"})`,
       };
     }
     if (operation === "cubes") {
       sampleLeft = digitCountLeft === 1 ? 5 : digitCountLeft === 2 ? 12 : 25;
       return {
         formula: `${sampleLeft}Â³ = ${(sampleLeft * sampleLeft * sampleLeft).toLocaleString()}`,
-        desc: `Cubic powers of ${digitCountLeft}-digit base integers (${digitCountLeft === 1 ? "1â€“9" : digitCountLeft === 2 ? "10â€“25" : "25â€“50"})`,
+        desc: `Cubic powers of ${digitCountLeft}-digit base integers (${digitCountLeft === 1 ? "1–9" : digitCountLeft === 2 ? "10–25" : "25–50"})`,
       };
     }
     if (operation === "roots") {
       const rootBase = digitCountLeft === 1 ? 6 : digitCountLeft === 2 ? 14 : 45;
       return {
-        formula: `âˆš${rootBase * rootBase} = ${rootBase}`,
+        formula: `√${rootBase * rootBase} = ${rootBase}`,
         desc: `Extracting square root for a ${digitCountLeft}-digit answer`,
       };
     }
@@ -184,7 +184,7 @@ export function ConfigModal({
         [sampleLeft, sampleRight] = [sampleRight, sampleLeft];
       }
       return {
-        formula: `${sampleLeft} âˆ’ ${sampleRight} = ${sampleLeft - sampleRight}`,
+        formula: `${sampleLeft} − ${sampleRight} = ${sampleLeft - sampleRight}`,
         desc: `${digitCountLeft}-digit minuend minus ${digitCountRight}-digit subtrahend`,
       };
     }
@@ -192,13 +192,13 @@ export function ConfigModal({
       const divisor = digitCountRight === 1 ? 4 : 12;
       const dividend = divisor * (digitCountLeft === 1 ? 6 : digitCountLeft === 2 ? 28 : 142);
       return {
-        formula: `${dividend} Ã· ${divisor} = ${dividend / divisor}`,
+        formula: `${dividend} ÷ ${divisor} = ${dividend / divisor}`,
         desc: `${digitCountLeft}-digit dividend divided by ${digitCountRight}-digit divisor`,
       };
     }
     if (operation === "multiplication") {
       return {
-        formula: `${sampleLeft} Ã— ${sampleRight} = ${(sampleLeft * sampleRight).toLocaleString()}`,
+        formula: `${sampleLeft} × ${sampleRight} = ${(sampleLeft * sampleRight).toLocaleString()}`,
         desc: `${digitCountLeft}-digit number multiplied by ${digitCountRight}-digit factor`,
       };
     }
@@ -337,12 +337,12 @@ export function ConfigModal({
                   </span>
                   <span className="font-mono font-bold text-primary text-[10px]">
                     {digitCountLeft === 1
-                      ? "1â€“9 (1d)"
+                      ? "1–9 (1d)"
                       : digitCountLeft === 2
-                        ? "10â€“99 (2d)"
+                        ? "10–99 (2d)"
                         : digitCountLeft === 3
-                          ? "100â€“999 (3d)"
-                          : "1kâ€“9.9k (4d)"}
+                          ? "100–999 (3d)"
+                          : "1k–9.9k (4d)"}
                   </span>
                 </div>
                 <div className="grid grid-cols-4 gap-1">
@@ -374,12 +374,12 @@ export function ConfigModal({
                     {isUnaryOp
                       ? "Single Operand"
                       : digitCountRight === 1
-                        ? "1â€“9 (1d)"
+                        ? "1–9 (1d)"
                         : digitCountRight === 2
-                          ? "10â€“99 (2d)"
+                          ? "10–99 (2d)"
                           : digitCountRight === 3
-                            ? "100â€“999 (3d)"
-                            : "1kâ€“9.9k (4d)"}
+                            ? "100–999 (3d)"
+                            : "1k–9.9k (4d)"}
                   </span>
                 </div>
 
@@ -387,10 +387,10 @@ export function ConfigModal({
                   <div className="flex items-center justify-center h-8 px-2 rounded-lg border border-border/60 bg-surface text-[10px] font-mono text-text-muted text-center">
                     Single base{" "}
                     {operation === "squares"
-                      ? "power (xÂ²)"
+                      ? "power (x²)"
                       : operation === "cubes"
-                        ? "cubic power (xÂ³)"
-                        : "root (âˆšx)"}
+                        ? "cubic power (x³)"
+                        : "root (√x)"}
                   </div>
                 ) : (
                   <div className="grid grid-cols-4 gap-1">
@@ -636,7 +636,7 @@ export function ConfigModal({
               <p className="text-[10px] font-mono text-text-muted text-center">
                 Press{" "}
                 <kbd className="px-1 py-0.5 rounded bg-surface border border-border text-[9px] font-bold text-text-primary">
-                  Enter â†µ
+                  Enter ↵
                 </kbd>{" "}
                 to launch drill
               </p>

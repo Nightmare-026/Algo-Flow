@@ -131,7 +131,7 @@ export function AnswerPad({
         </kbd>
         <span>Submit</span>
       </span>
-      <span>â€¢</span>
+      <span>•</span>
       {hintsEnabled ? (
         <span className="flex items-center gap-1">
           <kbd className="px-1.5 py-0.5 rounded bg-surface border border-border text-[9px] font-bold shadow-xs">

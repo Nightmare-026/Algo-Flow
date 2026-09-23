@@ -63,7 +63,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
             ? "Flawless Performance!"
             : isHighAccuracy
               ? "High-Velocity Solving!"
-              : "Session Finished â€” Keep Drilling!"}
+              : "Session Finished — Keep Drilling!"}
         </h1>
 
         <div className="flex items-baseline gap-2 mt-4">
@@ -151,7 +151,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
           href="/mental-math"
           className="w-full sm:w-auto neu-raised px-5 py-3 rounded-2xl text-xs font-bold font-display text-text-secondary hover:text-text-primary border border-border text-center transition-all shadow-(--shadow-raised-sm) active:scale-95"
         >
-          â† Return to Hub
+          ←  Return to Hub
         </Link>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -235,8 +235,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
                       </span>
                       <div>
                         <p className="font-mono font-extrabold text-text-primary text-base">
-                          {ans.formattedExpression || ans.questionSignature.replace(/:/g, " â€¢ ")}{" "}
-                          ={" "}
+                          {ans.formattedExpression || ans.questionSignature.replace(/:/g, " • ")} ={" "}
                           {ans.correctAnswer !== undefined
                             ? ans.correctAnswer.toLocaleString()
                             : ""}

@@ -350,7 +350,7 @@ export default async function DashboardPage() {
           <StatCard
             title="Experience"
             value={unifiedXP.totalXP.toLocaleString()}
-            subtitle={`Level ${unifiedXP.level} â€¢ Authentic XP`}
+            subtitle={`Level ${unifiedXP.level} • Authentic XP`}
             icon={<Star className="w-4 h-4 fill-current" />}
             variant="primary"
           />
@@ -378,7 +378,7 @@ export default async function DashboardPage() {
             value={
               mentalMathStats?.personalBests?.fastestSpeedQPM
                 ? `${mentalMathStats.personalBests.fastestSpeedQPM} QPM`
-                : "â€”"
+                : "—"
             }
             subtitle={`${mentalMathStats?.totalQuestionsSolved || 0} solved (${mentalMathStats?.overallAccuracy || 0}% acc)`}
             icon={<BrainCircuit className="w-4 h-4" />}
@@ -569,7 +569,7 @@ export default async function DashboardPage() {
               </p>
             </div>
             <Link href="/visualizers" className="text-xs font-bold text-primary hover:underline">
-              Browse All Data Structures â†’
+              Browse All Data Structures →
             </Link>
           </div>
 

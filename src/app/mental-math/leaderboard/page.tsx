@@ -64,11 +64,11 @@ export default function LeaderboardPage() {
   const operations: Array<{ id: MathOperation | "all"; label: string }> = [
     { id: "all", label: "All Operations" },
     { id: "addition", label: "Addition (+)" },
-    { id: "subtraction", label: "Subtraction (âˆ’)" },
-    { id: "multiplication", label: "Multiplication (Ã—)" },
-    { id: "division", label: "Division (Ã·)" },
-    { id: "squares", label: "Squares (xÂ²)" },
-    { id: "roots", label: "Square Roots (âˆšx)" },
+    { id: "subtraction", label: "Subtraction (−)" },
+    { id: "multiplication", label: "Multiplication (×)" },
+    { id: "division", label: "Division (÷)" },
+    { id: "squares", label: "Squares (x²)" },
+    { id: "roots", label: "Square Roots (√x)" },
     { id: "percentages", label: "Percentages (%)" },
     { id: "mixed", label: "Mixed Operations" },
   ];

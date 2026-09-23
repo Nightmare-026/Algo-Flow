@@ -58,7 +58,7 @@ export function DailyDualQuestCard({
           </span>
           {allDone && (
             <span className="text-xs text-success flex items-center gap-1 font-bold">
-              â˜… Duo Bonus Active
+              ★ Duo Bonus Active
             </span>
           )}
         </div>

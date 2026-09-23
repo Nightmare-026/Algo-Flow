@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
-// Pure recursive helpers â€” extracted outside component so they're stable references
+// Pure recursive helpers — extracted outside component so they're stable references
 function findNode(root: TreeNodeData | null, id: string): TreeNodeData | null {
   if (!root) return null;
   if (root.id === id) return root;
@@ -175,11 +175,11 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
     }
   }, [treeRoot, updateFlowFromTree]);
 
-  // Load state when opening â€” using startTransition to avoid cascading renders
+  // Load state when opening — using startTransition to avoid cascading renders
   const prevIsOpen = useRef(isOpen);
   useEffect(() => {
     if (isOpen && !prevIsOpen.current) {
-      // Modal just opened â€” wrap in startTransition to de-prioritise and prevent cascading
+      // Modal just opened — wrap in startTransition to de-prioritise and prevent cascading
       startTransition(() => {
         if (initialState?.root) {
           setTreeRoot(structuredClone(initialState.root));

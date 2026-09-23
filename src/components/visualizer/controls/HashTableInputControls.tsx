@@ -158,9 +158,9 @@ export function HashTableInputControls({
                     ? "bg-primary text-white shadow-sm"
                     : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
                 )}
-                title="Double Hashing: h(k, i) = (hâ‚(k) + i Â· hâ‚‚(k)) mod m"
+                title="Double Hashing: h(k, i) = (h₁(k) + i · h₁‚(k)) mod m"
               >
-                Double (+iÂ·hâ‚‚)
+                Double (+i·h₁‚)
               </button>
             </div>
           )}

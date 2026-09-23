@@ -448,18 +448,14 @@ export function VisualizerLayout({
                       <dl className="grid grid-cols-[auto_1fr] gap-2">
                         <dt className="font-mono font-bold text-text-secondary kbd-style">Space</dt>
                         <dd className="text-text-secondary">Play / Pause</dd>
-                        <dt className="font-mono font-bold text-text-secondary kbd-style">
-                          â† / J
-                        </dt>
+                        <dt className="font-mono font-bold text-text-secondary kbd-style">← / J</dt>
                         <dd className="text-text-secondary">Previous Step</dd>
-                        <dt className="font-mono font-bold text-text-secondary kbd-style">
-                          â†’ / L
-                        </dt>
+                        <dt className="font-mono font-bold text-text-secondary kbd-style">→ / L</dt>
                         <dd className="text-text-secondary">Next Step</dd>
                         <dt className="font-mono font-bold text-text-secondary kbd-style">R</dt>
                         <dd className="text-text-secondary">Restart</dd>
                         <dt className="font-mono font-bold text-text-secondary kbd-style">
-                          Shift + â†’
+                          Shift + →
                         </dt>
                         <dd className="text-text-secondary">Jump to End</dd>
                       </dl>

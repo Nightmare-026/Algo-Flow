@@ -72,8 +72,8 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-2 text-xs font-medium text-text-muted">
               <span>
-                {catalogStats.visualizerCount} Published Algorithms â€¢{" "}
-                {catalogStats.structureCount} Data Structures
+                {catalogStats.visualizerCount} Published Algorithms • {catalogStats.structureCount}{" "}
+                Data Structures
               </span>
             </div>
           </div>
@@ -102,7 +102,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex items-center justify-center border-t border-border pt-8 text-xs text-text-muted text-center">
-          <p>Â© {new Date().getFullYear()} AlgoFlow by Nightmare. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} AlgoFlow by Nightmare. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

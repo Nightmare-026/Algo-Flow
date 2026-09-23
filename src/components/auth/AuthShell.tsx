@@ -60,7 +60,7 @@ export function AuthShell({
               </Link>
               {user ? (
                 <Link href="/dashboard" className="text-xs font-bold text-primary hover:underline">
-                  Dashboard â†’
+                  Dashboard →
                 </Link>
               ) : null}
             </div>

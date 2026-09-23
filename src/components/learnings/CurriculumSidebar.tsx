@@ -387,7 +387,7 @@ export function CurriculumSidebar({
         </div>
       )}
 
-      {/* â”€â”€â”€ MAIN CURRICULUM TREE: Unified Single-Scroll Architecture â”€â”€â”€ */}
+      {/* ─── MAIN CURRICULUM TREE: Unified Single-Scroll Architecture ─── */}
       <ol
         ref={scrollContainerRef}
         role="list"
@@ -435,7 +435,7 @@ export function CurriculumSidebar({
                     : "bg-surface-raised/40 hover:bg-surface-raised border-border/40 hover:border-border/70"
                 )}
               >
-                {/* â”€â”€ MODULE HEADER TRIGGER â”€â”€ */}
+                {/* ── MODULE HEADER TRIGGER ── */}
                 <button
                   type="button"
                   id={`mod-header-${mod.slug}`}
@@ -504,7 +504,7 @@ export function CurriculumSidebar({
                   </div>
                 </button>
 
-                {/* â”€â”€ EXPANDED MODULE CHAPTERS LIST (Hierarchical Tree) â”€â”€ */}
+                {/* ── EXPANDED MODULE CHAPTERS LIST (Hierarchical Tree) ── */}
                 {isOpen && (
                   <ol
                     id={`mod-chapters-${mod.slug}`}
@@ -615,7 +615,7 @@ export function CurriculumSidebar({
                               </div>
                             </div>
 
-                            {/* â”€â”€ ACTIVE CHAPTER SUBTOPICS (Direct On-Page Jump Anchors) â”€â”€ */}
+                            {/* ── ACTIVE CHAPTER SUBTOPICS (Direct On-Page Jump Anchors) ── */}
                             {isCurrentChapter && (
                               <div className="ml-3 pl-3 my-1 border-l-2 border-primary/30 space-y-0.5">
                                 <div className="flex items-center justify-between text-[10px] font-mono text-primary/80 px-1 py-0.5">
@@ -682,7 +682,7 @@ export function CurriculumSidebar({
                               </div>
                             )}
 
-                            {/* â”€â”€ NON-ACTIVE CHAPTER EXPANDED TOPICS PREVIEW â”€â”€ */}
+                            {/* ── NON-ACTIVE CHAPTER EXPANDED TOPICS PREVIEW ── */}
                             {!isCurrentChapter && isTopicsExpanded && ch.topicsCovered && (
                               <div className="ml-3 pl-3 my-1 border-l-2 border-border/50 space-y-0.5">
                                 <div className="text-[10px] font-mono text-muted-foreground/80 px-1 py-0.5 font-semibold flex items-center gap-1">

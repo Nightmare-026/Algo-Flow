@@ -1,8 +1,8 @@
 /**
- * Phase 3 â€” Array sort step-generators rewritten to emit canonical
+ * Phase 3 — Array sort step-generators rewritten to emit canonical
  * `VisualStepHighlights` shapes via `highlights` helpers, rather than the
  * legacy inverted `{[elementId]: "bucket"}` literals which tsc could not
- * catch but which the renderers read as bucketâ†’ids and silently failed to
+ * catch but which the renderers read as bucket→ids and silently failed to
  * paint (audit A-03 / RR-01).
  */
 

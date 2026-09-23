@@ -20,9 +20,9 @@ const OPERATIONS_META: OperationMeta[] = [
   { id: "subtraction", name: "Subtraction", icon: Minus },
   { id: "multiplication", name: "Multiplication", icon: X },
   { id: "division", name: "Division", icon: Divide },
-  { id: "squares", name: "Squares (xÂ²)", icon: Superscript },
-  { id: "cubes", name: "Cubes (xÂ³)", icon: Box },
-  { id: "roots", name: "Square Roots (âˆšx)", icon: Radical },
+  { id: "squares", name: "Squares (x²)", icon: Superscript },
+  { id: "cubes", name: "Cubes (x³)", icon: Box },
+  { id: "roots", name: "Square Roots (√x)", icon: Radical },
   { id: "percentages", name: "Percentages (%)", icon: Percent },
   { id: "mixed", name: "Mixed Operations", icon: Shuffle },
 ];
@@ -116,7 +116,7 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
                       : "0 drills"}
                   </span>
                   <span className={cn(hasAttempts ? "font-semibold text-text-secondary" : "")}>
-                    {hasAttempts ? `${stat.accuracy}% acc` : "â€”"}
+                    {hasAttempts ? `${stat.accuracy}% acc` : "—"}
                   </span>
                 </div>
               </div>

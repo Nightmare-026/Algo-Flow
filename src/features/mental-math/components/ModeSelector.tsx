@@ -32,7 +32,7 @@ export function ModeSelector() {
       href: "/mental-math/practice",
       title: "Practice Studio",
       description:
-        "Uncapped calculation sandbox. Configure 1â€“4 digit ranges, toggle 4-choice hints, and master mental math breakdown patterns.",
+        "Uncapped calculation sandbox. Configure 1–4 digit ranges, toggle 4-choice hints, and master mental math breakdown patterns.",
       badge: "Configurable",
       icon: BrainCircuit,
       btnClass: "bg-primary text-white hover:bg-primary-hover shadow-(--shadow-raised-sm)",

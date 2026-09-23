@@ -88,7 +88,7 @@ export default function MentalMathProgressPage() {
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {isHydrated ? totalSolved.toLocaleString() : "â€”"}
+              {isHydrated ? totalSolved.toLocaleString() : "—"}
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1">
               {totalSolved === 0 ? "Awaiting first run" : `${totalSessions} completed sessions`}
@@ -107,7 +107,7 @@ export default function MentalMathProgressPage() {
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {isHydrated && totalSolved > 0 ? `${accuracy}%` : "â€”"}
+              {isHydrated && totalSolved > 0 ? `${accuracy}%` : "—"}
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1 tabular-nums">
               {totalSolved === 0 ? "Calibrating" : `${totalCorrect} of ${totalSolved} correct`}
@@ -126,7 +126,7 @@ export default function MentalMathProgressPage() {
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {isHydrated ? streak : "â€”"}{" "}
+              {isHydrated ? streak : "—"}{" "}
               <span className="text-sm font-normal text-text-muted">Days</span>
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1">
@@ -146,7 +146,7 @@ export default function MentalMathProgressPage() {
           </div>
           <div className="mt-4">
             <div className="text-3xl font-extrabold font-display text-text-primary tabular-nums">
-              {isHydrated && fastestSpeed > 0 ? fastestSpeed : "â€”"}
+              {isHydrated && fastestSpeed > 0 ? fastestSpeed : "—"}
             </div>
             <p className="text-xs font-medium text-text-secondary mt-1">
               {fastestSpeed === 0 ? "Awaiting speed sprint" : "Questions per minute"}

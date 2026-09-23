@@ -177,7 +177,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Category Selector â€” Componentized Shared Cards (FR-001 & FR-004) */}
+      {/* Category Selector — Componentized Shared Cards (FR-001 & FR-004) */}
       <div>
         <label className="block text-xs font-bold font-mono uppercase tracking-wider text-text-primary mb-3.5">
           What type of feedback?
@@ -258,7 +258,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
         </div>
       </div>
 
-      {/* Form Fields Card Shell â€” Always visible by default (FR-002 & FR-005) */}
+      {/* Form Fields Card Shell — Always visible by default (FR-002 & FR-005) */}
       <div className="neu-float rounded-3xl border border-border bg-surface p-6 sm:p-8 space-y-6 shadow-(--shadow-raised)">
         {/* Subject */}
         <div>
@@ -314,7 +314,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                     onClick={() => setRating(starValue)}
                     onMouseEnter={() => setHoveredStar(starValue)}
                     onMouseLeave={() => setHoveredStar(0)}
-                    aria-label={`${starValue} star${starValue > 1 ? "s" : ""} â€” ${STAR_LABELS[starValue - 1]}`}
+                    aria-label={`${starValue} star${starValue > 1 ? "s" : ""} — ${STAR_LABELS[starValue - 1]}`}
                     className="group p-1.5 rounded-xl border border-border/60 bg-surface-inset hover:border-primary/40 hover:bg-primary-muted transition-all duration-150 cursor-pointer"
                   >
                     <Star
@@ -379,18 +379,18 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
             rows={5}
             placeholder={
               selectedType === "bug_report"
-                ? "1. Navigate to sorting visualizer\n2. Select 'Merge Sort'\n3. Click 'Play'\n4. Animation freezes at step 5â€¦"
+                ? "1. Navigate to sorting visualizer\n2. Select 'Merge Sort'\n3. Click 'Play'\n4. Animation freezes at step 5…"
                 : selectedType === "feature_request"
-                  ? "Describe the feature you'd like and how it would improve your DSA learning experienceâ€¦"
+                  ? "Describe the feature you'd like and how it would improve your DSA learning experience…"
                   : selectedType === "rating"
-                    ? "Tell us what you love about AlgoFlow or what we can do betterâ€¦"
-                    : "Share any thoughts, observations, or suggestionsâ€¦"
+                    ? "Tell us what you love about AlgoFlow or what we can do better…"
+                    : "Share any thoughts, observations, or suggestions…"
             }
             className="min-h-[140px] w-full rounded-xl border border-border bg-bg-surface-inset p-3.5 text-sm text-text-primary shadow-(--shadow-inset) transition-all duration-200 placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 resize-y"
           />
         </div>
 
-        {/* Email Field â€” Visually marked optional (FR-005) */}
+        {/* Email Field — Visually marked optional (FR-005) */}
         {!isAuthenticated && (
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -444,7 +444,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
             {isPending ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Submitting Feedbackâ€¦</span>
+                <span>Submitting Feedback…</span>
               </>
             ) : (
               <>

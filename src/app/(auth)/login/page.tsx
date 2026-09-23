@@ -56,7 +56,7 @@ export default async function LoginPage({
               href="/dashboard"
               className="inline-flex min-h-9 items-center justify-center rounded-xl bg-primary px-4 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all shrink-0"
             >
-              Open Dashboard â†’
+              Open Dashboard →
             </Link>
           </div>
         </div>
