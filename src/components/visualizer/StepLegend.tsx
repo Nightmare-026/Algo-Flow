@@ -54,15 +54,18 @@ export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) 
               className={cn(
                 "inline-flex min-h-5 shrink-0 items-center gap-1 rounded-full border px-2 text-[10px] font-semibold transition-all duration-200",
                 active
-                  ? cn(toneClasses[item.tone], "shadow-(--shadow-raised-sm) opacity-100 font-bold")
-                  : "border-border/50 bg-surface/50 text-text-muted opacity-45"
+                  ? cn(
+                      toneClasses[item.tone],
+                      "shadow-(--shadow-raised-sm) opacity-100 font-bold ring-1 ring-current/30"
+                    )
+                  : "border-border/70 bg-surface/70 text-text-secondary opacity-75 hover:opacity-100"
               )}
             >
               <span
                 aria-hidden="true"
                 className={cn(
-                  "h-1.25 w-1.25 rounded-full",
-                  active ? "bg-current shadow-[0_0_5px_currentColor]" : "bg-text-muted/40"
+                  "h-1.5 w-1.5 rounded-full",
+                  active ? "bg-current shadow-[0_0_6px_currentColor]" : "bg-text-muted/60"
                 )}
               />
               {item.label}

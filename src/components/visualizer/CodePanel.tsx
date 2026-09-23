@@ -224,7 +224,7 @@ export function CodePanel({
         </div>
         <div className="flex items-center gap-1.5">
           {activeLineNum ? (
-            <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-1.5 py-0.5 rounded-md border border-primary/20">
+            <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-2 py-0.5 rounded-md border border-primary/30 shadow-[0_0_8px_rgba(34,197,94,0.15)]">
               Line {activeLineNum}
             </span>
           ) : null}
@@ -257,7 +257,7 @@ export function CodePanel({
           />
         ) : (
           <div className="flex h-full items-center justify-center p-4 text-center text-xs text-emerald-100/50">
-            {codeString ? "Loading syntax highlighterâ€¦" : "Code example unavailable."}
+            {codeString ? "Loading syntax highlighter…" : "Code example unavailable."}
           </div>
         )}
       </div>

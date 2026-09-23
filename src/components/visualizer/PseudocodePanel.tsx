@@ -37,7 +37,7 @@ export function PseudocodePanel({ slug, fallback, isVisible = true }: Pseudocode
           Pseudocode
         </h2>
         {activeLineNum ? (
-          <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-1.5 py-0.5 rounded-md border border-primary/20">
+          <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-2 py-0.5 rounded-md border border-primary/30 shadow-[0_0_8px_rgba(34,197,94,0.15)]">
             Line {activeLineNum}
           </span>
         ) : null}
@@ -63,14 +63,16 @@ export function PseudocodePanel({ slug, fallback, isVisible = true }: Pseudocode
                   className={cn(
                     "grid grid-cols-[2rem_1fr] rounded border-l-2 py-0.75 pr-1.5 transition-all duration-150",
                     isActive
-                      ? "border-primary bg-emerald-500/15 text-emerald-200 font-bold shadow-[inset_3px_0_0_rgba(34,197,94,0.3)]"
-                      : "border-transparent text-emerald-100/55"
+                      ? "border-primary bg-emerald-500/25 text-emerald-50 font-bold shadow-[inset_4px_0_0_var(--primary),0_0_12px_rgba(34,197,94,0.15)]"
+                      : "border-transparent text-emerald-100/90 hover:bg-emerald-500/10 hover:text-emerald-50"
                   )}
                 >
                   <span
                     className={cn(
-                      "select-none pr-2 text-right text-emerald-500/40 text-[10px]",
-                      isActive && "font-bold text-emerald-300"
+                      "select-none pr-2 text-right text-[10px] tabular-nums transition-colors",
+                      isActive
+                        ? "font-extrabold text-emerald-300 drop-shadow-[0_0_4px_rgba(110,231,183,0.5)]"
+                        : "text-emerald-400/80 font-medium"
                     )}
                   >
                     {lineNum}

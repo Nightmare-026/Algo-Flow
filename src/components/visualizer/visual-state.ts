@@ -15,20 +15,22 @@ export type VisualElementState =
 const stateClasses: Record<VisualElementState, string> = {
   default: "border-border bg-bg-surface text-text-primary",
   current:
-    "border-vis-current bg-primary-muted text-primary-active ring-2 ring-vis-current/20 shadow-[0_0_0_4px_rgba(34,197,94,0.10)]",
+    "border-vis-current bg-primary-muted text-emerald-950 dark:text-emerald-50 ring-2 ring-vis-current/25 shadow-[0_0_0_4px_rgba(34,197,94,0.15)] font-bold",
   compared:
-    "border-vis-compared bg-warning-muted text-warning ring-2 ring-vis-compared/15 shadow-[0_0_0_4px_rgba(180,83,9,0.08)]",
+    "border-vis-compared bg-warning-muted text-amber-950 dark:text-amber-100 ring-2 ring-vis-compared/25 shadow-[0_0_0_4px_rgba(180,83,9,0.12)] font-bold",
   swapped:
-    "border-vis-swapped bg-secondary-muted text-secondary ring-2 ring-vis-swapped/20 shadow-[0_0_0_4px_rgba(15,118,110,0.09)]",
+    "border-vis-swapped bg-secondary-muted text-teal-950 dark:text-teal-50 ring-2 ring-vis-swapped/25 shadow-[0_0_0_4px_rgba(15,118,110,0.14)] font-bold",
   inserted:
-    "border-vis-current bg-primary-muted text-primary-active ring-2 ring-vis-current/25 shadow-[0_0_0_5px_rgba(34,197,94,0.12)]",
-  deleted: "border-vis-error/55 bg-error-muted text-vis-error opacity-55 ring-2 ring-vis-error/10",
+    "border-vis-current bg-primary-muted text-emerald-950 dark:text-emerald-50 ring-2 ring-vis-current/30 shadow-[0_0_0_5px_rgba(34,197,94,0.18)] font-bold",
+  deleted:
+    "border-vis-error/70 bg-error-muted text-rose-950 dark:text-rose-100 opacity-60 ring-2 ring-vis-error/15 font-bold",
   found:
-    "border-vis-found bg-success-muted text-vis-found ring-2 ring-vis-found/25 shadow-[0_0_0_5px_rgba(21,128,61,0.12)]",
+    "border-vis-found bg-success-muted text-emerald-950 dark:text-emerald-50 ring-2 ring-vis-found/30 shadow-[0_0_0_5px_rgba(21,128,61,0.18)] font-bold",
   error:
-    "border-vis-error bg-error-muted text-vis-error ring-2 ring-vis-error/25 shadow-[0_0_0_5px_rgba(185,28,28,0.10)]",
-  sorted: "border-vis-sorted/55 bg-success-muted/70 text-success",
-  visited: "border-vis-visited/70 bg-primary-muted/55 text-text-secondary",
+    "border-vis-error bg-error-muted text-rose-950 dark:text-rose-50 ring-2 ring-vis-error/30 shadow-[0_0_0_5px_rgba(185,28,28,0.15)] font-bold",
+  sorted: "border-vis-sorted/70 bg-success-muted text-emerald-950 dark:text-emerald-50 font-bold",
+  visited:
+    "border-vis-visited/70 bg-primary-muted/60 text-emerald-900 dark:text-emerald-200 font-bold",
 };
 
 export function getVisualElementState(

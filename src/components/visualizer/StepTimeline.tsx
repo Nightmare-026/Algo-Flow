@@ -126,9 +126,9 @@ export function StepTimeline() {
                   className={cn(
                     "relative min-w-0 flex-1 rounded-full transition-colors duration-150 cursor-pointer focus-visible:outline-none before:absolute before:-top-3 before:-bottom-3 before:left-0 before:right-0 before:content-['']",
                     isCurrent
-                      ? "bg-primary shadow-[0_0_0_2px_var(--color-primary)]"
+                      ? "bg-primary shadow-[0_0_8px_var(--primary),0_0_0_2px_var(--primary)]"
                       : isPassed
-                        ? "bg-primary/50 hover:bg-primary/70"
+                        ? "bg-primary/65 hover:bg-primary/80"
                         : "bg-border hover:bg-border-hover"
                   )}
                 >
