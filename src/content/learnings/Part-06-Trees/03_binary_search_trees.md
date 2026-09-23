@@ -41,6 +41,53 @@ The table below describes the topological layout of a balanced sample binary sea
 
 *Inorder Traversal Sequence:* $20 \to 30 \to 40 \to 50 \to 60 \to 70 \to 80$ (Monotonically Increasing).
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 290" width="100%" height="290" class="mx-auto block font-sans">
+  <defs>
+    <marker id="bst-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b"/></marker>
+    <marker id="proj-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/></marker>
+    <linearGradient id="bst-left-zone" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981" stop-opacity="0.12"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/></linearGradient>
+    <linearGradient id="bst-right-zone" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284c7" stop-opacity="0.12"/><stop offset="100%" stop-color="#0284c7" stop-opacity="0.02"/></linearGradient>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Binary Search Tree: Recursive Partitioning &amp; 1D Sorted Projection Theorem</text>
+  <rect x="70" y="65" width="290" height="145" rx="10" fill="url(#bst-left-zone)" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="90" y="85" font-size="12" font-weight="bold" fill="#10b981">Left Subtree: Keys &lt; 50</text>
+  <rect x="460" y="65" width="290" height="145" rx="10" fill="url(#bst-right-zone)" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="730" y="85" text-anchor="end" font-size="12" font-weight="bold" fill="#0284c7">Right Subtree: Keys &gt; 50</text>
+  <line x1="410" y1="65" x2="215" y2="120" stroke="#64748b" stroke-width="2"/>
+  <line x1="410" y1="65" x2="605" y2="120" stroke="#64748b" stroke-width="2"/>
+  <line x1="215" y1="120" x2="120" y2="185" stroke="#64748b" stroke-width="2"/>
+  <line x1="215" y1="120" x2="310" y2="185" stroke="#64748b" stroke-width="2"/>
+  <line x1="605" y1="120" x2="510" y2="185" stroke="#64748b" stroke-width="2"/>
+  <line x1="605" y1="120" x2="700" y2="185" stroke="#64748b" stroke-width="2"/>
+  <circle cx="410" cy="55" r="22" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2.5"/>
+  <text x="410" y="61" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">50</text>
+  <circle cx="215" cy="120" r="19" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="215" y="125" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">30</text>
+  <circle cx="605" cy="120" r="19" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <text x="605" y="125" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">70</text>
+  <circle cx="120" cy="185" r="17" fill="#10b981" stroke="#059669" stroke-width="1.5"/>
+  <text x="120" y="190" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">20</text>
+  <circle cx="310" cy="185" r="17" fill="#10b981" stroke="#059669" stroke-width="1.5"/>
+  <text x="310" y="190" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">40</text>
+  <circle cx="510" cy="185" r="17" fill="#0284c7" stroke="#0369a1" stroke-width="1.5"/>
+  <text x="510" y="190" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">60</text>
+  <circle cx="700" cy="185" r="17" fill="#0284c7" stroke="#0369a1" stroke-width="1.5"/>
+  <text x="700" y="190" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">80</text>
+  <line x1="80" y1="240" x2="740" y2="240" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2,2"/>
+  <line x1="120" y1="205" x2="120" y2="235" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#proj-arrow)"/>
+  <line x1="215" y1="142" x2="215" y2="235" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#proj-arrow)"/>
+  <line x1="310" y1="205" x2="310" y2="235" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#proj-arrow)"/>
+  <line x1="410" y1="80" x2="410" y2="235" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#proj-arrow)"/>
+  <line x1="510" y1="205" x2="510" y2="235" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#proj-arrow)"/>
+  <line x1="605" y1="142" x2="605" y2="235" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#proj-arrow)"/>
+  <line x1="700" y1="205" x2="700" y2="235" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#proj-arrow)"/>
+  <rect x="75" y="248" width="670" height="32" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="85" y="269" font-size="11" font-weight="bold" fill="#94a3b8">Inorder Walk Projection:</text>
+  <text x="215" y="269" text-anchor="middle" font-size="12" font-weight="bold" fill="#34d399">20 &#x2192; 30 &#x2192; 40 &#x2192; 50 &#x2192; 60 &#x2192; 70 &#x2192; 80 (Monotonically Sorted)</text>
+</svg>
+</div>
+
 ### Theorem: Inorder Traversal Monotonicity
 *An inorder tree walk on a binary search tree $T$ visits the keys in monotonically non-decreasing order.*
 

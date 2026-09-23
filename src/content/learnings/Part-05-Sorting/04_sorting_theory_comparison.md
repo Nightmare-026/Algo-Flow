@@ -129,6 +129,85 @@ An array of 3 distinct elements has $3! = 6$ possible permutations. The decision
 
 The height of this binary tree is $h = 3$, requiring at least 3 comparisons in the worst case to sort 3 elements.
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Information Theory: Binary Decision Tree Model &amp; &Omega;(n log n) Lower Bound
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="dtArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Decision Tree for n = 3 -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Decision Tree for n = 3 (Leaves L = 3! = 6)</text>
+      <!-- Root Node: a1 <= a2 -->
+      <g transform="translate(115, 40)">
+        <rect x="0" y="0" width="120" height="30" rx="6" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="60" y="19" text-anchor="middle" font-family="monospace" font-weight="700">a1 &le; a2 ?</text>
+      </g>
+      <!-- Branch Lines -->
+      <path d="M 145 70 L 80 105" stroke="currentColor" stroke-width="1.5" marker-end="url(#dtArrow)"/>
+      <text x="95" y="85" font-size="9" fill="#10b981" font-weight="700">&le; (Yes)</text>
+      <path d="M 205 70 L 270 105" stroke="currentColor" stroke-width="1.5" marker-end="url(#dtArrow)"/>
+      <text x="250" y="85" font-size="9" fill="#ef4444" font-weight="700">&gt; (No)</text>
+      <!-- Level 1 Nodes -->
+      <g transform="translate(20, 110)">
+        <rect x="0" y="0" width="110" height="28" rx="4" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6"/>
+        <text x="55" y="18" text-anchor="middle" font-family="monospace">a2 &le; a3 ?</text>
+      </g>
+      <g transform="translate(220, 110)">
+        <rect x="0" y="0" width="110" height="28" rx="4" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6"/>
+        <text x="55" y="18" text-anchor="middle" font-family="monospace">a1 &le; a3 ?</text>
+      </g>
+      <!-- Level 2 Branch Lines -->
+      <path d="M 50 138 L 25 175" stroke="currentColor" stroke-width="1.5" marker-end="url(#dtArrow)"/>
+      <path d="M 95 138 L 125 175" stroke="currentColor" stroke-width="1.5" marker-end="url(#dtArrow)"/>
+      <path d="M 250 138 L 225 175" stroke="currentColor" stroke-width="1.5" marker-end="url(#dtArrow)"/>
+      <path d="M 295 138 L 325 175" stroke="currentColor" stroke-width="1.5" marker-end="url(#dtArrow)"/>
+      <!-- Leaves -->
+      <g transform="translate(5, 185)">
+        <rect x="0" y="0" width="45" height="24" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="22" y="16" text-anchor="middle" font-family="monospace" font-size="8">&lang;1,2,3&rang;</text>
+        <rect x="52" y="0" width="45" height="24" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="74" y="16" text-anchor="middle" font-family="monospace" font-size="8">&lang;1,3,2&rang;</text>
+        <rect x="104" y="0" width="45" height="24" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="126" y="16" text-anchor="middle" font-family="monospace" font-size="8">&lang;3,1,2&rang;</text>
+        <rect x="195" y="0" width="45" height="24" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="217" y="16" text-anchor="middle" font-family="monospace" font-size="8">&lang;2,1,3&rang;</text>
+        <rect x="247" y="0" width="45" height="24" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="269" y="16" text-anchor="middle" font-family="monospace" font-size="8">&lang;2,3,1&rang;</text>
+        <rect x="299" y="0" width="45" height="24" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="321" y="16" text-anchor="middle" font-family="monospace" font-size="8">&lang;3,2,1&rang;</text>
+      </g>
+      <text x="175" y="245" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">Longest path = height h = 3 comparisons</text>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Mathematical Proof Derivation Box -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Mathematical Derivation via Stirling's Formula</text>
+      <g transform="translate(10, 45)">
+        <rect x="0" y="0" width="340" height="200" rx="8" fill="#10b981" fill-opacity="0.06" stroke="#10b981" stroke-width="1.5"/>
+        <g transform="translate(15, 25)">
+          <text x="0" y="0" font-weight="700" fill="currentColor">1. Leaves bound: L = n! permutations</text>
+          <text x="0" y="22" font-size="11" fill="currentColor">A binary tree of height h has at most 2^h leaves:</text>
+          <text x="20" y="44" font-family="monospace" font-weight="700" fill="#10b981">2^h &ge; n! &rArr; h &ge; log2(n!)</text>
+          <text x="0" y="70" font-weight="700" fill="currentColor">2. Expanding via Stirling's Approximation:</text>
+          <text x="20" y="92" font-family="monospace" font-size="11">n! &approx; &radic;(2&pi;n) &middot; (n / e)^n</text>
+          <text x="20" y="112" font-family="monospace" font-weight="700" fill="#3b82f6">log2(n!) = n log2(n) - n log2(e) + O(log n)</text>
+          <text x="0" y="138" font-weight="700" fill="currentColor">3. Conclusion:</text>
+          <text x="20" y="158" font-family="monospace" font-weight="700" font-size="13" fill="#10b981">h = &Omega;(n log n) comparisons!</text>
+        </g>
+      </g>
+    </g>
+  </svg>
+</div>
+
 ---
 
 ### 3. Formal Mathematical Proof of the $\Omega(n \log n)$ Lower Bound

@@ -135,7 +135,7 @@ More details.
     expect(parsed?.wordCount).toBeGreaterThan(500);
     expect(parsed?.readingTimeMinutes).toBeGreaterThan(0);
     expect(parsed?.htmlContent).toContain("<h2");
-    expect(parsed?.htmlContent).toContain('id="1-data-vs-information"');
+    expect(parsed?.htmlContent).toContain('id="1-ontological-foundations-the-dikw-hierarchy"');
   });
 
   it("should preserve unicode letters when slugifying", () => {

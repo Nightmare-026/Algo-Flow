@@ -70,6 +70,69 @@ An Adjacency List stores an array of size $|V|$ where index $u$ contains a dynam
 
 *Engineering Rule:* In production software, prefer dynamic contiguous arrays (`std::vector` in C++, dynamic arrays in TypeScript/Java) over linked list nodes. Linked list nodes incur heavy memory fragmentation and CPU cache misses during traversal.
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 310" width="100%" height="310" class="mx-auto block font-sans">
+  <defs>
+    <marker id="csr-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/></marker>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Graph Storage Models: Memory Layout &amp; Cache Locality Comparison</text>
+  <rect x="20" y="45" width="240" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="140" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#0284c7">1. Adjacency Matrix</text>
+  <g transform="translate(60, 85)">
+    <rect x="0" y="0" width="35" height="35" fill="#1e293b" stroke="#334155"/><text x="17" y="23" text-anchor="middle" font-size="12" fill="#94a3b8">0</text>
+    <rect x="35" y="0" width="35" height="35" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7"/><text x="52" y="23" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">1</text>
+    <rect x="70" y="0" width="35" height="35" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7"/><text x="87" y="23" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">1</text>
+    <rect x="105" y="0" width="35" height="35" fill="#1e293b" stroke="#334155"/><text x="122" y="23" text-anchor="middle" font-size="12" fill="#94a3b8">0</text>
+    <rect x="0" y="35" width="35" height="35" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7"/><text x="17" y="58" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">1</text>
+    <rect x="35" y="35" width="35" height="35" fill="#1e293b" stroke="#334155"/><text x="52" y="58" text-anchor="middle" font-size="12" fill="#94a3b8">0</text>
+    <rect x="70" y="35" width="35" height="35" fill="#1e293b" stroke="#334155"/><text x="87" y="58" text-anchor="middle" font-size="12" fill="#94a3b8">0</text>
+    <rect x="105" y="35" width="35" height="35" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7"/><text x="122" y="58" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">1</text>
+    <rect x="0" y="70" width="35" height="35" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7"/><text x="17" y="93" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">1</text>
+    <rect x="35" y="70" width="35" height="35" fill="#1e293b" stroke="#334155"/><text x="52" y="93" text-anchor="middle" font-size="12" fill="#94a3b8">0</text>
+    <rect x="70" y="70" width="35" height="35" fill="#1e293b" stroke="#334155"/><text x="87" y="93" text-anchor="middle" font-size="12" fill="#94a3b8">0</text>
+    <rect x="105" y="70" width="35" height="35" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7"/><text x="122" y="93" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">1</text>
+    <rect x="0" y="105" width="35" height="35" fill="#1e293b" stroke="#334155"/><text x="17" y="128" text-anchor="middle" font-size="12" fill="#94a3b8">0</text>
+    <rect x="35" y="105" width="35" height="35" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7"/><text x="52" y="128" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">1</text>
+    <rect x="70" y="105" width="35" height="35" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7"/><text x="87" y="128" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">1</text>
+    <rect x="105" y="105" width="35" height="35" fill="#1e293b" stroke="#334155"/><text x="122" y="128" text-anchor="middle" font-size="12" fill="#94a3b8">0</text>
+  </g>
+  <text x="140" y="250" text-anchor="middle" font-size="11" font-weight="bold" fill="#0284c7">&#x398;(V&#178;) Dense Storage</text>
+  <text x="140" y="270" text-anchor="middle" font-size="10" fill="currentColor">O(1) edge check | &#x398;(V) scan</text>
+  <rect x="280" y="45" width="250" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="405" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#f59e0b">2. Adjacency List</text>
+  <g transform="translate(300, 95)">
+    <rect x="0" y="0" width="35" height="26" fill="#1e293b" stroke="#d97706" rx="3"/><text x="17" y="17" text-anchor="middle" font-size="11" font-weight="bold" fill="#f59e0b">[0]</text>
+    <line x1="38" y1="13" x2="65" y2="13" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="68" y="0" width="55" height="26" fill="#f59e0b" fill-opacity="0.2" stroke="#d97706" rx="3"/><text x="95" y="17" text-anchor="middle" font-size="11" fill="currentColor">[1, 2]</text>
+    <rect x="0" y="36" width="35" height="26" fill="#1e293b" stroke="#d97706" rx="3"/><text x="17" y="53" text-anchor="middle" font-size="11" font-weight="bold" fill="#f59e0b">[1]</text>
+    <line x1="38" y1="49" x2="65" y2="49" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="68" y="36" width="55" height="26" fill="#f59e0b" fill-opacity="0.2" stroke="#d97706" rx="3"/><text x="95" y="53" text-anchor="middle" font-size="11" fill="currentColor">[0, 3]</text>
+    <rect x="0" y="72" width="35" height="26" fill="#1e293b" stroke="#d97706" rx="3"/><text x="17" y="89" text-anchor="middle" font-size="11" font-weight="bold" fill="#f59e0b">[2]</text>
+    <line x1="38" y1="85" x2="65" y2="85" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="68" y="72" width="55" height="26" fill="#f59e0b" fill-opacity="0.2" stroke="#d97706" rx="3"/><text x="95" y="89" text-anchor="middle" font-size="11" fill="currentColor">[0, 3]</text>
+    <rect x="0" y="108" width="35" height="26" fill="#1e293b" stroke="#d97706" rx="3"/><text x="17" y="125" text-anchor="middle" font-size="11" font-weight="bold" fill="#f59e0b">[3]</text>
+    <line x1="38" y1="121" x2="65" y2="121" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="68" y="108" width="55" height="26" fill="#f59e0b" fill-opacity="0.2" stroke="#d97706" rx="3"/><text x="95" y="125" text-anchor="middle" font-size="11" fill="currentColor">[1, 2]</text>
+  </g>
+  <text x="405" y="250" text-anchor="middle" font-size="11" font-weight="bold" fill="#f59e0b">&#x398;(V + E) Pointer Vectors</text>
+  <text x="405" y="270" text-anchor="middle" font-size="10" fill="currentColor">Heap allocations | Cache misses</text>
+  <rect x="550" y="45" width="250" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="675" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#10b981">3. Compressed Sparse Row (CSR)</text>
+  <g transform="translate(565, 95)">
+    <text x="0" y="15" font-size="10.5" font-weight="bold" fill="#94a3b8">row_ptr (|V|+1):</text>
+    <rect x="0" y="22" width="220" height="28" fill="#1e293b" stroke="#334155" rx="3"/>
+    <text x="110" y="41" text-anchor="middle" font-size="11" font-weight="bold" fill="#10b981">[0,  2,  4,  6,  8]</text>
+    <text x="0" y="75" font-size="10.5" font-weight="bold" fill="#94a3b8">col_ind (2|E|):</text>
+    <rect x="0" y="82" width="220" height="28" fill="#1e293b" stroke="#334155" rx="3"/>
+    <text x="110" y="101" text-anchor="middle" font-size="11" font-weight="bold" fill="#38bdf8">[1, 2, 0, 3, 0, 3, 1, 2]</text>
+    <path d="M 40 52 L 40 78" stroke="#10b981" stroke-width="1.5" marker-end="url(#csr-arr)"/>
+    <text x="50" y="68" font-size="9" fill="#10b981">Slice [0:2] for node 0</text>
+  </g>
+  <text x="675" y="250" text-anchor="middle" font-size="11" font-weight="bold" fill="#10b981">&#x398;(V + E) Flat Contiguous</text>
+  <text x="675" y="270" text-anchor="middle" font-size="10" fill="currentColor">0 Pointers | 100% Cache Line Hit</text>
+</svg>
+</div>
+
 ---
 
 ## 5. Architecture 3: Edge List

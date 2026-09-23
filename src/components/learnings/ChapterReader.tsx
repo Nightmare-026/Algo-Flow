@@ -179,7 +179,7 @@ export function ChapterReader({ module, chapter, content, navigation }: ChapterR
           </div>
           <div className="flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Reviewed & Verified (2024 Syllabus)</span>
+            <span>Academic Syllabus &bull; Verified 2026</span>
           </div>
           <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground/70 hidden sm:flex">
             <span>

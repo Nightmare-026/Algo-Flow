@@ -55,17 +55,18 @@ function auditAll() {
   }
 
   console.log(`Total audited chapters: ${stats.length}`);
-  const shortChapters = stats.filter((s) => s.words < 800);
-  console.log(`\nChapters under 800 words (${shortChapters.length}):`);
-  for (const s of shortChapters) {
-    console.log(
-      ` - ${s.moduleSlug}/${s.chapterSlug}: ${s.words} words, ${s.tables} tables, Proof:${s.hasProofOrInvariant}, DryRun:${s.hasDryRun}`
-    );
+  
+  console.log('\n--- Curriculum Module Status ---');
+  for (const mod of LEARNING_MODULES) {
+    const modStats = stats.filter(s => s.moduleSlug === mod.slug);
+    const totalWords = modStats.reduce((sum, s) => sum + s.words, 0);
+    const avgWords = Math.round(totalWords / modStats.length);
+    console.log(`Part ${mod.partNumber.toString().padStart(2, '0')} (${mod.slug}): ${modStats.length} ch, ${totalWords.toLocaleString()} total words, ~${avgWords.toLocaleString()} avg/ch`);
   }
 
-  const missingReferences = stats.filter((s) => !s.hasReferences);
-  console.log(`\nChapters missing explicit references (${missingReferences.length})`);
-
+  const shortChapters = stats.filter((s) => s.words < 800);
+  console.log(`\nChapters under 800 words (${shortChapters.length})`);
+  
   console.log('\nTop 5 shortest chapters:');
   stats
     .sort((a, b) => a.words - b.words)

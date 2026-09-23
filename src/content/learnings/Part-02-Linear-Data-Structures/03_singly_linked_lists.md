@@ -229,6 +229,67 @@ HEAD -> [Node 1] -> [Node 2] -> [Cycle Entry: Node 3] -> [Node 4] -> [Node 5]
                                   [Node 8] <-------- [Node 7] <------ [Node 6]
 ```
 
+<svg viewBox="0 0 880 260" width="100%" height="auto" class="rounded-xl border border-border shadow-sm my-6 bg-surface">
+  <defs>
+    <marker id="cycleArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="currentColor" fill-opacity="0.4" />
+    </marker>
+  </defs>
+  <!-- Background Bounds -->
+  <rect x="20" y="20" width="840" height="220" rx="10" fill="currentColor" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.1" />
+  
+  <!-- Linear Path Section (Length L) -->
+  <rect x="40" y="95" width="60" height="40" rx="6" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="1.5" />
+  <text x="70" y="120" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#3b82f6">HEAD</text>
+  <line x1="100" y1="115" x2="140" y2="115" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" marker-end="url(#cycleArrow)" />
+
+  <rect x="140" y="95" width="60" height="40" rx="6" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="1.5" />
+  <text x="170" y="120" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#3b82f6">Node 1</text>
+  <line x1="200" y1="115" x2="240" y2="115" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" marker-end="url(#cycleArrow)" />
+
+  <rect x="240" y="95" width="60" height="40" rx="6" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="1.5" />
+  <text x="270" y="120" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#3b82f6">Node 2</text>
+  <line x1="300" y1="115" x2="350" y2="115" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" marker-end="url(#cycleArrow)" />
+
+  <!-- Length L Indicator -->
+  <line x1="40" y1="155" x2="350" y2="155" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 4" />
+  <text x="195" y="175" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#3b82f6">Linear Lead-in Distance: L</text>
+
+  <!-- Cycle Entry Node -->
+  <rect x="350" y="95" width="80" height="40" rx="8" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2.5" />
+  <text x="390" y="120" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#10b981">ENTRY (S)</text>
+
+  <!-- Cycle Nodes Circle -->
+  <!-- Top arc: Entry -> Node 4 -> Node 5 -->
+  <line x1="430" y1="105" x2="480" y2="70" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" marker-end="url(#cycleArrow)" />
+  <rect x="480" y="50" width="60" height="35" rx="6" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.2" />
+  <text x="510" y="72" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="currentColor">Node 4</text>
+
+  <line x1="540" y1="67" x2="600" y2="67" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" marker-end="url(#cycleArrow)" />
+  <rect x="600" y="50" width="60" height="35" rx="6" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.2" />
+  <text x="630" y="72" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="currentColor">Node 5</text>
+
+  <!-- Collision Point (M) on Right -->
+  <line x1="660" y1="70" x2="700" y2="100" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" marker-end="url(#cycleArrow)" />
+  <rect x="700" y="95" width="90" height="40" rx="8" fill="#f59e0b" fill-opacity="0.2" stroke="#f59e0b" stroke-width="2.5" />
+  <text x="745" y="120" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#f59e0b">MEET (M)</text>
+
+  <!-- Bottom arc: M -> Node 7 -> Node 8 -> Entry -->
+  <line x1="720" y1="135" x2="660" y2="170" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" marker-end="url(#cycleArrow)" />
+  <rect x="600" y="155" width="60" height="35" rx="6" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.2" />
+  <text x="630" y="177" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="currentColor">Node 7</text>
+
+  <line x1="600" y1="172" x2="540" y2="172" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" marker-end="url(#cycleArrow)" />
+  <rect x="480" y="155" width="60" height="35" rx="6" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.2" />
+  <text x="510" y="177" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="currentColor">Node 8</text>
+
+  <line x1="480" y1="170" x2="420" y2="135" stroke="currentColor" stroke-opacity="0.4" stroke-width="2" marker-end="url(#cycleArrow)" />
+
+  <!-- Cycle Labels -->
+  <text x="560" y="40" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#f59e0b">Arc Length: d</text>
+  <text x="560" y="215" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#10b981">Remaining Arc: C - d = L</text>
+</svg>
+
 Let:
 - $L$ = Distance from `HEAD` to the cycle entry node ($L = 2$ in the diagram above: links $1 \to 2$ and $2 \to 3$).
 - $C$ = Number of nodes in the cycle ($C = 6$: nodes $3, 4, 5, 6, 7, 8$).

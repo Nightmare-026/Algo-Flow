@@ -35,6 +35,72 @@ The table below illustrates a circular rotation of $S = [0, 1, 2, 4, 5, 6, 7]$ b
 | **`5`** | `6` | `1` | Right Segment ($A_2$) | $A[5] < A[6]$ | Interior Element |
 | **`6`** | `7` | `2` | Right Segment ($A_2$) | $A[6] < A[0]$ | Right Segment End |
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Structural Topologies: Rotated Array Discontinuity &amp; Monotonic Answer Space
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="rotArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Rotated Array Discontinuity Curve -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Piecewise Monotonic Rotated Array</text>
+      <!-- Coordinate System -->
+      <g transform="translate(25, 40)">
+        <line x1="0" y1="180" x2="310" y2="180" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.3"/>
+        <line x1="0" y1="0" x2="0" y2="180" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.3"/>
+        <!-- Segment 1: Indices 0..3 (Values 4..7) -->
+        <polyline points="20,110 50,90 80,70 110,40" fill="none" stroke="#3b82f6" stroke-width="3"/>
+        <!-- Points on Segment 1 -->
+        <circle cx="20" cy="110" r="4" fill="#3b82f6"/>
+        <text x="20" y="130" text-anchor="middle" font-size="9" fill="currentColor">i=0 (4)</text>
+        <circle cx="110" cy="40" r="4" fill="#3b82f6"/>
+        <text x="110" y="30" text-anchor="middle" font-size="9" font-weight="700" fill="#3b82f6">Local Max (7)</text>
+        <!-- The Cliff Discontinuity Line -->
+        <line x1="110" y1="40" x2="160" y2="175" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,4"/>
+        <text x="150" y="95" fill="#ef4444" font-weight="700" font-size="10">Discontinuity Pivot</text>
+        <!-- Segment 2: Indices 4..6 (Values 0..2) -->
+        <polyline points="160,175 210,155 260,135" fill="none" stroke="#10b981" stroke-width="3"/>
+        <circle cx="160" cy="175" r="5" fill="#ef4444"/>
+        <text x="160" y="200" text-anchor="middle" font-size="9" font-weight="700" fill="#ef4444">Global Min: i=4 (0)</text>
+        <circle cx="260" cy="135" r="4" fill="#10b981"/>
+        <text x="260" y="125" text-anchor="middle" font-size="9" fill="currentColor">i=6 (2)</text>
+      </g>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Monotonic Feasibility Predicate on Answer Space -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Binary Search on Monotonic Answer Space</text>
+      <!-- Discrete Step Function [F, F, F, F, T, T, T, T] -->
+      <g transform="translate(20, 50)">
+        <text x="0" y="15" font-weight="700" font-size="11" fill="currentColor">Predicate Feasibility: P(x) = IsFeasible(x)</text>
+        <!-- False Region -->
+        <rect x="0" y="30" width="140" height="40" rx="4" fill="#ef4444" fill-opacity="0.15" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="70" y="55" text-anchor="middle" font-weight="700" fill="#ef4444" font-size="12">FALSE: Infeasible [1..4]</text>
+        <!-- Transition Arrow -->
+        <path d="M 140 50 L 175 50" stroke="currentColor" stroke-width="2" marker-end="url(#rotArrow)"/>
+        <!-- True Region -->
+        <rect x="175" y="30" width="150" height="40" rx="4" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1.5"/>
+        <text x="250" y="55" text-anchor="middle" font-weight="700" fill="#10b981" font-size="12">TRUE: Feasible [5..10]</text>
+        <!-- Optimal Target Indicator -->
+        <g transform="translate(175, 90)">
+          <path d="M 0 35 L 0 5" stroke="#10b981" stroke-width="2" marker-end="url(#rotArrow)"/>
+          <rect x="-80" y="40" width="160" height="45" rx="6" fill="#10b981" fill-opacity="0.12" stroke="#10b981"/>
+          <text x="0" y="58" text-anchor="middle" font-weight="700" fill="#10b981">Optimal Minimum x = 5</text>
+          <text x="0" y="74" text-anchor="middle" font-size="10" fill="currentColor">First 'True' Boundary</text>
+        </g>
+      </g>
+    </g>
+  </svg>
+</div>
+
 In this rotated state, every element in the left partition $A_1 = [4, 5, 6, 7]$ is strictly greater than every element in the right partition $A_2 = [0, 1, 2]$. The global minimum element $0$ resides at index $k = 4$, which marks the rotation offset.
 
 ---

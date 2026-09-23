@@ -1,18 +1,18 @@
 # Part 02: Linear Data Structures — Module 07: Queues & Circular Queues
 
 > **Topics Covered:**  
-> 31. Queue Abstract Data Type (FIFO) & Operations &bull; Linear Array Queue & The "False Overflow / Drift" Problem &bull; Linked List Queue Implementation &bull; 32. Circular Queue (Ring Buffer) & Modulo Arithmetic &bull; Wrap-Around State Tracking & Kernel Ring Buffers &bull; Two-Stack Queue Paradigm
+> 31. Queue Abstract Data Type (FIFO) & Operations &bull; Linear Array Queue & The "False Overflow / Drift" Problem &bull; Linked List Queue Implementation &bull; 32. Circular Queue (Ring Buffer) & Modulo Arithmetic &bull; Wrap-Around State Tracking & Kernel Ring Buffers &bull; Two-Stack Queue Paradigm (Potential Method Proof) &bull; Production Implementations
 
 ---
 
-While stacks govern depth-first back-tracking through Last-In, First-Out (LIFO) access, queues enforce fair, sequential scheduling through First-In, First-Out (FIFO) semantics. Elements enter at the rear and exit from the front, mirroring pipeline buffers and operating system task schedulers. However, naive linear array implementations suffer from pointer drift and false capacity exhaustion. This chapter analyzes the FIFO abstraction, diagnoses the false overflow failure mode, formalizes modulo-arithmetic circular ring buffers, details two-stack queue emulation, and explores lock-free kernel buffer architectures.
+While stacks govern depth-first backtracking through Last-In, First-Out (LIFO) access, queues enforce fair, sequential scheduling through First-In, First-Out (FIFO) semantics. Elements enter at the rear and exit from the front, mirroring pipeline buffers and operating system task schedulers. However, naive linear array implementations suffer from pointer drift and false capacity exhaustion. This chapter analyzes the FIFO abstraction, diagnoses the false overflow failure mode, formalizes modulo-arithmetic circular ring buffers, details two-stack queue emulation with a rigorous potential method amortized proof, and explores lock-free kernel buffer architectures.
 
 ### Learning Objectives
 - Define the FIFO Queue Abstract Data Type and enforce boundary invariants for `front` and `rear` pointers.
 - Diagnose the "false overflow" (pointer drift) problem in linear array queues and quantify the $O(n)$ latency penalty of element shifting.
 - Implement circular queues (ring buffers) using modulo arithmetic to achieve $O(1)$ wrap-around insertions and deletions.
 - Compare full/empty state disambiguation strategies: explicit counter tracking versus the reserved empty slot invariant.
-- Implement an amortized $O(1)$ FIFO queue using two LIFO stacks and trace batch element transfers.
+- Prove the amortized $O(1)$ complexity of the two-stack queue using the formal Physicist's Potential Method.
 - Analyze the architectural role of circular ring buffers in Linux kernel `kfifo` and high-throughput network packet ring buffers.
 
 ---
@@ -79,18 +79,89 @@ Latency: O(n) element moves per Dequeue! Destroying the O(1) performance contrac
 
 ---
 
-### 4. Linked-List-Based Queue Implementation
+### 4. Pointer Drift vs. Circular Ring Buffer Topology
 
-A pointer-based linked list resolves linear array drift and guarantees strict $O(1)$ time with zero shifting:
-- Maintain a singly linked list with `front` pointing to the head and `rear` pointing to the tail.
-- **`Enqueue(x)`**: `rear.next = new Node(x); rear = rear.next;` ($\Theta(1)$).
-- **`Dequeue()`**: `val = front.data; front = front.next;` ($\Theta(1)$).
-
-| Pointer Handle | Target Node Address | Stored Value | `next` Pointer Reference | Semantic Role |
-| :--- | :---: | :---: | :---: | :--- |
-| **`front`** | `0x10A0` | `10` | `0x20F4` | **Front of Queue (Next to Dequeue)** |
-| *(Internal Link)* | `0x20F4` | `20` | `0x3500` | Intermediate FIFO Node |
-| **`rear`** | `0x3500` | `30` | `NULL` | **Rear of Queue (Most Recently Enqueued)** |
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Memory Layout Comparison: Linear Array Drift vs. Modulo Ring Buffer
+  </div>
+  <svg viewBox="0 0 850 380" class="w-full h-auto text-xs" style="max-height: 380px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ringArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="340" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Linear Drift Problem -->
+    <g transform="translate(45, 50)">
+      <text x="175" y="20" font-weight="700" fill="#ef4444" text-anchor="middle" font-size="13">Linear Array Drift: "False Overflow"</text>
+      <!-- Slots 0..4 -->
+      <g transform="translate(20, 45)">
+        <rect x="0" y="0" width="60" height="60" rx="6" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="30" y="35" text-anchor="middle" font-family="monospace" fill="#ef4444">[Vacant]</text>
+        <text x="30" y="75" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.6">idx 0</text>
+        <rect x="65" y="0" width="60" height="60" rx="6" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="95" y="35" text-anchor="middle" font-family="monospace" fill="#ef4444">[Vacant]</text>
+        <text x="95" y="75" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.6">idx 1</text>
+        <rect x="130" y="0" width="60" height="60" rx="6" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <text x="160" y="35" text-anchor="middle" font-family="monospace" fill="#ef4444">[Vacant]</text>
+        <text x="160" y="75" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.6">idx 2</text>
+        <rect x="195" y="0" width="60" height="60" rx="6" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="2"/>
+        <text x="225" y="35" text-anchor="middle" font-family="monospace" font-weight="700" fill="#3b82f6">40</text>
+        <text x="225" y="75" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.6">idx 3 (F)</text>
+        <rect x="260" y="0" width="60" height="60" rx="6" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="2"/>
+        <text x="290" y="35" text-anchor="middle" font-family="monospace" font-weight="700" fill="#3b82f6">50</text>
+        <text x="290" y="75" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.6">idx 4 (R)</text>
+      </g>
+      <!-- Error Explanation -->
+      <path d="M 330 75 L 365 75" stroke="#ef4444" stroke-width="2" marker-end="url(#ringArrow)"/>
+      <rect x="20" y="160" width="310" height="95" rx="8" fill="#ef4444" fill-opacity="0.08" stroke="#ef4444" stroke-width="1"/>
+      <text x="35" y="185" font-weight="700" fill="#ef4444" font-size="11">Dead-End Barrier Reached:</text>
+      <text x="35" y="205" fill="currentColor" fill-opacity="0.8" font-size="10">rear == capacity - 1 (4 == 4).</text>
+      <text x="35" y="222" fill="currentColor" fill-opacity="0.8" font-size="10">Slots 0..2 are wasted, but new Enqueue fails!</text>
+      <text x="35" y="240" fill="#ef4444" font-size="10" font-weight="600">Requires O(n) array shift to recover space.</text>
+    </g>
+    <!-- Divider -->
+    <line x1="435" y1="40" x2="435" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Modulo Ring Buffer Solution -->
+    <g transform="translate(460, 50)">
+      <text x="175" y="20" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Circular Ring Buffer: Modulo Wrap-Around</text>
+      <!-- Circular Modulo Geometry (8 slots ring) -->
+      <g transform="translate(175, 150)">
+        <!-- Center Hub -->
+        <circle cx="0" cy="0" r="35" fill="#10b981" fill-opacity="0.1" stroke="#10b981" stroke-width="1.5"/>
+        <text x="0" y="4" text-anchor="middle" font-weight="700" fill="#10b981" font-size="11">(i + 1) % C</text>
+        <!-- 8 Circular Slots: Radius = 85 -->
+        <!-- Slot 0: Top (0, -85) -->
+        <circle cx="0" cy="-85" r="22" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2"/>
+        <text x="0" y="-81" text-anchor="middle" font-family="monospace" font-weight="700" font-size="11" fill="currentColor">60 (R)</text>
+        <!-- Slot 1: Top-Right (60, -60) -->
+        <circle cx="60" cy="-60" r="22" fill="none" stroke="currentColor" stroke-opacity="0.3" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="60" y="-56" text-anchor="middle" font-family="monospace" font-size="10" fill="currentColor" fill-opacity="0.5">[free]</text>
+        <!-- Slot 2: Right (85, 0) -->
+        <circle cx="85" cy="0" r="22" fill="none" stroke="currentColor" stroke-opacity="0.3" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="85" y="4" text-anchor="middle" font-family="monospace" font-size="10" fill="currentColor" fill-opacity="0.5">[free]</text>
+        <!-- Slot 3: Bottom-Right (60, 60) -->
+        <circle cx="60" cy="60" r="22" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="2"/>
+        <text x="60" y="64" text-anchor="middle" font-family="monospace" font-weight="700" font-size="11" fill="#3b82f6">30 (F)</text>
+        <!-- Slot 4: Bottom (0, 85) -->
+        <circle cx="0" cy="85" r="22" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="0" y="89" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">40</text>
+        <!-- Slot 5: Bottom-Left (-60, 60) -->
+        <circle cx="-60" cy="60" r="22" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="-60" y="64" text-anchor="middle" font-family="monospace" font-size="11" fill="currentColor">50</text>
+        <!-- Directional Flow Arrows on Ring -->
+        <path d="M -30 -80 A 85 85 0 0 1 30 -80" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#ringArrow)"/>
+      </g>
+      <!-- Benefits Box -->
+      <rect x="20" y="260" width="310" height="50" rx="8" fill="#10b981" fill-opacity="0.08" stroke="#10b981" stroke-width="1"/>
+      <text x="175" y="280" font-weight="700" fill="#10b981" text-anchor="middle" font-size="11">Infinite Memory Recycling (Theta(1)):</text>
+      <text x="175" y="298" fill="currentColor" fill-opacity="0.8" text-anchor="middle" font-size="10">rear wraps from idx 5 &rarr; idx 0. Zero byte moves!</text>
+    </g>
+  </svg>
+</div>
 
 ---
 
@@ -104,16 +175,7 @@ When pointer `rear` or `front` increments past the physical boundary of the arra
 
 $$\text{nextIndex} = (\text{currentIndex} + 1) \pmod{\text{Capacity}}$$
 
-```
-Logical Ring Buffer (Capacity = 5):
-                  [ Slot 0 ]
-                 /          \
-       [ Slot 4 ]            [ Slot 1 ]
-            |                     |
-       [ Slot 3 ] ------------ [ Slot 2 ]
-```
-
-When slot $4$ is reached, $(4 + 1) \pmod 5 = 0$. If slot $0$ was previously vacated by a `Dequeue`, `rear` immediately claims it without shifting a single byte of memory.
+When slot $C-1$ is reached, $((C-1) + 1) \pmod C = 0$. If slot $0$ was previously vacated by a `Dequeue`, `rear` immediately claims it without shifting a single byte of memory.
 
 ---
 
@@ -134,62 +196,12 @@ Sacrifice one array slot permanently. An array of size $C$ holds at most $C - 1$
 
 ---
 
-### 3. Canonical Ring Buffer Specification
-
-```text
-CLASS CircularQueue:
-    field buffer: Array of ValueType
-    field front: Integer <- 0
-    field rear: Integer <- -1
-    field capacity: Integer
-    field count: Integer <- 0
-
-    CONSTRUCTOR(cap: Integer):
-        assert cap > 0
-        this.capacity <- cap
-        this.buffer <- allocate_memory(cap * sizeof(ValueType))
-        this.front <- 0
-        this.rear <- -1
-        this.count <- 0
-
-    FUNCTION Enqueue(x: ValueType) -> Void:
-        if this.IsFull():
-            raise OverflowException("Circular Queue is full")
-        this.rear <- (this.rear + 1) mod this.capacity
-        this.buffer[this.rear] <- x
-        this.count <- this.count + 1
-
-    FUNCTION Dequeue() -> ValueType:
-        if this.IsEmpty():
-            raise UnderflowException("Circular Queue is empty")
-        val <- this.buffer[this.front]
-        this.front <- (this.front + 1) mod this.capacity
-        this.count <- this.count - 1
-        return val
-
-    FUNCTION Peek() -> ValueType:
-        if this.IsEmpty():
-            raise UnderflowException("Circular Queue is empty")
-        return this.buffer[this.front]
-
-    FUNCTION IsEmpty() -> Boolean:
-        return (this.count == 0)
-
-    FUNCTION IsFull() -> Boolean:
-        return (this.count == this.capacity)
-
-    FUNCTION Size() -> Integer:
-        return this.count
-```
-
----
-
-### 4. Step-by-Step Wrap-Around State Trace
+### 3. Step-by-Step Wrap-Around State Trace
 
 Let Capacity $C = 5$. We trace a complete lifecycle demonstrating wrap-around:
 
 | Step | Operation | `front` | `rear` | `count` | Physical Array $[0, 1, 2, 3, 4]$ | Event / Notes |
-| :---: | :--- | :---: | :---: | :---: | :--- | :--- |
+| :---: | :--- | :---: | :---: | :---: | :---: | :--- |
 | **0** | `Init(5)` | `0` | `-1` | `0` | `[ _, _, _, _, _ ]` | Buffer allocated empty |
 | **1** | `Enqueue(10)` | `0` | `0` | `1` | `[ 10, _, _, _, _ ]` | Standard insert |
 | **2** | `Enqueue(20)` | `0` | `1` | `2` | `[ 10, 20, _, _, _ ]` | Standard insert |
@@ -204,47 +216,126 @@ Let Capacity $C = 5$. We trace a complete lifecycle demonstrating wrap-around:
 
 ---
 
-### 5. Two-Stack Queue Implementation (Amortized Analysis)
+### 4. Two-Stack Queue Implementation & Formal Potential Method Proof
 
-Can a FIFO queue be constructed using only two LIFO stacks?
-
-#### Architecture:
-- `inStack`: Receives incoming items during `Enqueue`.
-- `outStack`: Serves items during `Dequeue`.
+Can a strict FIFO queue be constructed using only two LIFO stacks ($S_{\text{in}}$ and $S_{\text{out}}$)?
 
 ```text
-CLASS QueueUsingStacks:
-    field inStack: Stack
-    field outStack: Stack
+Enqueue(x):
+    S_in.Push(x)
 
-    FUNCTION Enqueue(x: ValueType) -> Void:
-        this.inStack.Push(x)
-
-    FUNCTION Dequeue() -> ValueType:
-        if this.outStack.IsEmpty():
-            if this.inStack.IsEmpty():
-                raise UnderflowException("Queue is empty")
-            // Batch transfer elements: inverting LIFO into FIFO!
-            while not this.inStack.IsEmpty():
-                this.outStack.Push(this.inStack.Pop())
-        return this.outStack.Pop()
+Dequeue():
+    if S_out.IsEmpty():
+        if S_in.IsEmpty(): raise Underflow
+        while not S_in.IsEmpty():
+            S_out.Push(S_in.Pop())  // Inverts LIFO to FIFO order!
+    return S_out.Pop()
 ```
 
-#### Amortized Complexity Proof:
-Each element is pushed to `inStack` once ($1$ op), popped from `inStack` once ($1$ op), pushed to `outStack` once ($1$ op), and popped from `outStack` once ($1$ op).  
-Total lifetime cost per element $= 4$ operations $\implies$ **Amortized $\Theta(1)$ per operation**.
+#### Formal Amortized Proof via the Physicist's Potential Method:
+Define the potential function $\Phi$ of the two-stack system at state $t$ as:
+$$\Phi(D_t) = 2 \cdot |S_{\text{in}}|$$
+Where $|S_{\text{in}}|$ is the number of elements currently stored in the input stack.
+- Notice that $\Phi(D_0) = 0$ (initially empty) and $\Phi(D_t) \ge 0$ for all $t \ge 0$.
+
+1. **Amortized Cost of `Enqueue(x)`**:
+   - Actual work $c_i = 1$ (pushing onto $S_{\text{in}}$).
+   - $\Delta \Phi = \Phi(D_i) - \Phi(D_{i-1}) = 2(|S_{\text{in}}| + 1) - 2|S_{\text{in}}| = +2$.
+   - Amortized cost:
+     $$\hat{c}_i = c_i + \Delta \Phi = 1 + 2 = 3 = \Theta(1)$$
+
+2. **Amortized Cost of `Dequeue()`**:
+   - **Case A: $S_{\text{out}}$ is non-empty**:
+     - Actual work $c_i = 1$ (pop from $S_{\text{out}}$).
+     - $\Delta \Phi = 0$ (size of $S_{\text{in}}$ is unchanged).
+     - $\hat{c}_i = 1 + 0 = 1 = \Theta(1)$.
+   - **Case B: $S_{\text{out}}$ is empty (batch transfer of $k = |S_{\text{in}}|$ items)**:
+     - Actual work $c_i = 2k + 1$ ($k$ pops from $S_{\text{in}}$, $k$ pushes to $S_{\text{out}}$, plus $1$ final pop).
+     - $\Delta \Phi = 2 \cdot 0 - 2k = -2k$.
+     - Amortized cost:
+     $$\hat{c}_i = c_i + \Delta \Phi = (2k + 1) - 2k = 1 = \Theta(1)$$
+
+Therefore, every operation executes in **amortized $\Theta(1)$ time**. $\blacksquare$
 
 ---
 
-### 6. Systems Engineering: Kernel Ring Buffers & Lock-Free IPC
+### 5. Systems Engineering: Kernel Ring Buffers & Bitwise Masking
 
-Circular queues are the industry standard architecture for real-time systems and operating system kernels:
+In high-performance operating system engineering (such as the Linux kernel's `kfifo` subsystem):
+- Capacities are constrained to powers of two: $C = 2^k$.
+- Integer modulo division (`id % C`) translates to an expensive multi-cycle CPU instruction (`idiv` on x86, taking 15–40 clock cycles).
+- By constraining $C = 2^k$, modulo is replaced with a single-cycle bitwise AND mask:
+  $$\text{index} \pmod{2^k} \equiv \text{index} \ \& \ (2^k - 1)$$
 
-1. **Linux Kernel `kfifo`**: A lock-free ring buffer utilizing a power-of-two capacity $C = 2^k$. Instead of expensive division modulo `(idx % C)`, the kernel optimizes wrap-around using bitwise AND:  
-   $$\text{idx} \pmod{2^k} \equiv \text{idx} \ \& \ (2^k - 1)$$
-   This replaces a multi-cycle hardware integer division instruction with a single-cycle bitwise mask.
-2. **Network Interface Card (NIC) Ring Buffers**: High-speed Ethernet controllers use Direct Memory Access (DMA) to stream network packets straight into circular RX/TX ring buffers in kernel memory without CPU interrupts on every frame.
-3. **Audio PCM Buffers**: Audio playback pipelines use circular buffers to bridge asynchronous audio decoders with real-time digital-to-analog converter (DAC) hardware timers.
+```c
+// Linux kernel kfifo wrap-around idiom:
+unsigned int next_in = (fifo->in + 1) & (fifo->size - 1);
+```
+
+Furthermore, by decoupling `in` and `out` into 64-bit monotonically increasing unsigned counters that wrap naturally on integer overflow ($2^{64}-1 \to 0$), Single-Producer Single-Consumer (SPSC) ring buffers run completely **lock-free** without mutex locks or atomic compare-and-swap (CAS) instructions.
+
+---
+
+### 6. Production Multi-Language Implementations
+
+#### A. C++20 Ring Buffer with Bitwise Masking & Template Safety
+```cpp
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <concepts>
+
+template <typename T>
+class CircularQueue {
+private:
+    std::vector<T> buffer_;
+    size_t capacity_;
+    size_t mask_;
+    size_t front_;
+    size_t rear_;
+    size_t count_;
+
+    static size_t next_power_of_two(size_t n) {
+        size_t power = 1;
+        while (power < n) power <<= 1;
+        return power;
+    }
+
+public:
+    explicit CircularQueue(size_t min_capacity = 8)
+        : capacity_(next_power_of_two(min_capacity)),
+          mask_(capacity_ - 1),
+          buffer_(capacity_),
+          front_(0),
+          rear_(0),
+          count_(0) {}
+
+    bool enqueue(T item) {
+        if (is_full()) {
+            return false;
+        }
+        buffer_[rear_] = std::move(item);
+        rear_ = (rear_ + 1) & mask_;
+        ++count_;
+        return true;
+    }
+
+    bool dequeue(T& item) {
+        if (is_empty()) {
+            return false;
+        }
+        item = std::move(buffer_[front_]);
+        front_ = (front_ + 1) & mask_;
+        --count_;
+        return true;
+    }
+
+    [[nodiscard]] bool is_empty() const noexcept { return count_ == 0; }
+    [[nodiscard]] bool is_full() const noexcept { return count_ == capacity_; }
+    [[nodiscard]] size_t size() const noexcept { return count_; }
+    [[nodiscard]] size_t capacity() const noexcept { return capacity_; }
+};
+```
 
 ---
 

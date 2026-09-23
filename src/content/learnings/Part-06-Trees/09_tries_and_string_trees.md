@@ -44,6 +44,65 @@ The table below illustrates a Trie storing the set of words: `["app", "apple", "
 | **Root $\to$ b $\to$ a $\to$ l** | `'l'` | `"bal"` | `false` | `'l'` | Single-Child Node |
 | **Root $\to$ b $\to$ a $\to$ l $\to$ l** | `'l'` | `"ball"` | **`true`** | `null` | **Terminal Word ("ball")** / Leaf |
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" width="100%" height="340" class="mx-auto block font-sans">
+  <defs>
+    <marker id="trie-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b"/></marker>
+    <linearGradient id="trie-term" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/></linearGradient>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Standard Prefix Trie: Shared Prefixes &amp; Terminal Markers</text>
+  <line x1="410" y1="45" x2="250" y2="95" stroke="#64748b" stroke-width="2"/>
+  <line x1="410" y1="45" x2="570" y2="95" stroke="#64748b" stroke-width="2"/>
+  <line x1="250" y1="95" x2="250" y2="150" stroke="#64748b" stroke-width="2"/>
+  <line x1="250" y1="150" x2="250" y2="205" stroke="#64748b" stroke-width="2"/>
+  <line x1="250" y1="205" x2="250" y2="260" stroke="#64748b" stroke-width="2"/>
+  <line x1="250" y1="260" x2="190" y2="305" stroke="#64748b" stroke-width="2"/>
+  <line x1="250" y1="260" x2="310" y2="305" stroke="#64748b" stroke-width="2"/>
+  <line x1="570" y1="95" x2="570" y2="150" stroke="#64748b" stroke-width="2"/>
+  <line x1="570" y1="150" x2="510" y2="210" stroke="#64748b" stroke-width="2"/>
+  <line x1="570" y1="150" x2="630" y2="210" stroke="#64748b" stroke-width="2"/>
+  <line x1="630" y1="210" x2="630" y2="270" stroke="#64748b" stroke-width="2"/>
+  <circle cx="410" cy="45" r="18" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+  <text x="410" y="50" text-anchor="middle" font-size="11" font-weight="bold" fill="#94a3b8">&#x2205;</text>
+  <circle cx="250" cy="95" r="16" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <text x="250" y="100" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">a</text>
+  <circle cx="570" cy="95" r="16" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <text x="570" y="100" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">b</text>
+  <circle cx="250" cy="150" r="16" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <text x="250" y="155" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">p</text>
+  <circle cx="250" cy="205" r="18" fill="#10b981" stroke="#059669" stroke-width="3"/>
+  <text x="250" y="210" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">p</text>
+  <rect x="275" y="195" width="85" height="20" rx="4" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1"/>
+  <text x="317" y="209" text-anchor="middle" font-size="10" font-weight="bold" fill="#10b981">"app" &#x2714;</text>
+  <circle cx="250" cy="260" r="16" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <text x="250" y="265" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">l</text>
+  <circle cx="190" cy="305" r="18" fill="#10b981" stroke="#059669" stroke-width="3"/>
+  <text x="190" y="310" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">e</text>
+  <text x="190" y="332" text-anchor="middle" font-size="10" font-weight="bold" fill="#10b981">"apple" &#x2714;</text>
+  <circle cx="310" cy="305" r="18" fill="#10b981" stroke="#059669" stroke-width="3"/>
+  <text x="310" y="310" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">y</text>
+  <text x="310" y="332" text-anchor="middle" font-size="10" font-weight="bold" fill="#10b981">"apply" &#x2714;</text>
+  <circle cx="570" cy="150" r="16" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <text x="570" y="155" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">a</text>
+  <circle cx="510" cy="210" r="18" fill="#10b981" stroke="#059669" stroke-width="3"/>
+  <text x="510" y="215" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">t</text>
+  <text x="510" y="238" text-anchor="middle" font-size="10" font-weight="bold" fill="#10b981">"bat" &#x2714;</text>
+  <circle cx="630" cy="210" r="16" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <text x="630" y="215" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">l</text>
+  <circle cx="630" cy="270" r="18" fill="#10b981" stroke="#059669" stroke-width="3"/>
+  <text x="630" y="275" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">l</text>
+  <text x="630" y="298" text-anchor="middle" font-size="10" font-weight="bold" fill="#10b981">"ball" &#x2714;</text>
+  <rect x="675" y="70" width="135" height="150" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="742" y="92" text-anchor="middle" font-size="11" font-weight="bold" fill="#94a3b8">Legend &amp; Types</text>
+  <circle cx="695" cy="115" r="7" fill="#0284c7"/>
+  <text x="710" y="119" font-size="10" fill="currentColor">Prefix Branch</text>
+  <circle cx="695" cy="142" r="7" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="710" y="146" font-size="10" font-weight="bold" fill="#10b981">Terminal Word</text>
+  <text x="742" y="175" text-anchor="middle" font-size="9" fill="#94a3b8">Search: O(L) time</text>
+  <text x="742" y="195" text-anchor="middle" font-size="9" fill="#94a3b8">L = word length</text>
+</svg>
+</div>
+
 ---
 
 ## 3. Complete Implementation: Standard Trie

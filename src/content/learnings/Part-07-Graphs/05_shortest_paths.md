@@ -34,6 +34,69 @@ If the currently known distance to $v$ exceeds the path routed through $u$, the 
 | **Relaxation Step** | $\text{dist}[u] + w(u, v) < \text{dist}[v]$ evaluates to `true`. | Update $\text{dist}[v] \leftarrow \text{dist}[u] + w(u, v) = 7$; set $\text{parent}[v] \leftarrow u$. |
 | **After Relaxation** | Invariant restored: $\text{dist}[v] \le \text{dist}[u] + w(u, v)$. | $v$ holds an improved upper bound on true shortest distance. |
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Routing Mechanics: Edge Relaxation (Triangle Inequality) &amp; Dijkstra Frontier Wavefront
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="spArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Triangle Inequality & Edge Relaxation -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Edge Relaxation &amp; The Triangle Inequality</text>
+      <g transform="translate(30, 45)">
+        <!-- Source Node s -->
+        <circle cx="30" cy="80" r="18" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2"/>
+        <text x="30" y="84" text-anchor="middle" font-weight="700" fill="#10b981">s (0)</text>
+        <!-- Node u -->
+        <circle cx="160" cy="30" r="18" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="2"/>
+        <text x="160" y="34" text-anchor="middle" font-weight="700" fill="#3b82f6">u (4)</text>
+        <!-- Node v -->
+        <circle cx="260" cy="110" r="18" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="2"/>
+        <text x="260" y="114" text-anchor="middle" font-weight="700" fill="#ef4444">v (10&rarr;7)</text>
+        <!-- Edges -->
+        <line x1="48" y1="72" x2="142" y2="38" stroke="currentColor" stroke-width="1.5" marker-end="url(#spArrow)"/>
+        <text x="90" y="45" font-family="monospace" font-size="10">dist=4</text>
+        <line x1="48" y1="86" x2="242" y2="108" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#spArrow)"/>
+        <text x="130" y="115" font-family="monospace" font-size="10" fill="currentColor" fill-opacity="0.5">prior=10</text>
+        <!-- Relaxation Shortcut Edge u -> v -->
+        <line x1="178" y1="38" x2="245" y2="98" stroke="#10b981" stroke-width="2.5" marker-end="url(#spArrow)"/>
+        <text x="235" y="60" font-family="monospace" font-weight="700" fill="#10b981">w(u,v)=3</text>
+      </g>
+      <rect x="20" y="185" width="310" height="60" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981"/>
+      <text x="35" y="208" font-weight="700" fill="#10b981" font-size="11">Relaxation Improvement:</text>
+      <text x="35" y="226" font-family="monospace" font-size="10" fill="currentColor">dist[v] &larr; min(10, 4 + 3) = 7! Path via u is shorter.</text>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Dijkstra Wavefront vs Bellman-Ford -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Shortest Path Regimes &amp; Guarantees</text>
+      <!-- Dijkstra Box -->
+      <g transform="translate(10, 45)">
+        <rect x="0" y="0" width="340" height="75" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981"/>
+        <text x="15" y="22" font-weight="700" fill="#10b981" font-size="11">Dijkstra's Algorithm (Greedy Wavefront):</text>
+        <text x="15" y="40" fill="currentColor" fill-opacity="0.8" font-size="10">&bull; Min-Priority Queue extracts closest frontier vertex.</text>
+        <text x="15" y="56" fill="currentColor" fill-opacity="0.8" font-size="10">&bull; Strictly non-negative weights: O((V + E) log V).</text>
+      </g>
+      <!-- Bellman-Ford Box -->
+      <g transform="translate(10, 130)">
+        <rect x="0" y="0" width="340" height="75" rx="6" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b"/>
+        <text x="15" y="22" font-weight="700" fill="#f59e0b" font-size="11">Bellman-Ford (Dynamic Programming):</text>
+        <text x="15" y="40" fill="currentColor" fill-opacity="0.8" font-size="10">&bull; Relaxes ALL E edges V - 1 times &rarr; O(V &middot; E) time.</text>
+        <text x="15" y="56" font-weight="600" fill="#f59e0b" font-size="10">&bull; Handles negative weights &amp; detects negative cycles!</text>
+      </g>
+      <text x="180" y="245" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; Floyd-Warshall: All-Pairs Shortest Path in &Theta;(V^3) time</text>
+    </g>
+  </svg>
+</div>
+
 ---
 
 ## 3. Dijkstra's Algorithm (Greedy Single-Source Shortest Path)

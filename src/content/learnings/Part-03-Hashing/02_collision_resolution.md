@@ -1,7 +1,7 @@
 # Part 03: Hashing — Module 02: Collision Resolution Techniques
 
 > **Topics Covered:**  
-> 38. Separate Chaining (Open Hashing) &bull; 39. Open Addressing (Closed Hashing) & The Deletion Dilemma &bull; 40. Linear Probing & Primary Clustering &bull; Quadratic Probing & Secondary Clustering &bull; Double Hashing & Permutation Uniformity
+> 38. Separate Chaining (Open Hashing) & Bucket Chains &bull; 39. Open Addressing (Closed Hashing) & The Deletion Dilemma (`TOMBSTONE` Sentinel Protocol) &bull; 40. Linear Probing & Primary Clustering &bull; Quadratic Probing & Secondary Clustering &bull; Double Hashing & Coprimality Constraints &bull; Production Implementations
 
 ---
 
@@ -12,7 +12,7 @@ Because the universe of possible search keys vastly exceeds the physical capacit
 - Formulate the Open Addressing deletion dilemma and implement the `TOMBSTONE` sentinel protocol to preserve probe continuity.
 - Diagnose the physical causes of Primary Clustering in Linear Probing and Secondary Clustering in Quadratic Probing.
 - Implement Double Hashing and prove why the step function $h_2(k)$ must be coprime to table capacity $m$ to guarantee a complete permutation of slots.
-- Determine optimal collision resolution strategies based on payload size, memory constraints, and hardware cache considerations.
+- Construct a robust C++20 Open Addressing hash table implementing Robin Hood / Tombstone probing.
 
 ---
 
@@ -37,161 +37,240 @@ In **Separate Chaining**, the hash table is an array of pointers (or bucket head
 > **Interactive Simulations**:  
 > Observe bucket node insertions live in the [Interactive Separate Chaining Visualizer](/visualizer/chaining-insert).
 
-#### Bucket Allocation Mapping
-
-| Slot Index | Head Pointer State | Chain Length | Stored Keys in Bucket Chain | Traversal Cost |
-| :---: | :---: | :---: | :--- | :---: |
-| **`0`** | `NULL` | $0$ | None (Vacant slot) | $O(1)$ (Immediate miss) |
-| **`1`** | `0x10A0` | $2$ | `("Apple", $2) -> ("Peach", $4)` | $O(2)$ hops |
-| **`2`** | `NULL` | $0$ | None (Vacant slot) | $O(1)$ (Immediate miss) |
-| **`3`** | `0x2500` | $3$ | `("Banana", $1) -> ("Grape", $5) -> ("Berry", $6)` | $O(3)$ hops |
-| **`4`** | `0x3800` | $1$ | `("Mango", $3)` | $O(1)$ hop |
-
----
-
-### 2. Asymptotic Bounds Under SUHA
-
-Under the Simple Uniform Hashing Assumption (SUHA), $n$ keys are distributed uniformly across $m$ slots. The expected number of keys in any chain is exactly the load factor:
-
-$$\alpha = \frac{n}{m}$$
-
-1. **Unsuccessful Search Cost**:  
-   The algorithm hashes key $k$ to slot $h(k)$ and scans the entire chain to the end (`NULL`):
-   $$\mathbb{E}[\text{Time}] = \Theta(1 + \alpha)$$
-2. **Successful Search Cost**:  
-   The target key is equally likely to be anywhere in the chain. On average, the search scans half the chain plus the initial slot access:
-   $$\mathbb{E}[\text{Time}] = \Theta\left(1 + \frac{\alpha}{2}\right)$$
-3. **Worst-Case Degradation**:  
-   If an adversarial workload hashes all $n$ keys to the same bucket, the table degrades to a single linked list with $O(n)$ search time.
-   - **Production Defense (Treeification)**: In Java 8+, if a single bucket chain exceeds $8$ nodes and table size $m \ge 64$, the linked list is converted into a Red-Black tree, guaranteeing worst-case search in $O(\log n)$.
-
 ---
 
 ## Topic 39: Open Addressing & The Deletion Dilemma
 
-### 1. Conceptual Architecture & In-Place Storage
+### 1. Physical Memory Topology & Probing Comparison
 
-In **Open Addressing**, all keys reside directly inside the primary table array. No external pointers or heap nodes are allocated.
-- Every slot holds either a single key-value entry or is vacant.
-- The load factor $\alpha = n / m$ can **never exceed $1.0$**.
-- When a collision occurs at initial slot $h(k)$, the algorithm probes a deterministic sequence of alternative slots until an empty slot is discovered:
-
-$$\text{Probe Sequence for key } k: \quad \langle h(k, 0), \, h(k, 1), \, h(k, 2), \, \dots, \, h(k, m - 1) \rangle$$
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Collision Paradigms: Separate Chaining vs. Linear Clustering vs. TOMBSTONE State Machine
+  </div>
+  <svg viewBox="0 0 850 380" class="w-full h-auto text-xs" style="max-height: 380px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="colArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="340" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Linear Probing Primary Clustering -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#ef4444" text-anchor="middle" font-size="13">Linear Probing: Primary Clustering</text>
+      <!-- Slots 0..6 -->
+      <g transform="translate(10, 45)">
+        <rect x="0" y="0" width="45" height="50" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="22" y="30" text-anchor="middle" font-family="monospace">_</text>
+        <text x="22" y="65" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">0</text>
+        <rect x="48" y="0" width="45" height="50" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="70" y="30" text-anchor="middle" font-family="monospace">_</text>
+        <text x="70" y="65" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">1</text>
+        <rect x="96" y="0" width="45" height="50" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="118" y="30" text-anchor="middle" font-family="monospace">_</text>
+        <text x="118" y="65" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">2</text>
+        <!-- Massive Cluster Slots 3..6 -->
+        <rect x="144" y="-3" width="190" height="56" rx="6" fill="#ef4444" fill-opacity="0.12" stroke="#ef4444" stroke-width="2"/>
+        <rect x="144" y="0" width="45" height="50" rx="4" fill="#ef4444" fill-opacity="0.25"/>
+        <text x="166" y="30" text-anchor="middle" font-family="monospace" font-weight="700">10</text>
+        <text x="166" y="65" text-anchor="middle" font-size="9" fill="#ef4444" font-weight="700">3</text>
+        <rect x="192" y="0" width="45" height="50" rx="4" fill="#ef4444" fill-opacity="0.25"/>
+        <text x="214" y="30" text-anchor="middle" font-family="monospace" font-weight="700">17</text>
+        <text x="214" y="65" text-anchor="middle" font-size="9" fill="#ef4444" font-weight="700">4</text>
+        <rect x="240" y="0" width="45" height="50" rx="4" fill="#ef4444" fill-opacity="0.25"/>
+        <text x="262" y="30" text-anchor="middle" font-family="monospace" font-weight="700">24</text>
+        <text x="262" y="65" text-anchor="middle" font-size="9" fill="#ef4444" font-weight="700">5</text>
+        <rect x="288" y="0" width="45" height="50" rx="4" fill="#ef4444" fill-opacity="0.25"/>
+        <text x="310" y="30" text-anchor="middle" font-family="monospace" font-weight="700">31</text>
+        <text x="310" y="65" text-anchor="middle" font-size="9" fill="#ef4444" font-weight="700">6</text>
+      </g>
+      <rect x="15" y="140" width="320" height="90" rx="8" fill="#ef4444" fill-opacity="0.08" stroke="#ef4444" stroke-width="1"/>
+      <text x="25" y="165" font-weight="700" fill="#ef4444" font-size="11">Contiguous Cluster Coagulation:</text>
+      <text x="25" y="185" fill="currentColor" fill-opacity="0.8" font-size="10">All keys hashed to slot 3, creating an unbroken</text>
+      <text x="25" y="202" fill="currentColor" fill-opacity="0.8" font-size="10">4-slot cluster that absorbs all future arrivals.</text>
+      <text x="25" y="220" font-weight="600" fill="#ef4444" font-size="10">Average probe count explodes to O(n)!</text>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: TOMBSTONE State Machine -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Open Addressing TOMBSTONE State Machine</text>
+      <!-- State 1: EMPTY -->
+      <g transform="translate(20, 60)">
+        <circle cx="45" cy="45" r="35" fill="none" stroke="#10b981" stroke-width="2"/>
+        <text x="45" y="49" text-anchor="middle" font-weight="700" fill="#10b981">EMPTY</text>
+        <text x="45" y="95" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.6">Halts search</text>
+      </g>
+      <!-- Transition Empty -> Occupied -->
+      <path d="M 105 105 L 175 105" stroke="#3b82f6" stroke-width="2" marker-end="url(#colArrow)"/>
+      <text x="140" y="95" text-anchor="middle" font-size="9" fill="#3b82f6" font-weight="600">Insert(k,v)</text>
+      <!-- State 2: OCCUPIED -->
+      <g transform="translate(180, 60)">
+        <circle cx="45" cy="45" r="35" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+        <text x="45" y="42" text-anchor="middle" font-weight="700" fill="#3b82f6">OCCUPIED</text>
+        <text x="45" y="58" text-anchor="middle" font-family="monospace" font-size="10">(Key, Val)</text>
+      </g>
+      <!-- Transition Occupied -> Tombstone -->
+      <path d="M 225 145 L 225 210" stroke="#f59e0b" stroke-width="2" marker-end="url(#colArrow)"/>
+      <text x="265" y="180" text-anchor="middle" font-size="9" fill="#f59e0b" font-weight="600">Delete(k)</text>
+      <!-- State 3: TOMBSTONE -->
+      <g transform="translate(180, 215)">
+        <circle cx="45" cy="45" r="35" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="2"/>
+        <text x="45" y="42" text-anchor="middle" font-weight="700" fill="#f59e0b">TOMBSTONE</text>
+        <text x="45" y="58" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.7">Pass through</text>
+      </g>
+      <!-- Transition Tombstone -> Occupied on Re-insert -->
+      <path d="M 205 215 L 205 150" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#colArrow)"/>
+      <text x="165" y="180" text-anchor="middle" font-size="9" fill="#10b981" font-weight="600">Re-claim</text>
+    </g>
+  </svg>
+</div>
 
 ---
 
-### 2. The Deletion Dilemma: The TOMBSTONE State Machine
+### 2. Probing Mathematical Formulations
 
-In open addressing, simply setting a deleted slot to `EMPTY` corrupts subsequent search operations by prematurely terminating valid probe chains.
+#### A. Linear Probing:
+$$h(k, i) = (h(k) + i) \pmod m$$
+- **Primary Clustering**: Clusters grow and merge into large blocks, increasing expected probe length.
 
-#### Failure Scenario (Linear Probing, $m = 5$):
-1. Insert Key A: $h(A) = 2 \implies$ Stored at `Slot 2`.
-2. Insert Key B: $h(B) = 2 \implies$ Collision at `Slot 2`! Probes `Slot 3` (free). Stored at `Slot 3`.
-3. Delete Key A: If `Slot 2` is reset to `EMPTY`:
-4. Search for Key B:
-   - Compute $h(B) = 2$.
-   - Inspect `Slot 2`. It is `EMPTY`!
-   - Standard open addressing terminates search on the first `EMPTY` slot.
-   - **False Negative**: The table incorrectly reports that Key B does not exist, even though it sits at `Slot 3`!
+#### B. Quadratic Probing:
+$$h(k, i) = (h(k) + c_1 i + c_2 i^2) \pmod m$$
+- Jumps across primary clusters, but identical initial hashes follow identical probe paths (**Secondary Clustering**).
 
-```
-Search Path Severed:
-[ Slot 2: EMPTY ]  <--- Search halts here! Does not check Slot 3!
-[ Slot 3: Key B ]  <--- Key B is orphaned and unreachable!
-```
-
-#### The `TOMBSTONE` (DELETED) Solution
-Instead of clearing the slot to `EMPTY`, mark it with a permanent sentinel state: **`TOMBSTONE`**.
-
-| Table Operation | Behavior Upon Encountering `EMPTY` | Behavior Upon Encountering `TOMBSTONE` |
-| :--- | :--- | :--- |
-| **Search($k$)** | **Halt and return "Not Found"** (Chain ends) | **Continue probing** forward to next slot |
-| **Insert($k, v$)** | **Claim slot** and store entry | **Claim slot** (overwrites tombstone) |
-| **Delete($k$)** | Key does not exist; return false | Continue probing until key is found |
-
----
-
-## Topic 40: Probing Strategies: Linear, Quadratic & Double Hashing
-
-### 1. Linear Probing & Primary Clustering
-
-Linear Probing checks consecutive array slots one-by-one:
-
-$$h(k, i) = (h(k) + i) \pmod m \quad \text{for } i = 0, 1, \dots, m - 1$$
-
-> **Interactive Simulation**:  
-> Step through sequential probe collision checks in the [Interactive Linear Probing Visualizer](/visualizer/linear-probing).
-
-#### The Primary Clustering Failure Mode:
-Occupied slots merge into long unbroken contiguous chains called **primary clusters**. Once a cluster forms, any key whose initial hash falls anywhere within the cluster must traverse to the very end of the cluster to find a free slot, expanding the cluster further.
-
-#### Linear Probing Step-by-Step Trace ($m = 7$, $h(k) = k \pmod 7$, Keys: $10, 17, 24, 31$)
-
-| Key Inserted | Initial $h(k)$ | Probe 0 ($i=0$) | Probe 1 ($i=1$) | Probe 2 ($i=2$) | Probe 3 ($i=3$) | Slot Assigned | Resulting Table State $[0 \dots 6]$ |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **`10`** | $10 \pmod 7 = 3$ | Slot 3 (Free) | — | — | — | **Slot 3** | `[_, _, _, 10, _, _, _]` |
-| **`17`** | $17 \pmod 7 = 3$ | Slot 3 (Taken) | Slot 4 (Free) | — | — | **Slot 4** | `[_, _, _, 10, 17, _, _]` |
-| **`24`** | $24 \pmod 7 = 3$ | Slot 3 (Taken) | Slot 4 (Taken) | Slot 5 (Free) | — | **Slot 5** | `[_, _, _, 10, 17, 24, _]` |
-| **`31`** | $31 \pmod 7 = 3$ | Slot 3 (Taken) | Slot 4 (Taken) | Slot 5 (Taken) | Slot 6 (Free) | **Slot 6** | `[_, _, _, 10, 17, 24, 31]` |
-
-Every single key collided at slot 3, creating a massive 4-element cluster spanning slots 3 through 6!
-
----
-
-### 2. Quadratic Probing & Secondary Clustering
-
-Quadratic Probing replaces the linear step with a quadratic polynomial in $i$:
-
-$$h(k, i) = (h(k) + c_1 \cdot i + c_2 \cdot i^2) \pmod m$$
-
-A standard formulation is $h(k, i) = (h(k) + i^2) \pmod m$, yielding offsets $+0, +1, +4, +9, +16, \dots$. This allows the probe sequence to jump rapidly over contiguous clusters.
-
-#### Secondary Clustering:
-While Quadratic Probing eliminates primary clusters, keys that share the exact same initial hash ($h(k_1) = h(k_2)$) will trace identical quadratic probe sequences. This milder phenomenon is called **Secondary Clustering**.
-
-#### Table Coverage Theorem:
-If $m$ is a prime number and the load factor satisfies:
-$$\alpha < 0.5$$
-Quadratic probing using $h(k, i) = (h(k) + i^2) \pmod m$ is mathematically guaranteed to inspect at least $\lceil m / 2 \rceil$ distinct slots before repeating, guaranteeing an open slot will be found.
-
----
-
-### 3. Double Hashing & Permutation Uniformity
-
-Double Hashing uses two independent hash functions $h_1(k)$ and $h_2(k)$ to generate a pseudo-random probe sequence unique to each individual key:
-
+#### C. Double Hashing:
 $$h(k, i) = (h_1(k) + i \cdot h_2(k)) \pmod m$$
-
-- $h_1(k)$ determines the **Starting Slot**.
-- $h_2(k)$ determines the **Step Stride**.
-
-Because the step size depends on the key value $k$, two keys that collide at $h_1(k_1) = h_1(k_2)$ will almost certainly have different step strides ($h_2(k_1) \ne h_2(k_2)$), completely eliminating both primary and secondary clustering!
-
-#### Crucial Invariants for $h_2(k)$:
-1. $h_2(k)$ must **never evaluate to 0** ($h_2(k) \ne 0$). If it were zero, the probe sequence would loop endlessly at $h_1(k)$.
-2. $h_2(k)$ must be **coprime to $m$** ($\gcd(h_2(k), m) = 1$). If they share a common factor $g > 1$, the sequence visits only $m / g$ slots rather than the entire table.
-
-#### Canonical Double Hashing Equations (Prime $m$):
-$$h_1(k) = k \pmod m$$
-$$h_2(k) = 1 + (k \pmod{m - 1})$$
-Since $m - 1$ is used in modulo and $1$ is added, $1 \le h_2(k) \le m - 1$. Because $m$ is prime, every integer in this range is guaranteed coprime to $m$.
+- To ensure full table traversal, $h_2(k)$ must be coprime to $m$ ($\gcd(h_2(k), m) = 1$) and $h_2(k) \ne 0$. For prime $m$:
+  $$h_1(k) = k \pmod m, \quad h_2(k) = 1 + (k \pmod{m - 1})$$
 
 ---
 
-### 4. Comprehensive Architectural Comparison
+### 3. Production Multi-Language Implementation
 
-| Strategy | Primary Clustering | Secondary Clustering | Cache Line Performance | Max Viable Load Factor ($\alpha$) | Pointer Memory Overhead |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Separate Chaining** | None | None | Poor (chasing heap pointers) | $\alpha > 1.0$ (Unlimited) | Yes ($8\text{ bytes}$ / node) |
-| **Linear Probing** | **Severe** | None | **Optimal** (sequential reads) | $\alpha \le 0.5$ | None ($0\text{ bytes}$) |
-| **Quadratic Probing** | None | Mild | Moderate | $\alpha \le 0.5$ | None ($0\text{ bytes}$) |
-| **Double Hashing** | None | None | Good | $\alpha \le 0.7$ | None ($0\text{ bytes}$) |
+#### C++20 Open Addressing Hash Table with TOMBSTONE Protocol
+```cpp
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <optional>
+
+template <typename K, typename V>
+class OpenAddressingMap {
+private:
+    enum class State { EMPTY, OCCUPIED, TOMBSTONE };
+
+    struct Entry {
+        K key;
+        V value;
+        State state = State::EMPTY;
+    };
+
+    std::vector<Entry> table_;
+    size_t capacity_;
+    size_t size_;
+    size_t tombstones_;
+
+    size_t hash1(const K& key) const {
+        return std::hash<K>{}(key) % capacity_;
+    }
+
+    size_t hash2(const K& key) const {
+        // Must be non-zero and coprime to prime capacity
+        size_t h = std::hash<K>{}(key) % (capacity_ - 1);
+        return 1 + h;
+    }
+
+public:
+    explicit OpenAddressingMap(size_t cap = 11)
+        : capacity_(cap), size_(0), tombstones_(0), table_(cap) {}
+
+    bool insert(const K& key, const V& value) {
+        if ((size_ + tombstones_) * 10 >= capacity_ * 7) {
+            rehash(capacity_ * 2 + 1); // Expand prime
+        }
+
+        size_t h1 = hash1(key);
+        size_t h2 = hash2(key);
+        size_t first_tombstone = capacity_;
+
+        for (size_t i = 0; i < capacity_; ++i) {
+            size_t idx = (h1 + i * h2) % capacity_;
+            if (table_[idx].state == State::EMPTY) {
+                size_t dest = (first_tombstone != capacity_) ? first_tombstone : idx;
+                table_[dest].key = key;
+                table_[dest].value = value;
+                table_[dest].state = State::OCCUPIED;
+                if (first_tombstone != capacity_) --tombstones_;
+                ++size_;
+                return true;
+            }
+            if (table_[idx].state == State::TOMBSTONE && first_tombstone == capacity_) {
+                first_tombstone = idx;
+            }
+            if (table_[idx].state == State::OCCUPIED && table_[idx].key == key) {
+                table_[idx].value = value;
+                return false; // Updated existing key
+            }
+        }
+        return false;
+    }
+
+    std::optional<V> find(const K& key) const {
+        size_t h1 = hash1(key);
+        size_t h2 = hash2(key);
+        for (size_t i = 0; i < capacity_; ++i) {
+            size_t idx = (h1 + i * h2) % capacity_;
+            if (table_[idx].state == State::EMPTY) {
+                return std::nullopt; // Search terminates
+            }
+            if (table_[idx].state == State::OCCUPIED && table_[idx].key == key) {
+                return table_[idx].value;
+            }
+            // If TOMBSTONE, continue probing!
+        }
+        return std::nullopt;
+    }
+
+    bool erase(const K& key) {
+        size_t h1 = hash1(key);
+        size_t h2 = hash2(key);
+        for (size_t i = 0; i < capacity_; ++i) {
+            size_t idx = (h1 + i * h2) % capacity_;
+            if (table_[idx].state == State::EMPTY) {
+                return false;
+            }
+            if (table_[idx].state == State::OCCUPIED && table_[idx].key == key) {
+                table_[idx].state = State::TOMBSTONE;
+                --size_;
+                ++tombstones_;
+                return true;
+            }
+        }
+        return false;
+    }
+
+private:
+    void rehash(size_t new_cap) {
+        std::vector<Entry> old_table = std::move(table_);
+        capacity_ = new_cap;
+        table_.assign(capacity_, Entry{});
+        size_ = 0;
+        tombstones_ = 0;
+        for (auto& entry : old_table) {
+            if (entry.state == State::OCCUPIED) {
+                insert(entry.key, entry.value);
+            }
+        }
+    }
+};
+```
 
 ---
 
-### 5. Key Takeaways
+### 4. Key Takeaways
 
-1. **Chaining vs. Open Addressing**: Chaining uses external linked lists with memory overhead; Open Addressing stores all keys inside the primary array and requires $\alpha < 1.0$.
+1. **Chaining vs. Open Addressing**: Chaining uses external linked lists with pointer overhead; Open Addressing stores all keys directly in the array and requires $\alpha < 1.0$.
 2. **TOMBSTONE Necessity**: Open Addressing must mark deleted slots with `TOMBSTONE` to prevent search chains from severing prematurely.
 3. **Primary Clustering**: Linear probing produces contiguous clumps of occupied slots, degrading average search time.
 4. **Double Hashing Superiority**: Using a key-dependent step size $h_2(k)$ coprime to prime $m$ yields independent probe permutations, eliminating clustering.

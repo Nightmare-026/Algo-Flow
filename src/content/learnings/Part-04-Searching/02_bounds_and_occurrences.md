@@ -1,7 +1,7 @@
 # Part 04: Searching — Module 02: Lower Bound, Upper Bound & Element Occurrences
 
 > **Topics Covered:**  
-> 51. Binary Search Invariants & Interval Models &bull; 52. Lower Bound Algorithm ($A[i] \ge \text{target}$) &bull; Upper Bound Algorithm ($A[i] > \text{target}$) &bull; 53. First and Last Occurrences & Frequency Counting in $O(\log n)$
+> 51. Binary Search Invariants & Interval Models &bull; 52. Lower Bound Algorithm ($A[i] \ge \text{target}$) &bull; Upper Bound Algorithm ($A[i] > \text{target}$) &bull; 53. First and Last Occurrences & Frequency Counting in $O(\log n)$ &bull; Production Multi-Language Implementations
 
 ---
 
@@ -20,180 +20,150 @@ Beyond locating exact single-element matches, binary search serves as a precisio
 
 ### 1. The Three Interval Paradigms
 
-A significant portion of binary search bugs—including infinite loops, off-by-one errors, and array boundary violations—stem from mixing interval models. A production implementation must maintain strict consistency across its loop condition and pointer updates:
-
 | Interval Model | Mathematical Window | Loop Invariant Condition | Left Pointer Update | Right Pointer Update | Post-Loop Termination State |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Model 1: Closed Interval** | $[low, high]$ | `while low <= high:` | $low \leftarrow mid + 1$ | $high \leftarrow mid - 1$ | $low = high + 1$ |
 | **Model 2: Half-Open Interval**| $[low, high)$ | `while low < high:` | $low \leftarrow mid + 1$ | $high \leftarrow mid$ | $low = high$ |
 | **Model 3: Open Interval** | $(low, high)$ | `while low + 1 < high:`| $low \leftarrow mid$ | $high \leftarrow mid$ | $low + 1 = high$ |
 
-*Standardization Note*: Throughout this chapter, algorithms are formulated under **Model 1 (Closed Interval with Candidate Retention)**, which guarantees safe convergence without boundary-pointer underflow.
-
 ---
 
 ## Topic 52: Lower Bound & Upper Bound Mathematics
 
-### 1. Lower Bound: Mathematical Definition & Mechanics
+### 1. Boundary Geometry Across Contiguous Runs
 
-Given a sorted array $A$ of $n$ elements in non-decreasing order, the **Lower Bound** of `target` is the **smallest index $i$** such that:
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Boundary Mathematics: Lower Bound (LB) vs. Upper Bound (UB) Contiguous Span
+  </div>
+  <svg viewBox="0 0 850 320" class="w-full h-auto text-xs" style="max-height: 320px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="bndArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="280" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Array Layout in Center -->
+    <g transform="translate(100, 70)">
+      <text x="325" y="-15" font-weight="700" fill="currentColor" text-anchor="middle" font-size="13">Array A = [2, 4, 6, 8, 8, 8, 10, 12] (Target = 8)</text>
+      <!-- Slots 0..7 -->
+      <g transform="translate(0, 15)">
+        <rect x="0" y="0" width="70" height="50" rx="4" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="35" y="30" text-anchor="middle" font-family="monospace">2</text>
+        <text x="35" y="-6" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">idx 0</text>
+        <rect x="75" y="0" width="70" height="50" rx="4" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="110" y="30" text-anchor="middle" font-family="monospace">4</text>
+        <text x="110" y="-6" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">idx 1</text>
+        <rect x="150" y="0" width="70" height="50" rx="4" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="185" y="30" text-anchor="middle" font-family="monospace">6</text>
+        <text x="185" y="-6" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">idx 2</text>
+        <!-- Duplicate Run of 8: Indices 3..5 -->
+        <rect x="225" y="-4" width="225" height="58" rx="6" fill="#3b82f6" fill-opacity="0.1" stroke="#3b82f6" stroke-width="2"/>
+        <rect x="225" y="0" width="70" height="50" rx="4" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2"/>
+        <text x="260" y="30" text-anchor="middle" font-family="monospace" font-weight="700" fill="#10b981">8</text>
+        <text x="260" y="-6" text-anchor="middle" font-size="9" font-weight="700" fill="#10b981">idx 3</text>
+        <rect x="300" y="0" width="70" height="50" rx="4" fill="#3b82f6" fill-opacity="0.2"/>
+        <text x="335" y="30" text-anchor="middle" font-family="monospace" font-weight="700">8</text>
+        <text x="335" y="-6" text-anchor="middle" font-size="9">idx 4</text>
+        <rect x="375" y="0" width="70" height="50" rx="4" fill="#3b82f6" fill-opacity="0.2"/>
+        <text x="410" y="30" text-anchor="middle" font-family="monospace" font-weight="700">8</text>
+        <text x="410" y="-6" text-anchor="middle" font-size="9">idx 5</text>
+        <rect x="450" y="0" width="70" height="50" rx="4" fill="#f59e0b" fill-opacity="0.25" stroke="#f59e0b" stroke-width="2"/>
+        <text x="485" y="30" text-anchor="middle" font-family="monospace" font-weight="700" fill="#f59e0b">10</text>
+        <text x="485" y="-6" text-anchor="middle" font-size="9" font-weight="700" fill="#f59e0b">idx 6</text>
+        <rect x="525" y="0" width="70" height="50" rx="4" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="560" y="30" text-anchor="middle" font-family="monospace">12</text>
+        <text x="560" y="-6" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">idx 7</text>
+      </g>
+    </g>
+    <!-- Pointer Pointers Below -->
+    <g transform="translate(100, 175)">
+      <!-- Lower Bound Indicator -->
+      <g transform="translate(260, 0)">
+        <path d="M 0 35 L 0 5" stroke="#10b981" stroke-width="2" marker-end="url(#bndArrow)"/>
+        <rect x="-80" y="40" width="160" height="50" rx="6" fill="#10b981" fill-opacity="0.12" stroke="#10b981"/>
+        <text x="0" y="58" text-anchor="middle" font-weight="700" fill="#10b981">Lower Bound = 3</text>
+        <text x="0" y="74" text-anchor="middle" font-size="10" fill="currentColor">First element &ge; 8</text>
+      </g>
+      <!-- Upper Bound Indicator -->
+      <g transform="translate(485, 0)">
+        <path d="M 0 35 L 0 5" stroke="#f59e0b" stroke-width="2" marker-end="url(#bndArrow)"/>
+        <rect x="-80" y="40" width="160" height="50" rx="6" fill="#f59e0b" fill-opacity="0.12" stroke="#f59e0b"/>
+        <text x="0" y="58" text-anchor="middle" font-weight="700" fill="#f59e0b">Upper Bound = 6</text>
+        <text x="0" y="74" text-anchor="middle" font-size="10" fill="currentColor">First element &gt; 8</text>
+      </g>
+      <!-- Frequency Badge in Center -->
+      <g transform="translate(372, 55)">
+        <text x="0" y="0" text-anchor="middle" font-weight="700" fill="#3b82f6" font-size="12">Span = UB - LB</text>
+        <text x="0" y="16" text-anchor="middle" font-family="monospace" font-weight="700" fill="#3b82f6">6 - 3 = 3 elements</text>
+      </g>
+    </g>
+  </svg>
+</div>
 
-$$A[i] \ge \text{target}$$
+---
 
-If all elements in $A$ are strictly smaller than `target`, the lower bound returns $n$ (representing the theoretical insertion index at the end of the array).
+### 2. Concrete Production Implementations
 
-#### Lower Bound Query Matrix ($A = [2, 4, 6, 8, 8, 8, 10, 12]$, $n = 8$)
+#### C++20 Lower Bound, Upper Bound & Range Count
+```cpp
+#include <span>
+#include <cstddef>
+#include <utility>
 
-| Query Target | Evaluated Predicate ($A[i] \ge \text{target}$) | First Qualifying Element | Resulting Index | Algorithmic Rationale |
-| :---: | :---: | :---: | :---: | :--- |
-| **`8`** | $A[i] \ge 8$ | `8` | **`3`** | First duplicate instance of 8 |
-| **`7`** | $A[i] \ge 7$ | `8` | **`3`** | Value 7 absent; 8 is the smallest element $\ge 7$ |
-| **`2`** | $A[i] \ge 2$ | `2` | **`0`** | First element satisfies condition |
-| **`15`** | $A[i] \ge 15$ | None | **`8` ($n$)** | All elements $< 15$; returns array length |
+// Lower Bound: Returns index of first element >= target, or arr.size() if none
+size_t lower_bound(std::span<const int> arr, int target) {
+    size_t low = 0;
+    size_t high = arr.size();
 
-#### Canonical Lower Bound Implementation:
-```text
-FUNCTION LowerBound(A: Array of Element, n: Integer, target: Element) -> Integer:
-    low <- 0
-    high <- n - 1
-    ans <- n                    // Default if all elements < target
+    while (low < high) {
+        size_t mid = low + (high - low) / 2;
+        if (arr[mid] >= target) {
+            high = mid; // Candidate found; continue searching left
+        } else {
+            low = mid + 1;
+        }
+    }
+    return low;
+}
 
-    while low <= high:
-        mid <- low + (high - low) / 2
-        if A[mid] >= target:
-            ans <- mid          // Candidate found; search left for earlier occurrence
-            high <- mid - 1
-        else:
-            low <- mid + 1      // A[mid] too small; search right half
+// Upper Bound: Returns index of first element > target, or arr.size() if none
+size_t upper_bound(std::span<const int> arr, int target) {
+    size_t low = 0;
+    size_t high = arr.size();
 
-    return ans
+    while (low < high) {
+        size_t mid = low + (high - low) / 2;
+        if (arr[mid] > target) {
+            high = mid; // Candidate found; continue searching left
+        } else {
+            low = mid + 1;
+        }
+    }
+    return low;
+}
+
+// O(log n) Exact Frequency Query
+size_t count_occurrences(std::span<const int> arr, int target) {
+    size_t lb = lower_bound(arr, target);
+    if (lb == arr.size() || arr[lb] != target) {
+        return 0; // Target is absent
+    }
+    size_t ub = upper_bound(arr, target);
+    return ub - lb;
+}
 ```
 
 ---
 
-### 2. Upper Bound: Mathematical Definition & Mechanics
-
-Given a sorted array $A$ of $n$ elements in non-decreasing order, the **Upper Bound** of `target` is the **smallest index $i$** such that:
-
-$$A[i] > \text{target}$$
-
-If no element in $A$ is strictly greater than `target`, the upper bound returns $n$.
-
-#### Upper Bound Query Matrix ($A = [2, 4, 6, 8, 8, 8, 10, 12]$, $n = 8$)
-
-| Query Target | Evaluated Predicate ($A[i] > \text{target}$) | First Qualifying Element | Resulting Index | Algorithmic Rationale |
-| :---: | :---: | :---: | :---: | :--- |
-| **`8`** | $A[i] > 8$ | `10` | **`6`** | First element strictly greater than 8 |
-| **`5`** | $A[i] > 5$ | `6` | **`2`** | Smallest element strictly greater than 5 |
-| **`12`** | $A[i] > 12$ | None | **`8` ($n$)** | No elements $> 12$; returns array length |
-
-#### Canonical Upper Bound Implementation:
-```text
-FUNCTION UpperBound(A: Array of Element, n: Integer, target: Element) -> Integer:
-    low <- 0
-    high <- n - 1
-    ans <- n                    // Default if no element > target
-
-    while low <= high:
-        mid <- low + (high - low) / 2
-        if A[mid] > target:
-            ans <- mid          // Candidate found; search left for smaller index
-            high <- mid - 1
-        else:
-            low <- mid + 1      // A[mid] <= target; search right half
-
-    return ans
-```
-
----
-
-## Topic 53: Element Occurrences & Frequency Counting
-
-### 1. The $O(\log n)$ Range Extraction Theorem
-
-In an unsorted array, counting the occurrences of a value requires a full linear scan ($\Theta(n)$ time). In a sorted array, duplicate elements form an unbroken contiguous subarray:
-
-$$\text{First Occurrence Index} = \text{LowerBound}(A, n, \text{target})$$
-
-$$\text{Last Occurrence Index} = \text{UpperBound}(A, n, \text{target}) - 1$$
-
-$$\text{Total Count}(\text{target}) = \text{UpperBound}(A, n, \text{target}) - \text{LowerBound}(A, n, \text{target})$$
-
-#### Existence Verification Rule:
-The target exists in array $A$ if and only if:
-$$\text{firstIdx} < n \quad \text{and} \quad A[\text{firstIdx}] == \text{target}$$
-
----
-
-### 2. Step-by-Step Range Trace: Target $= 8$ in $A = [2, 4, 6, 8, 8, 8, 10, 12]$
-
-| Sub-Algorithm | `low` | `high` | `mid` | $A[\text{mid}]$ | Predicate Evaluation | Window Update |
-| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Lower Bound Pass** | `0` | `7` | `3` | `8` | $8 \ge 8$ (True) $\implies \text{ans} = 3$ | $\text{high} \leftarrow 3 - 1 = 2$ |
-| | `0` | `2` | `1` | `4` | $4 \ge 8$ (False) | $\text{low} \leftarrow 1 + 1 = 2$ |
-| | `2` | `2` | `2` | `6` | $6 \ge 8$ (False) | $\text{low} \leftarrow 2 + 1 = 3$ |
-| | **Terminates** | | | | **LowerBound Result** | **`ans = 3`** |
-| **Upper Bound Pass** | `0` | `7` | `3` | `8` | $8 > 8$ (False) | $\text{low} \leftarrow 3 + 1 = 4$ |
-| | `4` | `7` | `5` | `8` | $8 > 8$ (False) | $\text{low} \leftarrow 5 + 1 = 6$ |
-| | `6` | `7` | `6` | `10` | $10 > 8$ (True) $\implies \text{ans} = 6$ | $\text{high} \leftarrow 6 - 1 = 5$ |
-| | **Terminates** | | | | **UpperBound Result** | **`ans = 6`** |
-
-#### Operational Output:
-- **First Occurrence**: Index $3$ ($A[3] = 8$)
-- **Last Occurrence**: $\text{UpperBound} - 1 = 6 - 1 = 5$ ($A[5] = 8$)
-- **Total Frequency**: $6 - 3 = 3$ instances of value 8!
-- **Total Time**: Two binary searches $\implies 2 \times O(\log n) = \mathbf{O(\log n)}$.
-
----
-
-### 3. Dedicated First and Last Occurrence Functions
-
-When only one boundary is required, dedicated functions avoid invoking two separate passes:
-
-```text
-FUNCTION FirstOccurrence(A: Array of Element, n: Integer, target: Element) -> Integer:
-    low <- 0
-    high <- n - 1
-    ans <- -1
-
-    while low <= high:
-        mid <- low + (high - low) / 2
-        if A[mid] == target:
-            ans <- mid
-            high <- mid - 1    // Contract right boundary to search earlier indices
-        else if A[mid] < target:
-            low <- mid + 1
-        else:
-            high <- mid - 1
-
-    return ans
-
-FUNCTION LastOccurrence(A: Array of Element, n: Integer, target: Element) -> Integer:
-    low <- 0
-    high <- n - 1
-    ans <- -1
-
-    while low <= high:
-        mid <- low + (high - low) / 2
-        if A[mid] == target:
-            ans <- mid
-            low <- mid + 1     // Contract left boundary to search later indices
-        else if A[mid] < target:
-            low <- mid + 1
-        else:
-            high <- mid - 1
-
-    return ans
-```
-
----
-
-### 4. Key Takeaways
+### 3. Key Takeaways
 
 1. **Predicate Distinction**: Lower Bound uses a non-strict inequality ($A[i] \ge \text{target}$); Upper Bound uses a strict inequality ($A[i] > \text{target}$).
 2. **Fallback Index**: If no element satisfies the predicate, both Lower and Upper Bound return $n$ (the valid insertion position).
 3. **Range Counting**: The exact frequency of any element in a sorted array is computed in $O(\log n)$ time as $\text{UpperBound} - \text{LowerBound}$.
-4. **Candidate Tracking**: Initializing `ans = n` and contracting the active window when a candidate is identified guarantees safe convergence without off-by-one errors.
+4. **Candidate Tracking**: Half-open intervals $[low, high)$ guarantee convergence to the optimal boundary point with zero pointer underflow.
 
 ---
 
@@ -201,5 +171,4 @@ FUNCTION LastOccurrence(A: Array of Element, n: Integer, target: Element) -> Int
 
 1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Section 2.3 & Chapter 12. MIT Press.
 2. **Bentley, J.** (2000). *Programming Pearls* (2nd ed.), Column 4: *Writing Correct Programs*. Addison-Wesley.
-3. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.2: *Searching by Comparison of Keys*. Addison-Wesley.
-4. **Stepanov, A., & Lee, M.** (1995). *The Standard Template Library (STL)*. HP Laboratories Technical Report.
+3. **Stepanov, A., & Lee, M.** (1995). *The Standard Template Library (STL)*. HP Laboratories Technical Report.

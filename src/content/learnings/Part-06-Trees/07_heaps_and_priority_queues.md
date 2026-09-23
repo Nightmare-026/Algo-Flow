@@ -53,6 +53,68 @@ Consider a Max-Heap containing $n = 7$ elements: `[90, 80, 70, 30, 40, 50, 10]`:
 | **5** | **50** | Level 2 | `null` | `null` | Index 2 (70) | Leaf Node |
 | **6** | **10** | Level 2 | `null` | `null` | Index 2 (70) | Leaf Node |
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 310" width="100%" height="310" class="mx-auto block font-sans">
+  <defs>
+    <marker id="heap-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/></marker>
+    <linearGradient id="heap-grad-root" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0.05"/></linearGradient>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Binary Heap: Complete Tree Geometry to Pointerless Array Serialization</text>
+  <line x1="410" y1="50" x2="215" y2="105" stroke="#64748b" stroke-width="2"/>
+  <line x1="410" y1="50" x2="605" y2="105" stroke="#64748b" stroke-width="2"/>
+  <line x1="215" y1="105" x2="120" y2="160" stroke="#64748b" stroke-width="2"/>
+  <line x1="215" y1="105" x2="310" y2="160" stroke="#64748b" stroke-width="2"/>
+  <line x1="605" y1="105" x2="510" y2="160" stroke="#64748b" stroke-width="2"/>
+  <line x1="605" y1="105" x2="700" y2="160" stroke="#64748b" stroke-width="2"/>
+  <circle cx="410" cy="45" r="20" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+  <text x="410" y="50" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">90</text>
+  <text x="410" y="20" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#f59e0b">idx [0]</text>
+  <circle cx="215" cy="105" r="18" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <text x="215" y="110" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">80</text>
+  <text x="215" y="80" text-anchor="middle" font-size="10" font-weight="bold" fill="#0284c7">idx [1]</text>
+  <circle cx="605" cy="105" r="18" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+  <text x="605" y="110" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">70</text>
+  <text x="605" y="80" text-anchor="middle" font-size="10" font-weight="bold" fill="#0284c7">idx [2]</text>
+  <circle cx="120" cy="160" r="16" fill="#10b981" stroke="#059669" stroke-width="1.5"/>
+  <text x="120" y="165" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">30</text>
+  <text x="120" y="137" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#10b981">[3]</text>
+  <circle cx="310" cy="160" r="16" fill="#10b981" stroke="#059669" stroke-width="1.5"/>
+  <text x="310" y="165" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">40</text>
+  <text x="310" y="137" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#10b981">[4]</text>
+  <circle cx="510" cy="160" r="16" fill="#10b981" stroke="#059669" stroke-width="1.5"/>
+  <text x="510" y="165" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">50</text>
+  <text x="510" y="137" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#10b981">[5]</text>
+  <circle cx="700" cy="160" r="16" fill="#10b981" stroke="#059669" stroke-width="1.5"/>
+  <text x="700" y="165" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">10</text>
+  <text x="700" y="137" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#10b981">[6]</text>
+  <rect x="70" y="210" width="680" height="85" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="85" y="232" font-size="11" font-weight="bold" fill="#94a3b8">Physical Contiguous Memory (0-Indexed Buffer):</text>
+  <g transform="translate(85, 242)">
+    <rect x="0" y="0" width="85" height="42" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="2" rx="4"/>
+    <text x="42" y="18" text-anchor="middle" font-size="9" fill="#f59e0b">idx 0 (Root)</text>
+    <text x="42" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">90</text>
+    <rect x="92" y="0" width="85" height="42" fill="#0284c7" fill-opacity="0.15" stroke="#0284c7" stroke-width="1.5" rx="4"/>
+    <text x="134" y="18" text-anchor="middle" font-size="9" fill="#0284c7">idx 1 (2i+1)</text>
+    <text x="134" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">80</text>
+    <rect x="184" y="0" width="85" height="42" fill="#0284c7" fill-opacity="0.15" stroke="#0284c7" stroke-width="1.5" rx="4"/>
+    <text x="226" y="18" text-anchor="middle" font-size="9" fill="#0284c7">idx 2 (2i+2)</text>
+    <text x="226" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">70</text>
+    <rect x="276" y="0" width="85" height="42" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1.5" rx="4"/>
+    <text x="318" y="18" text-anchor="middle" font-size="9" fill="#10b981">idx 3</text>
+    <text x="318" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">30</text>
+    <rect x="368" y="0" width="85" height="42" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1.5" rx="4"/>
+    <text x="410" y="18" text-anchor="middle" font-size="9" fill="#10b981">idx 4</text>
+    <text x="410" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">40</text>
+    <rect x="460" y="0" width="85" height="42" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1.5" rx="4"/>
+    <text x="502" y="18" text-anchor="middle" font-size="9" fill="#10b981">idx 5</text>
+    <text x="502" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">50</text>
+    <rect x="552" y="0" width="85" height="42" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1.5" rx="4"/>
+    <text x="594" y="18" text-anchor="middle" font-size="9" fill="#10b981">idx 6</text>
+    <text x="594" y="34" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">10</text>
+  </g>
+</svg>
+</div>
+
 ---
 
 ## 3. Core Heap Restoration Primitives: Sift-Up & Sift-Down

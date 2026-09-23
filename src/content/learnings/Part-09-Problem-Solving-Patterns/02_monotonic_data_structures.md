@@ -92,6 +92,45 @@ $$\text{Width}[i] = \text{NSE}[i] - \text{PSE}[i] - 1$$
 $$\text{Area}[i] = H[i] \times \text{Width}[i]$$
 $$\text{MaxArea} = \max_{0 \le i < n} (\text{Area}[i])$$
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 310" width="100%" height="310" class="mx-auto block font-sans">
+  <defs>
+    <linearGradient id="hist-max" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#10b981" stop-opacity="0.4"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.1"/></linearGradient>
+    <linearGradient id="hist-bar" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0284c7" stop-opacity="0.3"/><stop offset="100%" stop-color="#0284c7" stop-opacity="0.1"/></linearGradient>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Monotonic Stack Mechanics: Next Greater Element &amp; Histogram Area Geometry</text>
+  <rect x="20" y="45" width="375" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="207" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#0284c7">1. Next Greater Element Resolution</text>
+  <g transform="translate(45, 90)">
+    <text x="0" y="15" font-size="11" font-weight="bold" fill="#94a3b8">nums = [2,  1,  2,  4,  3]</text>
+    <text x="0" y="38" font-size="11" font-weight="bold" fill="#10b981">nge  = [4,  2,  4, -1, -1]</text>
+    <rect x="0" y="55" width="320" height="95" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="15" y="75" font-size="10.5" font-weight="bold" fill="#f59e0b">Monotonic Stack Lifecycle:</text>
+    <text x="15" y="95" font-size="10" fill="currentColor">&#x2022; Discard elements &lt;= incoming nums[i]</text>
+    <text x="15" y="115" font-size="10" fill="currentColor">&#x2022; Top remaining is immediate Next Greater</text>
+    <text x="15" y="135" font-size="10" font-weight="bold" fill="#10b981">&#x2022; Amortized &#x398;(1) per element (2n ops max)</text>
+  </g>
+  <text x="207" y="275" text-anchor="middle" font-size="10.5" fill="currentColor">Each item pushed 1&#xD7;, popped &#x2264; 1&#xD7;: O(n) total</text>
+  <rect x="415" y="45" width="385" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="607" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#10b981">2. Largest Rectangle in Histogram [2, 1, 5, 6, 2, 3]</text>
+  <g transform="translate(445, 90)">
+    <rect x="0" y="100" width="38" height="50" fill="url(#hist-bar)" stroke="#0284c7" stroke-width="1.5"/><text x="19" y="128" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">2</text>
+    <rect x="45" y="125" width="38" height="25" fill="url(#hist-bar)" stroke="#0284c7" stroke-width="1.5"/><text x="64" y="142" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">1</text>
+    <rect x="90" y="25" width="38" height="125" fill="url(#hist-bar)" stroke="#0284c7" stroke-width="1.5"/><text x="109" y="60" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">5</text>
+    <rect x="135" y="0" width="38" height="150" fill="url(#hist-bar)" stroke="#0284c7" stroke-width="1.5"/><text x="154" y="35" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">6</text>
+    <rect x="180" y="100" width="38" height="50" fill="url(#hist-bar)" stroke="#0284c7" stroke-width="1.5"/><text x="199" y="128" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">2</text>
+    <rect x="225" y="75" width="38" height="75" fill="url(#hist-bar)" stroke="#0284c7" stroke-width="1.5"/><text x="244" y="112" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">3</text>
+    <rect x="88" y="23" width="87" height="127" fill="url(#hist-max)" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4,2"/>
+    <text x="131" y="90" text-anchor="middle" font-size="13" font-weight="bold" fill="#10b981">Area = 10</text>
+    <text x="131" y="108" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff">H=5 &#xD7; W=2</text>
+    <line x1="0" y1="152" x2="270" y2="152" stroke="#64748b" stroke-width="2"/>
+    <text x="64" y="170" text-anchor="middle" font-size="9.5" fill="#f59e0b">PSE (idx 1)</text>
+    <text x="199" y="170" text-anchor="middle" font-size="9.5" fill="#f59e0b">NSE (idx 4)</text>
+  </g>
+  <text x="607" y="280" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#10b981">Width = NSE - PSE - 1 = 4 - 1 - 1 = 2 bars</text>
+</svg>
+</div>
+
 ```typescript
 export function largestRectangleArea(heights: number[]): number {
   const stack: number[] = []; // Stores indices

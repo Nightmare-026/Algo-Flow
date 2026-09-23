@@ -12,6 +12,7 @@ import { ChevronRight } from "lucide-react";
 import { safeJsonLd } from "@/lib/security/safe-json";
 import { SITE_NAME } from "@/lib/constants/site";
 import { getSiteUrl } from "@/lib/site";
+// Cache invalidation token: 2026-09-23T22:39:00
 
 interface ChapterPageProps {
   params: Promise<{
@@ -21,6 +22,7 @@ interface ChapterPageProps {
 }
 
 export async function generateStaticParams() {
+  // Re-generate static params for all curriculum chapters (v2)
   const modules = getAllModules();
   return modules.flatMap((m) =>
     m.chapters.map((ch) => ({
@@ -36,7 +38,7 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
 
   if (!resolved) {
     return {
-      title: `Chapter Not Found | ${SITE_NAME}`,
+      title: "Chapter Not Found",
     };
   }
 
@@ -45,7 +47,7 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
   const canonicalUrl = `${siteUrl}/learnings/${mod.slug}/${ch.slug}`;
 
   return {
-    title: `${ch.title} — Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} | ${SITE_NAME}`,
+    title: `${ch.title} — Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title}`,
     description: ch.description,
     alternates: {
       canonical: canonicalUrl,
@@ -152,7 +154,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   };
 
   return (
-    <div className="h-[calc(100vh-4.5rem)] overflow-hidden w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex flex-col bg-background">
+    <div className="h-[calc(100vh-4.5rem)] overflow-hidden w-full px-2 sm:px-3 lg:px-4 2xl:px-6 py-2 sm:py-2.5 flex flex-col bg-background">
       {/* Scroll Reading Progress Bar tied to the middle reader card */}
       <ReadingProgressBar targetId="chapter-reader-container" />
 
@@ -178,7 +180,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
       {/* 3 Full-Height Cards: Left (Tree Nav), Middle (Reading Reader), Right (TOC) */}
       <div className="flex flex-col lg:flex-row gap-2.5 sm:gap-3 flex-1 min-h-0 w-full overflow-hidden">
         {/* LEFT CARD — Full height, scrollable curriculum tree navigation */}
-        <aside className="hidden lg:flex lg:w-[280px] xl:w-[320px] 2xl:w-[340px] h-full shrink-0 min-w-0 flex-col">
+        <aside className="hidden lg:flex lg:w-[280px] xl:w-[320px] 2xl:w-[350px] h-full shrink-0 min-w-0 flex-col">
           <CurriculumSidebar
             modules={allModules}
             currentModuleSlug={mod.slug}
@@ -191,7 +193,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         {/* MIDDLE CARD — Full height, scrollable reading article taking available space */}
         <article
           id="chapter-reader-container"
-          className="flex-1 h-full min-w-0 overflow-y-auto custom-scrollbar rounded-2xl border border-border/80 bg-surface/90 shadow-[var(--shadow-raised)] p-5 sm:p-7 md:p-9"
+          className="flex-1 h-full min-w-0 overflow-y-auto custom-scrollbar rounded-2xl border border-border/80 bg-surface/90 shadow-[var(--shadow-raised)] p-5 sm:p-7 md:p-8 xl:p-10"
         >
           {/* Breadcrumbs inside the reading card */}
           <nav
@@ -216,7 +218,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         </article>
 
         {/* RIGHT CARD — Full height, scrollable table of contents */}
-        <aside className="hidden lg:flex lg:w-[175px] xl:w-[200px] 2xl:w-[220px] h-full shrink-0 min-w-0 flex-col">
+        <aside className="hidden lg:flex lg:w-[220px] xl:w-[260px] 2xl:w-[280px] h-full shrink-0 min-w-0 flex-col">
           <TableOfContents items={content.tableOfContents} className="h-full" />
         </aside>
       </div>

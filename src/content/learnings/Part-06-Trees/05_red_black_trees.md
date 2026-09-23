@@ -49,6 +49,81 @@ The table below illustrates a valid Red-Black Tree containing keys $\{5, 10, 15,
 - Path $20 \to 30 \to 40 \to \text{NIL}$: Black nodes = $\{20, 30\}$ (Count = 2).
 All paths encounter exactly 2 black nodes! Invariant 5 is globally satisfied.
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Structural Invariants: Red-Black Tree Topology &amp; Black-Height Invariant (bh = 2)
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="rbtArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Valid Red-Black Tree Visualization -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="currentColor" text-anchor="middle" font-size="13">Valid Red-Black Tree (Root Black, bh = 2)</text>
+      <!-- Tree Nodes -->
+      <g transform="translate(30, 45)">
+        <!-- Root: 20 Black -->
+        <circle cx="145" cy="20" r="18" fill="#1e293b" stroke="currentColor" stroke-width="2"/>
+        <text x="145" y="25" text-anchor="middle" font-weight="700" fill="#f8fafc">20 (B)</text>
+        <!-- Edges from 20 -->
+        <line x1="132" y1="33" x2="80" y2="70" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="158" y1="33" x2="210" y2="70" stroke="currentColor" stroke-width="1.5"/>
+        <!-- Node 10 (Red) -->
+        <circle cx="70" cy="80" r="18" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/>
+        <text x="70" y="85" text-anchor="middle" font-weight="700" fill="#ffffff">10 (R)</text>
+        <!-- Node 30 (Black) -->
+        <circle cx="220" cy="80" r="18" fill="#1e293b" stroke="currentColor" stroke-width="2"/>
+        <text x="220" y="85" text-anchor="middle" font-weight="700" fill="#f8fafc">30 (B)</text>
+        <!-- Edges from 10 -->
+        <line x1="58" y1="94" x2="25" y2="130" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="82" y1="94" x2="115" y2="130" stroke="currentColor" stroke-width="1.5"/>
+        <!-- Node 5 (Black) -->
+        <circle cx="20" cy="140" r="16" fill="#1e293b" stroke="currentColor" stroke-width="1.5"/>
+        <text x="20" y="145" text-anchor="middle" font-weight="700" fill="#f8fafc">5 (B)</text>
+        <!-- Node 15 (Black) -->
+        <circle cx="120" cy="140" r="16" fill="#1e293b" stroke="currentColor" stroke-width="1.5"/>
+        <text x="120" y="145" text-anchor="middle" font-weight="700" fill="#f8fafc">15 (B)</text>
+        <!-- Edges from 30 -->
+        <line x1="232" y1="94" x2="265" y2="130" stroke="currentColor" stroke-width="1.5"/>
+        <!-- Node 40 (Red) -->
+        <circle cx="270" cy="140" r="16" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/>
+        <text x="270" y="145" text-anchor="middle" font-weight="700" fill="#ffffff">40 (R)</text>
+      </g>
+      <text x="175" y="245" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; No two consecutive Red nodes &bull; Every root-to-leaf path has 2 Black nodes</text>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: The 3 Insertion Fixup Cases -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#ef4444" text-anchor="middle" font-size="13">The 3 Canonical Insertion Fixup Cases</text>
+      <!-- Case 1: Uncle is RED -->
+      <g transform="translate(10, 45)">
+        <rect x="0" y="0" width="340" height="60" rx="6" fill="#ef4444" fill-opacity="0.08" stroke="#ef4444"/>
+        <text x="15" y="22" font-weight="700" fill="#ef4444" font-size="11">Case 1: Uncle Node is RED</text>
+        <text x="15" y="42" font-size="10" fill="currentColor" fill-opacity="0.8">Action: Recoloring only (Parent &amp; Uncle &rarr; Black; Grandparent &rarr; Red).</text>
+      </g>
+      <!-- Case 2: Uncle is BLACK (Triangle) -->
+      <g transform="translate(10, 115)">
+        <rect x="0" y="0" width="340" height="60" rx="6" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b"/>
+        <text x="15" y="22" font-weight="700" fill="#f59e0b" font-size="11">Case 2: Uncle is BLACK (Triangle Configuration)</text>
+        <text x="15" y="42" font-size="10" fill="currentColor" fill-opacity="0.8">Action: Rotate Parent to transform triangle into line (converts to Case 3).</text>
+      </g>
+      <!-- Case 3: Uncle is BLACK (Line) -->
+      <g transform="translate(10, 185)">
+        <rect x="0" y="0" width="340" height="60" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981"/>
+        <text x="15" y="22" font-weight="700" fill="#10b981" font-size="11">Case 3: Uncle is BLACK (Line Configuration)</text>
+        <text x="15" y="42" font-size="10" fill="currentColor" fill-opacity="0.8">Action: Rotate Grandparent &amp; swap colors. Rebalancing terminates!</text>
+      </g>
+      <text x="180" y="265" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; Strict &le; 2 rotations on insert &bull; Strict &le; 3 rotations on delete</text>
+    </g>
+  </svg>
+</div>
+
 ---
 
 ## 3. Mathematical Proof of Height Bound $h \le 2\log_2(n+1)$

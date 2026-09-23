@@ -40,6 +40,40 @@ A Segment Tree recursively divides an interval $[0, n-1]$ into two halves until 
   - Right child of node $u$: $2u + 2$
   - Maximum nodes in binary tree of height $\lceil \log_2 n \rceil + 1 \le 4n$.
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 310" width="100%" height="310" class="mx-auto block font-sans">
+  <defs>
+    <linearGradient id="seg-inside" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/></linearGradient>
+    <linearGradient id="seg-outside" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#64748b" stop-opacity="0.2"/><stop offset="100%" stop-color="#64748b" stop-opacity="0.05"/></linearGradient>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Segment Tree: Binary Interval Decomposition &amp; Query Range [2 &#x2026; 5] Pruning</text>
+  <line x1="410" y1="50" x2="215" y2="110" stroke="#64748b" stroke-width="2"/>
+  <line x1="410" y1="50" x2="605" y2="110" stroke="#64748b" stroke-width="2"/>
+  <line x1="215" y1="110" x2="120" y2="175" stroke="#64748b" stroke-width="2"/>
+  <line x1="215" y1="110" x2="310" y2="175" stroke="#64748b" stroke-width="2"/>
+  <line x1="605" y1="110" x2="510" y2="175" stroke="#64748b" stroke-width="2"/>
+  <line x1="605" y1="110" x2="700" y2="175" stroke="#64748b" stroke-width="2"/>
+  <rect x="365" y="35" width="90" height="32" rx="6" fill="#1e293b" stroke="#0284c7" stroke-width="2"/>
+  <text x="410" y="55" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">[0 &#x2026; 7]</text>
+  <rect x="170" y="95" width="90" height="32" rx="6" fill="#1e293b" stroke="#0284c7" stroke-width="2"/>
+  <text x="215" y="115" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">[0 &#x2026; 3]</text>
+  <rect x="560" y="95" width="90" height="32" rx="6" fill="#1e293b" stroke="#0284c7" stroke-width="2"/>
+  <text x="605" y="115" text-anchor="middle" font-size="12" font-weight="bold" fill="#38bdf8">[4 &#x2026; 7]</text>
+  <rect x="75" y="160" width="90" height="32" rx="6" fill="url(#seg-outside)" stroke="#64748b" stroke-width="1.5"/>
+  <text x="120" y="180" text-anchor="middle" font-size="11" fill="#94a3b8">[0 &#x2026; 1] (Out)</text>
+  <rect x="265" y="160" width="90" height="32" rx="6" fill="url(#seg-inside)" stroke="#10b981" stroke-width="2.5"/>
+  <text x="310" y="180" text-anchor="middle" font-size="12" font-weight="bold" fill="#10b981">[2 &#x2026; 3] &#x2714;</text>
+  <rect x="465" y="160" width="90" height="32" rx="6" fill="url(#seg-inside)" stroke="#10b981" stroke-width="2.5"/>
+  <text x="510" y="180" text-anchor="middle" font-size="12" font-weight="bold" fill="#10b981">[4 &#x2026; 5] &#x2714;</text>
+  <rect x="655" y="160" width="90" height="32" rx="6" fill="url(#seg-outside)" stroke="#64748b" stroke-width="1.5"/>
+  <text x="700" y="180" text-anchor="middle" font-size="11" fill="#94a3b8">[6 &#x2026; 7] (Out)</text>
+  <rect x="80" y="225" width="660" height="65" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="95" y="248" font-size="11" font-weight="bold" fill="#10b981">Query(L=2, R=5) Canonical Coverage Result:</text>
+  <text x="95" y="270" font-size="10.5" fill="currentColor">&#x2022; Segment [2 &#x2026; 3] and [4 &#x2026; 5] are completely covered: return aggregated values directly in O(1)!</text>
+  <text x="550" y="248" font-size="11" font-weight="bold" fill="#38bdf8">Total Visited Nodes: &#x2264; 4 &#x2308;log&#x2082; n&#x2309;</text>
+</svg>
+</div>
+
 ---
 
 ### 3. Implementation: Segment Tree with Point Updates

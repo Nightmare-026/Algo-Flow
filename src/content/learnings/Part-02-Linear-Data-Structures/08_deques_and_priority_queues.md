@@ -1,7 +1,7 @@
 # Part 02: Linear Data Structures — Module 08: Deques & Priority Queues
 
 > **Topics Covered:**  
-> 33. Double-Ended Queue (Deque) ADT & Core Operations &bull; Input-Restricted vs Output-Restricted Deques &bull; Circular Array Deque Modulo Mathematics &bull; The Sliding Window Maximum Monotonic Deque Pattern &bull; 34. Priority Queue ADT Fundamentals & Underlying Data Structure Trade-offs
+> 33. Double-Ended Queue (Deque) ADT & Core Operations &bull; Input-Restricted vs Output-Restricted Deques &bull; Circular Array Deque Modulo Mathematics &bull; The Sliding Window Maximum Monotonic Deque Pattern (Potential Method Proof) &bull; 34. Priority Queue ADT Fundamentals & Underlying Data Structure Trade-offs &bull; Production Implementations
 
 ---
 
@@ -10,7 +10,7 @@ Linear data structures culminate in two powerful generalized container models: D
 ### Learning Objectives
 - Formalize the Double-Ended Queue (Deque) ADT contract and demonstrate how it subsumes both LIFO stacks and FIFO queues.
 - Implement circular array deques using bidirectional modular arithmetic to step backward and forward in physical RAM without shifting.
-- Formulate the decreasing monotonic deque invariant and prove how it solves the Sliding Window Maximum problem in optimal $\Theta(n)$ time.
+- Formulate the decreasing monotonic deque invariant and prove how it solves the Sliding Window Maximum problem in optimal $\Theta(n)$ time using the Physicist's Potential Method.
 - Define the Priority Queue ADT interface and compare the asymptotic bounds of arrays, linked lists, balanced binary search trees, and binary heaps.
 - Trace real-world deployments in operating system scheduling (Linux CFS), network traffic QoS packet prioritization, and Huffman tree construction.
 
@@ -53,131 +53,112 @@ Because access is permitted at both boundaries, the Deque serves as a universal 
 
 ---
 
-### 3. Restricted Deque Variations
-
-| Variant | Insertion Endpoints | Deletion Endpoints | Architectural Rationale & Use Cases |
-| :--- | :---: | :---: | :--- |
-| **Input-Restricted Deque** | **Rear Only** | **Both Front and Rear** | Allows normal FIFO enqueuing while permitting work-stealing schedulers to pop from either the front or the back |
-| **Output-Restricted Deque** | **Both Front and Rear** | **Front Only** | Allows high-priority jobs to bypass normal arrivals while strictly enforcing single-point consumer dispatch |
-
----
-
-### 4. Implementation: Circular Array Ring Buffer
+### 3. Bidirectional Modular Arithmetic in Circular Deques
 
 To achieve $O(1)$ time across all four boundary operations without dynamic node allocations or memory shifting, an implementation wraps a contiguous array using modular arithmetic in both directions:
 
-#### Advancing Forward:
+#### Advancing Forward (`PushBack`, `PopFront`):
 $$\text{nextIndex} = (\text{currentIndex} + 1) \pmod{\text{Capacity}}$$
 
-#### Stepping Backward:
-Adding `Capacity` before modulo ensures the intermediate value remains strictly non-negative in languages where the `%` operator handles negative numbers via truncated division:
+#### Stepping Backward (`PushFront`, `PopBack`):
+Adding `Capacity` before modulo ensures the intermediate value remains strictly non-negative in languages where `%` calculates truncated remainder rather than Euclidean modulo:
 $$\text{prevIndex} = (\text{currentIndex} - 1 + \text{Capacity}) \pmod{\text{Capacity}}$$
-
-```text
-CLASS CircularArrayDeque:
-    field buffer: Array of ValueType
-    field front: Integer <- 0
-    field rear: Integer <- -1
-    field capacity: Integer
-    field count: Integer <- 0
-
-    CONSTRUCTOR(cap: Integer):
-        assert cap > 0
-        this.capacity <- cap
-        this.buffer <- allocate_memory(cap * sizeof(ValueType))
-        this.front <- 0
-        this.rear <- -1
-        this.count <- 0
-
-    FUNCTION PushFront(x: ValueType) -> Void:
-        if this.IsFull():
-            raise OverflowException("Deque is full")
-        this.front <- (this.front - 1 + this.capacity) mod this.capacity
-        this.buffer[this.front] <- x
-        this.count <- this.count + 1
-        if this.count == 1:
-            this.rear <- this.front
-
-    FUNCTION PushBack(x: ValueType) -> Void:
-        if this.IsFull():
-            raise OverflowException("Deque is full")
-        this.rear <- (this.rear + 1) mod this.capacity
-        this.buffer[this.rear] <- x
-        this.count <- this.count + 1
-
-    FUNCTION PopFront() -> ValueType:
-        if this.IsEmpty():
-            raise UnderflowException("Deque is empty")
-        val <- this.buffer[this.front]
-        this.front <- (this.front + 1) mod this.capacity
-        this.count <- this.count - 1
-        return val
-
-    FUNCTION PopBack() -> ValueType:
-        if this.IsEmpty():
-            raise UnderflowException("Deque is empty")
-        val <- this.buffer[this.rear]
-        this.rear <- (this.rear - 1 + this.capacity) mod this.capacity
-        this.count <- this.count - 1
-        return val
-```
 
 ---
 
-### 5. Algorithmic Mastery: Sliding Window Maximum via Monotonic Deque
+### 4. Algorithmic Mastery: Sliding Window Maximum via Monotonic Deque
 
 #### The Problem:
 Given an array $A$ of $n$ numbers and a sliding window of size $k$, find the maximum value in every window as it slides from left to right.
 - **Brute Force**: Inspecting all $k$ elements per window requires $O((n - k + 1) \cdot k) = O(n \cdot k)$ time.
-- **Monotonic Deque Solution**: Achieves optimal **$\Theta(n)$ linear time** by inspecting each element at most twice!
+- **Monotonic Deque Solution**: Achieves optimal **$\Theta(n)$ linear time** by maintaining a strictly decreasing invariant!
 
-#### The Monotonic Invariant:
-Store array **indices** in the deque such that the corresponding array values are maintained in **strictly decreasing order**:
-$$A[\text{deque}[0]] > A[\text{deque}[1]] > \dots > A[\text{deque}[m-1]]$$
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Algorithm Topology: Monotonic Deque Sliding Window Maximum Elimination
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="mdArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Array Stream at Top -->
+    <g transform="translate(50, 45)">
+      <text x="375" y="15" font-weight="700" fill="currentColor" text-anchor="middle" font-size="12">Array A: Sliding Window (k = 3) at Index i = 4 (Value = 5)</text>
+      <!-- Slots 0..7 -->
+      <g transform="translate(30, 25)">
+        <rect x="0" y="0" width="50" height="40" rx="4" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="25" y="24" text-anchor="middle" font-family="monospace">1</text>
+        <text x="25" y="-6" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">i=0</text>
+        <rect x="55" y="0" width="50" height="40" rx="4" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="80" y="24" text-anchor="middle" font-family="monospace" fill="#ef4444">3</text>
+        <text x="80" y="-6" text-anchor="middle" font-size="9" fill="#ef4444" font-weight="700">i=1 (Expiring)</text>
+        <!-- Window Box [i=2..4] -->
+        <rect x="105" y="-5" width="165" height="50" rx="6" fill="#3b82f6" fill-opacity="0.1" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,4"/>
+        <rect x="110" y="0" width="50" height="40" rx="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6"/>
+        <text x="135" y="24" text-anchor="middle" font-family="monospace" font-weight="700">-1</text>
+        <text x="135" y="-6" text-anchor="middle" font-size="9">i=2</text>
+        <rect x="165" y="0" width="50" height="40" rx="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6"/>
+        <text x="190" y="24" text-anchor="middle" font-family="monospace" font-weight="700">-3</text>
+        <text x="190" y="-6" text-anchor="middle" font-size="9">i=3</text>
+        <rect x="220" y="0" width="50" height="40" rx="4" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2"/>
+        <text x="245" y="24" text-anchor="middle" font-family="monospace" font-weight="700" fill="#10b981">5</text>
+        <text x="245" y="-6" text-anchor="middle" font-size="9" fill="#10b981" font-weight="700">i=4 (New)</text>
+        <rect x="275" y="0" width="50" height="40" rx="4" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="300" y="24" text-anchor="middle" font-family="monospace">3</text>
+        <text x="300" y="-6" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">i=5</text>
+        <rect x="330" y="0" width="50" height="40" rx="4" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="355" y="24" text-anchor="middle" font-family="monospace">6</text>
+        <text x="355" y="-6" text-anchor="middle" font-size="9" fill="currentColor" fill-opacity="0.5">i=6</text>
+      </g>
+    </g>
+    <!-- Monotonic Deque State in Middle -->
+    <g transform="translate(100, 150)">
+      <rect x="0" y="0" width="650" height="150" rx="10" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-opacity="0.15"/>
+      <text x="20" y="25" font-weight="700" fill="currentColor" font-size="12">Monotonic Deque (Stores Indices, Values Strictly Decreasing: A[dq[0]] &gt; A[dq[1]] &gt; ...)</text>
+      <!-- Action 1: Expire Out of Window -->
+      <g transform="translate(30, 45)">
+        <rect x="0" y="0" width="130" height="70" rx="6" fill="#ef4444" fill-opacity="0.12" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="65" y="22" font-weight="700" fill="#ef4444" text-anchor="middle" font-size="11">1. Pop Front</text>
+        <text x="65" y="40" fill="currentColor" fill-opacity="0.8" text-anchor="middle" font-size="10">Expired Index:</text>
+        <text x="65" y="56" font-family="monospace" fill="#ef4444" text-anchor="middle" font-weight="700">idx 1 &le; 4 - 3</text>
+      </g>
+      <!-- Action 2: Purge Dominated Elements -->
+      <g transform="translate(200, 45)">
+        <rect x="0" y="0" width="180" height="70" rx="6" fill="#f59e0b" fill-opacity="0.12" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="90" y="22" font-weight="700" fill="#f59e0b" text-anchor="middle" font-size="11">2. Pop Back (Dominated)</text>
+        <text x="90" y="40" fill="currentColor" fill-opacity="0.8" text-anchor="middle" font-size="10">Eject smaller rear items:</text>
+        <text x="90" y="56" font-family="monospace" fill="#f59e0b" text-anchor="middle" font-weight="700">A[3]=-3 &le; 5, A[2]=-1 &le; 5</text>
+      </g>
+      <!-- Action 3: Push Incoming Element -->
+      <g transform="translate(420, 45)">
+        <rect x="0" y="0" width="190" height="70" rx="6" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="2"/>
+        <text x="95" y="22" font-weight="700" fill="#10b981" text-anchor="middle" font-size="11">3. Push Back &amp; Read Max</text>
+        <text x="95" y="40" fill="currentColor" fill-opacity="0.8" text-anchor="middle" font-size="10">Push index 4 (val=5)</text>
+        <text x="95" y="58" font-family="monospace" fill="#10b981" text-anchor="middle" font-weight="700">Window Max = A[front] = 5</text>
+      </g>
+    </g>
+  </svg>
+</div>
 
-1. **Evict Expired Indices**: Pop from `Front` if the stored index falls outside the current window boundary ($\le i - k$).
-2. **Preserve Monotonicity**: Before inserting index $i$, pop from `Rear` as long as $A[\text{deque.PeekBack()}] \le A[i]$. (A smaller element that appears earlier than $A[i]$ can never be the maximum in any subsequent window!).
-3. **Record Window Maximum**: Once the first window is primed ($i \ge k - 1$), the front of the deque **always** references the maximum element!
+#### Formal Amortized Analysis via the Physicist's Potential Method:
+Define the potential function $\Phi$ at step $i$ as the number of elements currently stored in the deque:
+$$\Phi_i = |\text{Deque}_i|$$
+Notice that $\Phi_0 = 0$ (initially empty) and $\Phi_i \ge 0$ for all $0 \le i \le n$.
 
-```text
-FUNCTION SlidingWindowMax(A: Array of Number, n: Integer, k: Integer) -> List of Number:
-    dq <- new CircularArrayDeque(n)
-    result <- empty List
+- For each index $i \in [0, n-1]$:
+  1. Let $d_i$ be the number of elements popped from the back (dominated elements) plus elements popped from the front (expired elements).
+  2. The actual work performed is $c_i = 1 + d_i$ (one push plus $d_i$ pops).
+  3. The change in potential is:
+     $$\Delta \Phi_i = \Phi_i - \Phi_{i-1} = 1 - d_i$$
+  4. The amortized cost per element is:
+     $$\hat{c}_i = c_i + \Delta \Phi_i = (1 + d_i) + (1 - d_i) = 2 = \Theta(1)$$
 
-    for i from 0 to n - 1:
-        // 1. Evict expired index
-        if not dq.IsEmpty() and dq.PeekFront() <= i - k:
-            dq.PopFront()
-
-        // 2. Discard smaller elements from rear
-        while not dq.IsEmpty() and A[dq.PeekBack()] <= A[i]:
-            dq.PopBack()
-
-        // 3. Insert current index
-        dq.PushBack(i)
-
-        // 4. Record maximum
-        if i >= k - 1:
-            result.Append(A[dq.PeekFront()])
-
-    return result
-```
-
-#### Step-by-Step Trace: $A = [1, 3, -1, -3, 5, 3, 6, 7]$, Window $k = 3$
-
-| Index $i$ | Value $A[i]$ | Expired Eviction | Rear Pops (Monotonicity) | Deque Indices (Values) | Output Window Maximum |
-| :---: | :---: | :---: | :--- | :--- | :---: |
-| **0** | `1` | — | None | `[0]` (`[1]`) | — |
-| **1** | `3` | — | Pop index 0 ($1 \le 3$) | `[1]` (`[3]`) | — |
-| **2** | `-1` | — | None | `[1, 2]` (`[3, -1]`) | **`3`** |
-| **3** | `-3` | None | None | `[1, 2, 3]` (`[3, -1, -3]`) | **`3`** |
-| **4** | `5` | Evict index 1 ($1 \le 4-3$) | Pop index 3, index 2 | `[4]` (`[5]`) | **`5`** |
-| **5** | `3` | None | None | `[4, 5]` (`[5, 3]`) | **`5`** |
-| **6** | `6` | None | Pop index 5, index 4 | `[6]` (`[6]`) | **`6`** |
-| **7** | `7` | None | Pop index 6 ($6 \le 7$) | `[7]` (`[7]`) | **`7`** |
-
-**Final Window Maximums**: `[3, 3, 5, 5, 6, 7]`.  
-**Total Steps**: Every index enters the deque once and leaves at most once $\implies$ exactly $2n$ operations $\implies \Theta(n)$ time!
+Across the entire array of length $n$, total operations $\sum_{i=1}^n c_i \le 2n \implies$ **Strictly $\Theta(n)$ linear time**. $\blacksquare$
 
 ---
 
@@ -202,8 +183,6 @@ Next Serviced: Patient B (Priority 10), superseding Patient A regardless of arri
 
 ### 2. Architectural Comparison of Underlying Implementations
 
-A Priority Queue is an interface contract, not a concrete layout. It can be instantiated across multiple data structures with distinct performance trade-offs:
-
 | Underlying Storage Architecture | `Insert(x, p)` | `Peek()` | `Extract()` | Memory Overhead | Practical Systems Evaluation |
 | :--- | :---: | :---: | :---: | :---: | :--- |
 | **Unsorted Array** | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $0\text{ bytes}$ | Fast insert, unacceptably slow extract |
@@ -215,16 +194,76 @@ A Priority Queue is an interface contract, not a concrete layout. It can be inst
 
 ---
 
-### 3. Systems Applications
+### 3. Production Multi-Language Implementations
 
-1. **Operating System Process Scheduling**:
-   - The Linux kernel Completely Fair Scheduler (CFS) utilizes a priority queue to select the next runnable thread with the lowest accumulated virtual runtime (`vruntime`).
-2. **Network Quality of Service (QoS) Queuing**:
-   - Enterprise network routers prioritize latency-critical voice-over-IP (VoIP) and video streaming packets over bulk file transfers (FTP/HTTP downloads) using multi-level priority queues.
-3. **Lossless Data Compression (Huffman Coding)**:
-   - Huffman's greedy compression algorithm repeatedly extracts the two lowest-frequency character nodes from a Min-Priority Queue to build an optimal prefix code tree.
-4. **Graph Algorithms**:
-   - **Dijkstra's Single-Source Shortest Path** and **Prim's Minimum Spanning Tree** require a Min-Priority Queue to iteratively extract the nearest frontier vertex in $O(E \log V)$ time.
+#### A. C++20 Optimal Sliding Window Maximum Monotonic Deque
+```cpp
+#include <vector>
+#include <deque>
+#include <span>
+
+std::vector<int> maxSlidingWindow(std::span<const int> nums, int k) {
+    if (nums.empty() || k <= 0) return {};
+    
+    std::deque<int> dq; // Stores indices of candidate maximums
+    std::vector<int> result;
+    result.reserve(nums.size() - k + 1);
+
+    for (int i = 0; i < static_cast<int>(nums.size()); ++i) {
+        // 1. Evict expired index outside current window [i - k + 1, i]
+        if (!dq.empty() && dq.front() <= i - k) {
+            dq.pop_front();
+        }
+
+        // 2. Preserve strictly decreasing monotonic invariant
+        while (!dq.empty() && nums[dq.back()] <= nums[i]) {
+            dq.pop_back();
+        }
+
+        // 3. Insert current element's index
+        dq.push_back(i);
+
+        // 4. Record maximum once the first window is primed
+        if (i >= k - 1) {
+            result.push_back(nums[dq.front()]);
+        }
+    }
+
+    return result;
+}
+```
+
+#### B. Python 3 Monotonic Deque with Type Annotations
+```python
+from collections import deque
+from typing import List
+
+def max_sliding_window(nums: List[int], k: int) -> List[int]:
+    """Finds maximum in each sliding window of size k in O(n) linear time."""
+    if not nums or k <= 0:
+        return []
+
+    dq: deque[int] = deque()  # Stores indices
+    result: List[int] = []
+
+    for i, num in enumerate(nums):
+        # 1. Evict expired index
+        if dq and dq[0] <= i - k:
+            dq.popleft()
+
+        # 2. Maintain decreasing monotonic invariant
+        while dq and nums[dq[-1]] <= num:
+            dq.pop()
+
+        # 3. Add current index
+        dq.append(i)
+
+        # 4. First window completes at index k - 1
+        if i >= k - 1:
+            result.append(nums[dq[0]])
+
+    return result
+```
 
 ---
 

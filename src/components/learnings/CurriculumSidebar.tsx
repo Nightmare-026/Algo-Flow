@@ -29,13 +29,13 @@ interface CurriculumSidebarProps {
 /** Cleans LaTeX symbols like ($\alpha$) for human-readable sidebar display */
 function formatSubtopicTitle(title: string): string {
   return title
-    .replace(/\(\$\\alpha\$\)/g, "(Î±)")
+    .replace(/\(\$\\alpha\$\)/g, "(α)")
     .replace(/\$([^\$]+)\$/g, "$1")
-    .replace(/\\alpha/g, "Î±")
-    .replace(/\\theta/g, "Î¸")
-    .replace(/\\omega/g, "Î©")
-    .replace(/\\le/g, "â‰¤")
-    .replace(/\\ge/g, "â‰¥");
+    .replace(/\\alpha/g, "α")
+    .replace(/\\theta/g, "θ")
+    .replace(/\\omega/g, "Ω")
+    .replace(/\\le/g, "≤")
+    .replace(/\\ge/g, "≥");
 }
 
 export function CurriculumSidebar({
@@ -70,30 +70,59 @@ export function CurriculumSidebar({
     }
   }, [currentChapterSlug]);
 
-  // Scrollspy observer for subtopics in the active chapter
+  // Container-aware scrollspy for subtopics in the active chapter
   useEffect(() => {
     if (!currentTableOfContents || currentTableOfContents.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSubtopicId(entry.target.id);
+    const container = document.getElementById("chapter-reader-container");
+    if (!container) return;
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+
+      requestAnimationFrame(() => {
+        ticking = false;
+
+        const isNearBottom =
+          container.scrollHeight - container.scrollTop - container.clientHeight < 60;
+
+        if (isNearBottom) {
+          const lastItem = currentTableOfContents[currentTableOfContents.length - 1];
+          if (lastItem) {
+            setActiveSubtopicId(lastItem.id);
+            return;
           }
-        });
-      },
-      {
-        rootMargin: "-80px 0% -65% 0%",
-        threshold: 0,
-      }
-    );
+        }
 
-    currentTableOfContents.forEach((item) => {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    });
+        const containerTop = container.getBoundingClientRect().top;
+        const activationThreshold = containerTop + 120;
 
-    return () => observer.disconnect();
+        let currentActive = currentTableOfContents[0]?.id || "";
+
+        for (const item of currentTableOfContents) {
+          const el = document.getElementById(item.id);
+          if (!el) continue;
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= activationThreshold) {
+            currentActive = item.id;
+          } else {
+            break;
+          }
+        }
+
+        setActiveSubtopicId(currentActive);
+      });
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
   }, [currentTableOfContents]);
 
   const toggleModule = useCallback(
@@ -205,7 +234,16 @@ export function CurriculumSidebar({
 
   const scrollToSubtopic = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
+    const reader = document.getElementById("chapter-reader-container");
+    if (el && reader) {
+      const targetTop = el.getBoundingClientRect().top;
+      const readerTop = reader.getBoundingClientRect().top;
+      const scrollOffset = targetTop - readerTop + reader.scrollTop - 24;
+      reader.scrollTo({ top: scrollOffset, behavior: "smooth" });
+      history.pushState(null, "", `#${id}`);
+      setActiveSubtopicId(id);
+      if (onNavigate) onNavigate();
+    } else if (el) {
       el.scrollIntoView({ behavior: "smooth" });
       history.pushState(null, "", `#${id}`);
       setActiveSubtopicId(id);
@@ -223,7 +261,7 @@ export function CurriculumSidebar({
         className
       )}
     >
-      {/* â”€â”€â”€ HEADER: Clean, Editorial Branding â”€â”€â”€ */}
+      {/* --- HEADER: Clean, Editorial Branding --- */}
       <div className="flex flex-col pb-2.5 border-b border-border/60 shrink-0 gap-2 mb-2.5">
         <div className="flex items-center justify-between gap-2">
           {/* Brand Icon & Title */}
@@ -298,13 +336,15 @@ export function CurriculumSidebar({
         )}
       </div>
 
-      {/* â”€â”€â”€ SEARCH / FILTER BAR â”€â”€â”€ */}
+      {/* --- SEARCH / FILTER BAR --- */}
       <div className="relative mb-2 shrink-0">
         <Search
           className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/60 pointer-events-none"
           aria-hidden="true"
         />
         <input
+          id="curriculum-search"
+          name="curriculum-search"
           type="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

@@ -1,7 +1,7 @@
 # Part 02: Linear Data Structures — Module 06: Stacks
 
 > **Topics Covered:**  
-> 30. Stack Abstract Data Type (LIFO) & Core Operations &bull; Static & Dynamic Array Stack Implementations (Amortized Analysis) &bull; Linked List Stack &bull; Hardware Call Stack & Activation Records &bull; Expression Evaluation (Infix, Prefix, Postfix, Shunting-Yard Algorithm) &bull; Balanced Delimiter Matching
+> 30. Stack Abstract Data Type (LIFO) & Core Operations &bull; Static & Dynamic Array Stack Implementations (Amortized Analysis) &bull; Linked List Stack &bull; Hardware Call Stack & Activation Records &bull; Expression Evaluation (Infix, Prefix, Postfix, Shunting-Yard Algorithm) &bull; Balanced Delimiter Matching (Dyck Language & Formal Induction Proof) &bull; Production Multi-Language Implementations
 
 ---
 
@@ -10,9 +10,10 @@ The stack is one of computing's most fundamental restricted-access linear abstra
 ### Learning Objectives
 - Formalize the Stack Abstract Data Type (ADT) interface and enforce strict Last-In, First-Out (LIFO) invariants.
 - Compare contiguous dynamic-array stack backing buffers against heap pointer-linked implementations in terms of allocation latency and memory overhead.
-- Trace hardware activation records, frame pointers, and return addresses on the physical CPU call stack to diagnose stack overflow conditions.
-- Implement linear-time balanced delimiter matching with nested state verification.
+- Trace hardware activation records, frame pointers (`%rbp`), and return addresses on the physical CPU call stack to diagnose stack overflow and buffer overflow conditions.
+- Prove the correctness of linear-time balanced delimiter matching over the Dyck Language $D_k$ using mathematical induction.
 - Implement postfix (Reverse Polish Notation) arithmetic evaluation and Dijkstra's Shunting-Yard algorithm for converting infix expressions to postfix.
+- Master robust production implementations across C++, Python, and Java with full error handling and cache consciousness.
 
 ---
 
@@ -74,7 +75,7 @@ Maintains a backing array `storage[]` and an integer offset `topIndex`:
 | **Stored Value** | `10` | `20` | `30` | `[EMPTY]` | `[EMPTY]` |
 | **Role / Marker** | Bottom | Interior | **`topIndex = 2` (TOP)** | Available | Available |
 
-*Amortized Cost*: When backed by a geometrically doubling dynamic array, `Push` incurs occasional $O(n)$ reallocations, but achieves $O(1)$ amortized cost across any sequence of $n$ operations while maintaining exceptional CPU cache locality.
+*Amortized Cost*: When backed by a geometrically doubling dynamic array, `Push` incurs occasional $O(n)$ reallocations, but achieves $O(1)$ amortized cost across any sequence of $n$ operations while maintaining exceptional CPU L1/L2 cache locality.
 
 #### Paradigm B: Linked-List-Based Stack
 Maintains a pointer to the head node:
@@ -91,190 +92,179 @@ Maintains a pointer to the head node:
 
 ---
 
-### 4. Canonical Specification
+### 4. Hardware Symbiosis: The CPU Call Stack & Activation Records
 
-```text
-CLASS ArrayStack:
-    field storage: Array of ValueType
-    field topIndex: Integer <- -1
-    field capacity: Integer
+In von Neumann computer architecture, subroutine execution is governed by the hardware call stack located in the upper region of the process virtual address space. On x86-64 / AMD64 architectures:
+- The stack grows **downward** from higher memory addresses toward lower memory addresses.
+- The `%rsp` (Stack Pointer) register holds the memory address of the current top of the stack.
+- The `%rbp` (Base / Frame Pointer) register anchors the base of the current subroutine activation record.
 
-    CONSTRUCTOR(cap: Integer = 16):
-        assert cap > 0
-        this.capacity <- cap
-        this.storage <- allocate_memory(cap * sizeof(ValueType))
-        this.topIndex <- -1
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Hardware Architecture: x86-64 Subroutine Activation Record Topology
+  </div>
+  <svg viewBox="0 0 850 440" class="w-full h-auto text-xs" style="max-height: 440px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="stackGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.12"/>
+        <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.02"/>
+      </linearGradient>
+      <linearGradient id="frameGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.05"/>
+      </linearGradient>
+      <linearGradient id="callerGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#10b981" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#34d399" stop-opacity="0.05"/>
+      </linearGradient>
+      <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="400" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Memory Address Growth Direction Indicator -->
+    <line x1="80" y1="60" x2="80" y2="380" stroke="currentColor" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+    <text x="80" y="50" font-weight="700" fill="currentColor" text-anchor="middle" font-size="11">High Memory (0x7FFF...)</text>
+    <text x="80" y="405" font-weight="700" fill="currentColor" text-anchor="middle" font-size="11">Low Memory (0x0000...)</text>
+    <text x="65" y="225" font-weight="600" fill="currentColor" text-anchor="middle" transform="rotate(-90 65 225)" font-size="12" fill-opacity="0.75">Stack Growth (pushq %reg)</text>
+    <!-- Caller Stack Frame -->
+    <g transform="translate(180, 50)">
+      <rect x="0" y="0" width="460" height="85" rx="8" fill="url(#callerGrad)" stroke="#10b981" stroke-width="1.5"/>
+      <text x="20" y="28" font-weight="700" fill="#10b981" font-size="13">Caller Activation Frame (main / caller)</text>
+      <text x="20" y="48" fill="currentColor" fill-opacity="0.75" font-size="11">Arguments 7..N passed on stack (if &gt; 6 parameters)</text>
+      <text x="20" y="68" fill="currentColor" fill-opacity="0.75" font-size="11">Caller-saved local variables and scratch registers</text>
+      <text x="440" y="28" text-anchor="end" font-family="monospace" fill="currentColor" fill-opacity="0.6">0x7FFFFFFFE500</text>
+    </g>
+    <!-- Linkage Boundary: Return Address & Saved RBP -->
+    <g transform="translate(180, 145)">
+      <rect x="0" y="0" width="460" height="50" rx="6" fill="#f59e0b" fill-opacity="0.12" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="20" y="22" font-weight="700" fill="#f59e0b" font-size="12">Return Instruction Pointer (RIP)</text>
+      <text x="20" y="38" fill="currentColor" fill-opacity="0.7" font-size="10">Pushed by callq; CPU resumes here upon retq</text>
+      <text x="440" y="28" text-anchor="end" font-family="monospace" fill="currentColor" fill-opacity="0.6">0x7FFFFFFFE4A8</text>
+    </g>
+    <g transform="translate(180, 205)">
+      <rect x="0" y="0" width="460" height="45" rx="6" fill="#8b5cf6" fill-opacity="0.12" stroke="#8b5cf6" stroke-width="1.5"/>
+      <text x="20" y="20" font-weight="700" fill="#8b5cf6" font-size="12">Saved Base Pointer (%rbp)</text>
+      <text x="20" y="36" fill="currentColor" fill-opacity="0.7" font-size="10">Pushed by callee prologue (pushq %rbp; movq %rsp, %rbp)</text>
+      <text x="440" y="25" text-anchor="end" font-family="monospace" fill="#8b5cf6" font-weight="700">&lt;-- %rbp points here</text>
+    </g>
+    <!-- Callee Stack Frame -->
+    <g transform="translate(180, 260)">
+      <rect x="0" y="0" width="460" height="95" rx="8" fill="url(#frameGrad)" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="20" y="26" font-weight="700" fill="#3b82f6" font-size="13">Callee Activation Frame (current subroutine)</text>
+      <text x="20" y="48" fill="currentColor" fill-opacity="0.75" font-size="11">Local variables: int x, char buf[64], struct Node temp</text>
+      <text x="20" y="68" fill="currentColor" fill-opacity="0.75" font-size="11">Callee-saved registers: %rbx, %r12-%r15 (if modified)</text>
+      <text x="440" y="85" text-anchor="end" font-family="monospace" fill="#3b82f6" font-weight="700">&lt;-- %rsp points here</text>
+    </g>
+    <!-- Register Indicators on Right -->
+    <g transform="translate(660, 220)">
+      <path d="M 0 5 L -15 5" stroke="#8b5cf6" stroke-width="2"/>
+      <rect x="0" y="-12" width="130" height="34" rx="6" fill="#8b5cf6" fill-opacity="0.15" stroke="#8b5cf6" stroke-width="1"/>
+      <text x="65" y="3" font-weight="700" fill="#8b5cf6" text-anchor="middle" font-size="11">%rbp (Base Frame)</text>
+      <text x="65" y="16" fill="currentColor" fill-opacity="0.7" text-anchor="middle" font-size="9">Fixed Anchor</text>
+    </g>
+    <g transform="translate(660, 335)">
+      <path d="M 0 5 L -15 5" stroke="#3b82f6" stroke-width="2"/>
+      <rect x="0" y="-12" width="130" height="34" rx="6" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="1"/>
+      <text x="65" y="3" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="11">%rsp (Top of Stack)</text>
+      <text x="65" y="16" fill="currentColor" fill-opacity="0.7" text-anchor="middle" font-size="9">Mutates on push/pop</text>
+    </g>
+  </svg>
+</div>
 
-    FUNCTION Push(x: ValueType) -> Void:
-        if this.topIndex == this.capacity - 1:
-            // Dynamic doubling
-            this.Resize(2 * this.capacity)
-        this.topIndex <- this.topIndex + 1
-        this.storage[this.topIndex] <- x
-
-    FUNCTION Pop() -> ValueType:
-        if this.IsEmpty():
-            raise UnderflowException("Stack is empty")
-        val <- this.storage[this.topIndex]
-        this.topIndex <- this.topIndex - 1
-        return val
-
-    FUNCTION Peek() -> ValueType:
-        if this.IsEmpty():
-            raise UnderflowException("Stack is empty")
-        return this.storage[this.topIndex]
-
-    FUNCTION IsEmpty() -> Boolean:
-        return (this.topIndex == -1)
-
-    FUNCTION Size() -> Integer:
-        return (this.topIndex + 1)
-
-    PRIVATE FUNCTION Resize(newCap: Integer) -> Void:
-        newStorage <- allocate_memory(newCap * sizeof(ValueType))
-        for i from 0 to this.topIndex:
-            newStorage[i] <- this.storage[i]
-        free_memory(this.storage)
-        this.storage <- newStorage
-        this.capacity <- newCap
-```
-
----
-
-### 5. Hardware Symbiosis: CPU Call Stack & Activation Records
-
-Every running program thread is assigned an operating-system-level **Execution Call Stack**:
-
-```
-HIGH MEMORY ADDRESS
-┌────────────────────────────────────────────────────────┐
-│ Main Function Activation Record                        │
-│ - Return Address to Operating System Runtime           │
-│ - Local Variables: argc, argv, config                  │
-├────────────────────────────────────────────────────────┤
-│ ProcessData() Frame                                    │
-│ - Return Address to Main instruction line 42           │
-│ - Parameters: bufferPtr, dataLength                    │
-├────────────────────────────────────────────────────────┤
-│ ComputeFactorial(n = 3) Frame                          │
-├────────────────────────────────────────────────────────┤
-│ ComputeFactorial(n = 2) Frame                          │
-├────────────────────────────────────────────────────────┤
-│ ComputeFactorial(n = 1) Frame ◄── CPU Stack Pointer RSP│
-│ (Active Execution Context)                             │
-└────────────────────────────────────────────────────────┘
-LOW MEMORY ADDRESS (Grows downward on x86-64)
-```
-
-| Frame Component | Hardware Register | Architectural Function |
-| :--- | :---: | :--- |
-| **Return Address** | Instruction Pointer (`RIP`) | Machine instruction address the CPU jumps to upon `RET` |
-| **Frame Pointer** | Base Pointer (`RBP`) | Fixed anchor address used to offset and read local variables |
-| **Stack Pointer** | Stack Pointer (`RSP`) | Points to current top of stack; adjusted by `PUSH` and `POP` |
-| **Local Variables** | Stack Segment RAM | Stack-allocated primitive values and pointer handles |
-
-> ⚠️ **Stack Overflow**:  
-> In unbounded or deep recursion without a reachable base case, successive function calls push activation records until the allocated stack boundary (typically 1 MB to 8 MB) is exceeded, triggering an immediate OS memory fault (segmentation violation).
-
----
-
-### 6. Application 1: Balanced Delimiter & Parentheses Matching
-
-```text
-FUNCTION IsBalanced(expression: String) -> Boolean:
-    stk <- new ArrayStack()
-    matching <- Map(')' -> '(', '}' -> '{', ']' -> '[')
-
-    for each char c in expression:
-        if c in ['(', '{', '[']:
-            stk.Push(c)
-        else if c in [')', '}', ']']:
-            if stk.IsEmpty():
-                return False     // Unmatched closing bracket
-            topChar <- stk.Pop()
-            if topChar != matching[c]:
-                return False     // Mismatched bracket types
-    return stk.IsEmpty()         // True if zero unclosed brackets remain
-```
-
-#### Step-by-Step Trace: Validating `{[()]}`
-
-| Step | Scanned Token | Action | Stack State (Bottom $\to$ Top) | Evaluation Result |
-| :---: | :---: | :--- | :--- | :--- |
-| **1** | `{` | `Push('{')` | `['{']` | Opening bracket recorded |
-| **2** | `[` | `Push('[')` | `['{', '[']` | Opening bracket recorded |
-| **3** | `(` | `Push('(')` | `['{', '[', '(']` | Opening bracket recorded |
-| **4** | `)` | `Pop()` $\to$ `'('` | `['{', '[']` | `matching[')'] == '('` ✅ |
-| **5** | `]` | `Pop()` $\to$ `'['` | `['{']` | `matching[']'] == '['` ✅ |
-| **6** | `}` | `Pop()` $\to$ `'{'` | `[]` (Empty) | `matching['}'] == '{'` ✅ |
-| **End** | End of string | Inspect `stk.IsEmpty()` | `[]` | **Expression is Balanced (True)** |
+#### Call Stack Lifecycle:
+1. **Prologue**: When a function is called (`callq`):
+   - The CPU pushes `%rip` (return address) onto the stack.
+   - The callee executes: `pushq %rbp; movq %rsp, %rbp; subq $N, %rsp;` to allocate $N$ bytes of local stack memory.
+2. **Epilogue**: Before returning (`retq`):
+   - The callee executes: `movq %rbp, %rsp; popq %rbp; retq;`.
+   - The CPU pops `%rip` into the program counter and resumes the caller seamlessly.
+3. **Stack Overflow**: If recursive invocations exceed the OS stack ceiling (typically 8 MB on Linux, 1 MB on Windows), `%rsp` collides with the memory guard page, triggering an immediate `SIGSEGV` fault.
 
 ---
 
-### 7. Application 2: Expression Parsing & Dijkstra's Shunting-Yard Algorithm
+### 5. Application 1: Balanced Delimiter Matching & Formal Proof
+
+The balanced parenthesis problem requires validating whether a string $S$ over alphabet $\Sigma = \{(, ), [, ], \{, \}\}$ belongs to the **Dyck Language $D_k$**.
+
+#### Grammar of $D_k$:
+$$\mathcal{S} \to \varepsilon \mid (\mathcal{S}) \mid [\mathcal{S}] \mid \{\mathcal{S}\} \mid \mathcal{S}\mathcal{S}$$
+
+#### Correctness Invariant & Induction Proof:
+- **Loop Invariant**: Prior to scanning index $i$, the stack contains the exact sequence of unmatched open delimiters in the order they were opened.
+- **Base Case ($i = 0$)**: The stack is empty. An empty prefix $\varepsilon$ has no unmatched delimiters. Invariant holds.
+- **Inductive Step**: Assume invariant holds for prefix $S[0 \dots i-1]$.
+  - If $S[i] \in \{(, [, \{\}$, it must eventually match a future closing bracket of the same type. Pushing $S[i]$ onto the stack preserves the invariant.
+  - If $S[i] \in \{), ], \}\}$, by the Dyck grammar, the most recently opened unmatched delimiter must be its exact counterpart. Peeking at `TOP`:
+    - If `stk.IsEmpty()`, an unopen closing delimiter exists $\implies$ invalid.
+    - If `stk.Top() != match(S[i])`, delimiters are improperly nested $\implies$ invalid.
+    - If `stk.Top() == match(S[i])`, popping the top successfully completes the inner Dyck reduction $\mathcal{S} \to ( \mathcal{S} )$. The invariant is preserved for $S[0 \dots i]$.
+- **Termination**: At string conclusion ($i = n$), $S \in D_k \iff \text{stk.IsEmpty()}$. Any remaining element represents an unclosed delimiter. $\blacksquare$
+
+---
+
+### 6. Application 2: Expression Parsing & Dijkstra's Shunting-Yard Algorithm
 
 Mathematical expressions can be formalized in three distinct notations:
 1. **Infix**: $A + B \times C$ (human-readable; requires operator precedence and parentheses).
 2. **Prefix (Polish)**: $+ A \times B C$ (operator precedes operands).
 3. **Postfix (Reverse Polish Notation / RPN)**: $A B C \times +$ (operands precede operator; **zero parentheses required**).
 
-#### A. Postfix Expression Evaluation ($O(n)$ Time)
-Using a single operand stack:
-- Operands are pushed directly onto the stack.
-- Operators pop the two top operands $B$ and $A$, compute $A \odot B$, and push the result.
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Algorithm State Machine: Dijkstra's Shunting-Yard Parsing Pipeline
+  </div>
+  <svg viewBox="0 0 850 320" class="w-full h-auto text-xs" style="max-height: 320px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="syArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="280" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Input Token Stream -->
+    <g transform="translate(50, 110)">
+      <rect x="0" y="0" width="160" height="80" rx="8" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="80" y="30" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Infix Token Stream</text>
+      <text x="80" y="55" font-family="monospace" fill="currentColor" text-anchor="middle" font-size="12">3 + 4 * 2 / (1 - 5)</text>
+    </g>
+    <!-- Decision Splitter -->
+    <path d="M 210 150 L 270 150" stroke="currentColor" stroke-width="2" marker-end="url(#syArrow)"/>
+    <g transform="translate(270, 95)">
+      <polygon points="50,0 100,55 50,110 0,55" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="50" y="52" font-weight="700" fill="#f59e0b" text-anchor="middle" font-size="11">Token</text>
+      <text x="50" y="66" font-weight="700" fill="#f59e0b" text-anchor="middle" font-size="11">Type?</text>
+    </g>
+    <!-- Branch A: Operand Direct to Output -->
+    <path d="M 320 95 L 320 50 L 580 50" stroke="#10b981" stroke-width="2" marker-end="url(#syArrow)"/>
+    <text x="450" y="42" font-weight="600" fill="#10b981" text-anchor="middle" font-size="11">Operand (Number) &rarr; Emit Directly</text>
+    <!-- Branch B: Operator to Operator Stack -->
+    <path d="M 320 205 L 320 250 L 410 250" stroke="#8b5cf6" stroke-width="2" marker-end="url(#syArrow)"/>
+    <text x="350" y="265" font-weight="600" fill="#8b5cf6" text-anchor="middle" font-size="11">Operator / Parenthesis</text>
+    <!-- Operator Stack Box -->
+    <g transform="translate(410, 190)">
+      <rect x="0" y="0" width="160" height="90" rx="8" fill="#8b5cf6" fill-opacity="0.12" stroke="#8b5cf6" stroke-width="1.5"/>
+      <text x="80" y="25" font-weight="700" fill="#8b5cf6" text-anchor="middle" font-size="12">Operator Stack</text>
+      <text x="80" y="45" fill="currentColor" fill-opacity="0.75" text-anchor="middle" font-size="10">Precedence &amp; Assoc.</text>
+      <text x="80" y="65" font-family="monospace" fill="#8b5cf6" font-weight="700" text-anchor="middle" font-size="12">['+', '/'] &lt;-- Top</text>
+    </g>
+    <!-- Popping Operators to Output -->
+    <path d="M 570 235 L 670 235 L 670 185" stroke="#f59e0b" stroke-width="2" marker-end="url(#syArrow)"/>
+    <text x="635" y="225" font-weight="600" fill="#f59e0b" text-anchor="middle" font-size="10">Pop higher prec.</text>
+    <!-- Output Queue / RPN Output -->
+    <g transform="translate(580, 95)">
+      <rect x="0" y="0" width="220" height="90" rx="8" fill="#10b981" fill-opacity="0.12" stroke="#10b981" stroke-width="1.5"/>
+      <text x="110" y="28" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Postfix Output Stream</text>
+      <text x="110" y="55" font-family="monospace" fill="currentColor" text-anchor="middle" font-size="12">3 4 2 * 1 5 - / +</text>
+      <text x="110" y="75" fill="currentColor" fill-opacity="0.7" text-anchor="middle" font-size="10">Parenthesis-Free RPN</text>
+    </g>
+  </svg>
+</div>
 
-```text
-FUNCTION EvaluatePostfix(tokens: List of String) -> Number:
-    stk <- new ArrayStack()
-    for each token in tokens:
-        if IsNumber(token):
-            stk.Push(ParseNumber(token))
-        else:
-            b <- stk.Pop()
-            a <- stk.Pop()
-            result <- ApplyOperator(token, a, b)
-            stk.Push(result)
-    return stk.Pop()
-```
-
-#### B. Dijkstra's Shunting-Yard Algorithm (Infix $\to$ Postfix)
-Uses an operator stack to convert standard infix expressions into postfix notation:
-
-| Operator | Precedence Level | Associativity |
-| :---: | :---: | :---: |
-| `^` (Power) | 3 | Right-to-Left |
-| `*`, `/` | 2 | Left-to-Right |
-| `+`, `-` | 1 | Left-to-Right |
-
-```text
-FUNCTION ShuntingYard(infixTokens: List of String) -> List of String:
-    outputQueue <- empty Queue
-    operatorStack <- new ArrayStack()
-
-    for each token in infixTokens:
-        if IsNumber(token):
-            outputQueue.Enqueue(token)
-        else if token == "(":
-            operatorStack.Push(token)
-        else if token == ")":
-            while not operatorStack.IsEmpty() and operatorStack.Peek() != "(":
-                outputQueue.Enqueue(operatorStack.Pop())
-            if not operatorStack.IsEmpty():
-                operatorStack.Pop() // Discard '('
-        else: // Token is operator
-            while (not operatorStack.IsEmpty() and operatorStack.Peek() != "(" and
-                   (Precedence(operatorStack.Peek()) > Precedence(token) or
-                   (Precedence(operatorStack.Peek()) == Precedence(token) and IsLeftAssociative(token)))):
-                outputQueue.Enqueue(operatorStack.Pop())
-            operatorStack.Push(token)
-
-    while not operatorStack.IsEmpty():
-        outputQueue.Enqueue(operatorStack.Pop())
-
-    return outputQueue
-```
-
-#### Conversion Trace: `3 + 4 * 2 / ( 1 - 5 )`
+#### Step-by-Step Conversion Trace: `3 + 4 * 2 / ( 1 - 5 )`
 
 | Token | Operator Stack Action | Operator Stack (Bottom $\to$ Top) | Postfix Output Queue |
 | :---: | :--- | :--- | :--- |
@@ -285,11 +275,157 @@ FUNCTION ShuntingYard(infixTokens: List of String) -> List of String:
 | `2` | None (Operand) | `['+', '*']` | `3, 4, 2` |
 | `/` | Pop `*` (equal precedence), then `Push('/')` | `['+', '/']` | `3, 4, 2, *` |
 | `(` | `Push('(')` | `['+', '/', '(']` | `3, 4, 2, *` |
-| `1` | None (Operand) | `['+', '/', '(']` | `3, 4, 2, *, 1` |
-| `-` | `Push('-')` | `['+', '/', '(', '-']` | `3, 4, 2, *, 1` |
-| `5` | None (Operand) | `['+', '/', '(', '-']` | `3, 4, 2, *, 1, 5` |
-| `)` | Pop until `(` | `['+', '/']` | `3, 4, 2, *, 1, 5, -` |
-| **End** | Pop remaining operators | `[]` | `3, 4, 2, *, 1, 5, -, /, +` |
+| `1` | None (Operand) | `['+', '/', '(']` | `3, 4, 2, * , 1` |
+| `-` | `Push('-')` | `['+', '/', '(', '-']` | `3, 4, 2, * , 1` |
+| `5` | None (Operand) | `['+', '/', '(', '-']` | `3, 4, 2, * , 1, 5` |
+| `)` | Pop until `(` | `['+', '/']` | `3, 4, 2, * , 1, 5, -` |
+| **End** | Pop remaining operators | `[]` | `3, 4, 2, * , 1, 5, -, /, +` |
+
+---
+
+### 7. Concrete Production Implementations
+
+#### A. C++20 Cache-Conscious Templated Dynamic Stack
+```cpp
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <string>
+
+template <typename T>
+class ArrayStack {
+private:
+    T* buffer_;
+    size_t capacity_;
+    size_t size_;
+
+    void resize(size_t new_capacity) {
+        T* new_buffer = new T[new_capacity];
+        for (size_t i = 0; i < size_; ++i) {
+            new_buffer[i] = std::move(buffer_[i]);
+        }
+        delete[] buffer_;
+        buffer_ = new_buffer;
+        capacity_ = new_capacity;
+    }
+
+public:
+    explicit ArrayStack(size_t initial_capacity = 8)
+        : buffer_(new T[initial_capacity]), capacity_(initial_capacity), size_(0) {}
+
+    ~ArrayStack() {
+        delete[] buffer_;
+    }
+
+    // Disable copy for RAII safety
+    ArrayStack(const ArrayStack&) = delete;
+    ArrayStack& operator=(const ArrayStack&) = delete;
+
+    // Enable move semantics
+    ArrayStack(ArrayStack&& other) noexcept
+        : buffer_(other.buffer_), capacity_(other.capacity_), size_(other.size_) {
+        other.buffer_ = nullptr;
+        other.capacity_ = 0;
+        other.size_ = 0;
+    }
+
+    void push(const T& item) {
+        if (size_ == capacity_) {
+            resize(capacity_ * 2);
+        }
+        buffer_[size_++] = item;
+    }
+
+    void push(T&& item) {
+        if (size_ == capacity_) {
+            resize(capacity_ * 2);
+        }
+        buffer_[size_++] = std::move(item);
+    }
+
+    T pop() {
+        if (empty()) {
+            throw std::underflow_error("Stack underflow: cannot pop from empty stack.");
+        }
+        T val = std::move(buffer_[--size_]);
+        if (size_ > 0 && size_ <= capacity_ / 4 && capacity_ > 8) {
+            resize(capacity_ / 2);
+        }
+        return val;
+    }
+
+    [[nodiscard]] const T& top() const {
+        if (empty()) {
+            throw std::underflow_error("Stack is empty.");
+        }
+        return buffer_[size_ - 1];
+    }
+
+    [[nodiscard]] bool empty() const noexcept { return size_ == 0; }
+    [[nodiscard]] size_t size() const noexcept { return size_; }
+};
+```
+
+#### B. Python 3 Production Shunting-Yard & Postfix Evaluator
+```python
+from typing import List
+
+def shunting_yard(tokens: List[str]) -> List[str]:
+    """Converts an infix token list into Reverse Polish Notation (RPN)."""
+    precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3}
+    right_associative = {'^'}
+    output: List[str] = []
+    op_stack: List[str] = []
+
+    for token in tokens:
+        if token.isnumeric() or (token.startswith('-') and token[1:].isnumeric()):
+            output.append(token)
+        elif token == '(':
+            op_stack.append(token)
+        elif token == ')':
+            while op_stack and op_stack[-1] != '(':
+                output.append(op_stack.pop())
+            if not op_stack:
+                raise ValueError("Mismatched parentheses in expression.")
+            op_stack.pop()  # Discard '('
+        elif token in precedence:
+            curr_p = precedence[token]
+            while (op_stack and op_stack[-1] != '(' and
+                   (precedence.get(op_stack[-1], 0) > curr_p or
+                    (precedence.get(op_stack[-1], 0) == curr_p and token not in right_associative))):
+                output.append(op_stack.pop())
+            op_stack.append(token)
+        else:
+            raise ValueError(f"Unrecognized token: {token}")
+
+    while op_stack:
+        op = op_stack.pop()
+        if op in {'(', ')'}:
+            raise ValueError("Mismatched parentheses in expression.")
+        output.append(op)
+
+    return output
+
+def evaluate_postfix(rpn_tokens: List[str]) -> float:
+    """Evaluates an RPN token list in O(n) time using an operand stack."""
+    stack: List[float] = []
+    for token in rpn_tokens:
+        if token.isnumeric() or (token.startswith('-') and token[1:].isnumeric()):
+            stack.append(float(token))
+        else:
+            if len(stack) < 2:
+                raise ValueError("Malformed RPN expression.")
+            b = stack.pop()
+            a = stack.pop()
+            if token == '+': stack.append(a + b)
+            elif token == '-': stack.append(a - b)
+            elif token == '*': stack.append(a * b)
+            elif token == '/': stack.append(a / b)
+            elif token == '^': stack.append(a ** b)
+    if len(stack) != 1:
+        raise ValueError("Invalid RPN evaluation: excess operands.")
+    return stack[0]
+```
 
 ---
 

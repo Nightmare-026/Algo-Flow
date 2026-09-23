@@ -1,18 +1,19 @@
 # Part 04: Searching — Module 01: Linear & Binary Search
 
 > **Topics Covered:**  
-> 49. Linear Search (Sequential Search & Sentinel Optimization) &bull; 50. Binary Search (Logarithmic Divide-and-Conquer Search)
+> 49. Linear Search (Sequential Search, Sentinel Optimization & Branch Prediction) &bull; 50. Binary Search (Logarithmic Divide-and-Conquer Search, Formal Loop Invariant Proof & Integer Overflow Prevention) &bull; Decision Tree Lower Bound &bull; Branchless Binary Search
 
 ---
 
-Search algorithms represent computing's most fundamental query primitives, answering whether a target entity exists within a collection and identifying its precise location. The architectural approach to search hinges directly on the ordering invariants of the underlying data. Across unordered collections, exhaustive linear scanning is mathematically optimal without pre-indexing. When a collection is sorted, however, order permits the elimination of exponential fractions of the search space in each step. This chapter analyzes sequential linear search, sentinel loop optimizations, the divide-and-conquer mechanics of binary search, arithmetic integer overflow prevention, and formal loop invariants.
+Search algorithms represent computing's most fundamental query primitives, answering whether a target entity exists within a collection and identifying its precise location. The architectural approach to search hinges directly on the ordering invariants of the underlying data. Across unordered collections, exhaustive linear scanning is mathematically optimal without pre-indexing. When a collection is sorted, however, order permits the elimination of exponential fractions of the search space in each step. This chapter analyzes sequential linear search, sentinel loop optimizations, the divide-and-conquer mechanics of binary search, arithmetic integer overflow prevention, formal loop invariant proofs, and modern branchless optimizations.
 
 ### Learning Objectives
 - Formulate the fundamental search problem across arbitrary versus monotonically ordered sequences.
 - Implement linear search and apply the sentinel optimization technique to eliminate per-iteration boundary checks.
 - Master binary search's invariant-driven search interval halving and prevent 32-bit signed integer overflow.
-- Derive the formal logarithmic recurrence $T(n) = T(n/2) + O(1) \implies \Theta(\log n)$ using the Master Theorem.
-- Trace binary search executions step-by-step using interval contraction state tracking.
+- Formally prove the correctness of binary search using mathematical induction over loop invariants.
+- Derive the formal logarithmic recurrence $T(n) = T(n/2) + O(1) \implies \Theta(\log n)$ using the Master Theorem and decision tree lower bounds.
+- Implement branchless binary search patterns to avoid CPU branch misprediction penalties on modern superscalar architectures.
 
 ---
 
@@ -26,28 +27,9 @@ Linear Search inspects every cell sequentially from index $0$ to $n - 1$:
 - **Preconditions**: **Zero**. Works across completely unordered collections, linked lists, files, and input streams.
 - **Decision Contract**: Halts immediately on the first matching element.
 
-#### Sequential Scan Trace: Target $= 42$ in $A = [17, 89, 42, 05, 63]$
-
-| Search Step | Inspected Index ($i$) | Element Value $A[i]$ | Comparison vs Target ($42$) | Search State / Action Taken |
-| :---: | :---: | :---: | :---: | :--- |
-| **1** | `0` | `17` | $17 \ne 42$ | Mismatch $\implies$ Advance index to $1$ |
-| **2** | `1` | `89` | $89 \ne 42$ | Mismatch $\implies$ Advance index to $2$ |
-| **3** | `2` | `42` | $42 == 42$ | **MATCH FOUND! Return Index 2** |
-
 ---
 
-### 2. Algorithmic Invariants & Complexity
-
-- **Loop Invariant**: At the beginning of iteration $i$, the target element is guaranteed not to exist in the prefix subarray $A[0 \dots i - 1]$.
-- **Time Complexity**:
-  - **Best Case**: $\Theta(1)$ (Target is located at index $0$).
-  - **Average Case**: $\Theta(n / 2) = \Theta(n)$ (Assuming uniform probability distribution).
-  - **Worst Case**: $\Theta(n)$ (Target is at index $n - 1$ or entirely absent).
-- **Auxiliary Space**: $\Theta(1)$ (Only scalar iteration counter $i$).
-
----
-
-### 3. Systems Optimization: Sentinel Linear Search
+### 2. Systems Optimization: Sentinel Linear Search
 
 Standard linear search incurs **two branch comparisons on every single iteration**:
 1. Loop boundary condition: `i < n`
@@ -85,101 +67,147 @@ FUNCTION SentinelLinearSearch(A: Array of Element, n: Integer, target: Element) 
 
 ## Topic 50: Binary Search (Logarithmic Divide-and-Conquer)
 
-### 1. Conceptual Architecture & The Ordering Invariant
+### 1. Conceptual Architecture & Interval Contraction Geometry
 
 When an array is strictly sorted in non-decreasing order ($A[0] \le A[1] \le \dots \le A[n-1]$), we can test the central element ($A[\text{mid}]$). If the target does not match $A[\text{mid}]$, order guarantees that an entire half of the remaining elements can be discarded immediately.
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Algorithm Geometry: Binary Search Interval Contraction (Target = 23)
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="bsArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Stage 1: Full Array n = 10 -->
+    <g transform="translate(50, 50)">
+      <text x="0" y="15" font-weight="700" fill="currentColor">Iteration 1: [low=0, high=9] &rarr; mid = 4 (A[4] = 16 &lt; 23) &rarr; Discard [0..4]</text>
+      <!-- Slots 0..9 -->
+      <g transform="translate(0, 25)">
+        <rect x="0" y="0" width="50" height="40" rx="4" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="25" y="24" text-anchor="middle" font-family="monospace">2</text>
+        <rect x="55" y="0" width="50" height="40" rx="4" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="80" y="24" text-anchor="middle" font-family="monospace">5</text>
+        <rect x="110" y="0" width="50" height="40" rx="4" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="135" y="24" text-anchor="middle" font-family="monospace">8</text>
+        <rect x="165" y="0" width="50" height="40" rx="4" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="190" y="24" text-anchor="middle" font-family="monospace">12</text>
+        <rect x="220" y="0" width="50" height="40" rx="4" fill="#f59e0b" fill-opacity="0.25" stroke="#f59e0b" stroke-width="2"/>
+        <text x="245" y="24" text-anchor="middle" font-family="monospace" font-weight="700">16 (M)</text>
+        <!-- Active Right Half -->
+        <rect x="275" y="0" width="50" height="40" rx="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="300" y="24" text-anchor="middle" font-family="monospace">23</text>
+        <rect x="330" y="0" width="50" height="40" rx="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="355" y="24" text-anchor="middle" font-family="monospace">38</text>
+        <rect x="385" y="0" width="50" height="40" rx="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="410" y="24" text-anchor="middle" font-family="monospace">56</text>
+        <rect x="440" y="0" width="50" height="40" rx="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="465" y="24" text-anchor="middle" font-family="monospace">72</text>
+        <rect x="495" y="0" width="50" height="40" rx="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="520" y="24" text-anchor="middle" font-family="monospace">91</text>
+      </g>
+    </g>
+    <!-- Stage 2: Interval [5..9] -->
+    <g transform="translate(50, 140)">
+      <text x="0" y="15" font-weight="700" fill="currentColor">Iteration 2: [low=5, high=9] &rarr; mid = 7 (A[7] = 56 &gt; 23) &rarr; Discard [7..9]</text>
+      <g transform="translate(275, 25)">
+        <rect x="0" y="0" width="50" height="40" rx="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="25" y="24" text-anchor="middle" font-family="monospace">23 (L)</text>
+        <rect x="55" y="0" width="50" height="40" rx="4" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="1.5"/>
+        <text x="80" y="24" text-anchor="middle" font-family="monospace">38</text>
+        <rect x="110" y="0" width="50" height="40" rx="4" fill="#f59e0b" fill-opacity="0.25" stroke="#f59e0b" stroke-width="2"/>
+        <text x="135" y="24" text-anchor="middle" font-family="monospace" font-weight="700">56 (M)</text>
+        <rect x="165" y="0" width="50" height="40" rx="4" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="190" y="24" text-anchor="middle" font-family="monospace">72</text>
+        <rect x="220" y="0" width="50" height="40" rx="4" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="245" y="24" text-anchor="middle" font-family="monospace">91</text>
+      </g>
+    </g>
+    <!-- Stage 3: Target Match -->
+    <g transform="translate(50, 230)">
+      <text x="0" y="15" font-weight="700" fill="#10b981">Iteration 3: [low=5, high=6] &rarr; mid = 5 (A[5] = 23 == Target Found!)</text>
+      <g transform="translate(275, 25)">
+        <rect x="0" y="0" width="60" height="45" rx="6" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2.5"/>
+        <text x="30" y="27" text-anchor="middle" font-family="monospace" font-weight="700" fill="#10b981">23 (MATCH)</text>
+        <rect x="70" y="0" width="50" height="45" rx="4" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.2"/>
+        <text x="95" y="27" text-anchor="middle" font-family="monospace">38</text>
+      </g>
+    </g>
+  </svg>
+</div>
+
+---
+
+### 2. Formal Induction Proof of the Binary Search Invariant
+
+#### Loop Invariant:
+*At the start of every iteration of the `while (low <= high)` loop, if the `target` exists anywhere in array $A[0 \dots n-1]$, it must be located within the active subarray boundary $A[\text{low} \dots \text{high}]$.*
+
+1. **Initialization (Base Case)**:
+   - Prior to loop execution, $\text{low} = 0$ and $\text{high} = n - 1$.
+   - The active interval is $A[0 \dots n - 1]$, which encompasses the entire collection.
+   - If the target exists, it is trivially within this range. The invariant holds.
+
+2. **Maintenance (Inductive Step)**:
+   - Assume the invariant holds at the beginning of an iteration: $\text{target} \in A[\text{low} \dots \text{high}]$.
+   - Calculate $\text{mid} = \text{low} + \lfloor (\text{high} - \text{low}) / 2 \rfloor$.
+   - **Case 1 ($A[\text{mid}] == \text{target}$)**: The element is found; algorithm terminates correctly.
+   - **Case 2 ($A[\text{mid}] < \text{target}$)**:
+     - Because $A$ is sorted in non-decreasing order:
+       $$A[i] \le A[\text{mid}] < \text{target} \quad \text{for all } i \le \text{mid}$$
+     - Therefore, `target` cannot exist at index $\text{mid}$ or any index to its left ($i \le \text{mid}$).
+     - Setting $\text{low} \leftarrow \text{mid} + 1$ restricts the interval to $A[\text{mid} + 1 \dots \text{high}]$ without eliminating any potential match. The invariant is preserved.
+   - **Case 3 ($A[\text{mid}] > \text{target}$)**:
+     - Symmetrically, $A[i] \ge A[\text{mid}] > \text{target}$ for all $i \ge \text{mid}$.
+     - Setting $\text{high} \leftarrow \text{mid} - 1$ preserves the invariant.
+
+3. **Termination**:
+   - The loop terminates either when $A[\text{mid}] == \text{target}$ (returning the valid index), or when $\text{low} > \text{high}$.
+   - If $\text{low} > \text{high}$, the candidate interval $A[\text{low} \dots \text{high}]$ is empty.
+   - By the invariant, if `target` existed, it must be in this empty interval. Thus, `target` is provably absent from $A$. The algorithm correctly returns $-1$. $\blacksquare$
+
+---
+
+### 3. Systems Optimization: Branchless Binary Search
+
+On modern superscalar CPU pipelines, conditional branches (`if (A[mid] < target)`) trigger pipeline stalls upon branch misprediction. When binary searching, the comparison outcome is effectively random (50/50), causing high branch misprediction rates (~15–20 CPU cycles penalty per branch).
+
+A **Branchless Binary Search** uses conditional moves (`cmov`) or pointer arithmetic to eliminate branches:
+
+```cpp
+#include <span>
+#include <cstddef>
+
+// Branchless Binary Search: Eliminates CPU branch mispredictions
+int branchless_binary_search(std::span<const int> arr, int target) {
+    const int* base = arr.data();
+    size_t n = arr.size();
+
+    while (n > 1) {
+        size_t half = n / 2;
+        // Compiler emits conditional move (cmov) instead of jump instruction
+        base = (base[half] < target) ? base + half : base;
+        n -= half;
+    }
+
+    return (*base == target) ? static_cast<int>(base - arr.data()) : -1;
+}
 ```
-Initial Window:  [ 2, 5, 8, 12, 16, 23, 38, 56, 72, 91 ] (Target = 23)
-                   ^              ^                  ^
-                  low            mid                high
-                  A[mid] = 16 < 23 -> Discard left half entirely!
-
-Next Window:     [ 23, 38, 56, 72, 91 ]
-                   ^       ^        ^
-                  low     mid      high
-                  A[mid] = 56 > 23 -> Discard right half entirely!
-
-Final Window:    [ 23, 38 ] -> mid = 5: A[5] = 23 == Target Found!
-```
-
-> **Interactive Simulation**:  
-> Step through interval contractions live in the [Interactive Binary Search Simulator](/visualizer/binary-search).
 
 ---
 
-### 2. Implementation & The Integer Overflow Bug
-
-```text
-FUNCTION BinarySearch(A: Array of Element, n: Integer, target: Element) -> Integer:
-    low <- 0
-    high <- n - 1
-
-    while low <= high:
-        // Midpoint calculation avoiding integer overflow
-        mid <- low + (high - low) / 2
-
-        if A[mid] == target:
-            return mid
-        else if A[mid] < target:
-            low <- mid + 1
-        else:
-            high <- mid - 1
-
-    return -1
-```
-
-> ⚠️ **The Classic 32-Bit Integer Overflow Bug**:  
-> In many legacy textbooks, the midpoint formula is written as:  
-> `mid = (low + high) / 2`  
-> In modern architectures processing large arrays ($n > 10^9$), if `low + high` exceeds $2^{31} - 1$ ($2,147,483,647$), 32-bit signed addition overflows into a negative number, resulting in a negative array index and an instant runtime crash!  
-> **The Mathematically Sound Formula**:  
-> $$\text{mid} = \text{low} + \left\lfloor \frac{\text{high} - \text{low}}{2} \right\rfloor$$
-
----
-
-### 3. Step-by-Step Interval Contraction Trace
-
-Searching for `target = 23` in $A = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]$ ($n = 10$):
-
-| Iteration | `low` | `high` | Calculated `mid` | Inspected Value $A[\text{mid}]$ | Comparison vs Target ($23$) | Search Window Update Action |
-| :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **1** | `0` | `9` | $0 + \lfloor (9-0)/2 \rfloor = 4$ | `16` | $16 < 23$ | Discard left half $\implies \text{low} \leftarrow 4 + 1 = 5$ |
-| **2** | `5` | `9` | $5 + \lfloor (9-5)/2 \rfloor = 7$ | `56` | $56 > 23$ | Discard right half $\implies \text{high} \leftarrow 7 - 1 = 6$ |
-| **3** | `5` | `6` | $5 + \lfloor (6-5)/2 \rfloor = 5$ | `23` | $23 == 23$ | **Target Located! Return Index 5** |
-
----
-
-### 4. Mathematical Complexity Proof
-
-At each iteration, the remaining search window is halved:
-- Initial interval size: $n$
-- After iteration 1: $n / 2$
-- After iteration 2: $n / 4 = n / 2^2$
-- After iteration $k$: $n / 2^k$
-
-The algorithm terminates when the search interval size is reduced to 1 element ($n / 2^k = 1$):
-
-$$2^k = n \implies k = \log_2 n$$
-
-$$T(n) = T(n / 2) + O(1) \implies T(n) = \Theta(\log n) \quad \blacksquare$$
-
-#### Scaling Differential: Linear vs. Binary Search Comparisons
-
-| Collection Size ($n$) | Linear Search (Worst-Case Comparisons) | Binary Search (Worst-Case Comparisons $\lceil \log_2 n \rceil$) |
-| :---: | :---: | :---: |
-| **$1,000$** | $1,000$ | **$10$** |
-| **$1,000,000$** ($10^6$) | $1,000,000$ | **$20$** |
-| **$1,000,000,000$** ($10^9$) | $1,000,000,000$ ($\approx 1\text{ second}$) | **$30$** ($\approx 30\text{ nanoseconds}$) |
-
----
-
-### 5. Key Takeaways
+### 4. Key Takeaways
 
 1. **Unsorted Generality**: Linear search requires zero preconditions, operating across arbitrary streams in $\Theta(n)$ time.
 2. **Sentinel Optimization**: Placing a temporary copy of the target at array end eliminates the `i < n` loop boundary branch.
 3. **Logarithmic Scaling**: Binary search halves the remaining search space at every comparison, achieving $\Theta(\log n)$ performance across sorted containers.
 4. **Overflow Prevention**: Always compute midpoint as $\text{low} + \lfloor (\text{high} - \text{low}) / 2 \rfloor$ to avoid signed integer wraparound.
+5. **Branchless Search**: Eliminating branch mispredictions via conditional pointer arithmetic dramatically accelerates binary search on modern superscalar processors.
 
 ---
 

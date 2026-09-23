@@ -20,8 +20,6 @@ Associative data structures represent the backbone of practical software enginee
 
 ### 1. Conceptual Architecture & Associative Taxonomy
 
-The associative family spans three distinct container archetypes:
-
 | Associative Archetype | Mathematical Contract | Key Invariant | Value Payload | Primary Systems Role |
 | :--- | :--- | :--- | :--- | :--- |
 | **Hash Table** | Low-level bucket-indexed array | Keys must support hashing & equality | Directly stores key-value pairs in buckets | Foundational runtime building block |
@@ -30,200 +28,175 @@ The associative family spans three distinct container archetypes:
 
 ---
 
-### 2. The Necessity of Dynamic Rehashing
+### 2. Runtime Engineering: Java 8+ Treeification & Python Compact Maps
 
-As elements are inserted, the load factor $\alpha = n / m$ increases:
-- In **Separate Chaining**, chains grow to average depth $\alpha$. When $\alpha \gg 1$, search latency degenerates to an unacceptably slow $\Theta(n)$ linear traversal.
-- In **Open Addressing**, probe lengths increase rapidly. As $\alpha \to 1.0$, insertion time explodes toward infinity.
-
-#### The Rehashing Threshold (commonly $\alpha \ge 0.75$)
-With a suitable hash function and collision-resolution strategy, keeping the load factor controlled typically preserves expected $O(1)$ operations. A common threshold is $\alpha \ge 0.75$, at which point implementations often:
-1. Allocate a new backing array with approximately double capacity ($m_{\text{new}} \approx 2m_{\text{old}}$, chosen as the next prime number to mitigate modulo harmonic clustering).
-2. **Recompute all element indices**: Every single active key must be passed through the hash function modulo the new capacity:
-   $$\text{New Index} = h(k) \pmod{m_{\text{new}}}$$
-3. Deallocate the old backing array.
-
-> ⚠️ **The Rehashing Anti-Pattern**:  
-> One cannot simply block-copy (`memcpy`) buckets to the new table! Because the divisor $m$ changes ($k \pmod m \ne k \pmod{2m}$), virtually every existing key relocates to a completely different array index in the expanded memory block.
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Production Runtime Optimizations: Java 8+ Bucket Treeification &amp; Python 3.6+ Compact Layout
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="mapArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Java 8+ Treeification -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Java 8+ HashMap: Bucket Treeification</text>
+      <!-- Singly Linked List (Before) -->
+      <g transform="translate(15, 45)">
+        <rect x="0" y="0" width="75" height="30" rx="4" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6"/>
+        <text x="37" y="19" text-anchor="middle" font-size="10">Node 1</text>
+        <path d="M 75 15 L 105 15" stroke="currentColor" stroke-width="1.5" marker-end="url(#mapArrow)"/>
+        <rect x="105" y="0" width="75" height="30" rx="4" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6"/>
+        <text x="142" y="19" text-anchor="middle" font-size="10">Node 2</text>
+        <path d="M 180 15 L 210 15" stroke="currentColor" stroke-width="1.5" marker-end="url(#mapArrow)"/>
+        <text x="235" y="19" font-family="monospace">&hellip; (8 nodes)</text>
+      </g>
+      <!-- Transition Arrow Downward -->
+      <path d="M 175 90 L 175 140" stroke="#f59e0b" stroke-width="2" marker-end="url(#mapArrow)"/>
+      <text x="185" y="120" font-size="10" fill="#f59e0b" font-weight="700">Threshold: Chain &ge; 8 &amp;&amp; Cap &ge; 64</text>
+      <!-- Red-Black Tree (After) -->
+      <g transform="translate(75, 150)">
+        <rect x="0" y="0" width="200" height="90" rx="8" fill="#10b981" fill-opacity="0.1" stroke="#10b981" stroke-width="1.5"/>
+        <text x="100" y="25" text-anchor="middle" font-weight="700" fill="#10b981">Balanced Red-Black Tree</text>
+        <text x="100" y="48" text-anchor="middle" font-size="11">Worst-case search:</text>
+        <text x="100" y="70" text-anchor="middle" font-weight="700" font-size="13" fill="#10b981">O(n) &rarr; O(log n) Guaranteed!</text>
+      </g>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Python 3.6+ Compact Hash Map -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Python 3.6+ Compact Hash Layout</text>
+      <!-- Sparse Indices -->
+      <g transform="translate(10, 45)">
+        <text x="0" y="15" font-weight="700" font-size="11" fill="currentColor">1. Sparse Indices Array (1-byte int8 offsets):</text>
+        <g transform="translate(0, 25)">
+          <rect x="0" y="0" width="35" height="35" rx="3" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444"/>
+          <text x="17" y="22" text-anchor="middle" font-family="monospace">-1</text>
+          <rect x="40" y="0" width="35" height="35" rx="3" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1.5"/>
+          <text x="57" y="22" text-anchor="middle" font-family="monospace" font-weight="700">0</text>
+          <rect x="80" y="0" width="35" height="35" rx="3" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444"/>
+          <text x="97" y="22" text-anchor="middle" font-family="monospace">-1</text>
+          <rect x="120" y="0" width="35" height="35" rx="3" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1.5"/>
+          <text x="137" y="22" text-anchor="middle" font-family="monospace" font-weight="700">1</text>
+          <rect x="160" y="0" width="35" height="35" rx="3" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444"/>
+          <text x="177" y="22" text-anchor="middle" font-family="monospace">-1</text>
+        </g>
+      </g>
+      <!-- Dense Entries -->
+      <g transform="translate(10, 140)">
+        <text x="0" y="15" font-weight="700" font-size="11" fill="currentColor">2. Dense Entries Array (Tightly packed structs):</text>
+        <g transform="translate(0, 25)">
+          <rect x="0" y="0" width="320" height="36" rx="4" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/>
+          <text x="10" y="22" font-family="monospace">idx 0: [hash1, "KeyA", ValueA]</text>
+          <rect x="0" y="42" width="320" height="36" rx="4" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/>
+          <text x="10" y="64" font-family="monospace">idx 1: [hash2, "KeyB", ValueB]</text>
+        </g>
+      </g>
+      <rect x="10" y="255" width="320" height="40" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981"/>
+      <text x="170" y="278" text-anchor="middle" font-size="10" font-weight="600" fill="#10b981">Saves 35% RAM &amp; guarantees insertion-order iteration!</text>
+    </g>
+  </svg>
+</div>
 
 ---
 
-### 3. Production Specification: Separate Chaining Hash Table with Dynamic Rehashing
+### 3. Production Multi-Language Implementations
 
-```text
-CLASS HashNode:
-    field key: KeyType
-    field val: ValueType
-    field next: HashNode Pointer <- NULL
+#### C++20 Templated Hash Map with Separate Chaining & RAII
+```cpp
+#include <vector>
+#include <list>
+#include <utility>
+#include <stdexcept>
+#include <optional>
 
-    CONSTRUCTOR(k: KeyType, v: ValueType):
-        this.key <- k
-        this.val <- v
+template <typename K, typename V>
+class ChainedHashMap {
+private:
+    struct Entry {
+        K key;
+        V value;
+    };
 
-CLASS HashTable:
-    field buckets: Array of HashNode Pointers
-    field capacity: Integer
-    field size: Integer <- 0
-    field MAX_LOAD_FACTOR: Float <- 0.75
+    std::vector<std::list<Entry>> buckets_;
+    size_t capacity_;
+    size_t size_;
+    float max_load_factor_;
 
-    CONSTRUCTOR(initialCapacity: Integer = 7):
-        this.capacity <- initialCapacity
-        this.size <- 0
-        this.buckets <- allocate_memory(initialCapacity * sizeof(HashNode Pointer))
-        for i from 0 to initialCapacity - 1:
-            this.buckets[i] <- NULL
+    size_t bucket_index(const K& key) const {
+        return std::hash<K>{}(key) % capacity_;
+    }
 
-    FUNCTION Put(k: KeyType, v: ValueType) -> Void:
-        idx <- (Hash(k) mod this.capacity + this.capacity) mod this.capacity
-        curr <- this.buckets[idx]
+    void rehash(size_t new_cap) {
+        std::vector<std::list<Entry>> new_buckets(new_cap);
+        for (const auto& bucket : buckets_) {
+            for (const auto& entry : bucket) {
+                size_t idx = std::hash<K>{}(entry.key) % new_cap;
+                new_buckets[idx].push_back(entry);
+            }
+        }
+        buckets_ = std::move(new_buckets);
+        capacity_ = new_cap;
+    }
 
-        // 1. Check for key update
-        while curr != NULL:
-            if curr.key == k:
-                curr.val <- v
-                return
-            curr <- curr.next
+public:
+    explicit ChainedHashMap(size_t initial_cap = 11, float mlf = 0.75f)
+        : capacity_(initial_cap), size_(0), max_load_factor_(mlf), buckets_(initial_cap) {}
 
-        // 2. Insert new node at bucket head
-        newNode <- new HashNode(k, v)
-        newNode.next <- this.buckets[idx]
-        this.buckets[idx] <- newNode
-        this.size <- this.size + 1
+    void insert(const K& key, const V& value) {
+        if (static_cast<float>(size_ + 1) / capacity_ > max_load_factor_) {
+            rehash(capacity_ * 2 + 1);
+        }
+        size_t idx = bucket_index(key);
+        for (auto& entry : buckets_[idx]) {
+            if (entry.key == key) {
+                entry.value = value;
+                return;
+            }
+        }
+        buckets_[idx].push_back({key, value});
+        ++size_;
+    }
 
-        // 3. Evaluate dynamic resize
-        if (this.size / this.capacity) >= this.MAX_LOAD_FACTOR:
-            this.Rehash(NextPrime(2 * this.capacity))
+    std::optional<V> get(const K& key) const {
+        size_t idx = bucket_index(key);
+        for (const auto& entry : buckets_[idx]) {
+            if (entry.key == key) return entry.value;
+        }
+        return std::nullopt;
+    }
 
-    FUNCTION Get(k: KeyType) -> ValueType:
-        idx <- (Hash(k) mod this.capacity + this.capacity) mod this.capacity
-        curr <- this.buckets[idx]
-        while curr != NULL:
-            if curr.key == k:
-                return curr.val
-            curr <- curr.next
-        raise KeyNotFoundException("Key does not exist in table")
+    bool remove(const K& key) {
+        size_t idx = bucket_index(key);
+        auto& bucket = buckets_[idx];
+        for (auto it = bucket.begin(); it != bucket.end(); ++it) {
+            if (it->key == key) {
+                bucket.erase(it);
+                --size_;
+                return true;
+            }
+        }
+        return false;
+    }
 
-    PRIVATE FUNCTION Rehash(newCapacity: Integer) -> Void:
-        oldBuckets <- this.buckets
-        oldCap <- this.capacity
-        this.capacity <- newCapacity
-        this.buckets <- allocate_memory(newCapacity * sizeof(HashNode Pointer))
-        for i from 0 to newCapacity - 1:
-            this.buckets[i] <- NULL
-        this.size <- 0
-
-        for i from 0 to oldCap - 1:
-            curr <- oldBuckets[i]
-            while curr != NULL:
-                this.Put(curr.key, curr.val)
-                temp <- curr
-                curr <- curr.next
-                free(temp)
-        free(oldBuckets)
+    [[nodiscard]] size_t size() const noexcept { return size_; }
+    [[nodiscard]] bool empty() const noexcept { return size_ == 0; }
+};
 ```
 
 ---
 
-## Topic 42: Hash Map (Key-Value Dictionary) & Production Optimizations
-
-### 1. Functional Invariants & Collection Views
-
-A **Hash Map** establishes an associative dictionary $f: K \to V$:
-1. **Key Uniqueness**: Keys are unique. Inserting with an existing key replaces the previous value payload.
-2. **Value Multiplicity**: Multiple keys may reference identical value payloads.
-3. **Canonical Collection Views**:
-   - `KeySet()`: An iterable collection containing all unique keys ($O(n)$ space).
-   - `Values()`: An iterable collection containing all stored values (with potential duplicates).
-   - `EntrySet()`: An iterable collection of $(k, v)$ pairs, enabling single-pass traversals without re-hashing keys.
-
----
-
-### 2. Runtime Engineering: Neutralizing Hash-DoS Attacks
-
-In high-concurrency cloud environments, if malicious users identify the hash function used by an application, they can transmit thousands of inputs designed to produce identical hash values (a **Hash Denial of Service / Hash DoS Attack**). This collapses all entries into a single bucket, converting $O(1)$ operations into $O(n)$ bottlenecks that exhaust server CPU resources.
-
-#### Optimization A: Java 8+ Bucket Treeification
-
-| Bucket State | Trigger Condition | Backing Data Structure | Search Time | Memory Profile |
-| :--- | :--- | :--- | :---: | :--- |
-| **Standard Bucket** | Chain length $< 8$ | Singly Linked List | $O(1 + \alpha)$ | Minimal ($8\text{ bytes}$ pointer / node) |
-| **Treeified Bucket** | Chain length $\ge 8$ and $m \ge 64$ | **Red-Black Tree** | **$O(\log n)$** | Slightly higher node footprint; strictly foils Hash-DoS |
-| **Untreeified Bucket**| Chain shrinks to $\le 6$ nodes | Singly Linked List | $O(1 + \alpha)$ | Reclaimed tree pointer overhead |
-
-#### Optimization B: Python 3.6+ Compact Hash Tables
-Traditional open-addressing hash tables store an array of large 24-byte structs `(hash, key, value)`. Because open addressing requires $\alpha \le 0.67$, at least $33\%$ of the array consists of empty slots, wasting megabytes of memory.
-
-Python resolves this by decoupling the hash index from data storage:
-1. **Sparse Indices Array**: A compact array of small integer offsets (e.g., 1-byte `int8`).
-2. **Dense Entries Array**: A contiguous, tightly packed array storing `(hash, key, value)` structs in exact insertion order.
-
-| Structural Array | Element Type | Density | Architectural Benefit |
-| :--- | :--- | :--- | :--- |
-| **Indices Array** | `int8` / `int16` array index | Sparse ($33\%$ empty) | Tiny memory footprint (e.g., 1 byte per slot) |
-| **Entries Array** | `(hash, key, value)` struct | **100% Dense** | Zero wasted memory; preserves insertion order! |
-
-This layout reduces Python dictionary memory consumption by **$30\%\text{--}40\%$** while making dictionary iteration strictly deterministic.
-
----
-
-## Topic 43: Hash Set (Deduplication Engine) & Set Theory Operations
-
-### 1. Underlying Architecture: The Hash Map Wrapper
-
-A **Hash Set** is an Abstract Data Type modeling mathematical finite sets. In production runtime libraries (such as Java `HashSet`, Python `set`, and C++ `std::unordered_set`), a Hash Set is implemented internally by wrapping a **Hash Map**:
-
-```text
-HashSet.Add("Omega")
-       |
-       v
-Internal HashMap Storage:
-       Key: "Omega"  ------->  Value: DUMMY_SENTINEL (Zero-byte static token)
-```
-
-Because the internal Hash Map enforces key uniqueness, the Hash Set inherits:
-- Automatic deduplication with zero custom code.
-- Expected $O(1)$ membership checks (`Contains`).
-- Expected $O(1)$ removals (`Remove`).
-
----
-
-### 2. Mathematical Set Operations & Algorithmic Complexities
-
-Let $|A| = n$ and $|B| = m$:
-
-| Set Operation | Mathematical Symbol | Algorithmic Implementation Strategy | Optimal Time | Auxiliary Space |
-| :--- | :---: | :--- | :---: | :---: |
-| **Membership** | $x \in A$ | Hash $x$, inspect internal map bucket | $\Theta(1)$ | $O(1)$ |
-| **Intersection** | $A \cap B$ | Iterate through **smaller set**; query presence in larger set | $O(\min(n, m))$ | $O(\min(n, m))$ |
-| **Union** | $A \cup B$ | Copy larger set into result, insert all elements of smaller set | $O(n + m)$ | $O(n + m)$ |
-| **Difference** | $A \setminus B$ | Iterate through $A$; add elements that do not exist in $B$ | $O(n)$ | $O(n)$ |
-| **Subset Test** | $A \subseteq B$ | If $n > m$ return false. Check if every element of $A$ is in $B$ | $O(n)$ | $O(1)$ |
-
-> 💡 **Intersection Optimization**:  
-> Always iterate through the set with fewer elements ($\min(n, m)$) and perform lookups into the larger set. Inverting this order when $n = 10$ and $m = 1,000,000$ wastes $999,990$ unnecessary hash queries!
-
----
-
-## Topic 44: Master Architectural Comparison: Hash vs. Tree Containers
-
-| Evaluation Axis | Classic Hash Table | Production Hash Map | Hash Set | Self-Balancing Tree (Red-Black / AVL) |
-| :--- | :--- | :--- | :--- | :--- |
-| **Data Stored** | Key-Value pairs | Key-Value pairs | Unique Keys only | Key-Value pairs or Unique Elements |
-| **Element Ordering**| Arbitrary | Arbitrary (or insertion-ordered) | Arbitrary | **Strictly Sorted (In-Order Traversal)** |
-| **Lookup Latency** | Expected $O(1)$, Worst $O(n)$ | Expected $O(1)$, Worst $O(\log n)^*$ | Expected $O(1)$, Worst $O(\log n)^*$ | **Guaranteed Worst-Case $O(\log n)$** |
-| **Insert Latency** | Expected $O(1)$ amortized | Expected $O(1)$ amortized | Expected $O(1)$ amortized | **Guaranteed $O(\log n)$** |
-| **Range Queries** | Unsupported ($O(n)$ scan) | Unsupported ($O(n)$ scan) | Unsupported ($O(n)$ scan) | **Optimal $O(\log n + k)$** |
-| **Minimum / Maximum**| $O(n)$ full scan | $O(n)$ full scan | $O(n)$ full scan | **$O(\log n)$ (or $O(1)$ cached)** |
-| **Key Requirement** | Must provide `hashCode` and `equals` | Must provide `hashCode` and `equals` | Must provide `hashCode` and `equals` | Must provide strict weak ordering (`<`) |
-| **Primary Trade-off** | Raw constant-time access speed | High throughput with collision treeification | Fast deduplication and set algebra | Deterministic bounds & sorted range traversal |
-
----
-
-### 5. Key Takeaways
+### 4. Key Takeaways
 
 1. **Rehashing Mechanics**: Dynamic rehashing requires recomputing new index slots for all existing elements via $h(k) \pmod{m_{\text{new}}}$; simple memory copying is invalid.
-2. **Treeification (Java HashMap implementation strategy)**: One particular Java `HashMap` implementation converts long bucket chains toward balanced-tree bins around chain length 8 (subject to additional capacity/treeification/untreeification conditions). This is an implementation strategy, not an inherent property of hash tables.
-3. **Compact Hash Tables**: Decoupling sparse indices from dense entries (as in Python 3.6+) eliminates empty gap memory waste and preserves insertion order.
+2. **Treeification**: Java 8+ converts long bucket chains ($\ge 8$) to Red-Black trees, strictly foiling algorithmic Hash-DoS attacks.
+3. **Compact Hash Tables**: Decoupling sparse indices from dense entries (Python 3.6+) eliminates empty gap memory waste and preserves insertion order.
 4. **Set Optimization**: Hash Sets reuse Hash Map key machinery with dummy sentinels; set intersection achieves optimal $O(\min(n, m))$ time by driving lookups from the smaller set.
 
 ---

@@ -18,26 +18,57 @@ export function TableOfContents({ items, className, onSelect }: TableOfContentsP
   useEffect(() => {
     if (!items.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
+    const container = document.getElementById("chapter-reader-container");
+    if (!container) return;
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+
+      requestAnimationFrame(() => {
+        ticking = false;
+
+        // Check if scrolled near bottom (within 60px)
+        const isNearBottom =
+          container.scrollHeight - container.scrollTop - container.clientHeight < 60;
+
+        if (isNearBottom) {
+          const lastItem = items[items.length - 1];
+          if (lastItem) {
+            setActiveId(lastItem.id);
+            return;
           }
-        });
-      },
-      {
-        rootMargin: "-80px 0% -65% 0%",
-        threshold: 0,
-      }
-    );
+        }
 
-    items.forEach((item) => {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    });
+        // Active heading detection based on distance from reader container top
+        const containerTop = container.getBoundingClientRect().top;
+        const activationThreshold = containerTop + 120; // 120px offset
 
-    return () => observer.disconnect();
+        let currentActive = items[0]?.id || "";
+
+        for (const item of items) {
+          const el = document.getElementById(item.id);
+          if (!el) continue;
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= activationThreshold) {
+            currentActive = item.id;
+          } else {
+            break;
+          }
+        }
+
+        setActiveId(currentActive);
+      });
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
   }, [items]);
 
   const scrollToTop = () => {
@@ -89,10 +120,20 @@ export function TableOfContents({ items, className, onSelect }: TableOfContentsP
             >
               <a
                 href={`#${item.id}`}
+                title={item.title}
                 onClick={(e) => {
                   e.preventDefault();
                   const target = document.getElementById(item.id);
-                  if (target) {
+                  const reader = document.getElementById("chapter-reader-container");
+                  if (target && reader) {
+                    const targetTop = target.getBoundingClientRect().top;
+                    const readerTop = reader.getBoundingClientRect().top;
+                    const scrollOffset = targetTop - readerTop + reader.scrollTop - 24;
+                    reader.scrollTo({ top: scrollOffset, behavior: "smooth" });
+                    history.pushState(null, "", `#${item.id}`);
+                    setActiveId(item.id);
+                    if (onSelect) onSelect();
+                  } else if (target) {
                     target.scrollIntoView({ behavior: "smooth" });
                     history.pushState(null, "", `#${item.id}`);
                     setActiveId(item.id);

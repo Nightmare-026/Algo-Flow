@@ -54,10 +54,7 @@ export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) 
               className={cn(
                 "inline-flex min-h-5 shrink-0 items-center gap-1 rounded-full border px-2 text-[10px] font-semibold transition-all duration-200",
                 active
-                  ? cn(
-                      toneClasses[item.tone],
-                      "shadow-(--shadow-raised-sm) opacity-100 font-bold"
-                    )
+                  ? cn(toneClasses[item.tone], "shadow-(--shadow-raised-sm) opacity-100 font-bold")
                   : "border-border/50 bg-surface/50 text-text-muted opacity-45"
               )}
             >

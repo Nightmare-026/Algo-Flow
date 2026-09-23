@@ -37,6 +37,80 @@ The table below traces the hierarchical division and recursive bottom-up merge s
 | **Level 1 $\to$ 0** | **Merge** | $[3, 27, 38, 43] \mid [9, 10, 82]$ | Merge 4-element and 3-element subarrays | 5 comparisons |
 | **Final Combine** | **Merge** | $[3, 9, 10, 27, 38, 43, 82]$ | Final two-pointer merge into complete array | 6 comparisons |
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Algorithm Architectures: Merge Sort Divide &amp; Conquer vs. Quick Sort Partitioning Paradigms
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="dcArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Merge Sort Tree (Divide & Conquer) -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Merge Sort: Divide &amp; 2-Way Combine</text>
+      <!-- Root Array -->
+      <g transform="translate(85, 40)">
+        <rect x="0" y="0" width="180" height="30" rx="4" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6"/>
+        <text x="90" y="19" text-anchor="middle" font-family="monospace">[38, 27, 43, 3, 9, 82]</text>
+      </g>
+      <!-- Divide Branch Arrows -->
+      <path d="M 140 75 L 90 105" stroke="currentColor" stroke-width="1.5" marker-end="url(#dcArrow)"/>
+      <path d="M 210 75 L 260 105" stroke="currentColor" stroke-width="1.5" marker-end="url(#dcArrow)"/>
+      <!-- Level 1 Subarrays -->
+      <g transform="translate(30, 110)">
+        <rect x="0" y="0" width="120" height="28" rx="4" fill="#3b82f6" fill-opacity="0.1" stroke="#3b82f6"/>
+        <text x="60" y="18" text-anchor="middle" font-family="monospace">[38, 27, 43]</text>
+      </g>
+      <g transform="translate(200, 110)">
+        <rect x="0" y="0" width="120" height="28" rx="4" fill="#3b82f6" fill-opacity="0.1" stroke="#3b82f6"/>
+        <text x="60" y="18" text-anchor="middle" font-family="monospace">[3, 9, 82]</text>
+      </g>
+      <!-- Merge Back Arrow -->
+      <path d="M 90 145 L 140 185" stroke="#10b981" stroke-width="2" marker-end="url(#dcArrow)"/>
+      <path d="M 260 145 L 210 185" stroke="#10b981" stroke-width="2" marker-end="url(#dcArrow)"/>
+      <!-- Combined Array -->
+      <g transform="translate(85, 195)">
+        <rect x="0" y="0" width="180" height="32" rx="4" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1.5"/>
+        <text x="90" y="20" text-anchor="middle" font-family="monospace" font-weight="700" fill="#10b981">[3, 9, 27, 38, 43, 82]</text>
+      </g>
+      <text x="175" y="255" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; Guaranteed &Theta;(n log n) &bull; Stable &bull; Auxiliary Space O(n)</text>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Quick Sort Partition Schemes -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#f59e0b" text-anchor="middle" font-size="13">Quick Sort: Partitioning Invariants</text>
+      <!-- Scheme 1: Lomuto vs Hoare -->
+      <g transform="translate(10, 45)">
+        <rect x="0" y="0" width="340" height="75" rx="6" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b"/>
+        <text x="15" y="22" font-weight="700" fill="#f59e0b" font-size="11">Hoare Bidirectional Partition:</text>
+        <text x="15" y="40" fill="currentColor" fill-opacity="0.8" font-size="10">Pointers i &rarr; and &larr; j converge towards center.</text>
+        <text x="15" y="58" font-size="10" font-weight="600" fill="#10b981">Executes 3x fewer swaps than Lomuto on average!</text>
+      </g>
+      <!-- Scheme 2: Dutch National Flag 3-Way Partition -->
+      <g transform="translate(10, 135)">
+        <rect x="0" y="0" width="340" height="95" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981" stroke-width="1.5"/>
+        <text x="15" y="22" font-weight="700" fill="#10b981" font-size="11">Dutch National Flag (3-Way Partition for Duplicates):</text>
+        <g transform="translate(15, 35)">
+          <rect x="0" y="0" width="95" height="30" rx="3" fill="#3b82f6" fill-opacity="0.2"/>
+          <text x="47" y="19" text-anchor="middle" font-size="10">&lt; Pivot</text>
+          <rect x="100" y="0" width="105" height="30" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="1.5"/>
+          <text x="152" y="19" text-anchor="middle" font-weight="700" font-size="10">== Pivot</text>
+          <rect x="210" y="0" width="95" height="30" rx="3" fill="#ef4444" fill-opacity="0.2"/>
+          <text x="257" y="19" text-anchor="middle" font-size="10">&gt; Pivot</text>
+        </g>
+        <text x="15" y="82" font-size="10" fill="currentColor" fill-opacity="0.75">Equal elements are never recursively sorted &rarr; O(n) on duplicates!</text>
+      </g>
+      <text x="180" y="255" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; In-Place O(log n) stack &bull; Unstable &bull; Cache Friendly</text>
+    </g>
+  </svg>
+</div>
+
 ---
 
 ### 2. Linear Merge Subroutine & State Trace

@@ -64,6 +64,70 @@ Traversing $A = [4, 2_a, 2_b, 8, 3_a, 3_b, 1]$ from right to left ($i = 6$ down 
 > **Why Backward Traversal is Mandatory for Stability:**  
 > In step 5, duplicate $3_b$ (appearing later in $A$) was assigned output index 4. In step 4, duplicate $3_a$ (appearing earlier in $A$) was assigned output index 3. Because $3_a$ occupies a smaller index than $3_b$, their relative original order is strictly preserved. Traversing forward would place $3_a$ at 4 and $3_b$ at 3, inverting their order and destroying stability.
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Algorithm Pipelines: Non-Comparison Linear-Time Sorting Mechanics
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="linArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Counting Sort Pipeline -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Counting Sort: Frequency &amp; Prefix Address</text>
+      <!-- Phase 1: Raw Histogram -->
+      <g transform="translate(10, 45)">
+        <rect x="0" y="0" width="330" height="40" rx="6" fill="#3b82f6" fill-opacity="0.1" stroke="#3b82f6"/>
+        <text x="15" y="25" font-family="monospace" font-size="11">C[v]: Raw Frequencies of values 0..k</text>
+      </g>
+      <!-- Phase 2 Arrow -->
+      <path d="M 175 90 L 175 125" stroke="#3b82f6" stroke-width="2" marker-end="url(#linArrow)"/>
+      <text x="185" y="110" font-size="10" fill="#3b82f6" font-weight="600">Prefix Sums: C[v] += C[v-1]</text>
+      <!-- Phase 2: Cumulative Sums -->
+      <g transform="translate(10, 130)">
+        <rect x="0" y="0" width="330" height="40" rx="6" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/>
+        <text x="15" y="25" font-family="monospace" font-size="11">C[v]: Exact boundary indices in output</text>
+      </g>
+      <!-- Phase 3 Arrow -->
+      <path d="M 175 175 L 175 210" stroke="#10b981" stroke-width="2" marker-end="url(#linArrow)"/>
+      <text x="185" y="195" font-size="10" fill="#10b981" font-weight="600">Backward Scan: i = n-1 down to 0</text>
+      <!-- Phase 3: Output Array -->
+      <g transform="translate(10, 215)">
+        <rect x="0" y="0" width="330" height="40" rx="6" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="15" y="25" font-family="monospace" font-size="11" font-weight="700">Output B: Stable in &Theta;(n + k) Time!</text>
+      </g>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Radix & Bucket Sort Overview -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Radix &amp; Bucket Sort Architectures</text>
+      <!-- Radix Sort LSD Multi-Pass -->
+      <g transform="translate(10, 45)">
+        <rect x="0" y="0" width="340" height="85" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981"/>
+        <text x="15" y="22" font-weight="700" fill="#10b981" font-size="11">Radix Sort (LSD - Least Significant Digit):</text>
+        <text x="15" y="42" fill="currentColor" fill-opacity="0.8" font-size="10">Pass 1: Sort by Units digit (10^0)</text>
+        <text x="15" y="58" fill="currentColor" fill-opacity="0.8" font-size="10">Pass 2: Sort by Tens digit (10^1) using STABLE sub-sort</text>
+        <text x="15" y="74" font-size="10" font-weight="600" fill="#10b981">Total Time: &Theta;(d &middot; (n + b)) &rarr; Strict O(n) for fixed bitwidth!</text>
+      </g>
+      <!-- Bucket Sort Scatter-Gather -->
+      <g transform="translate(10, 145)">
+        <rect x="0" y="0" width="340" height="95" rx="6" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b"/>
+        <text x="15" y="22" font-weight="700" fill="#f59e0b" font-size="11">Bucket Sort (Continuous Uniform U[0, 1)):</text>
+        <text x="15" y="42" fill="currentColor" fill-opacity="0.8" font-size="10">1. Scatter: Hash elements into n interval buckets [0, 1/n), [1/n, 2/n)...</text>
+        <text x="15" y="60" fill="currentColor" fill-opacity="0.8" font-size="10">2. Sort: Insertion sort individual small buckets</text>
+        <text x="15" y="78" font-size="10" font-weight="600" fill="#f59e0b">3. Gather: Concatenate buckets &rarr; Expected O(n) time!</text>
+      </g>
+      <text x="180" y="265" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; Bypasses &Omega;(n log n) comparison lower bound</text>
+    </g>
+  </svg>
+</div>
+
 ---
 
 ### 4. Canonical Algorithm: Stable Counting Sort

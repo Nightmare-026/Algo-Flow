@@ -78,6 +78,90 @@ When an insertion or deletion causes a node $Z$ to violate the AVL invariant ($|
 | **Left-Right (LR)** | $BF(Z) = +2$ | $BF(Z.\text{left}) < 0$ | **Double Rotation**: Left-Rotate child $Y$, then Right-Rotate root $Z$ |
 | **Right-Left (RL)** | $BF(Z) = -2$ | $BF(Z.\text{right}) > 0$ | **Double Rotation**: Right-Rotate child $Y$, then Left-Rotate root $Z$ |
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Algorithm Geometry: AVL Self-Balancing Local Tree Rotations (LL &amp; RR Single Rotations)
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="avlArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Single Right Rotation (LL Imbalance) -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Single Right Rotation (LL Case: BF = +2)</text>
+      <!-- Before State -->
+      <g transform="translate(20, 45)">
+        <circle cx="80" cy="20" r="18" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="2"/>
+        <text x="80" y="25" text-anchor="middle" font-weight="700" fill="#ef4444">Z (+2)</text>
+        <line x1="68" y1="33" x2="42" y2="67" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="35" cy="80" r="16" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="2"/>
+        <text x="35" y="85" text-anchor="middle" font-weight="700" fill="#3b82f6">Y (+1)</text>
+        <line x1="25" y1="92" x2="10" y2="120" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="10" cy="130" r="14" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="10" y="134" text-anchor="middle" font-weight="700" font-size="10">X</text>
+        <polygon points="40,110 55,140 25,140" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.3"/>
+        <text x="40" y="132" text-anchor="middle" font-size="9">T2</text>
+        <polygon points="90,45 105,75 75,75" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.3"/>
+        <text x="90" y="68" text-anchor="middle" font-size="9">T3</text>
+      </g>
+      <!-- Transformation Arrow -->
+      <path d="M 180 120 L 215 120" stroke="#3b82f6" stroke-width="2" marker-end="url(#avlArrow)"/>
+      <text x="197" y="110" font-size="9" fill="#3b82f6" font-weight="700" text-anchor="middle">Right Rotate (Z)</text>
+      <!-- After State -->
+      <g transform="translate(230, 45)">
+        <circle cx="60" cy="30" r="18" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2"/>
+        <text x="60" y="35" text-anchor="middle" font-weight="700" fill="#10b981">Y (0)</text>
+        <line x1="48" y1="43" x2="25" y2="70" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="20" cy="80" r="15" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6"/>
+        <text x="20" y="84" text-anchor="middle" font-weight="700" font-size="10">X</text>
+        <line x1="72" y1="43" x2="95" y2="70" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="100" cy="80" r="15" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6"/>
+        <text x="100" y="84" text-anchor="middle" font-weight="700" font-size="10">Z (0)</text>
+        <polygon points="100,105 115,135 85,135" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.3"/>
+        <text x="100" y="125" text-anchor="middle" font-size="9">T2</text>
+      </g>
+      <text x="175" y="255" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; Height restored &bull; Inorder preserved: X &lt; Y &lt; T2 &lt; Z &lt; T3</text>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Single Left Rotation (RR Imbalance) -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Single Left Rotation (RR Case: BF = -2)</text>
+      <!-- Before State -->
+      <g transform="translate(20, 45)">
+        <circle cx="40" cy="20" r="18" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="2"/>
+        <text x="40" y="25" text-anchor="middle" font-weight="700" fill="#ef4444">Z (-2)</text>
+        <line x1="52" y1="33" x2="78" y2="67" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="85" cy="80" r="16" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6" stroke-width="2"/>
+        <text x="85" y="85" text-anchor="middle" font-weight="700" fill="#3b82f6">Y (-1)</text>
+        <line x1="95" y1="92" x2="110" y2="120" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="110" cy="130" r="14" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="110" y="134" text-anchor="middle" font-weight="700" font-size="10">X</text>
+      </g>
+      <!-- Transformation Arrow -->
+      <path d="M 170 120 L 205 120" stroke="#10b981" stroke-width="2" marker-end="url(#avlArrow)"/>
+      <text x="187" y="110" font-size="9" fill="#10b981" font-weight="700" text-anchor="middle">Left Rotate (Z)</text>
+      <!-- After State -->
+      <g transform="translate(230, 45)">
+        <circle cx="60" cy="30" r="18" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2"/>
+        <text x="60" y="35" text-anchor="middle" font-weight="700" fill="#10b981">Y (0)</text>
+        <line x1="48" y1="43" x2="25" y2="70" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="20" cy="80" r="15" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6"/>
+        <text x="20" y="84" text-anchor="middle" font-weight="700" font-size="10">Z (0)</text>
+        <line x1="72" y1="43" x2="95" y2="70" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="100" cy="80" r="15" fill="#3b82f6" fill-opacity="0.2" stroke="#3b82f6"/>
+        <text x="100" y="84" text-anchor="middle" font-weight="700" font-size="10">X</text>
+      </g>
+      <text x="180" y="255" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; Strict height equilibrium &bull; O(1) pointer updates</text>
+    </g>
+  </svg>
+</div>
+
 ---
 
 ### Single Right Rotation (LL Case)

@@ -108,6 +108,65 @@ export class DisjointSetUnion {
 }
 ```
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 310" width="100%" height="310" class="mx-auto block font-sans">
+  <defs>
+    <marker id="dsu-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b"/></marker>
+    <marker id="comp-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/></marker>
+    <marker id="rank-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#0284c7"/></marker>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Disjoint Set Union: Path Compression &amp; Union by Rank Mechanics</text>
+  <rect x="20" y="45" width="460" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="250" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#10b981">1. Path Compression Invariant: Tree Flattening</text>
+  <text x="90" y="95" text-anchor="middle" font-size="11" font-weight="bold" fill="#94a3b8">Before find(3): Depth 3</text>
+  <circle cx="90" cy="120" r="16" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+  <text x="90" y="125" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">0</text>
+  <text x="115" y="125" font-size="10" fill="#f59e0b">Root</text>
+  <line x1="90" y1="150" x2="90" y2="136" stroke="#64748b" stroke-width="2" marker-end="url(#dsu-arr)"/>
+  <circle cx="90" cy="165" r="14" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+  <text x="90" y="170" text-anchor="middle" font-size="11" font-weight="bold" fill="currentColor">1</text>
+  <line x1="90" y1="195" x2="90" y2="179" stroke="#64748b" stroke-width="2" marker-end="url(#dsu-arr)"/>
+  <circle cx="90" cy="210" r="14" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+  <text x="90" y="215" text-anchor="middle" font-size="11" font-weight="bold" fill="currentColor">2</text>
+  <line x1="90" y1="240" x2="90" y2="224" stroke="#64748b" stroke-width="2" marker-end="url(#dsu-arr)"/>
+  <circle cx="90" cy="255" r="14" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="90" y="260" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">3</text>
+  <path d="M 125" y="180"/>
+  <text x="210" y="180" text-anchor="middle" font-size="13" font-weight="bold" fill="#10b981">&#x27F6; find(3) &#x27F6;</text>
+  <text x="350" y="95" text-anchor="middle" font-size="11" font-weight="bold" fill="#10b981">After find(3): Depth 1 (Star Topology)</text>
+  <circle cx="350" cy="130" r="18" fill="#f59e0b" stroke="#d97706" stroke-width="2.5"/>
+  <text x="350" y="135" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">0</text>
+  <circle cx="280" cy="210" r="14" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="280" y="215" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">1</text>
+  <circle cx="350" cy="210" r="14" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="350" y="215" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">2</text>
+  <circle cx="420" cy="210" r="14" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="420" y="215" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">3</text>
+  <line x1="280" y1="196" x2="336" y2="145" stroke="#10b981" stroke-width="2" marker-end="url(#comp-arr)"/>
+  <line x1="350" y1="196" x2="350" y2="148" stroke="#10b981" stroke-width="2" marker-end="url(#comp-arr)"/>
+  <line x1="420" y1="196" x2="364" y2="145" stroke="#10b981" stroke-width="2" marker-end="url(#comp-arr)"/>
+  <text x="350" y="260" text-anchor="middle" font-size="10.5" fill="currentColor">Every node re-linked directly to root</text>
+  <text x="350" y="280" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#10b981">Amortized query latency: O(&#x3B1;(N)) &#x2248; O(1)</text>
+  <rect x="500" y="45" width="300" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="650" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#0284c7">2. Union by Rank</text>
+  <g transform="translate(520, 90)">
+    <circle cx="50" cy="30" r="16" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+    <text x="50" y="35" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">R1</text>
+    <text x="50" y="10" text-anchor="middle" font-size="10" font-weight="bold" fill="#0284c7">Rank = 2</text>
+    <circle cx="200" cy="30" r="16" fill="#6366f1" stroke="#4f46e5" stroke-width="2"/>
+    <text x="200" y="35" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">R2</text>
+    <text x="200" y="10" text-anchor="middle" font-size="10" font-weight="bold" fill="#6366f1">Rank = 1</text>
+    <path d="M 184 30 C 130 15, 90 20, 68 28" fill="none" stroke="#0284c7" stroke-width="2.5" marker-end="url(#rank-arr)"/>
+    <text x="130" y="48" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#0284c7">Attach smaller rank to larger</text>
+    <rect x="10" y="90" width="240" height="95" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="20" y="112" font-size="10.5" font-weight="bold" fill="#38bdf8">Kruskal's MST Application:</text>
+    <text x="20" y="132" font-size="10" fill="currentColor">&#x2022; find(u) != find(v): Union &amp; Add to MST</text>
+    <text x="20" y="152" font-size="10" fill="#ef4444">&#x2022; find(u) == find(v): Reject (Cycle detected!)</text>
+    <text x="20" y="172" font-size="10" font-weight="bold" fill="#10b981">Guarantees acyclic tree in O(E log E)</text>
+  </g>
+</svg>
+</div>
+
 ---
 
 ## 4. Kruskal's Algorithm (Greedy Edge-Selection)

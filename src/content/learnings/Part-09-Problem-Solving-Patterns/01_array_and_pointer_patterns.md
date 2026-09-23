@@ -139,6 +139,52 @@ export function twoSumSorted(
 }
 ```
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" width="100%" height="300" class="mx-auto block font-sans">
+  <defs>
+    <marker id="ptr-arr-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/></marker>
+    <marker id="ptr-arr-l" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#ef4444"/></marker>
+    <marker id="win-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#0284c7"/></marker>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Pointer Geometry: Two-Pointer Convergence vs. Dynamic Sliding Window</text>
+  <rect x="20" y="45" width="375" height="240" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="207" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#10b981">1. Inward Two-Pointer Convergence</text>
+  <g transform="translate(45, 95)">
+    <rect x="0" y="0" width="45" height="40" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2" rx="4"/><text x="22" y="25" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">2</text>
+    <rect x="52" y="0" width="45" height="40" fill="#1e293b" stroke="#334155" rx="4"/><text x="74" y="25" text-anchor="middle" font-size="13" fill="#94a3b8">7</text>
+    <rect x="104" y="0" width="45" height="40" fill="#1e293b" stroke="#334155" rx="4"/><text x="126" y="25" text-anchor="middle" font-size="13" fill="#94a3b8">11</text>
+    <rect x="156" y="0" width="45" height="40" fill="#1e293b" stroke="#334155" rx="4"/><text x="178" y="25" text-anchor="middle" font-size="13" fill="#94a3b8">15</text>
+    <rect x="208" y="0" width="45" height="40" fill="#1e293b" stroke="#334155" rx="4"/><text x="230" y="25" text-anchor="middle" font-size="13" fill="#94a3b8">19</text>
+    <rect x="260" y="0" width="45" height="40" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="2" rx="4"/><text x="282" y="25" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">28</text>
+    <path d="M 22 55 L 65 55" stroke="#10b981" stroke-width="2" marker-end="url(#ptr-arr-r)"/>
+    <text x="43" y="75" text-anchor="middle" font-size="10" font-weight="bold" fill="#10b981">left++ (Sum &lt; T)</text>
+    <path d="M 282 55 L 240 55" stroke="#ef4444" stroke-width="2" marker-end="url(#ptr-arr-l)"/>
+    <text x="261" y="75" text-anchor="middle" font-size="10" font-weight="bold" fill="#ef4444">right-- (Sum &gt; T)</text>
+  </g>
+  <text x="207" y="235" text-anchor="middle" font-size="11" font-weight="bold" fill="#10b981">Monotonic Pruning Invariant</text>
+  <text x="207" y="255" text-anchor="middle" font-size="10.5" fill="currentColor">Discards row/col of candidate pairs each step: O(n)</text>
+  <rect x="415" y="45" width="385" height="240" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="607" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#0284c7">2. Dynamic Sliding Window [L &#x2026; R]</text>
+  <g transform="translate(440, 95)">
+    <rect x="0" y="0" width="40" height="40" fill="#1e293b" stroke="#334155" rx="4"/><text x="20" y="25" text-anchor="middle" font-size="13" fill="#64748b">1</text>
+    <rect x="46" y="-6" width="180" height="52" rx="6" fill="#0284c7" fill-opacity="0.1" stroke="#0284c7" stroke-width="2" stroke-dasharray="4,2"/>
+    <rect x="48" y="0" width="40" height="40" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7" rx="4"/><text x="68" y="25" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">3</text>
+    <rect x="94" y="0" width="40" height="40" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7" rx="4"/><text x="114" y="25" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">5</text>
+    <rect x="140" y="0" width="40" height="40" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7" rx="4"/><text x="160" y="25" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">2</text>
+    <rect x="186" y="0" width="40" height="40" fill="#10b981" fill-opacity="0.25" stroke="#10b981" rx="4"/><text x="206" y="25" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">8</text>
+    <rect x="234" y="0" width="40" height="40" fill="#1e293b" stroke="#334155" rx="4"/><text x="254" y="25" text-anchor="middle" font-size="13" fill="#64748b">4</text>
+    <text x="68" y="65" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#0284c7">Left (L)</text>
+    <text x="206" y="65" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#10b981">Right (R)</text>
+    <path d="M 68 70 L 110 70" stroke="#0284c7" stroke-width="1.5" marker-end="url(#win-arr)"/>
+    <text x="89" y="85" text-anchor="middle" font-size="9" fill="#0284c7">Contract if invalid</text>
+    <path d="M 206 70 L 250 70" stroke="#10b981" stroke-width="1.5" marker-end="url(#win-arr)"/>
+    <text x="228" y="85" text-anchor="middle" font-size="9" fill="#10b981">Expand right</text>
+  </g>
+  <text x="607" y="235" text-anchor="middle" font-size="11" font-weight="bold" fill="#0284c7">Amortized 2n Pointer Steps</text>
+  <text x="607" y="255" text-anchor="middle" font-size="10.5" fill="currentColor">Each element enters once, leaves at most once: &#x398;(n) total</text>
+</svg>
+</div>
+
 ---
 
 ## 5. Topic 137: Sliding Window Pattern

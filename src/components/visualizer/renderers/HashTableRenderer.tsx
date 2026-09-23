@@ -82,7 +82,7 @@ export function HashTableRenderer() {
           <div className="flex items-center gap-2">
             <div className="flex flex-col">
               <span className="text-[9px] uppercase tracking-wider font-semibold text-text-muted">
-                Load Factor (Î±)
+                Load Factor (α)
               </span>
               <div className="flex items-center gap-1.5">
                 <span

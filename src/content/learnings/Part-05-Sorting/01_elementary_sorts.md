@@ -38,6 +38,92 @@ $$I(A) = |\{ (i, j) \mid 0 \le i < j < n \text{ and } A[i] > A[j] \}|$$
 
 Bubble Sort is the direct physical realization of this theorem. It repeatedly sweeps across the array, comparing adjacent pairs $(A[j], A[j+1])$, and transposes them whenever they violate non-decreasing order. In each pass $i$ ($0 \le i < n - 1$), the largest unsorted element "bubbles up" to its final resting position at the rightmost available index $n - 1 - i$.
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Algorithm Comparison: Elementary Sorting Mechanical Paradigms
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="elemArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Box 1: Bubble Sort (Left) -->
+    <g transform="translate(35, 45)">
+      <rect x="0" y="0" width="240" height="260" rx="8" fill="#3b82f6" fill-opacity="0.05" stroke="#3b82f6" stroke-width="1.5"/>
+      <text x="120" y="25" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="12">Bubble Sort: Adjacent Swaps</text>
+      <!-- Slots and bubbling -->
+      <g transform="translate(20, 50)">
+        <rect x="0" y="0" width="35" height="35" rx="3" fill="#3b82f6" fill-opacity="0.2"/>
+        <text x="17" y="22" text-anchor="middle" font-family="monospace">5</text>
+        <rect x="40" y="0" width="35" height="35" rx="3" fill="#3b82f6" fill-opacity="0.2"/>
+        <text x="57" y="22" text-anchor="middle" font-family="monospace">1</text>
+        <path d="M 17 40 Q 37 55 57 40" fill="none" stroke="#ef4444" stroke-width="1.5" marker-end="url(#elemArrow)"/>
+        <text x="37" y="70" text-anchor="middle" font-size="9" fill="#ef4444">Swap (5 &gt; 1)</text>
+        <rect x="80" y="0" width="35" height="35" rx="3" fill="currentColor" fill-opacity="0.05"/>
+        <text x="97" y="22" text-anchor="middle" font-family="monospace">4</text>
+        <rect x="120" y="0" width="35" height="35" rx="3" fill="currentColor" fill-opacity="0.05"/>
+        <text x="137" y="22" text-anchor="middle" font-family="monospace">2</text>
+        <rect x="160" y="0" width="35" height="35" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="177" y="22" text-anchor="middle" font-family="monospace" font-weight="700">8</text>
+      </g>
+      <g transform="translate(15, 150)">
+        <text x="0" y="15" font-weight="600" font-size="10" fill="currentColor">&bull; Adjacent transposition</text>
+        <text x="0" y="32" font-weight="600" font-size="10" fill="currentColor">&bull; 1 swap = 1 inversion removed</text>
+        <text x="0" y="49" font-weight="600" font-size="10" fill="currentColor">&bull; Stable: Equal keys never swap</text>
+        <text x="0" y="66" font-weight="700" font-size="10" fill="#3b82f6">&bull; Best: O(n) with early exit</text>
+      </g>
+    </g>
+    <!-- Box 2: Selection Sort (Middle) -->
+    <g transform="translate(305, 45)">
+      <rect x="0" y="0" width="240" height="260" rx="8" fill="#f59e0b" fill-opacity="0.05" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="120" y="25" font-weight="700" fill="#f59e0b" text-anchor="middle" font-size="12">Selection Sort: Prefix Scan</text>
+      <!-- Slots and long-distance jump -->
+      <g transform="translate(20, 50)">
+        <rect x="0" y="0" width="35" height="35" rx="3" fill="#ef4444" fill-opacity="0.2"/>
+        <text x="17" y="22" text-anchor="middle" font-family="monospace">4a</text>
+        <rect x="40" y="0" width="35" height="35" rx="3" fill="#f59e0b" fill-opacity="0.2"/>
+        <text x="57" y="22" text-anchor="middle" font-family="monospace">4b</text>
+        <rect x="80" y="0" width="35" height="35" rx="3" fill="#10b981" fill-opacity="0.25" stroke="#10b981"/>
+        <text x="97" y="22" text-anchor="middle" font-family="monospace" font-weight="700">2</text>
+        <!-- Jump Arrow -->
+        <path d="M 17 -5 Q 57 -25 97 -5" fill="none" stroke="#ef4444" stroke-width="2" marker-end="url(#elemArrow)"/>
+        <text x="57" y="-28" text-anchor="middle" font-size="9" fill="#ef4444" font-weight="700">Long Swap Inverts 4a &amp; 4b!</text>
+      </g>
+      <g transform="translate(15, 150)">
+        <text x="0" y="15" font-weight="600" font-size="10" fill="currentColor">&bull; Global scan for minimum</text>
+        <text x="0" y="32" font-weight="600" font-size="10" fill="currentColor">&bull; Minimal writes: &le; n - 1 swaps</text>
+        <text x="0" y="49" font-weight="700" font-size="10" fill="#ef4444">&bull; UNSTABLE (jumps over keys)</text>
+        <text x="0" y="66" font-weight="600" font-size="10" fill="currentColor">&bull; Always &Theta;(n^2) comparisons</text>
+      </g>
+    </g>
+    <!-- Box 3: Insertion Sort (Right) -->
+    <g transform="translate(575, 45)">
+      <rect x="0" y="0" width="240" height="260" rx="8" fill="#10b981" fill-opacity="0.05" stroke="#10b981" stroke-width="1.5"/>
+      <text x="120" y="25" font-weight="700" fill="#10b981" text-anchor="middle" font-size="12">Insertion Sort: Adaptive Shift</text>
+      <!-- Playing card shift -->
+      <g transform="translate(20, 50)">
+        <rect x="0" y="0" width="75" height="35" rx="4" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/>
+        <text x="37" y="22" text-anchor="middle" font-size="10">Sorted [2, 5]</text>
+        <rect x="85" y="0" width="35" height="35" rx="3" fill="#f59e0b" fill-opacity="0.3" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="102" y="22" text-anchor="middle" font-family="monospace" font-weight="700">3</text>
+        <!-- Shift arrow -->
+        <path d="M 102 42 Q 70 65 37 42" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#elemArrow)"/>
+        <text x="70" y="75" text-anchor="middle" font-size="9" fill="#10b981">Insert into position</text>
+      </g>
+      <g transform="translate(15, 150)">
+        <text x="0" y="15" font-weight="600" font-size="10" fill="currentColor">&bull; Incremental card-in-hand shift</text>
+        <text x="0" y="32" font-weight="700" font-size="10" fill="#10b981">&bull; Adaptive: O(n + I) runtime</text>
+        <text x="0" y="49" font-weight="600" font-size="10" fill="currentColor">&bull; STABLE (stops at &le; key)</text>
+        <text x="0" y="66" font-weight="600" font-size="10" fill="currentColor">&bull; Production base-case sort (n &le; 32)</text>
+      </g>
+    </g>
+  </svg>
+</div>
+
 ---
 
 ### 2. Trace of Pass 0: Bubbling the Maximum Element

@@ -35,8 +35,78 @@ A **Skip List** layers a hierarchy of express-lane forward pointer chains over a
 | :---: | :--- | :---: | :---: |
 | **Level 3** | `[-∞] ---------------------------------------------> [30] ----------> [+∞]` | $12.5\%$ ($1/8$) | Skips $8$ base elements |
 | **Level 2** | `[-∞] -------------------------> [17] -------------> [30] ----------> [+∞]` | $25\%$ ($1/4$) | Skips $4$ base elements |
-| **Level 1** | `[-∞] -------------> [10] -----> [17] -----> [25] -> [30] -> [55] -> [+∞]` | $50\%$ ($1/2$) | Skips $2$ base elements |
-| **Level 0** | `[-∞] -> [3] ------> [10] -----> [17] -----> [25] -> [30] -> [55] -> [+∞]` | $100\%$ | Base contiguous sequence |
+<svg viewBox="0 0 880 240" width="100%" height="auto" class="rounded-xl border border-border shadow-sm my-6 bg-surface">
+  <defs>
+    <marker id="skipArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="currentColor" fill-opacity="0.4" />
+    </marker>
+    <marker id="pathArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="#f59e0b" />
+    </marker>
+  </defs>
+  <!-- Background Bounds -->
+  <rect x="20" y="15" width="840" height="210" rx="10" fill="currentColor" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.1" />
+
+  <!-- Level Tracks Background Lines -->
+  <line x1="30" y1="50" x2="850" y2="50" stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="4 4" />
+  <text x="35" y="45" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#8b5cf6">Level 3 (Express)</text>
+
+  <line x1="30" y1="90" x2="850" y2="90" stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="4 4" />
+  <text x="35" y="85" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6">Level 2</text>
+
+  <line x1="30" y1="130" x2="850" y2="130" stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="4 4" />
+  <text x="35" y="125" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#10b981">Level 1</text>
+
+  <line x1="30" y1="170" x2="850" y2="170" stroke="currentColor" stroke-opacity="0.08" stroke-dasharray="4 4" />
+  <text x="35" y="165" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="currentColor" fill-opacity="0.6">Level 0 (Base List)</text>
+
+  <!-- Sentinel Head Tower [-∞] -->
+  <rect x="140" y="35" width="45" height="150" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-opacity="0.25" />
+  <text x="162" y="195" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="currentColor">-∞</text>
+
+  <!-- Node [3] (Level 0) -->
+  <rect x="230" y="155" width="45" height="30" rx="4" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.2" />
+  <text x="252" y="175" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="currentColor">3</text>
+
+  <!-- Node [10] (Level 0-1) -->
+  <rect x="310" y="115" width="45" height="70" rx="4" fill="#10b981" fill-opacity="0.12" stroke="#10b981" stroke-width="1.5" />
+  <text x="332" y="195" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#10b981">10</text>
+
+  <!-- Node [17] (Level 0-2) -->
+  <rect x="400" y="75" width="45" height="110" rx="4" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-width="1.5" />
+  <text x="422" y="195" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#3b82f6">17</text>
+
+  <!-- Node [25] (Level 0-1) [Target] -->
+  <rect x="490" y="115" width="50" height="70" rx="4" fill="#f59e0b" fill-opacity="0.2" stroke="#f59e0b" stroke-width="2.5" />
+  <text x="515" y="195" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#f59e0b">25 ★</text>
+
+  <!-- Node [30] (Level 0-3) -->
+  <rect x="585" y="35" width="45" height="150" rx="4" fill="#8b5cf6" fill-opacity="0.12" stroke="#8b5cf6" stroke-width="1.5" />
+  <text x="607" y="195" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#8b5cf6">30</text>
+
+  <!-- Node [55] (Level 0-1) -->
+  <rect x="675" y="115" width="45" height="70" rx="4" fill="#10b981" fill-opacity="0.12" stroke="#10b981" stroke-width="1.5" />
+  <text x="697" y="195" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#10b981">55</text>
+
+  <!-- Sentinel Tail Tower [+∞] -->
+  <rect x="765" y="35" width="45" height="150" rx="6" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-opacity="0.25" />
+  <text x="787" y="195" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="currentColor">+∞</text>
+
+  <!-- Standard Level 3 Pointer -->
+  <line x1="185" y1="50" x2="580" y2="50" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="2 2" marker-end="url(#skipArrow)" />
+
+  <!-- Active Search Path for Target 25 (Highlighted in Amber) -->
+  <!-- Step 1: Head (L3) drops to (L2) because 30 > 25 -->
+  <line x1="162" y1="50" x2="162" y2="90" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#pathArrow)" />
+  <!-- Step 2: Head (L2) -> 17 (L2) because 17 < 25 -->
+  <line x1="185" y1="90" x2="395" y2="90" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#pathArrow)" />
+  <!-- Step 3: From 17 (L2), forward node is 30 > 25, drop to 17 (L1) -->
+  <line x1="422" y1="95" x2="422" y2="130" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#pathArrow)" />
+  <!-- Step 4: From 17 (L1), advance to 25 (L1) -> Target Located! -->
+  <line x1="445" y1="130" x2="485" y2="130" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#pathArrow)" />
+  
+  <text x="440" y="218" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#f59e0b">Amber Track: Search for 25 visits only 4 nodes across 3 levels (O(log n) expected steps)</text>
+</svg>
 
 ---
 

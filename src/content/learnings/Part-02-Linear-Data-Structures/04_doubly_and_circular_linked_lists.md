@@ -106,8 +106,66 @@ Populated List with Sentinels:
 [ headSentinel ] <===> [ Node 10 ] <===> [ Node 20 ] <===> [ Node 30 ] <===> [ tailSentinel ]
 ```
 
+<svg viewBox="0 0 880 210" width="100%" height="auto" class="rounded-xl border border-border shadow-sm my-6 bg-surface">
+  <defs>
+    <marker id="biArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L6,3 z" fill="currentColor" fill-opacity="0.4" />
+    </marker>
+  </defs>
+  <!-- Background Bounds -->
+  <rect x="20" y="20" width="840" height="170" rx="10" fill="currentColor" fill-opacity="0.02" stroke="currentColor" stroke-opacity="0.1" />
+
+  <!-- Head Sentinel Node -->
+  <rect x="40" y="70" width="120" height="50" rx="8" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-width="2" />
+  <text x="100" y="93" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#3b82f6">headSentinel</text>
+  <text x="100" y="110" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="currentColor" fill-opacity="0.7">prev=NULL, next=N1</text>
+
+  <!-- Connectors Head -> Node 1 -->
+  <line x1="160" y1="85" x2="210" y2="85" stroke="#10b981" stroke-width="2" marker-end="url(#biArrow)" />
+  <line x1="210" y1="105" x2="160" y2="105" stroke="#3b82f6" stroke-width="2" marker-end="url(#biArrow)" />
+
+  <!-- Data Node 10 -->
+  <rect x="210" y="70" width="110" height="50" rx="8" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="2" />
+  <text x="265" y="93" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#10b981">Node(10)</text>
+  <text x="265" y="110" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="currentColor" fill-opacity="0.7">Client Payload</text>
+
+  <!-- Connectors Node 1 -> Node 2 -->
+  <line x1="320" y1="85" x2="370" y2="85" stroke="#10b981" stroke-width="2" marker-end="url(#biArrow)" />
+  <line x1="370" y1="105" x2="320" y2="105" stroke="#10b981" stroke-width="2" marker-end="url(#biArrow)" />
+
+  <!-- Data Node 20 (Target Deletion) -->
+  <rect x="370" y="70" width="110" height="50" rx="8" fill="#8b5cf6" fill-opacity="0.15" stroke="#8b5cf6" stroke-width="2" />
+  <text x="425" y="93" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#8b5cf6">Node(20)</text>
+  <text x="425" y="110" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="currentColor" fill-opacity="0.7">targetNode</text>
+
+  <!-- Connectors Node 2 -> Node 3 -->
+  <line x1="480" y1="85" x2="530" y2="85" stroke="#10b981" stroke-width="2" marker-end="url(#biArrow)" />
+  <line x1="530" y1="105" x2="480" y2="105" stroke="#8b5cf6" stroke-width="2" marker-end="url(#biArrow)" />
+
+  <!-- Data Node 30 -->
+  <rect x="530" y="70" width="110" height="50" rx="8" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="2" />
+  <text x="585" y="93" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#10b981">Node(30)</text>
+  <text x="585" y="110" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="currentColor" fill-opacity="0.7">Client Payload</text>
+
+  <!-- Connectors Node 3 -> Tail -->
+  <line x1="640" y1="85" x2="690" y2="85" stroke="#3b82f6" stroke-width="2" marker-end="url(#biArrow)" />
+  <line x1="690" y1="105" x2="640" y2="105" stroke="#10b981" stroke-width="2" marker-end="url(#biArrow)" />
+
+  <!-- Tail Sentinel Node -->
+  <rect x="690" y="70" width="120" height="50" rx="8" fill="#3b82f6" fill-opacity="0.12" stroke="#3b82f6" stroke-width="2" />
+  <text x="750" y="93" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#3b82f6">tailSentinel</text>
+  <text x="750" y="110" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="currentColor" fill-opacity="0.7">prev=N3, next=NULL</text>
+
+  <!-- Footer Annotation -->
+  <text x="440" y="160" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#10b981">Every node is guaranteed non-NULL prev and next pointers — Zero boundary condition branches required!</text>
+</svg>
+
 #### Why Sentinels Eliminate Edge Cases:
-Every user node—regardless of whether it is at the front, middle, or back—**always has a non-null predecessor and a non-null successor**. Special `if (head == NULL)` checks completely disappear from the codebase.
+Every user node—regardless of whether it is at the front, middle, or back—**always has a non-null predecessor and a non-null successor**. Special `if (head == NULL)` or `if (curr->prev == NULL)` checks completely disappear from the codebase. Node deletion collapses into two unconditional pointer assignments:
+```text
+targetNode.prev.next <- targetNode.next
+targetNode.next.prev <- targetNode.prev
+```
 
 ---
 

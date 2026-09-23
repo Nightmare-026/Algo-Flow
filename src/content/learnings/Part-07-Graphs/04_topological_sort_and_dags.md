@@ -41,6 +41,75 @@ $$\mathbf{Theorem}: \quad \text{A directed graph } G = (V, E) \text{ admits a to
    - Removing $u$ and all its incident outgoing edges leaves a residual graph $G' = G \setminus \{u\}$ with $|V| - 1$ vertices that remains acyclic.
    - By the inductive hypothesis, $G'$ admits a valid topological sort, which we append to $u$. $\blacksquare$
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Algorithm Pipelines: DAG Topological Dependency Linearization &amp; Kahn's Algorithm
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="dagArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: DAG Dependency Graph -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">DAG Dependency Graph (Edges u &rarr; v: u must precede v)</text>
+      <!-- Vertices: 0, 1, 2, 3, 4 -->
+      <g transform="translate(25, 45)">
+        <!-- Node 0: in-deg = 0 -->
+        <circle cx="30" cy="40" r="18" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2"/>
+        <text x="30" y="44" text-anchor="middle" font-weight="700" fill="#10b981">A (in:0)</text>
+        <!-- Node 1: in-deg = 0 -->
+        <circle cx="30" cy="120" r="18" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2"/>
+        <text x="30" y="124" text-anchor="middle" font-weight="700" fill="#10b981">B (in:0)</text>
+        <!-- Node 2: in-deg = 2 -->
+        <circle cx="150" cy="80" r="18" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+        <text x="150" y="84" text-anchor="middle" font-weight="700">C (in:2)</text>
+        <!-- Node 3: in-deg = 1 -->
+        <circle cx="260" cy="40" r="18" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+        <text x="260" y="44" text-anchor="middle" font-weight="700">D (in:1)</text>
+        <!-- Node 4: in-deg = 1 -->
+        <circle cx="260" cy="120" r="18" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+        <text x="260" y="124" text-anchor="middle" font-weight="700">E (in:1)</text>
+        <!-- Directed Edges -->
+        <line x1="48" y1="46" x2="132" y2="74" stroke="currentColor" stroke-width="1.5" marker-end="url(#dagArrow)"/>
+        <line x1="48" y1="114" x2="132" y2="86" stroke="currentColor" stroke-width="1.5" marker-end="url(#dagArrow)"/>
+        <line x1="168" y1="74" x2="242" y2="46" stroke="currentColor" stroke-width="1.5" marker-end="url(#dagArrow)"/>
+        <line x1="168" y1="86" x2="242" y2="114" stroke="currentColor" stroke-width="1.5" marker-end="url(#dagArrow)"/>
+      </g>
+      <text x="175" y="245" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; Sources A &amp; B have in-degree 0 &bull; Ready for parallel dispatch</text>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Kahn's In-Degree Reduction Pipeline -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Kahn's BFS In-Degree Frontier Queue</text>
+      <!-- Step 1: Initial Queue -->
+      <g transform="translate(10, 45)">
+        <rect x="0" y="0" width="340" height="55" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981"/>
+        <text x="15" y="22" font-weight="700" fill="#10b981" font-size="11">Queue Init: [A, B] (in-degree == 0)</text>
+        <text x="15" y="40" font-size="10" fill="currentColor" fill-opacity="0.8">Emit A, B &rarr; Decrement in-degree of C by 2 &rarr; in-degree(C) = 0!</text>
+      </g>
+      <!-- Step 2: Enqueue C -->
+      <g transform="translate(10, 110)">
+        <rect x="0" y="0" width="340" height="55" rx="6" fill="#3b82f6" fill-opacity="0.08" stroke="#3b82f6"/>
+        <text x="15" y="22" font-weight="700" fill="#3b82f6" font-size="11">Queue Next: [C] &rarr; Emit C</text>
+        <text x="15" y="40" font-size="10" fill="currentColor" fill-opacity="0.8">Decrement in-degree of D and E &rarr; Both reach 0!</text>
+      </g>
+      <!-- Step 3: Final Output -->
+      <g transform="translate(10, 175)">
+        <rect x="0" y="0" width="340" height="60" rx="6" fill="#f59e0b" fill-opacity="0.12" stroke="#f59e0b" stroke-width="1.5"/>
+        <text x="15" y="24" font-weight="700" fill="#f59e0b" font-size="12">Linearized Topological Sequence:</text>
+        <text x="15" y="45" font-family="monospace" font-weight="700" font-size="13" fill="currentColor">A &rarr; B &rarr; C &rarr; D &rarr; E</text>
+      </g>
+      <text x="180" y="265" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; Processed count = |V| &rArr; Acyclic &bull; Less than |V| &rArr; Cycle deadlock!</text>
+    </g>
+  </svg>
+</div>
+
 ---
 
 ## 3. Method 1: DFS Postorder Reverse Stack

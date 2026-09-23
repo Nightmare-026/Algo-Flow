@@ -157,12 +157,87 @@ Result: high cache-hit rate in this illustrative example (exact hit rates depend
 Traversal Pattern B: Column-by-Column (Outer loop j, Inner loop i)
 Address Sequence: α+0, α+12, α+4, α+16, α+8, α+20
 Hardware Behavior: Strided jumps of C * sizeof(Element). Cache lines evicted before reuse.
-Result: repeated cache misses in this illustrative example — a miss can be substantially more expensive than a hit (exact latency depends on CPU, cache level, memory subsystem, and access pattern).
-```
+<svg viewBox="0 0 880 270" width="100%" height="auto" class="rounded-xl border border-border shadow-sm my-6 bg-surface">
+  <defs>
+    <linearGradient id="row0Grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.05" />
+    </linearGradient>
+    <linearGradient id="row1Grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05" />
+    </linearGradient>
+    <linearGradient id="row2Grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.05" />
+    </linearGradient>
+  </defs>
+  <!-- 2D Logical Grid on Left -->
+  <rect x="25" y="20" width="280" height="230" rx="8" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-opacity="0.15" />
+  <text x="40" y="45" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="currentColor">Logical 2D Matrix M[3][4]</text>
+  <!-- Row 0 Cells -->
+  <rect x="40" y="65" width="55" height="35" rx="4" fill="url(#row0Grad)" stroke="#10b981" />
+  <text x="67" y="87" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#10b981">0,0</text>
+  <rect x="100" y="65" width="55" height="35" rx="4" fill="url(#row0Grad)" stroke="#10b981" />
+  <text x="127" y="87" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#10b981">0,1</text>
+  <rect x="160" y="65" width="55" height="35" rx="4" fill="url(#row0Grad)" stroke="#10b981" />
+  <text x="187" y="87" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#10b981">0,2</text>
+  <rect x="220" y="65" width="55" height="35" rx="4" fill="url(#row0Grad)" stroke="#10b981" />
+  <text x="247" y="87" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#10b981">0,3</text>
+  <!-- Row 1 Cells -->
+  <rect x="40" y="110" width="55" height="35" rx="4" fill="url(#row1Grad)" stroke="#3b82f6" />
+  <text x="67" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6">1,0</text>
+  <rect x="100" y="110" width="55" height="35" rx="4" fill="url(#row1Grad)" stroke="#3b82f6" />
+  <text x="127" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6">1,1</text>
+  <rect x="160" y="110" width="55" height="35" rx="4" fill="url(#row1Grad)" stroke="#3b82f6" />
+  <text x="187" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6">1,2</text>
+  <rect x="220" y="110" width="55" height="35" rx="4" fill="url(#row1Grad)" stroke="#3b82f6" />
+  <text x="247" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#3b82f6">1,3</text>
+  <!-- Row 2 Cells -->
+  <rect x="40" y="155" width="55" height="35" rx="4" fill="url(#row2Grad)" stroke="#8b5cf6" />
+  <text x="67" y="177" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#8b5cf6">2,0</text>
+  <rect x="100" y="155" width="55" height="35" rx="4" fill="url(#row2Grad)" stroke="#8b5cf6" />
+  <text x="127" y="177" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#8b5cf6">2,1</text>
+  <rect x="160" y="155" width="55" height="35" rx="4" fill="url(#row2Grad)" stroke="#8b5cf6" />
+  <text x="187" y="177" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#8b5cf6">2,2</text>
+  <rect x="220" y="155" width="55" height="35" rx="4" fill="url(#row2Grad)" stroke="#8b5cf6" />
+  <text x="247" y="177" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="#8b5cf6">2,3</text>
+  <text x="40" y="225" font-family="system-ui, sans-serif" font-size="11" fill="currentColor" fill-opacity="0.7">Memory Offset: α + (i · C + j) · S</text>
+
+  <!-- Physical 1D RAM Linearization on Right -->
+  <rect x="330" y="20" width="525" height="230" rx="8" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-opacity="0.15" />
+  <text x="345" y="45" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="currentColor">Physical 1D RAM Layout (Row-Major Order)</text>
+  
+  <!-- Linear array representation -->
+  <g font-family="system-ui, sans-serif" font-size="10" font-weight="bold">
+    <!-- Row 0 Block -->
+    <rect x="345" y="70" width="160" height="45" rx="4" fill="url(#row0Grad)" stroke="#10b981" stroke-width="1.5" />
+    <text x="425" y="97" text-anchor="middle" fill="#10b981">Row 0: [0,0] [0,1] [0,2] [0,3]</text>
+    <!-- Row 1 Block -->
+    <rect x="515" y="70" width="160" height="45" rx="4" fill="url(#row1Grad)" stroke="#3b82f6" stroke-width="1.5" />
+    <text x="595" y="97" text-anchor="middle" fill="#3b82f6">Row 1: [1,0] [1,1] [1,2] [1,3]</text>
+    <!-- Row 2 Block -->
+    <rect x="685" y="70" width="160" height="45" rx="4" fill="url(#row2Grad)" stroke="#8b5cf6" stroke-width="1.5" />
+    <text x="765" y="97" text-anchor="middle" fill="#8b5cf6">Row 2: [2,0] [2,1] [2,2] [2,3]</text>
+  </g>
+
+  <!-- Cache Stride Analysis Boxes -->
+  <rect x="345" y="135" width="245" height="95" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981" stroke-opacity="0.25" />
+  <text x="355" y="155" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#10b981">Row-Wise Traversal (Stride = 1)</text>
+  <text x="355" y="175" font-family="system-ui, sans-serif" font-size="10" fill="currentColor" fill-opacity="0.8">`for i: for j: sum += M[i][j]`</text>
+  <text x="355" y="195" font-family="system-ui, sans-serif" font-size="10" fill="currentColor" fill-opacity="0.8">Continuous sequential address access.</text>
+  <text x="355" y="215" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#10b981">100% L1/L2 Cache Prefetch Efficiency!</text>
+
+  <rect x="600" y="135" width="245" height="95" rx="6" fill="#ef4444" fill-opacity="0.08" stroke="#ef4444" stroke-opacity="0.25" />
+  <text x="610" y="155" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#ef4444">Column-Wise Traversal (Stride = C)</text>
+  <text x="610" y="175" font-family="system-ui, sans-serif" font-size="10" fill="currentColor" fill-opacity="0.8">`for j: for i: sum += M[i][j]`</text>
+  <text x="610" y="195" font-family="system-ui, sans-serif" font-size="10" fill="currentColor" fill-opacity="0.8">Each read jumps by C * 4 bytes.</text>
+  <text x="610" y="215" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#ef4444">Frequent L1 Cache Misses &amp; Stalls!</text>
+</svg>
 
 > 💡 **Architectural Principle**:  
-> In Row-Major languages, always structure nested loops with row indices outer and column indices inner:  
-> `for (int i = 0; i < R; i++) for (int j = 0; j < C; j++)`.
+> In Row-Major languages (C, C++, Rust, Python NumPy defaults), always structure nested loops with row indices outer and column indices inner:  
+> `for (int i = 0; i < R; i++) for (int j = 0; j < C; j++)`. Inverting the loop nest to `for j: for i:` forces a stride of $C$ bytes between successive reads, evicting cache lines prematurely and causing severe CPU stalls.
 
 ---
 

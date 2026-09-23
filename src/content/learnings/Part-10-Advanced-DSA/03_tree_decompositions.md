@@ -48,6 +48,46 @@ $$\mathbf{Theorem}: \quad \text{On any simple path from the root to any node } u
 By definition, crossing a light edge $(u, v)$ implies $|T_v| \le \frac{1}{2}|T_u|$. If $|T_v| > \frac{1}{2}|T_u|$, then $v$ would possess more than half the total descendants of $u$, making it impossible for any sibling to exceed it, forcing $v$ to be the heavy child.  
 Since the subtree size strictly halves upon traversing every light edge, one can cross at most $\lfloor \log_2 n \rfloor$ light edges before the subtree size reduces to 1. $\blacksquare$
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 310" width="100%" height="310" class="mx-auto block font-sans">
+  <defs>
+    <marker id="hld-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/></marker>
+    <linearGradient id="chain-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/></linearGradient>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Heavy-Light Decomposition: Tree-to-Chain Linearization &amp; Segment Tree Mapping</text>
+  <rect x="20" y="45" width="375" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="207" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#10b981">1. Tree Edge Partitioning</text>
+  <g transform="translate(60, 85)">
+    <line x1="140" y1="20" x2="70" y2="80" stroke="#10b981" stroke-width="4.5"/>
+    <line x1="140" y1="20" x2="210" y2="80" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="70" y1="80" x2="40" y2="140" stroke="#10b981" stroke-width="4.5"/>
+    <line x1="70" y1="80" x2="100" y2="140" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="210" y1="80" x2="210" y2="140" stroke="#0284c7" stroke-width="4"/>
+    <circle cx="140" cy="20" r="16" fill="#1e293b" stroke="#10b981" stroke-width="2.5"/><text x="140" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">0</text>
+    <circle cx="70" cy="80" r="15" fill="#1e293b" stroke="#10b981" stroke-width="2.5"/><text x="70" y="85" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">1</text>
+    <circle cx="210" cy="80" r="15" fill="#1e293b" stroke="#0284c7" stroke-width="2"/><text x="210" y="85" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">2</text>
+    <circle cx="40" cy="140" r="13" fill="#1e293b" stroke="#10b981" stroke-width="2.5"/><text x="40" y="144" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff">3</text>
+    <circle cx="100" cy="140" r="13" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/><text x="100" y="144" text-anchor="middle" font-size="10" font-weight="bold" fill="#94a3b8">4</text>
+    <circle cx="210" cy="140" r="13" fill="#1e293b" stroke="#0284c7" stroke-width="2"/><text x="210" y="144" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff">5</text>
+  </g>
+  <text x="207" y="260" text-anchor="middle" font-size="10.5" fill="currentColor">&#x2501; Heavy Edge (Thick) | &#x2504; Light Edge (Dashed)</text>
+  <text x="207" y="280" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#10b981">Any root-to-leaf path crosses &#x2264; &#x230A;log&#x2082; n&#x230B; light edges</text>
+  <rect x="415" y="45" width="385" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="607" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#0284c7">2. Flat Contiguous Segment Tree Layout</text>
+  <g transform="translate(440, 95)">
+    <text x="0" y="15" font-size="10.5" font-weight="bold" fill="#10b981">Chain A (Nodes 0 &#x2192; 1 &#x2192; 3): Contiguous Slice [0 : 2]</text>
+    <rect x="0" y="25" width="55" height="34" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2" rx="4"/><text x="27" y="46" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">pos 0 (0)</text>
+    <rect x="58" y="25" width="55" height="34" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2" rx="4"/><text x="85" y="46" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">pos 1 (1)</text>
+    <rect x="116" y="25" width="55" height="34" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="2" rx="4"/><text x="143" y="46" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">pos 2 (3)</text>
+    <text x="0" y="80" font-size="10.5" font-weight="bold" fill="#0284c7">Chain B (Nodes 2 &#x2192; 5): Contiguous Slice [3 : 4]</text>
+    <rect x="0" y="90" width="55" height="34" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7" stroke-width="2" rx="4"/><text x="27" y="111" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">pos 3 (2)</text>
+    <rect x="58" y="90" width="55" height="34" fill="#0284c7" fill-opacity="0.25" stroke="#0284c7" stroke-width="2" rx="4"/><text x="85" y="111" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">pos 4 (5)</text>
+  </g>
+  <text x="607" y="260" text-anchor="middle" font-size="10.5" fill="currentColor">Tree Path query &#x2192; &#x2264; log n Range Queries on Segment Tree</text>
+  <text x="607" y="280" text-anchor="middle" font-size="11" font-weight="bold" fill="#0284c7">Total Query Time: O(log&#178; n)</text>
+</svg>
+</div>
+
 ---
 
 ### 4. Implementation: Heavy-Light Decomposition Path Queries

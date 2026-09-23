@@ -106,6 +106,51 @@ To identify the exact items chosen, backtrack from cell $dp[3][5] = 22$:
 2. Compare $dp[2][2]$ with $dp[1][2]$ ($10 \ne 6$) $\implies$ **Item 2 selected**. Remaining capacity $= 2 - 2 = 0$.
 3. Capacity reached $0$. Selected set: **{Item 2, Item 3}** with total weight $2 + 3 = 5$ and maximum value $10 + 12 = \mathbf{22}$.
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" width="100%" height="340" class="mx-auto block font-sans">
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#0284c7"/></marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/></marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#ef4444"/></marker>
+    <linearGradient id="cell-prev" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284c7" stop-opacity="0.2"/><stop offset="100%" stop-color="#0284c7" stop-opacity="0.05"/></linearGradient>
+    <linearGradient id="cell-inc" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/><stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/></linearGradient>
+    <linearGradient id="cell-target" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.25"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.05"/></linearGradient>
+  </defs>
+  <text x="410" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">0/1 Knapsack: 2D Recurrence Geometry &amp; 1D Cache Compression Invariant</text>
+  <rect x="20" y="45" width="480" height="275" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="35" y="68" font-size="12" font-weight="bold" fill="#64748b">2D State Grid: dp[i][w]</text>
+  <line x1="80" y1="85" x2="480" y2="85" stroke="#64748b" stroke-dasharray="3,3" stroke-opacity="0.4"/>
+  <line x1="80" y1="210" x2="480" y2="210" stroke="#64748b" stroke-dasharray="3,3" stroke-opacity="0.4"/>
+  <text x="65" y="125" text-anchor="end" font-size="12" font-weight="bold" fill="#64748b">Row i - 1</text>
+  <text x="65" y="250" text-anchor="end" font-size="12" font-weight="bold" fill="#8b5cf6">Row i</text>
+  <rect x="120" y="95" width="130" height="60" rx="6" fill="url(#cell-inc)" stroke="#10b981" stroke-width="2"/>
+  <text x="185" y="120" text-anchor="middle" font-size="12" font-weight="bold" fill="#10b981">dp[i-1][w - w_i]</text>
+  <text x="185" y="140" text-anchor="middle" font-size="11" fill="currentColor">Residual Capacity</text>
+  <rect x="320" y="95" width="130" height="60" rx="6" fill="url(#cell-prev)" stroke="#0284c7" stroke-width="2"/>
+  <text x="385" y="120" text-anchor="middle" font-size="12" font-weight="bold" fill="#0284c7">dp[i-1][w]</text>
+  <text x="385" y="140" text-anchor="middle" font-size="11" fill="currentColor">Same Capacity</text>
+  <rect x="320" y="220" width="130" height="60" rx="6" fill="url(#cell-target)" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="385" y="245" text-anchor="middle" font-size="13" font-weight="bold" fill="#8b5cf6">dp[i][w]</text>
+  <text x="385" y="265" text-anchor="middle" font-size="11" fill="currentColor">max(Exclude, Include)</text>
+  <path d="M 385 157 L 385 214" stroke="#0284c7" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <text x="395" y="188" font-size="10.5" font-weight="bold" fill="#0284c7">Option A: Exclude (+0, w)</text>
+  <path d="M 185 157 C 185 195, 310 200, 320 230" fill="none" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <text x="160" y="195" font-size="10.5" font-weight="bold" fill="#10b981">Option B: Include (+v_i, w - w_i)</text>
+  <rect x="525" y="45" width="275" height="275" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="540" y="68" font-size="12" font-weight="bold" fill="#64748b">1D Rolling Array Compression</text>
+  <rect x="545" y="85" width="235" height="100" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981" stroke-width="1.5"/>
+  <text x="555" y="105" font-size="11" font-weight="bold" fill="#10b981">&#x2714; Backward Iteration: W &#x2192; w_i</text>
+  <text x="555" y="125" font-size="10.5" fill="currentColor">Each item used &#x2264; 1 time (0/1 constraint).</text>
+  <text x="555" y="145" font-size="10.5" fill="currentColor">dp[w - w_i] remains from previous row i-1</text>
+  <text x="555" y="165" font-size="10.5" font-weight="bold" fill="#10b981">Invariant: Clean single-item state.</text>
+  <rect x="545" y="200" width="235" height="105" rx="6" fill="#ef4444" fill-opacity="0.08" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="555" y="220" font-size="11" font-weight="bold" fill="#ef4444">&#x2718; Forward Iteration: w_i &#x2192; W</text>
+  <text x="555" y="240" font-size="10.5" fill="currentColor">Overwrites dp[w - w_i] with current row i!</text>
+  <text x="555" y="260" font-size="10.5" fill="currentColor">Item i can be picked &#x221E; times.</text>
+  <text x="555" y="280" font-size="10.5" font-weight="bold" fill="#ef4444">Transforms into Unbounded Knapsack!</text>
+</svg>
+</div>
+
 ---
 
 ## 6. Space Optimization: 2D Table to 1D Rolling Buffer

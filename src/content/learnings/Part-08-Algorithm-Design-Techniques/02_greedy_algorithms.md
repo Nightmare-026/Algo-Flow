@@ -75,6 +75,69 @@ Consider $n = 8$ activities sorted by ascending finish times:
 
 **Result**: Maximum compatible set cardinality is $3$: $\{A_1, A_4, A_8\}$. Runtime: $\Theta(n \log n)$ for initial sorting.
 
+<div class="my-6 p-4 rounded-xl border border-border bg-card">
+  <div class="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+    Algorithm Mechanics: Greedy Interval Scheduling Timeline &amp; Exchange Argument
+  </div>
+  <svg viewBox="0 0 850 360" class="w-full h-auto text-xs" style="max-height: 360px;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="grdArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="20" y="20" width="810" height="320" rx="12" fill="none" stroke="currentColor" stroke-opacity="0.15"/>
+    <!-- Left: Activity Timeline -->
+    <g transform="translate(45, 45)">
+      <text x="175" y="20" font-weight="700" fill="#10b981" text-anchor="middle" font-size="13">Activity Selection: Earliest Finish Time Heuristic</text>
+      <!-- Timeline Axis: 0 to 12 -->
+      <g transform="translate(10, 45)">
+        <line x1="0" y1="180" x2="330" y2="180" stroke="currentColor" stroke-width="1.5"/>
+        <!-- Interval 1: [1, 4] SELECTED -->
+        <rect x="25" y="10" width="75" height="24" rx="4" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="1.5"/>
+        <text x="62" y="26" text-anchor="middle" font-weight="700" fill="#10b981">A1 [1, 4] SELECTED</text>
+        <!-- Interval 2: [3, 5] REJECTED -->
+        <rect x="75" y="42" width="50" height="20" rx="3" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-dasharray="3,3"/>
+        <text x="100" y="56" text-anchor="middle" font-size="9" fill="#ef4444">A2 (Overlap)</text>
+        <!-- Interval 3: [0, 6] REJECTED -->
+        <rect x="0" y="68" width="150" height="20" rx="3" fill="#ef4444" fill-opacity="0.1" stroke="#ef4444" stroke-dasharray="3,3"/>
+        <text x="75" y="82" text-anchor="middle" font-size="9" fill="#ef4444">A3 (Overlap)</text>
+        <!-- Interval 4: [5, 7] SELECTED -->
+        <rect x="125" y="94" width="50" height="24" rx="4" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="1.5"/>
+        <text x="150" y="110" text-anchor="middle" font-weight="700" fill="#10b981">A4 [5, 7] SELECTED</text>
+        <!-- Interval 8: [8, 11] SELECTED -->
+        <rect x="200" y="124" width="75" height="24" rx="4" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="1.5"/>
+        <text x="237" y="140" text-anchor="middle" font-weight="700" fill="#10b981">A8 [8, 11] SELECTED</text>
+      </g>
+      <text x="175" y="255" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; Optimal cardinality: 3 activities &bull; Greedy Choice: earliest finish leaves maximum remaining time</text>
+    </g>
+    <!-- Divider -->
+    <line x1="420" y1="40" x2="420" y2="340" stroke="currentColor" stroke-opacity="0.15" stroke-width="1.5"/>
+    <!-- Right: Greedy vs Dynamic Programming Decision Matrix -->
+    <g transform="translate(450, 45)">
+      <text x="180" y="20" font-weight="700" fill="#3b82f6" text-anchor="middle" font-size="13">Greedy vs. Dynamic Programming</text>
+      <!-- Greedy Box -->
+      <g transform="translate(10, 45)">
+        <rect x="0" y="0" width="340" height="80" rx="6" fill="#10b981" fill-opacity="0.08" stroke="#10b981"/>
+        <text x="15" y="22" font-weight="700" fill="#10b981" font-size="11">The Greedy Paradigm:</text>
+        <text x="15" y="40" fill="currentColor" fill-opacity="0.8" font-size="10">&bull; Single irrevocable local choice at each step.</text>
+        <text x="15" y="56" fill="currentColor" fill-opacity="0.8" font-size="10">&bull; Fast: O(n log n) sorting + O(n) scan. Zero backtracking.</text>
+        <text x="15" y="72" font-size="10" font-weight="600" fill="#10b981">&bull; Succeeds on Fractional Knapsack, MST, Dijkstra.</text>
+      </g>
+      <!-- DP Box -->
+      <g transform="translate(10, 135)">
+        <rect x="0" y="0" width="340" height="80" rx="6" fill="#3b82f6" fill-opacity="0.08" stroke="#3b82f6"/>
+        <text x="15" y="22" font-weight="700" fill="#3b82f6" font-size="11">The Dynamic Programming Paradigm:</text>
+        <text x="15" y="40" fill="currentColor" fill-opacity="0.8" font-size="10">&bull; Evaluates all candidate state transitions.</text>
+        <text x="15" y="56" fill="currentColor" fill-opacity="0.8" font-size="10">&bull; Resolves overlapping subproblems via memoization.</text>
+        <text x="15" y="72" font-size="10" font-weight="600" fill="#3b82f6">&bull; Mandatory on 0/1 Knapsack, Coin Change, Edit Distance.</text>
+      </g>
+      <text x="180" y="255" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity="0.75">&bull; When local choice cannot guarantee global optimality, use DP!</text>
+    </g>
+  </svg>
+</div>
+
 ```typescript
 export interface Interval {
   id: number;

@@ -72,11 +72,25 @@ export default function LearningsPage() {
     <div className="min-h-screen px-4 py-8 sm:px-6 md:py-12 lg:px-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-[1550px]">
         {/* Streamlined Curriculum Header */}
         <header className="mb-8 md:mb-12">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 pb-6 border-b border-border/70">
             <div className="max-w-3xl">
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-primary/10 text-primary border border-primary/20">
+                  {stats.totalModules} Core Modules
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-muted-foreground">
+                  {stats.totalChapters} Rigorous Chapters
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-muted-foreground">
+                  138 Interactive Simulators
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  MIT / Berkeley Standard
+                </span>
+              </div>
               <h1 className="text-4xl sm:text-5xl font-extrabold font-display tracking-tight text-foreground">
                 Master the architecture.{" "}
                 <span className="text-gradient-primary">Prove the algorithms.</span>
@@ -88,7 +102,7 @@ export default function LearningsPage() {
               </p>
             </div>
 
-            <div className="flex items-center shrink-0">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
               <Link
                 href="/learnings/front-matter/cover-and-purpose"
                 className={buttonVariants({

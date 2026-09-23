@@ -89,6 +89,50 @@ To maintain the exact running median of numbers arriving sequentially in $\mathc
 - If total elements is odd: return $\text{low}.\text{peek}()$.
 - If total elements is even: return $(\text{low}.\text{peek}() + \text{high}.\text{peek}()) / 2.0$.
 
+<div class="my-6 p-4 bg-surface rounded-xl border border-border overflow-x-auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 310" width="100%" height="310" class="mx-auto block font-sans">
+  <defs>
+    <marker id="med-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981"/></marker>
+    <linearGradient id="heap-low-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0.05"/></linearGradient>
+    <linearGradient id="heap-high-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284c7" stop-opacity="0.3"/><stop offset="100%" stop-color="#0284c7" stop-opacity="0.05"/></linearGradient>
+  </defs>
+  <text x="410" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="currentColor">Archetype Models: Dual-Heap Streaming Median &amp; Interval Merge Topology</text>
+  <rect x="20" y="45" width="375" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="207" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#f59e0b">1. Dual-Heap Streaming Median</text>
+  <g transform="translate(45, 90)">
+    <rect x="0" y="0" width="145" height="110" rx="6" fill="url(#heap-low-g)" stroke="#f59e0b" stroke-width="2"/>
+    <text x="72" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="#f59e0b">Max-Heap: low</text>
+    <text x="72" y="45" text-anchor="middle" font-size="10" fill="currentColor">Lower Half Elements</text>
+    <circle cx="72" cy="78" r="16" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+    <text x="72" y="83" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">max</text>
+    <rect x="180" y="0" width="145" height="110" rx="6" fill="url(#heap-high-g)" stroke="#0284c7" stroke-width="2"/>
+    <text x="252" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="#0284c7">Min-Heap: high</text>
+    <text x="252" y="45" text-anchor="middle" font-size="10" fill="currentColor">Upper Half Elements</text>
+    <circle cx="252" cy="78" r="16" fill="#0284c7" stroke="#0369a1" stroke-width="2"/>
+    <text x="252" y="83" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">min</text>
+    <line x1="162" y1="10" x2="162" y2="135" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4,2"/>
+    <text x="162" y="150" text-anchor="middle" font-size="11" font-weight="bold" fill="#10b981">Median Axis</text>
+    <text x="162" y="168" text-anchor="middle" font-size="9.5" fill="currentColor">O(1) query lookup</text>
+  </g>
+  <text x="207" y="280" text-anchor="middle" font-size="10.5" fill="currentColor">Invariant: max(low) &#x2264; min(high) | size delta &#x2264; 1</text>
+  <rect x="415" y="45" width="385" height="250" rx="8" fill="none" stroke="#64748b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <text x="607" y="68" text-anchor="middle" font-size="12" font-weight="bold" fill="#0284c7">2. Interval Merge Timeline Geometry</text>
+  <g transform="translate(440, 95)">
+    <line x1="0" y1="120" x2="335" y2="120" stroke="#64748b" stroke-width="1.5"/>
+    <rect x="20" y="20" width="100" height="24" rx="4" fill="#0284c7" fill-opacity="0.3" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="70" y="36" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">[1, 4]</text>
+    <rect x="70" y="55" width="110" height="24" rx="4" fill="#0284c7" fill-opacity="0.3" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="125" y="71" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">[3, 6]</text>
+    <rect x="20" y="85" width="160" height="26" rx="4" fill="#10b981" fill-opacity="0.3" stroke="#10b981" stroke-width="2"/>
+    <text x="100" y="102" text-anchor="middle" font-size="11" font-weight="bold" fill="#10b981">&#x27F6; Merged: [1, 6]</text>
+    <rect x="220" y="55" width="85" height="24" rx="4" fill="#6366f1" fill-opacity="0.3" stroke="#6366f1" stroke-width="1.5"/>
+    <text x="262" y="71" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">[8, 10]</text>
+    <text x="262" y="102" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#6366f1">Disjoint Block</text>
+  </g>
+  <text x="607" y="280" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#10b981">Sort by Start &#x2192; Linear Sweep O(n log n)</text>
+</svg>
+</div>
+
 ---
 
 ## 4. Topic 144: Hash Map Prefix Sum Invariant Pattern
