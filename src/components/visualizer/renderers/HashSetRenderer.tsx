@@ -28,7 +28,7 @@ export function HashSetRenderer() {
     if (highlights.error?.includes(bucketId))
       return "border-error text-error shadow-[0_0_15px_rgba(239,68,68,0.2)]";
     if (highlights.active?.includes(bucketId))
-      return "border-primary text-primary shadow-[0_0_15px_rgba(59,130,246,0.2)]";
+      return "border-primary text-primary shadow-[0_0_15px_rgba(34,197,94,0.25)]";
     if (highlights.found?.includes(bucketId))
       return "border-success text-success shadow-[0_0_15px_rgba(34,197,94,0.2)]";
 

@@ -19,7 +19,7 @@ export function StepTimeline() {
     <section className="min-w-0 w-full" aria-label="Execution progress">
       <div className="mb-1.5 flex min-w-0 items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-1.5">
-          <span className="shrink-0 font-mono text-[10px] font-bold tabular-nums text-primary bg-primary-muted px-1.5 py-0.5 rounded border border-primary/20">
+          <span className="shrink-0 font-mono text-[10px] font-bold tabular-nums text-vis-current-text bg-primary-muted px-1.5 py-0.5 rounded border border-primary/20">
             {currentStepIndex + 1}/{totalSteps}
           </span>
           <span className="truncate text-[11px] font-semibold text-text-primary">

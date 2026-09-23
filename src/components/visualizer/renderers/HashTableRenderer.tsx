@@ -29,7 +29,7 @@ export function HashTableRenderer() {
     if (highlights.error?.includes(bucketId))
       return "border-error text-error bg-error/10 shadow-[0_0_15px_rgba(239,68,68,0.25)]";
     if (highlights.active?.includes(bucketId))
-      return "border-primary text-primary bg-primary/10 shadow-[0_0_15px_rgba(59,130,246,0.25)]";
+      return "border-primary text-primary bg-primary/10 shadow-[0_0_15px_rgba(34,197,94,0.25)]";
     if (highlights.found?.includes(bucketId) || highlights.inserted?.includes(bucketId))
       return "border-success text-success bg-success/10 shadow-[0_0_15px_rgba(34,197,94,0.25)]";
     if (highlights.visited?.includes(bucketId))
@@ -170,7 +170,7 @@ export function HashTableRenderer() {
                       className={cn(
                         "flex items-center gap-3 rounded-xl border p-1.5 transition-all duration-200",
                         isOldActive
-                          ? "border-primary bg-primary/10 shadow-[0_0_12px_rgba(59,130,246,0.2)]"
+                          ? "border-primary bg-primary/10 shadow-[0_0_12px_rgba(34,197,94,0.25)]"
                           : isVisited
                             ? "border-border/60 bg-surface/20 opacity-50"
                             : "border-border bg-surface/80"
@@ -188,7 +188,7 @@ export function HashTableRenderer() {
                       </div>
 
                       <div className="flex-1 flex items-center justify-center h-8 sm:h-9 rounded-lg border border-dashed border-border/60 bg-bg-base/30 font-mono text-sm font-bold text-text-primary">
-                        {entry ? entry.key : <span className="text-text-muted/40">â€”</span>}
+                        {entry ? entry.key : <span className="text-text-muted/40">—</span>}
                       </div>
                     </div>
                   );
@@ -375,7 +375,7 @@ export function HashTableRenderer() {
                   <div className="flex flex-1 items-center gap-2 overflow-x-auto py-1 px-1 min-h-12">
                     {chain.length === 0 ? (
                       <div className="flex items-center gap-1.5 rounded-lg border border-dashed border-border/60 px-3 py-1.5 text-xs font-mono text-text-muted/50">
-                        <span>âˆ…</span>
+                        <span>∅</span>
                         <span className="text-[10px]">NULL</span>
                       </div>
                     ) : (
