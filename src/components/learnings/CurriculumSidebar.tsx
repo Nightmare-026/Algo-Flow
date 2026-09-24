@@ -13,6 +13,8 @@ import {
   ChevronsUpDown,
   ListTree,
   Crosshair,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCompletedChapters } from "@/lib/learnings/progress";
@@ -24,6 +26,8 @@ interface CurriculumSidebarProps {
   currentTableOfContents?: TableOfContentsItem[];
   className?: string;
   onNavigate?: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 /** Cleans LaTeX symbols like ($\alpha$) for human-readable sidebar display */
@@ -45,6 +49,8 @@ export function CurriculumSidebar({
   currentTableOfContents,
   className,
   onNavigate,
+  isCollapsed = false,
+  onToggleCollapse,
 }: CurriculumSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const { completedSet: completedChapters } = useCompletedChapters();
@@ -251,6 +257,87 @@ export function CurriculumSidebar({
     }
   };
 
+  // --- COLLAPSED ICON RAIL VIEW (Notion / Coursera Style) ---
+  if (isCollapsed) {
+    return (
+      <nav
+        aria-label="Curriculum Navigation (Collapsed)"
+        className={cn(
+          "flex flex-col items-center h-full py-2.5 px-1.5 rounded-2xl border border-border/80 bg-surface shadow-(--shadow-raised) select-none transition-all duration-300",
+          className
+        )}
+      >
+        {/* Toggle Expand Button */}
+        {onToggleCollapse && (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-raised border border-border/60 transition-colors cursor-pointer mb-2.5 shadow-xs"
+            title="Expand curriculum sidebar"
+            aria-label="Expand curriculum sidebar"
+          >
+            <PanelLeftOpen className="w-4 h-4 text-primary" />
+          </button>
+        )}
+
+        {/* Mini Completion Pill */}
+        <div
+          className="w-10 py-1.5 rounded-xl bg-surface-inset border border-border/50 flex flex-col items-center justify-center text-[10px] font-mono text-muted-foreground mb-2.5"
+          title={`${completedCount} of ${totalChaptersCount} chapters completed (${completedPercent}%)`}
+        >
+          <span className="text-emerald-500 font-bold">{completedCount}</span>
+          <span className="text-[8px] opacity-60">/{totalChaptersCount}</span>
+        </div>
+
+        {/* Module Pill Strip */}
+        <ol className="flex flex-col gap-1.5 w-full items-center flex-1 overflow-y-auto min-h-0 py-1 custom-scrollbar">
+          {modules.map((mod) => {
+            const isCurrentModule = mod.slug === currentModuleSlug;
+            const modCompletedCount = mod.chapters.filter((ch) =>
+              completedChapters.has(`${mod.slug}/${ch.slug}`)
+            ).length;
+            const isModComplete =
+              mod.chapters.length > 0 && modCompletedCount === mod.chapters.length;
+
+            return (
+              <li key={mod.id} className="relative group">
+                <Link
+                  href={`/learnings/${mod.slug}/${mod.chapters[0]?.slug || ""}`}
+                  onClick={onNavigate}
+                  title={`Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} (${modCompletedCount}/${mod.chapters.length} completed)`}
+                  className={cn(
+                    "w-9 h-9 rounded-xl flex flex-col items-center justify-center text-[10px] font-mono font-bold transition-all relative cursor-pointer border",
+                    isCurrentModule
+                      ? "bg-primary text-white border-primary/40 shadow-xs"
+                      : "bg-surface-raised/60 hover:bg-surface-raised text-muted-foreground hover:text-foreground border-border/40 hover:border-border"
+                  )}
+                >
+                  <span>P{mod.partNumber.toString().padStart(2, "0")}</span>
+                  {isModComplete ? (
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-surface" />
+                  ) : modCompletedCount > 0 ? (
+                    <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-sky-500 ring-2 ring-surface" />
+                  ) : null}
+                </Link>
+              </li>
+            );
+          })}
+        </ol>
+
+        {/* Jump to active button at bottom of rail */}
+        <button
+          type="button"
+          onClick={scrollToActive}
+          className="w-9 h-9 mt-2 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-raised border border-border/40 transition-colors cursor-pointer"
+          title="Jump to active chapter"
+          aria-label="Jump to active chapter"
+        >
+          <Crosshair className="w-3.5 h-3.5 text-primary" />
+        </button>
+      </nav>
+    );
+  }
+
   return (
     <nav
       aria-label="Curriculum Navigation"
@@ -281,6 +368,18 @@ export function CurriculumSidebar({
 
           {/* Quick Actions */}
           <div className="flex items-center gap-1 shrink-0">
+            {/* Collapse Sidebar Button */}
+            {onToggleCollapse && (
+              <button
+                type="button"
+                onClick={onToggleCollapse}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-raised transition-colors cursor-pointer border border-border/40 hover:border-border"
+                title="Collapse sidebar"
+                aria-label="Collapse sidebar"
+              >
+                <PanelLeftClose className="w-3.5 h-3.5 text-primary" />
+              </button>
+            )}
             {/* Focus / Jump to Active Chapter */}
             <button
               type="button"
@@ -431,7 +530,7 @@ export function CurriculumSidebar({
                 className={cn(
                   "rounded-xl transition-all duration-150 overflow-hidden border shrink-0",
                   isCurrentModule
-                    ? "bg-primary/[0.03] border-primary/30 shadow-2xs"
+                    ? "bg-primary/3 border-primary/30 shadow-2xs"
                     : "bg-surface-raised/40 hover:bg-surface-raised border-border/40 hover:border-border/70"
                 )}
               >
@@ -461,7 +560,7 @@ export function CurriculumSidebar({
                     {/* Module Title: Multi-line wrapped, zero truncation */}
                     <span
                       className={cn(
-                        "text-xs font-semibold leading-snug break-words line-clamp-2 flex-1 text-left transition-colors",
+                        "text-xs font-semibold leading-snug wrap-break-word line-clamp-2 flex-1 text-left transition-colors",
                         isCurrentModule
                           ? "text-primary font-bold"
                           : "text-foreground/90 group-hover:text-foreground"
@@ -536,7 +635,7 @@ export function CurriculumSidebar({
                               {/* Tree guide rail active indicator pip */}
                               {isCurrentChapter && (
                                 <span
-                                  className="absolute -left-[14px] top-2.5 w-1.5 h-3.5 rounded-full bg-primary shadow-[0_0_8px_rgba(34,197,94,0.5)]"
+                                  className="absolute -left-3.5 top-2.5 w-1.5 h-3.5 rounded-full bg-primary shadow-[0_0_8px_rgba(34,197,94,0.5)]"
                                   aria-hidden="true"
                                 />
                               )}
@@ -573,7 +672,7 @@ export function CurriculumSidebar({
                                 <span
                                   itemProp="name"
                                   className={cn(
-                                    "text-xs leading-snug break-words flex-1 text-left",
+                                    "text-xs leading-snug wrap-break-word flex-1 text-left",
                                     isCurrentChapter
                                       ? "text-primary font-bold"
                                       : "text-foreground/80 group-hover:text-foreground font-medium"
@@ -645,7 +744,7 @@ export function CurriculumSidebar({
                                               className={cn(
                                                 "group/sub flex items-start gap-1.5 py-1 px-1.5 rounded-md text-[11px] leading-snug transition-colors cursor-pointer",
                                                 isSubActive
-                                                  ? "text-primary font-bold bg-primary/[0.08]"
+                                                  ? "text-primary font-bold bg-primary/8"
                                                   : "text-muted-foreground hover:text-foreground hover:bg-surface-raised/60"
                                               )}
                                             >
@@ -658,7 +757,7 @@ export function CurriculumSidebar({
                                                 )}
                                                 aria-hidden="true"
                                               />
-                                              <span className="break-words line-clamp-2 flex-1 text-left">
+                                              <span className="wrap-break-word line-clamp-2 flex-1 text-left">
                                                 {formatSubtopicTitle(sub.title)}
                                               </span>
                                             </a>
@@ -672,7 +771,7 @@ export function CurriculumSidebar({
                                               className="w-1 h-1 rounded-full bg-primary/60 shrink-0 mt-1.5"
                                               aria-hidden="true"
                                             />
-                                            <span className="break-words line-clamp-2 flex-1 text-left">
+                                            <span className="wrap-break-word line-clamp-2 flex-1 text-left">
                                               {formatSubtopicTitle(topic)}
                                             </span>
                                           </div>
@@ -702,7 +801,7 @@ export function CurriculumSidebar({
                                           className="w-1 h-1 rounded-full bg-border shrink-0 mt-1.5"
                                           aria-hidden="true"
                                         />
-                                        <span className="break-words line-clamp-2 flex-1 text-left">
+                                        <span className="wrap-break-word line-clamp-2 flex-1 text-left">
                                           {formatSubtopicTitle(topic)}
                                         </span>
                                       </Link>

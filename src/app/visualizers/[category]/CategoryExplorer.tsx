@@ -72,7 +72,7 @@ function CustomDropdown({ id, label, value, options, onChange, className }: Cust
         aria-controls={`${id}-listbox`}
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          "flex h-11 w-full min-w-36 sm:min-w-40 items-center justify-between gap-2.5 rounded-xl border bg-bg-surface-inset px-3.5 text-xs font-semibold text-text-primary shadow-[var(--shadow-inset)] transition-all cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+          "flex h-11 w-full min-w-36 sm:min-w-40 items-center justify-between gap-2.5 rounded-xl border bg-bg-surface-inset px-3.5 text-xs font-semibold text-text-primary shadow-(--shadow-inset) transition-all cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
           isOpen
             ? "border-primary/50 ring-2 ring-primary/20"
             : "border-border hover:border-border-hover"
@@ -96,7 +96,7 @@ function CustomDropdown({ id, label, value, options, onChange, className }: Cust
           id={`${id}-listbox`}
           role="listbox"
           aria-labelledby={id}
-          className="neu-float hide-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden absolute left-0 top-full z-50 mt-1.5 max-h-72 w-full min-w-full overflow-y-auto rounded-xl border border-border bg-surface p-1 shadow-[var(--shadow-float)] backdrop-blur-2xl animate-in fade-in-0 zoom-in-95 duration-150"
+          className="neu-float hide-scrollbar scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden absolute left-0 top-full z-50 mt-1.5 max-h-72 w-full min-w-full overflow-y-auto rounded-xl border border-border bg-surface p-1 shadow-(--shadow-float) backdrop-blur-2xl animate-in fade-in-0 zoom-in-95 duration-150"
         >
           {options.map((option) => {
             const isSelected = option.value === value;
@@ -234,7 +234,7 @@ export function CategoryExplorer({
                 setSearchQuery("");
               }
             }}
-            className="h-11 w-full rounded-xl border border-border bg-bg-surface-inset py-2.5 pl-10 pr-10 text-sm text-text-primary shadow-[var(--shadow-inset)] placeholder:text-text-muted/80 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="h-11 w-full rounded-xl border border-border bg-bg-surface-inset py-2.5 pl-10 pr-10 text-sm text-text-primary shadow-(--shadow-inset) placeholder:text-text-muted/80 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           />
           {searchQuery && (
             <button
@@ -336,7 +336,7 @@ export function CategoryExplorer({
                     }
                     router.push(`/visualizer/${algorithm.slug}`);
                   }}
-                  className="neu-raised group relative flex h-full flex-col justify-between rounded-2xl border border-border p-6 shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:-translate-y-1 hover:shadow-[var(--shadow-raised)] transition-all duration-200 cursor-pointer"
+                  className="neu-raised group relative flex h-full flex-col justify-between rounded-2xl border border-border p-6 shadow-(--shadow-raised-sm) hover:border-primary/40 hover:-translate-y-1 hover:shadow-(--shadow-raised) transition-all duration-200 cursor-pointer"
                 >
                   <div>
                     {/* Card Header: Badges & Quiz Link */}
@@ -369,7 +369,7 @@ export function CategoryExplorer({
                     </Link>
 
                     {/* Short Description with aligned height - text selectable */}
-                    <p className="mt-2 text-sm leading-relaxed text-text-secondary line-clamp-2 min-h-[2.75rem] cursor-text select-text">
+                    <p className="mt-2 text-sm leading-relaxed text-text-secondary line-clamp-2 min-h-11 cursor-text select-text">
                       {algorithm.shortDescription}
                     </p>
                   </div>
@@ -409,7 +409,7 @@ export function CategoryExplorer({
           <button
             type="button"
             onClick={handleResetFilters}
-            className="mt-6 min-h-10 rounded-xl bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-[var(--shadow-raised-sm)] transition-all cursor-pointer"
+            className="mt-6 min-h-10 rounded-xl bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-(--shadow-raised-sm) transition-all cursor-pointer"
           >
             Reset Filters
           </button>

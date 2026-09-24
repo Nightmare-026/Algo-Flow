@@ -95,6 +95,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      chapter_progress: {
+        Row: {
+          id: string;
+          user_id: string;
+          module_slug: string;
+          chapter_slug: string;
+          completed: boolean;
+          completed_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          module_slug: string;
+          chapter_slug: string;
+          completed?: boolean;
+          completed_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          module_slug?: string;
+          chapter_slug?: string;
+          completed?: boolean;
+          completed_at?: string;
+        };
+        Relationships: [];
+      };
       daily_challenges: {
         Row: {
           algorithm_id: string;

@@ -85,6 +85,7 @@ const rawMatrixRegistry: AlgorithmVisualizerDefinition[] = [
     generateSteps: (data, opts) =>
       withLogicalLines(generateTransposeMatrixSteps(data, opts.rows || 3, opts.cols || 3), {
         initialize: 1,
+        compare: 3,
         update: 4,
       }),
     getCodeExamples: getMatrixCodeExamples,

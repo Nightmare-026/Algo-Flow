@@ -35,36 +35,106 @@ export function generateTransposeMatrixSteps(
     dataState: structuredClone(baseState),
     highlights: {},
     variables: { r: "-", c: "-" },
+    pseudocodeLine: 1,
   });
 
-  const transposedElements = new Array<MatrixElement>(rows * cols);
+  const isSquare = rows === cols;
+  const currentElements = structuredClone(elements);
+
+  if (isSquare) {
+    // In-place symmetrical pair swaps
+    for (let r = 0; r < rows; r++) {
+      for (let c = r + 1; c < cols; c++) {
+        const idx1 = r * cols + c;
+        const idx2 = c * rows + r;
+
+        stepNumber++;
+        steps.push({
+          id: `step-${stepNumber}`,
+          stepNumber,
+          title: `Inspect [${r}][${c}] and [${c}][${r}]`,
+          description: `Comparing cell (${r}, ${c}) [val: ${currentElements[idx1].value}] with symmetrical cell (${c}, ${r}) [val: ${currentElements[idx2].value}].`,
+          operation: "Transpose",
+          actionType: "compare",
+          dataState: { rows, cols, elements: structuredClone(currentElements) },
+          highlights: { active: [idx1.toString(), idx2.toString()] },
+          variables: { r, c },
+          pseudocodeLine: 3,
+        });
+
+        // Swap the elements
+        const temp = currentElements[idx1];
+        currentElements[idx1] = currentElements[idx2];
+        currentElements[idx2] = temp;
+
+        stepNumber++;
+        steps.push({
+          id: `step-${stepNumber}`,
+          stepNumber,
+          title: `Swap [${r}][${c}] with [${c}][${r}]`,
+          description: `Exchanged values between cell (${r}, ${c}) and (${c}, ${r}).`,
+          operation: "Transpose",
+          actionType: "update",
+          dataState: { rows, cols, elements: structuredClone(currentElements) },
+          highlights: { swapped: [idx1.toString(), idx2.toString()] },
+          variables: { r, c },
+          pseudocodeLine: 4,
+        });
+      }
+    }
+  } else {
+    // Non-square matrix: cell-by-cell coordinate mapping
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const srcIndex = r * cols + c;
+
+        stepNumber++;
+        steps.push({
+          id: `step-${stepNumber}`,
+          stepNumber,
+          title: `Transfer [${r}][${c}] → [${c}][${r}]`,
+          description: `Mapping element ${elements[srcIndex].value} from row ${r}, col ${c} to transposed row ${c}, col ${r}.`,
+          operation: "Transpose",
+          actionType: "update",
+          dataState: { rows, cols, elements: structuredClone(currentElements) },
+          highlights: { active: [srcIndex.toString()] },
+          variables: { r, c },
+          pseudocodeLine: 4,
+        });
+      }
+    }
+  }
+
+  // Final Transposed State
+  const finalTransposed = new Array<MatrixElement>(rows * cols);
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const srcIndex = r * cols + c;
       const destIndex = c * rows + r;
-      transposedElements[destIndex] = { ...elements[srcIndex] };
+      finalTransposed[destIndex] = { ...elements[srcIndex] };
     }
   }
 
-  const transposedState: MatrixVisualState = {
+  const finalState: MatrixVisualState = {
     rows: cols,
     cols: rows,
-    elements: transposedElements,
+    elements: isSquare ? currentElements : finalTransposed,
   };
 
   stepNumber++;
   steps.push({
     id: `step-${stepNumber}`,
     stepNumber,
-    title: "Transpose Matrix",
-    description: `Rows become columns and columns become rows. Dimension is now ${cols}x${rows}.`,
+    title: "Transpose Complete",
+    description: `Matrix transposition complete. New dimensions: ${cols}x${rows}.`,
     operation: "Transpose",
     actionType: "update",
-    dataState: transposedState,
+    dataState: finalState,
     highlights: {
-      active: transposedElements.map((_, index) => index.toString()),
+      success: (isSquare ? currentElements : finalTransposed).map((_, index) => index.toString()),
     },
     variables: { r: "-", c: "-" },
+    pseudocodeLine: 4,
   });
 
   return steps;
@@ -140,7 +210,7 @@ export function generateRotateMatrixSteps(arr: number[], rows: number, cols: num
       steps.push({
         id: `step-${stepNumber}`,
         stepNumber,
-        title: "Swapped",
+        title: "Transpose Swap",
         description: `Elements swapped.`,
         operation: "Rotate",
         actionType: "swap",
@@ -178,7 +248,7 @@ export function generateRotateMatrixSteps(arr: number[], rows: number, cols: num
       steps.push({
         id: `step-${stepNumber}`,
         stepNumber,
-        title: "Swapped",
+        title: "Reverse Swap",
         description: `Elements swapped in row ${i}.`,
         operation: "Rotate",
         actionType: "swap",

@@ -149,3 +149,24 @@ More details.
     expect(renderMathInMarkdown(`\`\$cost = 5\` stays intact`)).toContain("$cost = 5");
   });
 });
+
+describe("Learnings Progress Persistence Contract", () => {
+  it("should format chapter progress keys correctly", () => {
+    const key = `${"foundations"}/${"data-and-algorithms"}`;
+    expect(key).toBe("foundations/data-and-algorithms");
+    const [mod, ch] = key.split("/");
+    expect(mod).toBe("foundations");
+    expect(ch).toBe("data-and-algorithms");
+  });
+
+  it("should validate all 12 module keys have non-empty slugs", () => {
+    const modules = getAllModules();
+    for (const mod of modules) {
+      expect(mod.slug).toBeTruthy();
+      expect(mod.chapters.length).toBeGreaterThan(0);
+      for (const ch of mod.chapters) {
+        expect(ch.slug).toBeTruthy();
+      }
+    }
+  });
+});

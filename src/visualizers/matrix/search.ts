@@ -240,10 +240,11 @@ export function generateSortedMatrixSearchSteps(
       actionType: "not-found",
       dataState: baseState,
       highlights: {
-        error: [],
         visited: [...visited],
+        error: [...visited],
       },
-      variables: { r, c, target },
+      variables: { r: "-", c: "-", target },
+      pseudocodeLine: 7,
     });
   }
 

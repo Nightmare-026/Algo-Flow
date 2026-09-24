@@ -6,6 +6,18 @@ import type { TableOfContentsItem } from "@/lib/learnings/types";
 import { cn } from "@/lib/utils";
 import { ListTree, ChevronRight, ArrowUp, Compass, ArrowRight } from "lucide-react";
 
+/** Cleans LaTeX symbols like ($\alpha$) for human-readable TOC display */
+function formatTocTitle(title: string): string {
+  return title
+    .replace(/\(\$\\alpha\$\)/g, "(α)")
+    .replace(/\$([^\$]+)\$/g, "$1")
+    .replace(/\\alpha/g, "α")
+    .replace(/\\theta/g, "θ")
+    .replace(/\\omega/g, "Ω")
+    .replace(/\\le/g, "≤")
+    .replace(/\\ge/g, "≥");
+}
+
 interface TableOfContentsProps {
   items: TableOfContentsItem[];
   className?: string;
@@ -150,7 +162,7 @@ export function TableOfContents({ items, className, onSelect }: TableOfContentsP
                 {isActive && (
                   <ChevronRight className="w-3 h-3 text-primary shrink-0 animate-in fade-in" />
                 )}
-                <span className="truncate">{item.title}</span>
+                <span className="truncate">{formatTocTitle(item.title)}</span>
               </a>
             </li>
           );

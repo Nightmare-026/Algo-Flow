@@ -22,6 +22,10 @@ import {
   BookOpen,
   Type,
   ShieldCheck,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCompletedChapters } from "@/lib/learnings/progress";
@@ -31,9 +35,22 @@ interface ChapterReaderProps {
   chapter: LearningChapter;
   content: ParsedChapterContent;
   navigation: ChapterNavigation;
+  sidebarCollapsed?: boolean;
+  onToggleSidebar?: () => void;
+  focusMode?: boolean;
+  onToggleFocusMode?: () => void;
 }
 
-export function ChapterReader({ module, chapter, content, navigation }: ChapterReaderProps) {
+export function ChapterReader({
+  module,
+  chapter,
+  content,
+  navigation,
+  sidebarCollapsed = false,
+  onToggleSidebar,
+  focusMode = false,
+  onToggleFocusMode,
+}: ChapterReaderProps) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   const [fontSize, setFontSize] = useState<"standard" | "large">("standard");
@@ -90,6 +107,25 @@ export function ChapterReader({ module, chapter, content, navigation }: ChapterR
         fontSize === "large" ? "text-lg" : "text-base"
       )}
     >
+      {/* Top Breadcrumb Navigation */}
+      <nav
+        aria-label="Breadcrumbs"
+        className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4 overflow-x-auto whitespace-nowrap pb-1 scrollbar-none"
+      >
+        <Link href="/learnings" className="hover:text-foreground transition-colors font-medium">
+          Learnings
+        </Link>
+        <ChevronRight className="w-3 h-3 text-muted-foreground/40 shrink-0" />
+        <Link
+          href={`/learnings/${module.slug}`}
+          className="hover:text-foreground transition-colors font-medium"
+        >
+          Part {module.partNumber.toString().padStart(2, "0")}: {module.title}
+        </Link>
+        <ChevronRight className="w-3 h-3 text-muted-foreground/40 shrink-0" />
+        <span className="text-foreground font-semibold truncate">{chapter.title}</span>
+      </nav>
+
       {/* Top Header Card */}
       <header className="rounded-2xl border border-border/60 bg-surface-inset/40 p-5 sm:p-7 mb-8 neu-inset">
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs md:text-sm text-muted-foreground pb-4 border-b border-border/40">
@@ -109,8 +145,47 @@ export function ChapterReader({ module, chapter, content, navigation }: ChapterR
             </span>
           </div>
 
-          {/* Reading Actions: Mark Completed, Font Size, Share */}
-          <div className="flex items-center gap-2">
+          {/* Reading Actions: Sidebar Toggle, Focus Mode, Mark Completed, Font Size, Share */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {onToggleSidebar && (
+              <button
+                onClick={onToggleSidebar}
+                title={
+                  sidebarCollapsed ? "Expand curriculum sidebar" : "Collapse curriculum sidebar"
+                }
+                aria-label={
+                  sidebarCollapsed ? "Expand curriculum sidebar" : "Collapse curriculum sidebar"
+                }
+                className="hidden lg:inline-flex items-center p-1.5 rounded-xl border border-border bg-surface hover:bg-surface-raised text-xs font-medium text-foreground transition-colors shadow-xs cursor-pointer"
+              >
+                {sidebarCollapsed ? (
+                  <PanelLeftOpen className="w-3.5 h-3.5 text-primary" />
+                ) : (
+                  <PanelLeftClose className="w-3.5 h-3.5 text-muted-foreground" />
+                )}
+              </button>
+            )}
+
+            {onToggleFocusMode && (
+              <button
+                onClick={onToggleFocusMode}
+                title={focusMode ? "Exit focus mode" : "Enter focus mode (hide sidebars)"}
+                aria-label={focusMode ? "Exit focus mode" : "Enter focus mode (hide sidebars)"}
+                className={cn(
+                  "hidden lg:inline-flex items-center p-1.5 rounded-xl border text-xs font-medium transition-colors shadow-xs cursor-pointer",
+                  focusMode
+                    ? "bg-primary text-white border-primary shadow-primary/20"
+                    : "border-border bg-surface hover:bg-surface-raised text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {focusMode ? (
+                  <Minimize2 className="w-3.5 h-3.5" />
+                ) : (
+                  <Maximize2 className="w-3.5 h-3.5" />
+                )}
+              </button>
+            )}
+
             <button
               onClick={toggleCompleted}
               aria-label={isCompleted ? "Mark as incomplete" : "Mark chapter as completed"}
@@ -129,9 +204,12 @@ export function ChapterReader({ module, chapter, content, navigation }: ChapterR
 
             <button
               onClick={() => setFontSize((prev) => (prev === "standard" ? "large" : "standard"))}
-              title="Toggle text size"
+              title={`Toggle text size (current: ${fontSize})`}
               aria-label="Toggle text size"
-              className="inline-flex items-center p-1.5 rounded-xl border border-border bg-surface hover:bg-surface-raised text-xs font-medium text-foreground transition-colors shadow-xs cursor-pointer"
+              className={cn(
+                "inline-flex items-center p-1.5 rounded-xl border border-border bg-surface hover:bg-surface-raised text-xs font-medium transition-colors shadow-xs cursor-pointer",
+                fontSize === "large" ? "text-primary border-primary/40" : "text-foreground"
+              )}
             >
               <Type className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
@@ -181,7 +259,7 @@ export function ChapterReader({ module, chapter, content, navigation }: ChapterR
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Academic Syllabus &bull; Verified 2026</span>
           </div>
-          <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground/70 hidden sm:flex">
+          <div className="hidden sm:flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground/70">
             <span>
               Keys:{" "}
               <kbd className="px-1 py-0.5 rounded bg-surface border border-border text-[10px]">

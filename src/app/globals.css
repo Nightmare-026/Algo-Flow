@@ -948,6 +948,36 @@
   border-color: var(--primary);
 }
 
+/* Callout headings styling */
+.callout-heading {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.callout-heading:hover {
+  transform: translateY(-1px);
+}
+
+/* Code block container refinement */
+.code-block-wrapper {
+  box-shadow: var(--shadow-raised-sm);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.code-block-wrapper:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-raised);
+}
+
+.code-block-wrapper pre {
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1;
+}
+
 /* Visually clip MathML and annotations to avoid visual duplication while keeping them accessible to screen readers */
 .katex-mathml,
 .annotation {

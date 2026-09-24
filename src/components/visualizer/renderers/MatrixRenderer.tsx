@@ -5,7 +5,11 @@ import { MatrixElement, MatrixGridData, MatrixVisualState } from "@/visualizers/
 import { VisualStepHighlights } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { getVisualElementState, getVisualStateClassName, VisualElementState } from "../visual-state";
+import {
+  getVisualElementState,
+  getVisualStateClassName,
+  VisualElementState,
+} from "../visual-state";
 import { EmptyVisualizerState } from "@/components/visualizer/EmptyVisualizerState";
 
 interface SingleMatrixGridProps {
@@ -46,9 +50,9 @@ function SingleMatrixGrid({
   const isDual = matrixKey === "matrixA" || matrixKey === "matrixB" || matrixKey === "resultMatrix";
   const isSingle = !isDual;
 
-  // Identify active row & column to highlight axis headers for spatial orientation
-  let activeRow: number | null = null;
-  let activeCol: number | null = null;
+  // Identify active rows & columns to highlight axis headers for spatial orientation
+  const activeRows = new Set<number>();
+  const activeCols = new Set<number>();
 
   for (let cellIndex = 0; cellIndex < elements.length; cellIndex++) {
     const element = elements[cellIndex];
@@ -77,10 +81,15 @@ function SingleMatrixGrid({
 
     const hasPointer = candidateIds.some((id) => id && highlights.pointer?.includes(id));
     const elState = resolveMatrixElementState(highlights, candidateIds);
-    if (hasPointer || elState === "current" || elState === "compared" || elState === "found" || elState === "swapped") {
-      activeRow = r;
-      activeCol = c;
-      break;
+    if (
+      hasPointer ||
+      elState === "current" ||
+      elState === "compared" ||
+      elState === "found" ||
+      elState === "swapped"
+    ) {
+      activeRows.add(r);
+      activeCols.add(c);
     }
   }
 
@@ -133,7 +142,7 @@ function SingleMatrixGrid({
         <div className="flex w-full mb-1 ml-6">
           <div style={gridStyle} className="w-full">
             {Array.from({ length: cols }).map((_, c) => {
-              const isActive = activeCol === c;
+              const isActive = activeCols.has(c);
               return (
                 <div
                   key={`${matrixKey}-col-${c}`}
@@ -142,7 +151,7 @@ function SingleMatrixGrid({
                     headerDimension,
                     isActive
                       ? "text-primary font-bold opacity-100 scale-105"
-                      : "text-text-muted opacity-70"
+                      : "text-text-secondary font-medium"
                   )}
                 >
                   c{c}
@@ -156,7 +165,7 @@ function SingleMatrixGrid({
           {/* Row Labels */}
           <div className="flex flex-col gap-1.5 mr-1.5 pt-1">
             {Array.from({ length: rows }).map((_, r) => {
-              const isActive = activeRow === r;
+              const isActive = activeRows.has(r);
               return (
                 <div
                   key={`${matrixKey}-row-${r}`}
@@ -165,7 +174,7 @@ function SingleMatrixGrid({
                     rowHeaderDimension,
                     isActive
                       ? "text-primary font-bold opacity-100 scale-105"
-                      : "text-text-muted opacity-70"
+                      : "text-text-secondary font-medium"
                   )}
                 >
                   r{r}
@@ -204,9 +213,10 @@ function SingleMatrixGrid({
                 const state = resolveMatrixElementState(highlights, candidateIds);
 
                 const isDefault = state === "default";
-                const elementClass = isDefault && isResult
-                  ? "border-primary/25 bg-bg-surface text-text-primary"
-                  : getVisualStateClassName(state);
+                const elementClass =
+                  isDefault && isResult
+                    ? "border-primary/25 bg-bg-surface text-text-primary"
+                    : getVisualStateClassName(state);
 
                 const valStr = String(element.value);
                 const fontScale =
@@ -242,7 +252,7 @@ function SingleMatrixGrid({
                     {isPointer && (
                       <motion.div
                         layoutId={`${matrixKey}-pointer`}
-                        className="absolute inset-0 border-4 border-primary rounded-xl pointer-events-none shadow-[0_0_12px_rgba(34,197,94,0.4)]"
+                        className="absolute inset-0 border-4 border-secondary rounded-xl pointer-events-none shadow-[0_0_12px_rgba(14,165,233,0.4)]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ type: "spring", stiffness: 500, damping: 30 }}
@@ -287,50 +297,53 @@ export function MatrixRenderer() {
         aria-label="Matrix Arithmetic Canvas"
         tabIndex={0}
       >
-        <div className="flex flex-col xl:flex-row items-center justify-center gap-4 sm:gap-6 max-w-full my-auto">
-          {/* Matrix A */}
-          <SingleMatrixGrid
-            label={dataState.matrixA.label || "Matrix A"}
-            rows={dataState.matrixA.rows}
-            cols={dataState.matrixA.cols}
-            elements={dataState.matrixA.elements}
-            highlights={highlights}
-            matrixKey="matrixA"
-            cellSize="md"
-          />
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 max-w-full my-auto">
+          {/* Operand Pair: Matrix A [op] Matrix B */}
+          <div className="flex items-center justify-center gap-3 sm:gap-4 shrink-0">
+            <SingleMatrixGrid
+              label={dataState.matrixA.label || "Matrix A"}
+              rows={dataState.matrixA.rows}
+              cols={dataState.matrixA.cols}
+              elements={dataState.matrixA.elements}
+              highlights={highlights}
+              matrixKey="matrixA"
+              cellSize={dataState.matrixA.cols >= 4 ? "sm" : "md"}
+            />
 
-          {/* Operation Symbol Badge */}
-          <div className="flex items-center justify-center w-10 h-10 rounded-full border border-primary/40 bg-primary/10 text-primary font-bold text-xl shadow-sm shrink-0">
-            {dataState.operationSymbol || "+"}
+            {/* Operation Symbol Badge */}
+            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-primary/40 bg-primary/10 text-primary font-bold text-lg sm:text-xl shadow-sm shrink-0 mt-5">
+              {dataState.operationSymbol || "+"}
+            </div>
+
+            <SingleMatrixGrid
+              label={dataState.matrixB.label || "Matrix B"}
+              rows={dataState.matrixB.rows}
+              cols={dataState.matrixB.cols}
+              elements={dataState.matrixB.elements}
+              highlights={highlights}
+              matrixKey="matrixB"
+              cellSize={dataState.matrixB.cols >= 4 ? "sm" : "md"}
+            />
           </div>
 
-          {/* Matrix B */}
-          <SingleMatrixGrid
-            label={dataState.matrixB.label || "Matrix B"}
-            rows={dataState.matrixB.rows}
-            cols={dataState.matrixB.cols}
-            elements={dataState.matrixB.elements}
-            highlights={highlights}
-            matrixKey="matrixB"
-            cellSize="md"
-          />
+          {/* Equality & Result: [=] Result Matrix */}
+          <div className="flex items-center justify-center gap-3 sm:gap-4 shrink-0">
+            {/* Equals Symbol Badge */}
+            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border bg-bg-surface/80 text-text-secondary font-bold text-lg sm:text-xl shadow-sm shrink-0 mt-5">
+              =
+            </div>
 
-          {/* Equals Symbol Badge */}
-          <div className="flex items-center justify-center w-10 h-10 rounded-full border border-border bg-bg-surface/80 text-text-muted font-bold text-xl shadow-sm shrink-0">
-            =
+            <SingleMatrixGrid
+              label={resultMatrixData.label || "Result Matrix"}
+              rows={resultMatrixData.rows}
+              cols={resultMatrixData.cols}
+              elements={resultMatrixData.elements}
+              highlights={highlights}
+              isResult={true}
+              matrixKey="resultMatrix"
+              cellSize={resultMatrixData.cols >= 4 ? "sm" : "md"}
+            />
           </div>
-
-          {/* Result Matrix */}
-          <SingleMatrixGrid
-            label={resultMatrixData.label || "Result Matrix"}
-            rows={resultMatrixData.rows}
-            cols={resultMatrixData.cols}
-            elements={resultMatrixData.elements}
-            highlights={highlights}
-            isResult={true}
-            matrixKey="resultMatrix"
-            cellSize="md"
-          />
         </div>
       </div>
     );

@@ -94,47 +94,79 @@ describe("Matrix Visualizers Step Generation & Highlighting Integrity", () => {
     it("row-column-sorted-search finds target on monotonic matrix", () => {
       const sortedData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
       const def = algorithmRegistry["row-column-sorted-search"];
-      const steps = def.generateSteps(sortedData as never, { rows: 4, cols: 4, target: 10 } as never);
+      const steps = def.generateSteps(
+        sortedData as never,
+        { rows: 4, cols: 4, target: 10 } as never
+      );
 
       const successStep = steps.find((s) => s.actionType === "success");
       expect(successStep).toBeDefined();
       expect(successStep?.title).toContain("Target Found");
     });
 
-    it("row-column-sorted-search reports not-found for out-of-range target", () => {
+    it("row-column-sorted-search reports not-found with error highlights on searched path", () => {
       const sortedData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
       const def = algorithmRegistry["row-column-sorted-search"];
-      const steps = def.generateSteps(sortedData as never, { rows: 4, cols: 4, target: 99 } as never);
+      const steps = def.generateSteps(
+        sortedData as never,
+        { rows: 4, cols: 4, target: 99 } as never
+      );
 
       const notFoundStep = steps.find((s) => s.actionType === "not-found");
       expect(notFoundStep).toBeDefined();
+      expect(notFoundStep?.highlights.error?.length).toBeGreaterThan(0);
+      expect(notFoundStep?.highlights.error).toEqual(notFoundStep?.highlights.visited);
+      expect(notFoundStep?.variables?.r).toBe("-");
+      expect(notFoundStep?.variables?.c).toBe("-");
     });
   });
 
   describe("Matrix Transformations", () => {
-    it("transpose-matrix updates dimensions and generates active highlights", () => {
+    it("transpose-matrix performs step-by-step transposition and updates dimensions", () => {
       const data2x3 = [1, 2, 3, 4, 5, 6];
       const def = algorithmRegistry["transpose-matrix"];
       const steps = def.generateSteps(data2x3 as never, { rows: 2, cols: 3 } as never);
 
-      expect(steps.length).toBe(2);
-      const updateStep = steps[1];
-      expect(updateStep.actionType).toBe("update");
-      const state = updateStep.dataState as MatrixVisualState;
+      // Step-by-step: 1 init + 6 cell transfers + 1 complete = 8 steps
+      expect(steps.length).toBe(8);
+      const lastStep = steps[steps.length - 1];
+      expect(lastStep.actionType).toBe("update");
+      expect(lastStep.title).toBe("Transpose Complete");
+      const state = lastStep.dataState as MatrixVisualState;
       expect(state.rows).toBe(3);
       expect(state.cols).toBe(2);
-      expect(updateStep.highlights.active?.length).toBe(6);
+      expect(state.elements.map((e) => e.value)).toEqual([1, 4, 2, 5, 3, 6]);
+      expect(lastStep.highlights.success?.length).toBe(6);
     });
 
-    it("rotate-matrix-90 validates square dimension and generates swap steps", () => {
+    it("transpose-matrix performs in-place symmetrical swaps for square matrices", () => {
+      const data2x2 = [1, 2, 3, 4];
+      const def = algorithmRegistry["transpose-matrix"];
+      const steps = def.generateSteps(data2x2 as never, { rows: 2, cols: 2 } as never);
+
+      // 1 init + 1 inspect + 1 swap + 1 complete = 4 steps
+      expect(steps.length).toBe(4);
+      expect(steps[1].actionType).toBe("compare");
+      expect(steps[2].actionType).toBe("update");
+      expect(steps[2].highlights.swapped).toEqual(["1", "2"]);
+      const lastStep = steps[3];
+      const state = lastStep.dataState as MatrixVisualState;
+      expect(state.elements.map((e) => e.value)).toEqual([1, 3, 2, 4]);
+    });
+
+    it("rotate-matrix-90 validates square dimension and generates swap steps with distinct titles", () => {
       const data3x3 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       const def = algorithmRegistry["rotate-matrix-90"];
       const steps = def.generateSteps(data3x3 as never, { rows: 3, cols: 3 } as never);
 
       expect(steps.length).toBeGreaterThan(5);
-      const swapStep = steps.find((s) => s.actionType === "swap");
-      expect(swapStep).toBeDefined();
-      expect(swapStep?.highlights.swapped?.length).toBe(2);
+      const transposeSwap = steps.find((s) => s.title === "Transpose Swap");
+      expect(transposeSwap).toBeDefined();
+      expect(transposeSwap?.actionType).toBe("swap");
+
+      const reverseSwap = steps.find((s) => s.title === "Reverse Swap");
+      expect(reverseSwap).toBeDefined();
+      expect(reverseSwap?.actionType).toBe("swap");
 
       const successStep = steps[steps.length - 1];
       expect(successStep.actionType).toBe("success");

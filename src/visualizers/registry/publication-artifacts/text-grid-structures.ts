@@ -51,30 +51,33 @@ const stringGenerators = [
   { id: "single-seed", label: "Single text seed", generate: () => [1] },
 ] as const;
 
-const matrixLegend = [
+const matrixTraversalLegend = [
   {
     bucketKey: "active",
     label: "Current cell",
-    description: "The matrix cell currently read or updated.",
+    description: "The matrix cell currently read or traversed.",
     tone: "primary",
   },
   {
     bucketKey: "visited",
     label: "Visited cell",
-    description: "A cell already processed by traversal or search.",
-    tone: "muted",
+    description: "A cell already processed by traversal.",
+    tone: "success",
   },
   {
     bucketKey: "pointer",
     label: "Matrix cursor",
-    description: "The row-column cursor or active boundary.",
+    description: "The row-column cursor indicating the current position.",
     tone: "info",
   },
+] as const;
+
+const matrixSearchLegend = [
   {
-    bucketKey: "target",
-    label: "Search target",
-    description: "The requested matrix value.",
-    tone: "info",
+    bucketKey: "active",
+    label: "Current cell",
+    description: "The matrix cell currently being inspected.",
+    tone: "primary",
   },
   {
     bucketKey: "compared",
@@ -89,10 +92,22 @@ const matrixLegend = [
     tone: "success",
   },
   {
-    bucketKey: "swapped",
-    label: "Swapped cells",
-    description: "Cells exchanged during matrix rotation.",
-    tone: "warning",
+    bucketKey: "visited",
+    label: "Visited cell",
+    description: "A cell already processed during the search.",
+    tone: "success",
+  },
+  {
+    bucketKey: "target",
+    label: "Search target",
+    description: "The requested matrix value to find.",
+    tone: "info",
+  },
+  {
+    bucketKey: "pointer",
+    label: "Matrix cursor",
+    description: "The row-column cursor indicating search progress.",
+    tone: "info",
   },
   {
     bucketKey: "success",
@@ -105,6 +120,66 @@ const matrixLegend = [
     label: "Search miss",
     description: "A boundary state proving the target is absent.",
     tone: "error",
+  },
+] as const;
+
+const matrixTransformLegend = [
+  {
+    bucketKey: "active",
+    label: "Current cell",
+    description: "The matrix cell currently inspected or moved.",
+    tone: "primary",
+  },
+  {
+    bucketKey: "compared",
+    label: "Compared cell",
+    description: "A cell pair compared prior to swapping.",
+    tone: "warning",
+  },
+  {
+    bucketKey: "swapped",
+    label: "Swapped cells",
+    description: "Cells exchanged during transposition or rotation.",
+    tone: "info",
+  },
+  {
+    bucketKey: "success",
+    label: "Transform complete",
+    description: "The matrix transformation is finalized.",
+    tone: "success",
+  },
+  {
+    bucketKey: "pointer",
+    label: "Matrix cursor",
+    description: "The active row-column cursor.",
+    tone: "info",
+  },
+] as const;
+
+const matrixArithmeticLegend = [
+  {
+    bucketKey: "active",
+    label: "Current cell",
+    description: "The cell currently being calculated or updated.",
+    tone: "primary",
+  },
+  {
+    bucketKey: "visited",
+    label: "Visited cell",
+    description: "A cell whose calculation is completed.",
+    tone: "success",
+  },
+  {
+    bucketKey: "success",
+    label: "Calculation complete",
+    description: "All matrix arithmetic calculations are finalized.",
+    tone: "success",
+  },
+  {
+    bucketKey: "pointer",
+    label: "Matrix cursor",
+    description: "The row-column cursor for operands and result.",
+    tone: "info",
   },
 ] as const;
 
@@ -229,7 +304,8 @@ function matrixArtifacts(
   slug: keyof typeof matrixCodeLineMappings,
   input: number[],
   testOptions: VisualizerInputOptions,
-  verify: AuthoredPublicationArtifacts["testCases"][number]["verify"]
+  verify: AuthoredPublicationArtifacts["testCases"][number]["verify"],
+  legend: AuthoredPublicationArtifacts["legend"] = matrixTraversalLegend
 ): AuthoredPublicationArtifacts {
   return {
     inputSchema: isNumberInput,
@@ -239,7 +315,7 @@ function matrixArtifacts(
       { name: "satisfies the authored matrix outcome", input, options: testOptions, verify },
     ],
     codeLineMapping: matrixCodeLineMappings[slug],
-    legend: matrixLegend,
+    legend,
   };
 }
 function stringArtifacts(
@@ -269,56 +345,71 @@ export const matrixPublicationArtifacts: Record<
     "row-wise-traversal",
     grid,
     gridOptions,
-    verifyMatrix(["visit", "complete"], grid)
+    verifyMatrix(["visit", "complete"], grid),
+    matrixTraversalLegend
   ),
   "col-wise-traversal": matrixArtifacts(
     "col-wise-traversal",
     grid,
     gridOptions,
-    verifyMatrix(["visit", "complete"], grid)
+    verifyMatrix(["visit", "complete"], grid),
+    matrixTraversalLegend
   ),
   "spiral-traversal": matrixArtifacts(
     "spiral-traversal",
     grid,
     gridOptions,
-    verifyMatrix(["visit", "complete"], grid)
+    verifyMatrix(["visit", "complete"], grid),
+    matrixTraversalLegend
   ),
-  "matrix-search": matrixArtifacts("matrix-search", grid, gridOptions, verifyMatrixSearch),
+  "matrix-search": matrixArtifacts(
+    "matrix-search",
+    grid,
+    gridOptions,
+    verifyMatrixSearch,
+    matrixSearchLegend
+  ),
   "row-column-sorted-search": matrixArtifacts(
     "row-column-sorted-search",
     grid,
     gridOptions,
-    verifyMatrix(["compare", "success"])
+    verifyMatrix(["compare", "success"]),
+    matrixSearchLegend
   ),
   "transpose-matrix": matrixArtifacts(
     "transpose-matrix",
     grid,
     gridOptions,
-    verifyMatrix(["update"], [1, 3, 2, 4])
+    verifyMatrix(["update"], [1, 3, 2, 4]),
+    matrixTransformLegend
   ),
   "rotate-matrix-90": matrixArtifacts(
     "rotate-matrix-90",
     grid,
     gridOptions,
-    verifyMatrix(["swap", "success"], [3, 1, 4, 2])
+    verifyMatrix(["swap", "success"], [3, 1, 4, 2]),
+    matrixTransformLegend
   ),
   "matrix-multiplication": matrixArtifacts(
     "matrix-multiplication",
     grid,
     gridOptions,
-    verifyMatrix(["update", "success"])
+    verifyMatrix(["update", "success"]),
+    matrixArithmeticLegend
   ),
   "matrix-addition": matrixArtifacts(
     "matrix-addition",
     grid,
     gridOptions,
-    verifyMatrix(["update", "success"])
+    verifyMatrix(["update", "success"]),
+    matrixArithmeticLegend
   ),
   "matrix-subtraction": matrixArtifacts(
     "matrix-subtraction",
     grid,
     gridOptions,
-    verifyMatrix(["update", "success"])
+    verifyMatrix(["update", "success"]),
+    matrixArithmeticLegend
   ),
 };
 

@@ -69,67 +69,67 @@ export default function LearningsPage() {
   };
 
   return (
-    <div className="min-h-screen px-4 py-8 sm:px-6 md:py-12 lg:px-8">
+    <div className="flex flex-1 flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
-      <div className="mx-auto max-w-[1550px]">
-        {/* Streamlined Curriculum Header */}
-        <header className="mb-8 md:mb-12">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 pb-6 border-b border-border/70">
-            <div className="max-w-3xl">
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-primary/10 text-primary border border-primary/20">
-                  {stats.totalModules} Core Modules
-                </span>
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-muted-foreground">
-                  {stats.totalChapters} Rigorous Chapters
-                </span>
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-muted-foreground">
-                  138 Interactive Simulators
-                </span>
-                <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                  MIT / Berkeley Standard
-                </span>
+      <div className="flex-1 px-4 pt-8 pb-16 sm:px-6 md:pt-12 md:pb-20 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          {/* Streamlined Curriculum Header */}
+          <header className="mb-8 md:mb-12">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 pb-6 border-b border-border/70">
+              <div className="max-w-3xl">
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-primary/10 text-primary border border-primary/20">
+                    {stats.totalModules} Core Modules
+                  </span>
+                  <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-muted-foreground">
+                    {stats.totalChapters} Rigorous Chapters
+                  </span>
+                  <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-surface border border-border text-muted-foreground">
+                    138 Interactive Simulators
+                  </span>
+                  <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    MIT / Berkeley Standard
+                  </span>
+                </div>
+                <h1 className="text-4xl sm:text-5xl font-extrabold font-display tracking-tight text-foreground">
+                  Master the architecture.{" "}
+                  <span className="text-gradient-primary">Prove the algorithms.</span>
+                </h1>
+                <p className="mt-4 text-base sm:text-lg leading-relaxed text-muted-foreground">
+                  A comprehensive, proof-driven curriculum covering data structures and algorithms
+                  through clear mental models, step-by-step memory layouts, and interactive visual
+                  execution across {stats.totalModules} core modules.
+                </p>
               </div>
-              <h1 className="text-4xl sm:text-5xl font-extrabold font-display tracking-tight text-foreground">
-                Master the architecture.{" "}
-                <span className="text-gradient-primary">Prove the algorithms.</span>
-              </h1>
-              <p className="mt-4 text-base sm:text-lg leading-relaxed text-muted-foreground">
-                A comprehensive, proof-driven curriculum covering data structures and algorithms
-                through clear mental models, step-by-step memory layouts, and interactive visual
-                execution across {stats.totalModules} core modules.
-              </p>
-            </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
-              <Link
-                href="/learnings/front-matter/cover-and-purpose"
-                className={buttonVariants({
-                  variant: "default",
-                  size: "md",
-                  className: "shadow-sm",
-                })}
-              >
-                <span>Start Curriculum</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+                <Link
+                  href="/learnings/front-matter/cover-and-purpose"
+                  className={buttonVariants({
+                    variant: "default",
+                    size: "md",
+                    className: "shadow-sm",
+                  })}
+                >
+                  <span>Start Curriculum</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        {/* Interactive Explorer / Module Grid */}
-        <section aria-labelledby="curriculum-heading">
-          <h2 id="curriculum-heading" className="sr-only">
-            Curriculum Modules &amp; Chapters Explorer
-          </h2>
-          <LearningsHubExplorer modules={modules} />
-        </section>
+          {/* Interactive Explorer / Module Grid */}
+          <section aria-labelledby="curriculum-heading">
+            <h2 id="curriculum-heading" className="sr-only">
+              Curriculum Modules &amp; Chapters Explorer
+            </h2>
+            <LearningsHubExplorer modules={modules} />
+          </section>
+        </div>
       </div>
 
-      <div className="mt-20">
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 }

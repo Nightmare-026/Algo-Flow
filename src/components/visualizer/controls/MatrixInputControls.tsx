@@ -37,7 +37,7 @@ export function MatrixInputControls({
   const squareOnly = slug === "rotate-matrix-90";
 
   const rows = options.rows || defaultRows;
-  const cols = squareOnly ? rows : (options.cols || defaultCols);
+  const cols = squareOnly ? rows : options.cols || defaultCols;
 
   const [customInputA, setCustomInputA] = useState("");
   const [customInputB, setCustomInputB] = useState("");
@@ -63,14 +63,26 @@ export function MatrixInputControls({
     if (sorted || slug === "row-column-sorted-search") {
       return Array.from({ length: len }, (_, i) => i + 1);
     }
-    const defaults = [15, 23, 4, 8, 42, 16, 9, 31, 7, 18, 27, 12, 36, 2, 21, 11, 14, 29, 33, 5, 19, 25, 38, 10, 3, 17, 30, 22, 13, 6, 28, 40, 1, 20, 35, 24];
-    return Array.from({ length: len }, (_, i) => defaults[i % defaults.length] ?? ((i * 7 + 13) % 89 + 10));
+    const defaults = [
+      15, 23, 4, 8, 42, 16, 9, 31, 7, 18, 27, 12, 36, 2, 21, 11, 14, 29, 33, 5, 19, 25, 38, 10, 3,
+      17, 30, 22, 13, 6, 28, 40, 1, 20, 35, 24,
+    ];
+    return Array.from(
+      { length: len },
+      (_, i) => defaults[i % defaults.length] ?? ((i * 7 + 13) % 89) + 10
+    );
   };
 
   const generateDataBForDimensions = (r: number, c: number): number[] => {
     const len = isMultiplication ? c * c : r * c;
-    const defaultsB = [3, 7, 2, 5, 8, 1, 9, 4, 6, 2, 8, 3, 5, 7, 1, 4, 9, 5, 2, 8, 1, 6, 3, 7, 4, 8, 2, 5, 1, 9, 6, 3, 7, 2, 8, 4];
-    return Array.from({ length: len }, (_, i) => defaultsB[i % defaultsB.length] ?? ((i * 5 + 11) % 89 + 10));
+    const defaultsB = [
+      3, 7, 2, 5, 8, 1, 9, 4, 6, 2, 8, 3, 5, 7, 1, 4, 9, 5, 2, 8, 1, 6, 3, 7, 4, 8, 2, 5, 1, 9, 6,
+      3, 7, 2, 8, 4,
+    ];
+    return Array.from(
+      { length: len },
+      (_, i) => defaultsB[i % defaultsB.length] ?? ((i * 5 + 11) % 89) + 10
+    );
   };
 
   const handleDimensionChange = (nextRows: number, nextCols: number) => {
@@ -104,10 +116,7 @@ export function MatrixInputControls({
         current += Math.floor(Math.random() * 4) + 1;
       }
     } else {
-      newArrA = Array.from(
-        { length: expectedLengthA },
-        () => Math.floor(Math.random() * 99) + 1
-      );
+      newArrA = Array.from({ length: expectedLengthA }, () => Math.floor(Math.random() * 99) + 1);
     }
 
     if (isDual) {
@@ -243,7 +252,9 @@ export function MatrixInputControls({
           <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
             {squareOnly ? (
               <label className="flex items-center gap-1.5 cursor-pointer">
-                <span className="font-mono text-[10px] font-semibold text-text-muted">Size:</span>
+                <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                  Size:
+                </span>
                 <input
                   id={`${fieldId}-size`}
                   type="range"
@@ -260,7 +271,9 @@ export function MatrixInputControls({
             ) : (
               <div className="flex items-center gap-1.5">
                 <label className="flex items-center gap-1 cursor-pointer">
-                  <span className="font-mono text-[10px] font-semibold text-text-muted">R:</span>
+                  <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                    R:
+                  </span>
                   <input
                     id={`${fieldId}-rows`}
                     type="range"
@@ -279,7 +292,9 @@ export function MatrixInputControls({
                 </label>
                 <span className="h-3.5 w-px bg-border mx-0.5" />
                 <label className="flex items-center gap-1 cursor-pointer">
-                  <span className="font-mono text-[10px] font-semibold text-text-muted">C:</span>
+                  <span className="font-mono text-[10px] font-semibold text-text-secondary">
+                    C:
+                  </span>
                   <input
                     id={`${fieldId}-cols`}
                     type="range"

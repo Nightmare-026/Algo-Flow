@@ -7,22 +7,22 @@ const line = (
   java: number
 ): CodeLineMapping => ({ logicalLine, lines: { javascript, python, cpp, java } });
 export const matrixCodeLineMappings = {
-  "row-wise-traversal": [line(1, 1, 1, 1, 1), line(3, 3, 3, 4, 4), line(4, 4, 4, 5, 5)],
-  "col-wise-traversal": [line(1, 1, 1, 1, 1), line(3, 3, 3, 4, 4), line(4, 4, 4, 5, 5)],
+  "row-wise-traversal": [line(1, 1, 1, 1, 1), line(3, 6, 4, 7, 7), line(4, 9, 4, 10, 10)],
+  "col-wise-traversal": [line(1, 1, 1, 1, 1), line(3, 6, 6, 7, 7), line(4, 9, 6, 10, 10)],
   "spiral-traversal": [line(1, 2, 2, 2, 2), line(3, 6, 5, 6, 6), line(4, 17, 13, 17, 17)],
   "matrix-search": [
     line(1, 1, 1, 1, 1),
-    line(3, 4, 3, 5, 5),
-    line(4, 5, 3, 6, 6),
+    line(3, 5, 3, 6, 6),
+    line(4, 6, 4, 7, 7),
     line(6, 9, 5, 10, 10),
   ],
   "row-column-sorted-search": [
-    line(1, 2, 2, 2, 2),
-    line(3, 4, 4, 4, 4),
-    line(4, 5, 5, 5, 5),
+    line(1, 2, 3, 3, 3),
+    line(3, 3, 4, 4, 4),
+    line(4, 4, 5, 5, 5),
     line(6, 8, 8, 9, 9),
   ],
-  "transpose-matrix": [line(1, 1, 1, 1, 1), line(4, 5, 4, 5, 5)],
+  "transpose-matrix": [line(1, 1, 1, 1, 1), line(3, 5, 6, 6, 6), line(4, 6, 7, 7, 7)],
   "rotate-matrix-90": [
     line(1, 1, 1, 1, 1),
     line(3, 4, 3, 4, 4),
