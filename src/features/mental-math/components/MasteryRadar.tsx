@@ -34,7 +34,7 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
   );
 
   return (
-    <div className="neu-raised p-6 sm:p-7 rounded-3xl border border-border bg-surface flex flex-col justify-between h-full shadow-(--shadow-raised-sm)">
+    <div className="p-6 sm:p-7 rounded-[8px] border border-border bg-surface flex flex-col justify-between h-full shadow-card">
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
@@ -46,7 +46,7 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
             </p>
           </div>
           {totalPracticed === 0 && (
-            <span className="self-start sm:self-auto text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded-md bg-surface-inset border border-border text-text-muted shadow-inner">
+            <span className="self-start sm:self-auto text-[10px] font-mono font-bold uppercase px-2.5 py-1 rounded-full bg-surface-secondary border border-border text-text-muted shadow-xs">
               Initial State (0 Drills)
             </span>
           )}
@@ -76,11 +76,11 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
             return (
               <div
                 key={op.id}
-                className="neu-inset p-3.5 sm:p-4 rounded-2xl border border-border bg-surface-inset flex flex-col gap-2.5 shadow-(--shadow-inset) transition-colors"
+                className="p-3.5 sm:p-4 rounded-[6px] border border-border bg-surface-secondary flex flex-col gap-2.5 shadow-xs transition-colors"
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2.5">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-surface text-primary shadow-xs">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-primary shadow-xs">
                       <Icon className="w-4 h-4" />
                     </span>
                     <span className="text-xs font-bold font-display text-text-primary">

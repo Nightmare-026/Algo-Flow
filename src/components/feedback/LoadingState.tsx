@@ -10,25 +10,25 @@ export function LoadingState() {
       <span className="sr-only">Loading page content</span>
       <div className="mx-auto max-w-6xl space-y-8" aria-hidden="true">
         <div className="space-y-3">
-          <div className="h-9 w-2/3 max-w-md rounded-2xl border border-border bg-surface shadow-(--shadow-raised-sm) animate-pulse" />
-          <div className="h-5 w-full max-w-xl rounded-xl border border-border bg-surface-inset shadow-(--shadow-inset) animate-pulse" />
+          <div className="h-9 w-2/3 max-w-md rounded-[4px] border border-border bg-surface shadow-card animate-pulse" />
+          <div className="h-5 w-full max-w-xl rounded-[4px] border border-border bg-surface-secondary/70 animate-pulse" />
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }, (_, index) => (
             <div
               key={index}
-              className="neu-raised flex h-48 flex-col justify-between rounded-2xl border border-border p-6 animate-pulse"
+              className="flex h-48 flex-col justify-between rounded-[8px] border border-border bg-surface shadow-card p-6 animate-pulse"
             >
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-surface-inset" />
+                <div className="h-10 w-10 rounded-[4px] bg-surface-secondary/70" />
                 <div className="space-y-1.5 flex-1">
-                  <div className="h-4 w-3/4 rounded bg-surface-inset" />
-                  <div className="h-3 w-1/2 rounded bg-surface-inset" />
+                  <div className="h-4 w-3/4 rounded-[2px] bg-surface-secondary/70" />
+                  <div className="h-3 w-1/2 rounded-[2px] bg-surface-secondary/70" />
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="h-3 w-full rounded bg-surface-inset" />
-                <div className="h-3 w-4/5 rounded bg-surface-inset" />
+                <div className="h-3 w-full rounded-[2px] bg-surface-secondary/70" />
+                <div className="h-3 w-4/5 rounded-[2px] bg-surface-secondary/70" />
               </div>
             </div>
           ))}

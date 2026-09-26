@@ -33,7 +33,7 @@ export function AuthShell({
       <div className="pointer-events-none absolute left-[5%] top-[8%] h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
       <div className="pointer-events-none absolute bottom-[5%] right-[5%] h-80 w-80 rounded-full bg-secondary/8 blur-3xl" />
 
-      <div className="neu-float mx-auto grid w-full max-w-5xl overflow-hidden rounded-3xl border border-border lg:grid-cols-2">
+      <div className="mx-auto grid w-full max-w-5xl overflow-hidden rounded-[8px] border border-border bg-surface shadow-elevated lg:grid-cols-2">
         {/* Left Form Section */}
         <section className="bg-surface p-6 sm:p-10 lg:p-12">
           <div className="mx-auto max-w-md">
@@ -41,10 +41,10 @@ export function AuthShell({
             <div className="flex items-center justify-between gap-4">
               <Link
                 href="/"
-                className="group flex min-h-10 items-center gap-2.5 rounded-xl pr-2"
+                className="group flex min-h-10 items-center gap-2.5 rounded-[4px] pr-2"
                 aria-label="AlgoFlow home"
               >
-                <span className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface-inset shadow-(--shadow-inset)">
+                <span className="relative flex h-9 w-9 items-center justify-center rounded-[4px] border border-border bg-surface shadow-xs">
                   <Image
                     src="/logo.png"
                     alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
@@ -69,15 +69,15 @@ export function AuthShell({
             {activeTab ? (
               <nav
                 aria-label="Authentication switcher"
-                className="neu-inset mt-8 grid grid-cols-2 rounded-xl p-1 border border-border"
+                className="mt-8 grid grid-cols-2 rounded-[6px] p-1 border border-border bg-surface-secondary/70"
               >
                 <Link
                   href="/login"
                   aria-current={activeTab === "login" ? "page" : undefined}
                   className={cn(
-                    "flex min-h-9 items-center justify-center rounded-lg text-xs font-bold transition-all",
+                    "flex min-h-9 items-center justify-center rounded-[4px] text-xs font-bold transition-all",
                     activeTab === "login"
-                      ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
+                      ? "bg-surface text-primary border border-border shadow-xs"
                       : "text-text-muted hover:text-text-primary"
                   )}
                 >
@@ -87,9 +87,9 @@ export function AuthShell({
                   href="/signup"
                   aria-current={activeTab === "signup" ? "page" : undefined}
                   className={cn(
-                    "flex min-h-9 items-center justify-center rounded-lg text-xs font-bold transition-all",
+                    "flex min-h-9 items-center justify-center rounded-[4px] text-xs font-bold transition-all",
                     activeTab === "signup"
-                      ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
+                      ? "bg-surface text-primary border border-border shadow-xs"
                       : "text-text-muted hover:text-text-primary"
                   )}
                 >

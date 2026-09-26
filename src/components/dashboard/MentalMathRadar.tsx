@@ -13,11 +13,11 @@ export function MentalMathRadar({ stats }: MentalMathRadarProps) {
   const totalSolved = stats?.totalQuestionsSolved ?? 0;
 
   return (
-    <section className="neu-raised p-6 rounded-3xl border border-border flex flex-col justify-between">
+    <section className="p-6 rounded-[8px] border border-border bg-surface shadow-card flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-secondary-muted text-secondary border border-secondary/20">
+            <span className="flex h-7 w-7 items-center justify-center rounded-[4px] bg-secondary-muted text-secondary border border-secondary/20">
               <BrainCircuit className="w-3.5 h-3.5" />
             </span>
             <h2 className="text-base font-bold font-display text-text-primary">
@@ -34,7 +34,7 @@ export function MentalMathRadar({ stats }: MentalMathRadarProps) {
 
         {/* 3 Compact Telemetry Chips */}
         <div className="grid grid-cols-3 gap-2 mb-4">
-          <div className="neu-inset p-3 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset) flex flex-col justify-between">
+          <div className="p-3 rounded-[6px] border border-border bg-surface-secondary/70 shadow-xs flex flex-col justify-between">
             <div className="flex items-center gap-1 text-[10px] font-mono uppercase text-text-muted">
               <Gauge className="w-3 h-3" />
               <span>Speed</span>
@@ -47,7 +47,7 @@ export function MentalMathRadar({ stats }: MentalMathRadarProps) {
             </div>
           </div>
 
-          <div className="neu-inset p-3 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset) flex flex-col justify-between">
+          <div className="p-3 rounded-[6px] border border-border bg-surface-secondary/70 shadow-xs flex flex-col justify-between">
             <div className="flex items-center gap-1 text-[10px] font-mono uppercase text-text-muted">
               <Target className="w-3 h-3" />
               <span>Acc.</span>
@@ -60,7 +60,7 @@ export function MentalMathRadar({ stats }: MentalMathRadarProps) {
             </div>
           </div>
 
-          <div className="neu-inset p-3 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset) flex flex-col justify-between">
+          <div className="p-3 rounded-[6px] border border-border bg-surface-secondary/70 shadow-xs flex flex-col justify-between">
             <div className="flex items-center gap-1 text-[10px] font-mono uppercase text-text-muted">
               <Hash className="w-3 h-3" />
               <span>Solved</span>
@@ -79,14 +79,14 @@ export function MentalMathRadar({ stats }: MentalMathRadarProps) {
       <div className="flex items-center gap-2 pt-2 border-t border-border">
         <Link
           href="/mental-math/practice"
-          className="flex-1 min-h-9 items-center justify-center gap-1.5 rounded-xl bg-secondary text-white text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-secondary-hover transition-all active:scale-95 flex"
+          className="flex-1 min-h-9 items-center justify-center gap-1.5 rounded-[4px] bg-secondary text-white text-xs font-bold font-display shadow-card hover:bg-secondary/90 transition-all active:scale-[0.99] flex"
         >
           <Play className="w-3 h-3 fill-current" />
           <span>Practice Studio</span>
         </Link>
         <Link
           href="/mental-math/leaderboard"
-          className="h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-hover shadow-(--shadow-raised-sm) transition-all flex shrink-0"
+          className="h-9 w-9 items-center justify-center rounded-[4px] border border-border bg-surface text-text-secondary hover:text-text-primary hover:bg-surface-secondary shadow-xs transition-all flex shrink-0"
           title="Global Leaderboard"
         >
           <Crown className="w-3.5 h-3.5 text-amber-500" />

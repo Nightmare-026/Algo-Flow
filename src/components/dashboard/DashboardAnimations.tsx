@@ -10,7 +10,7 @@ export function DashboardHeaderAnimation({ children }: { children: ReactNode }) 
       initial={reduceMotion ? false : { opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="neu-float flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 sm:p-8 rounded-3xl border border-border"
+      className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 sm:p-8 rounded-[8px] border border-border bg-surface shadow-card"
     >
       {children}
     </motion.section>

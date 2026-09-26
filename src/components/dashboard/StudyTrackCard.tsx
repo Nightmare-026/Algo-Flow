@@ -30,16 +30,16 @@ export function StudyTrackCard({
     <Link
       href={href}
       className={cn(
-        "neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between hover:border-primary/40 hover:-translate-y-1 transition-all duration-200 group",
+        "p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover hover:border-primary/40 transition-all duration-200 group",
         className
       )}
     >
       <div>
         <div className="flex justify-between items-start mb-4">
-          <div className="flex h-11 w-11 rounded-xl bg-surface-inset border border-border shadow-(--shadow-inset) items-center justify-center text-primary group-hover:scale-105 transition-transform">
+          <div className="flex h-11 w-11 rounded-[6px] bg-surface-secondary border border-border shadow-xs items-center justify-center text-primary group-hover:scale-105 transition-transform">
             {icon}
           </div>
-          <span className="bg-primary-muted text-primary border border-primary/20 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase">
+          <span className="bg-primary/10 text-primary border border-primary/20 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase">
             {tag}
           </span>
         </div>
@@ -57,7 +57,7 @@ export function StudyTrackCard({
             </span>
             <span className="text-primary">{percent}%</span>
           </div>
-          <div className="w-full bg-bg-surface-inset h-1.5 rounded-full overflow-hidden border border-border shadow-(--shadow-inset)">
+          <div className="w-full bg-surface-secondary h-1.5 rounded-full overflow-hidden border border-border">
             <div
               className="bg-primary h-full rounded-full transition-all duration-500"
               style={{ width: `${percent}%` }}

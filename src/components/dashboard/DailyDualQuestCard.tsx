@@ -19,7 +19,7 @@ export function DailyDualQuestCard({
   const allDone = questsDone === 2;
 
   return (
-    <section className="neu-float rounded-3xl p-6 sm:p-8 border border-border bg-surface relative overflow-hidden transition-all duration-300">
+    <section className="rounded-[8px] p-6 sm:p-8 border border-border bg-surface shadow-card relative overflow-hidden transition-all duration-300">
       {/* Background Accent Ambient Glow */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-primary-glow blur-3xl -z-10 rounded-full pointer-events-none" />
 
@@ -27,7 +27,7 @@ export function DailyDualQuestCard({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-warning-muted text-warning border border-warning/20 text-xs">
+            <span className="flex h-6 w-6 items-center justify-center rounded-[4px] bg-warning-muted text-warning border border-warning/20 text-xs">
               <Zap className="w-3.5 h-3.5 fill-current" />
             </span>
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
@@ -40,13 +40,13 @@ export function DailyDualQuestCard({
         </div>
 
         {/* Quest Completion Tracker Badge */}
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-bg-surface-inset border border-border shadow-(--shadow-inset) w-fit">
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-secondary border border-border shadow-xs w-fit">
           <span className="text-[11px] font-mono font-bold text-text-muted uppercase">
             Quests Completed:
           </span>
           <span
             className={cn(
-              "font-mono font-bold text-xs px-2 py-0.5 rounded-lg",
+              "font-mono font-bold text-xs px-2 py-0.5 rounded-full",
               allDone
                 ? "bg-success text-white"
                 : questsDone === 1
@@ -69,19 +69,19 @@ export function DailyDualQuestCard({
         {/* Quest 1: DSA Algorithm Challenge */}
         <div
           className={cn(
-            "neu-raised p-5 sm:p-6 rounded-2xl border flex flex-col justify-between transition-all",
+            "p-5 sm:p-6 rounded-[8px] border flex flex-col justify-between shadow-card transition-all",
             dsaCompleted
               ? "border-success/30 bg-success-muted/15"
-              : "border-border bg-surface hover:border-primary/30"
+              : "border-border bg-surface hover:border-primary/30 hover:shadow-card-hover"
           )}
         >
           <div>
             <div className="flex items-center justify-between gap-2 mb-3">
-              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-bold uppercase bg-primary-muted text-primary border border-primary/20">
+              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-primary/10 text-primary border border-primary/20">
                 <Code2 className="w-3 h-3" />
                 Algorithm Track
               </span>
-              <span className="text-[11px] font-mono font-bold text-primary flex items-center gap-1 bg-surface px-2 py-0.5 rounded-md border border-border">
+              <span className="text-[11px] font-mono font-bold text-primary flex items-center gap-1 bg-surface px-2 py-0.5 rounded-[4px] border border-border">
                 <Star className="w-3 h-3 fill-current text-warning" /> +30 XP
               </span>
             </div>
@@ -114,9 +114,9 @@ export function DailyDualQuestCard({
                   : `/visualizer/${dsaAlgorithm?.slug || ""}`
               }
               className={cn(
-                "inline-flex min-h-9 items-center gap-1.5 rounded-xl px-4 text-xs font-bold font-display shadow-(--shadow-raised-sm) transition-all active:scale-95",
+                "inline-flex min-h-9 items-center gap-1.5 rounded-[4px] px-4 text-xs font-bold font-display shadow-card transition-all active:scale-[0.99]",
                 dsaCompleted
-                  ? "border border-border bg-surface text-text-primary hover:bg-surface-hover"
+                  ? "border border-border bg-surface text-text-primary hover:bg-surface-secondary"
                   : "bg-primary text-white hover:bg-primary-hover"
               )}
             >
@@ -129,19 +129,19 @@ export function DailyDualQuestCard({
         {/* Quest 2: Mental Math Sprint */}
         <div
           className={cn(
-            "neu-raised p-5 sm:p-6 rounded-2xl border flex flex-col justify-between transition-all",
+            "p-5 sm:p-6 rounded-[8px] border flex flex-col justify-between shadow-card transition-all",
             mathCompleted
               ? "border-success/30 bg-success-muted/15"
-              : "border-border bg-surface hover:border-secondary/30"
+              : "border-border bg-surface hover:border-secondary/30 hover:shadow-card-hover"
           )}
         >
           <div>
             <div className="flex items-center justify-between gap-2 mb-3">
-              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-bold uppercase bg-secondary-muted text-secondary border border-secondary/20">
-                <BrainCircuit className="w-3 h-3" />
+              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-secondary-muted text-secondary border border-secondary/20">
+                <BrainCircuit className="w-3.5 h-3.5" />
                 Mental Math Track
               </span>
-              <span className="text-[11px] font-mono font-bold text-secondary flex items-center gap-1 bg-surface px-2 py-0.5 rounded-md border border-border">
+              <span className="text-[11px] font-mono font-bold text-secondary flex items-center gap-1 bg-surface px-2 py-0.5 rounded-[4px] border border-border">
                 <Trophy className="w-3 h-3 text-warning" /> +40 XP
               </span>
             </div>
@@ -169,9 +169,9 @@ export function DailyDualQuestCard({
             <Link
               href="/mental-math/daily"
               className={cn(
-                "inline-flex min-h-9 items-center gap-1.5 rounded-xl px-4 text-xs font-bold font-display shadow-(--shadow-raised-sm) transition-all active:scale-95",
+                "inline-flex min-h-9 items-center gap-1.5 rounded-[4px] px-4 text-xs font-bold font-display shadow-card transition-all active:scale-[0.99]",
                 mathCompleted
-                  ? "border border-border bg-surface text-text-primary hover:bg-surface-hover"
+                  ? "border border-border bg-surface text-text-primary hover:bg-surface-secondary"
                   : "bg-secondary text-white hover:bg-secondary-hover"
               )}
             >

@@ -16,11 +16,11 @@ export interface CalloutProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const variantStyles: Record<CalloutVariant, string> = {
-  default: "border-border/40 bg-surface text-text-primary",
-  success: "border-success/30 bg-success-muted text-success",
-  error: "border-error/30 bg-error-muted text-error",
-  warning: "border-warning/30 bg-warning-muted text-warning",
-  info: "border-primary/30 bg-primary-muted text-primary",
+  default: "border-border-subtle bg-surface text-text-primary",
+  success: "border-credential-emerald/25 bg-credential-emerald-subtle text-credential-emerald",
+  error: "border-error/25 bg-error-muted text-error",
+  warning: "border-partner-gold/30 bg-partner-gold-subtle text-amber-800 dark:text-amber-300",
+  info: "border-primary/25 bg-primary-muted text-primary",
 };
 
 const variantIcons: Record<CalloutVariant, ReactNode> = {
@@ -53,7 +53,7 @@ export const Callout = forwardRef<HTMLDivElement, CalloutProps>(
         ref={ref}
         role={role}
         className={cn(
-          "flex items-start gap-3 rounded-2xl border p-4 text-xs font-semibold leading-relaxed shadow-(--shadow-inset)",
+          "flex items-start gap-3 rounded-[8px] border p-4 text-xs font-semibold leading-relaxed shadow-card",
           variantStyles[variant],
           className
         )}

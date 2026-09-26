@@ -38,10 +38,8 @@ export function FeedbackOverlay({
   return (
     <div
       className={cn(
-        "neu-raised w-full max-w-lg mx-auto p-5 sm:p-6 rounded-3xl border flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-3 duration-200 mt-3",
-        isCorrect
-          ? "border-success/40 bg-success-muted/15 shadow-[0_4px_20px_rgba(34,197,94,0.08)]"
-          : "border-error/40 bg-error-muted/15 shadow-[0_4px_20px_rgba(239,68,68,0.08)]"
+        "w-full max-w-lg mx-auto p-5 sm:p-6 rounded-[8px] border flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-3 duration-200 mt-3 shadow-card",
+        isCorrect ? "border-success/40 bg-success-muted/15" : "border-error/40 bg-error-muted/15"
       )}
       role="alert"
     >
@@ -49,7 +47,7 @@ export function FeedbackOverlay({
         <div className="flex items-center gap-3.5">
           <span
             className={cn(
-              "flex h-11 w-11 items-center justify-center rounded-2xl border shadow-sm shrink-0",
+              "flex h-11 w-11 items-center justify-center rounded-[6px] border shadow-xs shrink-0",
               isCorrect
                 ? "border-success/30 bg-success text-white"
                 : "border-error/30 bg-error text-white"
@@ -79,7 +77,7 @@ export function FeedbackOverlay({
       </div>
 
       {explanation && !isCorrect && (
-        <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset text-xs font-mono text-text-secondary leading-relaxed shadow-(--shadow-inset)">
+        <div className="p-4 rounded-[4px] border border-border bg-surface-secondary text-xs font-mono text-text-secondary leading-relaxed shadow-xs">
           <p className="font-bold text-text-primary mb-1 uppercase tracking-wider text-[10px]">
             Mental Strategy:
           </p>
@@ -93,7 +91,7 @@ export function FeedbackOverlay({
           <button
             onClick={onRetry}
             type="button"
-            className="neu-raised flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-text-secondary hover:text-text-primary border border-border active:scale-95 transition-all shadow-(--shadow-raised-sm) cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2.5 min-h-11 rounded-[4px] text-xs font-bold text-text-secondary hover:text-text-primary border border-border bg-surface active:scale-95 transition-all shadow-card cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Retry Problem [R]</span>
@@ -104,7 +102,7 @@ export function FeedbackOverlay({
           onClick={onNext}
           type="button"
           className={cn(
-            "flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer",
+            "flex items-center gap-2 px-5 py-2.5 min-h-11 rounded-[4px] text-xs font-bold font-display text-white shadow-card active:scale-95 transition-all cursor-pointer",
             isCorrect ? "bg-success hover:bg-success/90" : "bg-primary hover:bg-primary-hover"
           )}
         >

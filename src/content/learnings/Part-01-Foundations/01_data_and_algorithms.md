@@ -21,7 +21,7 @@ By the end of this chapter, you will be able to:
 
 In computational theory, we distinguish between unstructured syntactic entities and semantic knowledge. The transition from raw electric potentials in transistors to algorithmic decision-making follows the **DIKW Hierarchy (Data, Information, Knowledge, Wisdom)**.
 
-<div class="my-8 p-6 rounded-2xl border border-border/80 bg-surface/80 neu-raised">
+<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Information Architecture</span>
 <span>•</span>
@@ -428,7 +428,7 @@ def euclidean_gcd(a: int, b: int) -> int:
 
 Every computational procedure operates within three interdependent boundaries:
 
-<div class="my-8 p-6 rounded-2xl border border-border/80 bg-surface/80 neu-raised">
+<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Systems Physics</span>
 <span>•</span>

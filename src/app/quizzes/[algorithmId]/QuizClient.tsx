@@ -34,7 +34,7 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
   if (questions.length === 0) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center p-4 text-center">
-        <div className="neu-float max-w-md rounded-3xl p-8 border border-border">
+        <div className="max-w-md rounded-[8px] p-8 border border-border bg-surface shadow-elevated">
           <h2 className="text-xl font-bold font-display text-text-primary mb-3">
             No Quiz Questions Yet
           </h2>
@@ -84,8 +84,8 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
     const passed = percentage >= 60;
     return (
       <div className="mx-auto flex min-h-[70vh] max-w-xl flex-col justify-center p-4">
-        <div className="neu-float rounded-3xl p-8 sm:p-10 text-center border border-border">
-          <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-surface-inset shadow-[var(--shadow-inset)] text-primary">
+        <div className="rounded-[8px] p-8 sm:p-10 text-center border border-border bg-surface shadow-elevated">
+          <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[8px] border border-border bg-surface-secondary/70 text-primary shadow-xs">
             <Trophy className="h-8 w-8 text-primary" />
           </span>
           <p className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
@@ -98,7 +98,7 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
           <div className="my-8 flex items-center justify-center">
             <div
               className={cn(
-                "flex h-32 w-32 flex-col items-center justify-center rounded-full border-4 shadow-[var(--shadow-raised-sm)]",
+                "flex h-32 w-32 flex-col items-center justify-center rounded-full border-4 shadow-card",
                 passed
                   ? "border-primary bg-primary-muted text-primary"
                   : "border-warning bg-warning-muted text-warning"
@@ -166,13 +166,13 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
         >
           <ArrowLeft className="mr-1.5 h-4 w-4" /> Back to Visualizer
         </Link>
-        <div className="neu-inset px-3 py-1 rounded-full font-mono text-xs font-bold text-primary border border-border shadow-[var(--shadow-inset)]">
+        <div className="px-3 py-1 rounded-full font-mono text-xs font-bold text-primary border border-border bg-surface-secondary/70">
           Question {currentIndex + 1} of {questions.length}
         </div>
       </header>
 
       {/* Main Question Card */}
-      <div className="neu-float rounded-3xl p-6 sm:p-8 border border-border">
+      <div className="rounded-[8px] p-6 sm:p-8 border border-border bg-surface shadow-card">
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="rounded-md border border-primary/25 bg-primary-muted px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
@@ -202,24 +202,26 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
                 onClick={() => handleSelect(i)}
                 disabled={isAnswered}
                 className={cn(
-                  "relative flex items-start gap-4 rounded-2xl border p-4 text-left transition-all duration-150 cursor-pointer select-none",
+                  "relative flex items-start gap-4 rounded-[4px] border p-4 text-left transition-all duration-150 cursor-pointer select-none",
                   !isAnswered &&
                     !isSelected &&
-                    "border-border bg-surface shadow-[var(--shadow-raised-sm)] hover:border-primary/40 hover:bg-surface-hover",
+                    "border-border bg-surface shadow-xs hover:border-primary/50 hover:bg-surface-secondary/40",
                   !isAnswered &&
                     isSelected &&
-                    "border-primary bg-primary-muted shadow-[var(--shadow-inset)] text-primary",
+                    "border-primary bg-primary-muted text-primary ring-1 ring-primary",
                   showCorrect &&
-                    "border-success bg-success-muted shadow-[var(--shadow-inset)] text-success font-bold",
+                    "border-success bg-success-muted text-success font-bold ring-1 ring-success",
                   showIncorrect &&
-                    "border-error bg-error-muted shadow-[var(--shadow-inset)] text-error font-bold",
+                    "border-error bg-error-muted text-error font-bold ring-1 ring-error",
                   isAnswered && !isSelected && !isCorrect && "border-border bg-surface opacity-40"
                 )}
               >
                 <div
                   className={cn(
-                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border text-xs font-mono font-bold shadow-[var(--shadow-raised-sm)]",
-                    !isAnswered && !isSelected && "border-border bg-surface text-text-muted",
+                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-[4px] border text-xs font-mono font-bold",
+                    !isAnswered &&
+                      !isSelected &&
+                      "border-border bg-surface-secondary/70 text-text-muted",
                     !isAnswered && isSelected && "border-primary bg-primary text-white",
                     showCorrect && "border-success bg-success text-white",
                     showIncorrect && "border-error bg-error text-white"
@@ -247,7 +249,7 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
 
         {/* Explanation Callout */}
         {isAnswered && (
-          <div className="rounded-2xl bg-bg-surface-inset p-5 border border-border mt-6 shadow-[var(--shadow-inset)] animate-in slide-in-from-bottom-2 duration-200">
+          <div className="rounded-[6px] bg-surface-secondary/70 p-5 border border-border mt-6 animate-in slide-in-from-bottom-2 duration-200">
             <div className="flex items-center justify-between mb-1.5 flex-wrap gap-2">
               <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary">
                 Explanation

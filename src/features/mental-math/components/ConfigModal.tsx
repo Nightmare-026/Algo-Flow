@@ -215,7 +215,7 @@ export function ConfigModal({
   return (
     <form
       onSubmit={handleSubmit}
-      className="neu-float w-full max-w-7xl mx-auto p-6 sm:p-8 lg:p-10 rounded-3xl border border-border bg-surface/95 shadow-(--shadow-raised) backdrop-blur-md flex flex-col gap-8"
+      className="w-full max-w-7xl mx-auto p-6 sm:p-8 lg:p-10 rounded-[8px] border border-border bg-surface shadow-elevated flex flex-col gap-8"
     >
       {/* Top Header Bar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-border/80">
@@ -231,7 +231,7 @@ export function ConfigModal({
             type="button"
             onClick={handleResetDefaults}
             title="Reset to default settings"
-            className="flex items-center gap-1.5 text-xs font-bold font-display text-text-muted hover:text-text-primary px-3 py-2 rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-bold font-display text-text-muted hover:text-text-primary px-3 py-2 rounded-[4px] border border-border bg-surface shadow-xs active:scale-[0.99] transition-all cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Defaults</span>
@@ -242,11 +242,11 @@ export function ConfigModal({
               type="button"
               onClick={onCancel}
               title="Cancel (Esc)"
-              className="flex items-center gap-1.5 text-xs font-bold font-display text-text-muted hover:text-text-primary px-3 py-2 rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-bold font-display text-text-muted hover:text-text-primary px-3 py-2 rounded-[4px] border border-border bg-surface shadow-xs active:scale-[0.99] transition-all cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
               <span>Cancel</span>
-              <kbd className="hidden sm:inline px-1 py-0.2 rounded bg-surface-inset border border-border text-[9px] font-mono font-bold text-text-muted">
+              <kbd className="hidden sm:inline px-1 py-0.2 rounded-[2px] bg-surface-secondary border border-border text-[9px] font-mono font-bold text-text-muted">
                 Esc
               </kbd>
             </button>
@@ -262,7 +262,7 @@ export function ConfigModal({
           <div className="flex flex-col gap-2.5">
             <div className="flex justify-between items-center">
               <label className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary text-white text-[10px] font-extrabold">
+                <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-primary text-white text-[10px] font-extrabold">
                   1
                 </span>
                 <span>Arithmetic Operation</span>
@@ -281,19 +281,19 @@ export function ConfigModal({
                     type="button"
                     onClick={() => setOperation(op.id)}
                     className={cn(
-                      "neu-raised p-3 rounded-2xl border text-left flex items-center justify-between gap-2.5 transition-all duration-150 active:scale-95 cursor-pointer relative overflow-hidden group",
+                      "p-3 rounded-[8px] border text-left flex items-center justify-between gap-2.5 transition-all duration-150 cursor-pointer relative overflow-hidden group shadow-card",
                       isSelected
-                        ? "border-primary bg-primary-muted/40 text-primary shadow-(--shadow-inset) ring-2 ring-primary/40"
-                        : "border-border text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border-primary/30"
+                        ? "border-primary bg-primary/10 text-primary ring-1 ring-primary"
+                        : "border-border bg-surface text-text-secondary hover:bg-surface-secondary hover:text-text-primary hover:border-primary/40"
                     )}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <span
                         className={cn(
-                          "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-extrabold border transition-colors shadow-inner",
+                          "flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] font-mono text-sm font-extrabold border transition-colors shadow-xs",
                           isSelected
                             ? "border-primary bg-primary text-white"
-                            : "border-border bg-surface-inset text-primary"
+                            : "border-border bg-surface-secondary text-primary"
                         )}
                       >
                         {op.symbol}
@@ -315,22 +315,22 @@ export function ConfigModal({
           </div>
 
           {/* 2. Operand Digit Length Controls */}
-          <div className="neu-raised p-4 sm:p-5 rounded-2xl border border-border bg-surface flex flex-col gap-3.5 shadow-(--shadow-raised-sm)">
+          <div className="p-4 sm:p-5 rounded-[8px] border border-border bg-surface flex flex-col gap-3.5 shadow-card">
             <div className="flex justify-between items-center">
               <label className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary text-white text-[10px] font-extrabold">
+                <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-primary text-white text-[10px] font-extrabold">
                   2
                 </span>
                 <span>Digit Range Controls</span>
               </label>
-              <span className="text-[10px] font-mono font-bold text-primary px-2 py-0.5 rounded-full bg-primary-muted border border-primary/20">
+              <span className="text-[10px] font-mono font-bold text-primary px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20">
                 Range Bounds
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {/* Left Operand Digits */}
-              <div className="neu-inset p-3 rounded-xl border border-border bg-surface-inset shadow-(--shadow-inset) flex flex-col gap-2">
+              <div className="p-3 rounded-[6px] border border-border bg-surface-secondary/60 shadow-xs flex flex-col gap-2">
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="font-bold text-text-primary">
                     {isUnaryOp ? "Base Number" : "Left Number"}
@@ -352,10 +352,10 @@ export function ConfigModal({
                       type="button"
                       onClick={() => setDigitCountLeft(d)}
                       className={cn(
-                        "py-1.5 rounded-lg border text-xs font-mono font-bold transition-all cursor-pointer text-center",
+                        "py-1.5 rounded-[4px] border text-xs font-mono font-bold transition-all cursor-pointer text-center",
                         digitCountLeft === d
-                          ? "border-primary bg-primary text-white shadow-sm"
-                          : "border-border bg-surface text-text-secondary hover:bg-surface-hover"
+                          ? "border-primary bg-primary text-white shadow-xs"
+                          : "border-border bg-surface text-text-secondary hover:bg-surface-secondary"
                       )}
                     >
                       {d}d
@@ -365,7 +365,7 @@ export function ConfigModal({
               </div>
 
               {/* Right Operand Digits */}
-              <div className="neu-inset p-3 rounded-xl border border-border bg-surface-inset shadow-(--shadow-inset) flex flex-col gap-2">
+              <div className="p-3 rounded-[6px] border border-border bg-surface-secondary/60 shadow-xs flex flex-col gap-2">
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="font-bold text-text-primary">
                     {isUnaryOp ? "Operand Mode" : "Right Number"}
@@ -384,7 +384,7 @@ export function ConfigModal({
                 </div>
 
                 {isUnaryOp ? (
-                  <div className="flex items-center justify-center h-8 px-2 rounded-lg border border-border/60 bg-surface text-[10px] font-mono text-text-muted text-center">
+                  <div className="flex items-center justify-center h-8 px-2 rounded-[4px] border border-border/60 bg-surface text-[10px] font-mono text-text-muted text-center">
                     Single base{" "}
                     {operation === "squares"
                       ? "power (x²)"
@@ -400,10 +400,10 @@ export function ConfigModal({
                         type="button"
                         onClick={() => setDigitCountRight(d)}
                         className={cn(
-                          "py-1.5 rounded-lg border text-xs font-mono font-bold transition-all cursor-pointer text-center",
+                          "py-1.5 rounded-[4px] border text-xs font-mono font-bold transition-all cursor-pointer text-center",
                           digitCountRight === d
-                            ? "border-primary bg-primary text-white shadow-sm"
-                            : "border-border bg-surface text-text-secondary hover:bg-surface-hover"
+                            ? "border-primary bg-primary text-white shadow-xs"
+                            : "border-border bg-surface text-text-secondary hover:bg-surface-secondary"
                         )}
                       >
                         {d}d
@@ -419,7 +419,7 @@ export function ConfigModal({
           <div className="flex flex-col gap-2.5">
             <div className="flex justify-between items-center">
               <label className="text-xs font-mono font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary text-white text-[10px] font-extrabold">
+                <span className="flex h-5 w-5 items-center justify-center rounded-[4px] bg-primary text-white text-[10px] font-extrabold">
                   3
                 </span>
                 <span>Difficulty & Regrouping</span>
@@ -438,10 +438,10 @@ export function ConfigModal({
                     type="button"
                     onClick={() => setDifficulty(diff.id)}
                     className={cn(
-                      "neu-raised p-3 rounded-2xl border text-left transition-all duration-150 active:scale-95 cursor-pointer flex flex-col justify-between gap-1.5",
+                      "p-3 rounded-[8px] border text-left transition-all duration-150 cursor-pointer flex flex-col justify-between gap-1.5 shadow-card",
                       isSelected
-                        ? "border-primary bg-primary-muted/40 text-primary shadow-(--shadow-inset) ring-2 ring-primary/30"
-                        : "border-border text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                        ? "border-primary bg-primary/10 text-primary ring-1 ring-primary"
+                        : "border-border bg-surface text-text-secondary hover:bg-surface-secondary hover:text-text-primary"
                     )}
                   >
                     <div className="flex items-center justify-between w-full">
@@ -455,10 +455,10 @@ export function ConfigModal({
                     </p>
                     <span
                       className={cn(
-                        "text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border text-center mt-1",
+                        "text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-[4px] border text-center mt-1",
                         isSelected
-                          ? "border-primary/30 bg-primary-muted text-primary shadow-inner"
-                          : "border-border bg-surface-inset text-text-muted shadow-inner"
+                          ? "border-primary/30 bg-primary/10 text-primary shadow-xs"
+                          : "border-border bg-surface-secondary text-text-muted shadow-xs"
                       )}
                     >
                       {diff.tag}
@@ -472,7 +472,7 @@ export function ConfigModal({
           {/* 4. Session Rules: Problem Count, Format & Timer */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* Problem Volume */}
-            <div className="neu-raised p-3 rounded-2xl border border-border bg-surface flex flex-col justify-between gap-2 shadow-(--shadow-raised-sm)">
+            <div className="p-3 rounded-[8px] border border-border bg-surface flex flex-col justify-between gap-2 shadow-card">
               <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
                 <Zap className="w-3 h-3 text-primary" />
                 <span>Problem Count</span>
@@ -486,10 +486,10 @@ export function ConfigModal({
                       type="button"
                       onClick={() => setQuestionCount(count)}
                       className={cn(
-                        "py-1.5 rounded-lg border text-xs font-mono font-bold transition-all cursor-pointer text-center",
+                        "py-1.5 rounded-[4px] border text-xs font-mono font-bold transition-all cursor-pointer text-center",
                         isSelected
-                          ? "border-primary bg-primary text-white shadow-sm"
-                          : "border-border bg-surface text-text-secondary hover:bg-surface-hover"
+                          ? "border-primary bg-primary text-white shadow-xs"
+                          : "border-border bg-surface text-text-secondary hover:bg-surface-secondary"
                       )}
                     >
                       {count}
@@ -500,7 +500,7 @@ export function ConfigModal({
             </div>
 
             {/* Input Mode */}
-            <div className="neu-raised p-3 rounded-2xl border border-border bg-surface flex flex-col justify-between gap-2 shadow-(--shadow-raised-sm)">
+            <div className="p-3 rounded-[8px] border border-border bg-surface flex flex-col justify-between gap-2 shadow-card">
               <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
                 <Keyboard className="w-3 h-3 text-primary" />
                 <span>Input Format</span>
@@ -510,10 +510,10 @@ export function ConfigModal({
                   type="button"
                   onClick={() => setHintsEnabled(false)}
                   className={cn(
-                    "py-1.5 px-1 rounded-lg border text-[11px] font-bold font-display transition-all cursor-pointer text-center flex items-center justify-center gap-1",
+                    "py-1.5 px-1 rounded-[4px] border text-[11px] font-bold font-display transition-all cursor-pointer text-center flex items-center justify-center gap-1",
                     !hintsEnabled
-                      ? "border-primary bg-primary text-white shadow-sm"
-                      : "border-border bg-surface text-text-secondary hover:bg-surface-hover"
+                      ? "border-primary bg-primary text-white shadow-xs"
+                      : "border-border bg-surface text-text-secondary hover:bg-surface-secondary"
                   )}
                 >
                   <Keyboard className="w-3 h-3" />
@@ -523,10 +523,10 @@ export function ConfigModal({
                   type="button"
                   onClick={() => setHintsEnabled(true)}
                   className={cn(
-                    "py-1.5 px-1 rounded-lg border text-[11px] font-bold font-display transition-all cursor-pointer text-center flex items-center justify-center gap-1",
+                    "py-1.5 px-1 rounded-[4px] border text-[11px] font-bold font-display transition-all cursor-pointer text-center flex items-center justify-center gap-1",
                     hintsEnabled
-                      ? "border-primary bg-primary text-white shadow-sm"
-                      : "border-border bg-surface text-text-secondary hover:bg-surface-hover"
+                      ? "border-primary bg-primary text-white shadow-xs"
+                      : "border-border bg-surface text-text-secondary hover:bg-surface-secondary"
                   )}
                 >
                   <LayoutGrid className="w-3 h-3" />
@@ -536,7 +536,7 @@ export function ConfigModal({
             </div>
 
             {/* Timer Pacing */}
-            <div className="neu-raised p-3 rounded-2xl border border-border bg-surface flex flex-col justify-between gap-2 shadow-(--shadow-raised-sm)">
+            <div className="p-3 rounded-[8px] border border-border bg-surface flex flex-col justify-between gap-2 shadow-card">
               <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
                 <Clock className="w-3 h-3 text-primary" />
                 <span>Timer Pacing</span>
@@ -555,10 +555,10 @@ export function ConfigModal({
                       type="button"
                       onClick={() => setTimeLimitSeconds(t.val)}
                       className={cn(
-                        "py-1.5 rounded-lg border text-[11px] font-mono font-bold transition-all cursor-pointer text-center",
+                        "py-1.5 rounded-[4px] border text-[11px] font-mono font-bold transition-all cursor-pointer text-center",
                         isSelected
-                          ? "border-primary bg-primary text-white shadow-sm"
-                          : "border-border bg-surface text-text-secondary hover:bg-surface-hover"
+                          ? "border-primary bg-primary text-white shadow-xs"
+                          : "border-border bg-surface text-text-secondary hover:bg-surface-secondary"
                       )}
                     >
                       {t.label}
@@ -572,7 +572,7 @@ export function ConfigModal({
 
         {/* RIGHT COLUMN: Live Problem Inspector & Launch Card (5 cols) */}
         <div className="lg:col-span-5 flex flex-col gap-4 lg:sticky lg:top-28">
-          <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between gap-6 shadow-(--shadow-raised-sm)">
+          <div className="p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between gap-6 shadow-card">
             <div>
               <div className="flex items-center justify-between gap-2 pb-3 border-b border-border/80">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
@@ -580,19 +580,19 @@ export function ConfigModal({
                   <span>Problem Preview</span>
                 </span>
                 <div className="flex items-center gap-1">
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-surface-inset border border-border text-primary shadow-inner">
+                  <span className="px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-bold uppercase bg-surface-secondary border border-border text-primary shadow-xs">
                     {isUnaryOp
                       ? `${digitCountLeft}d Base`
                       : `${digitCountLeft}d ${getOpSymbol(operation)} ${digitCountRight}d`}
                   </span>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-primary-muted text-primary border border-primary/20">
+                  <span className="px-2 py-0.5 rounded-[4px] text-[10px] font-mono font-bold uppercase bg-primary/10 text-primary border border-primary/20">
                     {difficulty}
                   </span>
                 </div>
               </div>
 
               {/* Big Math Preview */}
-              <div className="neu-inset p-5 rounded-2xl border border-primary/30 bg-surface-inset shadow-(--shadow-inset) text-center my-4">
+              <div className="p-5 rounded-[8px] border border-primary/30 bg-surface-secondary/70 shadow-xs text-center my-4">
                 <div className="font-mono text-3xl sm:text-4xl font-extrabold text-primary tracking-tight">
                   {liveSample.formula}
                 </div>
@@ -628,14 +628,14 @@ export function ConfigModal({
             <div className="flex flex-col gap-2 pt-2">
               <button
                 type="submit"
-                className="w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-primary px-6 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+                className="w-full inline-flex min-h-11 items-center justify-center gap-2 rounded-[4px] bg-primary px-6 text-xs font-bold font-display text-white shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all cursor-pointer"
               >
                 <span>Launch Practice Drill</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
               <p className="text-[10px] font-mono text-text-muted text-center">
                 Press{" "}
-                <kbd className="px-1 py-0.5 rounded bg-surface border border-border text-[9px] font-bold text-text-primary">
+                <kbd className="px-1 py-0.5 rounded-[2px] bg-surface border border-border text-[9px] font-bold text-text-primary">
                   Enter ↵
                 </kbd>{" "}
                 to launch drill

@@ -107,14 +107,14 @@ export default function TimedTestPage() {
       />
 
       {status === "paused" ? (
-        <div className="neu-float flex flex-col items-center justify-center p-10 sm:p-12 rounded-3xl border border-border text-center my-6 shadow-xl max-w-xl mx-auto w-full">
+        <div className="flex flex-col items-center justify-center p-10 sm:p-12 rounded-[8px] border border-border bg-surface text-center my-6 shadow-card max-w-xl mx-auto w-full">
           <h2 className="text-2xl font-bold font-display text-text-primary">Assessment Paused</h2>
           <p className="text-xs text-text-secondary mt-1 mb-6">
             Timer is frozen. Resume whenever you are ready.
           </p>
           <button
             onClick={resumeSession}
-            className="py-3 px-8 rounded-2xl bg-primary text-white text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="py-3 px-8 rounded-[4px] bg-primary text-white text-xs font-bold font-display shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all cursor-pointer"
           >
             Resume Assessment
           </button>

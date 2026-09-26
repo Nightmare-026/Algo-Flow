@@ -69,9 +69,9 @@ export function LearningFeatures() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: index * 0.06 }}
-              className="neu-raised group rounded-2xl border border-border p-5 hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
+              className="group rounded-[8px] border border-border-subtle bg-surface p-5 shadow-card hover:shadow-card-hover hover:border-border-strong hover:-translate-y-0.5 transition-all duration-150"
             >
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-(--shadow-inset) group-hover:scale-105 transition-transform">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-[4px] border border-primary/20 bg-primary-muted text-primary group-hover:scale-105 transition-transform">
                 <Icon className="h-5 w-5" />
               </div>
               <h3 className="mb-1.5 text-base font-bold font-display text-text-primary group-hover:text-primary transition-colors">

@@ -59,14 +59,14 @@ export function HowItWorks() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.45, delay: index * 0.08 }}
-              className="neu-raised group relative flex flex-col justify-between rounded-2xl p-5 border border-border hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
+              className="group relative flex flex-col justify-between rounded-[8px] p-5 border border-border-subtle bg-surface shadow-card hover:shadow-card-hover hover:border-border-strong hover:-translate-y-0.5 transition-all duration-150"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-(--shadow-inset) group-hover:scale-105 transition-transform">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-[4px] border border-primary/20 bg-primary-muted text-primary transition-transform group-hover:scale-105">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <span className="font-mono text-[11px] font-bold text-text-muted px-2 py-0.5 rounded-md bg-surface-hover border border-border">
+                  <span className="font-mono text-[11px] font-bold text-text-muted px-2 py-0.5 rounded-full bg-surface-hover border border-border-subtle">
                     {step}
                   </span>
                 </div>

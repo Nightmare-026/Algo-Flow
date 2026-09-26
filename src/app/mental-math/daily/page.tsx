@@ -120,7 +120,7 @@ export default function DailyChallengePage() {
         <SessionResults summary={summary} onRestart={handleStartDaily} />
 
         {/* Daily Leaderboard Snapshot */}
-        <section className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4">
+        <section className="p-6 sm:p-8 rounded-[8px] border border-border bg-surface flex flex-col gap-4 shadow-card">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-bold font-display text-text-primary">
               Today&apos;s Global Leaderboard
@@ -141,7 +141,7 @@ export default function DailyChallengePage() {
                   className="py-3 flex items-center justify-between gap-4 text-xs"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-inset border border-border font-mono font-bold text-primary">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-[4px] bg-surface-secondary border border-border font-mono font-bold text-primary">
                       #{entry.rank}
                     </span>
                     <span className="font-bold text-text-primary">{entry.displayName}</span>
@@ -154,7 +154,7 @@ export default function DailyChallengePage() {
               ))}
             </div>
           ) : (
-            <div className="neu-inset p-6 rounded-2xl border border-border text-center text-xs text-text-muted shadow-inner">
+            <div className="p-6 rounded-[8px] border border-border bg-surface-secondary/50 text-center text-xs text-text-muted shadow-xs">
               No daily challenge runs recorded yet today. Complete the challenge to claim rank #1!
             </div>
           )}
@@ -166,8 +166,8 @@ export default function DailyChallengePage() {
   if (status === "idle") {
     return (
       <div className="flex w-full flex-col px-4 max-w-3xl mx-auto gap-6">
-        <div className="neu-float rounded-3xl p-6 sm:p-10 border border-border text-center flex flex-col items-center shadow-(--shadow-raised)">
-          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-inset text-primary border border-border shadow-inner mb-3">
+        <div className="rounded-[8px] p-6 sm:p-10 border border-border bg-surface text-center flex flex-col items-center shadow-elevated">
+          <span className="flex h-16 w-16 items-center justify-center rounded-[6px] bg-surface-secondary text-primary border border-border shadow-xs mb-3">
             <Trophy className="w-8 h-8" />
           </span>
 
@@ -184,7 +184,7 @@ export default function DailyChallengePage() {
 
           <button
             onClick={handleStartDaily}
-            className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-primary px-8 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-[4px] bg-primary px-8 text-xs font-bold font-display text-white shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all cursor-pointer"
           >
             <span>Start Today&apos;s Challenge</span>
             <ArrowRight className="w-4 h-4" />
@@ -192,7 +192,7 @@ export default function DailyChallengePage() {
         </div>
 
         {/* Daily Standings */}
-        <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-(--shadow-raised-sm)">
+        <div className="p-6 sm:p-8 rounded-[8px] border border-border bg-surface flex flex-col gap-4 shadow-card">
           <h2 className="text-lg font-bold font-display text-text-primary tracking-tight">
             Today&apos;s Top Solvers
           </h2>
@@ -204,7 +204,7 @@ export default function DailyChallengePage() {
                   className="py-3 flex items-center justify-between gap-4 text-xs"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-inset border border-border font-mono font-bold text-primary">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-[4px] bg-surface-secondary border border-border font-mono font-bold text-primary">
                       #{entry.rank}
                     </span>
                     <span className="font-bold text-text-primary">{entry.displayName}</span>
@@ -217,7 +217,7 @@ export default function DailyChallengePage() {
               ))}
             </div>
           ) : (
-            <div className="neu-inset p-8 rounded-2xl border border-border text-center flex flex-col items-center justify-center gap-2 shadow-inner">
+            <div className="p-8 rounded-[8px] border border-border bg-surface-secondary/50 text-center flex flex-col items-center justify-center gap-2 shadow-xs">
               <Trophy className="w-8 h-8 text-primary/60 mb-1" />
               <p className="text-sm font-bold font-display text-text-primary">
                 No global runs recorded yet today

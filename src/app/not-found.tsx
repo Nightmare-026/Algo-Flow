@@ -9,8 +9,8 @@ export default function NotFound() {
       id="main-content"
       className="flex min-h-screen items-center justify-center bg-background px-4 py-16 text-foreground"
     >
-      <section className="neu-float w-full max-w-lg rounded-3xl p-8 sm:p-10 text-center border border-border">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset) text-primary">
+      <section className="w-full max-w-lg rounded-[8px] p-8 sm:p-10 text-center border border-border bg-surface shadow-elevated">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-[8px] border border-border bg-surface-secondary/70 text-primary">
           <SearchX aria-hidden="true" className="h-10 w-10" />
         </div>
         <p className="font-mono text-xs font-bold uppercase tracking-widest text-primary">

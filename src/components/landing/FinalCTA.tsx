@@ -16,17 +16,17 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="neu-float relative overflow-hidden rounded-3xl border border-border p-8 sm:p-12 md:p-16 text-center"
+          className="relative overflow-hidden rounded-[8px] border border-border-strong/40 bg-secondary p-8 sm:p-12 md:p-16 text-center text-white shadow-elevated"
         >
-          {/* Background Ambient Glow */}
-          <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-96 rounded-full bg-primary/10 blur-3xl" />
+          {/* Subtle Ambient Glow */}
+          <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-96 rounded-full bg-primary/20 blur-3xl" />
 
           <div className="relative mx-auto max-w-2xl">
-            <h2 className="text-3xl font-extrabold font-display leading-tight text-text-primary sm:text-4xl md:text-5xl">
-              Ready to Master Algorithms <span className="text-gradient-primary">Visually?</span>
+            <h2 className="text-3xl font-bold font-display leading-tight text-white sm:text-4xl md:text-5xl">
+              Ready to Master Algorithms <span className="text-partner-gold">Visually?</span>
             </h2>
 
-            <p className="mt-5 text-base sm:text-lg leading-relaxed text-text-secondary">
+            <p className="mt-5 text-base sm:text-lg leading-relaxed text-secondary-muted">
               Open the catalog, pick your topic, configure inputs, and step through state changes.
               No installation required.
             </p>
@@ -36,7 +36,8 @@ export function FinalCTA() {
                 href="/visualizers"
                 className={buttonVariants({
                   size: "lg",
-                  className: "w-full sm:w-auto shadow-(--shadow-raised)",
+                  className:
+                    "w-full sm:w-auto shadow-card bg-primary hover:bg-primary-hover text-white border-primary",
                 })}
               >
                 <Compass className="h-4 w-4" />
@@ -46,9 +47,10 @@ export function FinalCTA() {
               <Link
                 href="/signup"
                 className={buttonVariants({
-                  variant: "secondary",
+                  variant: "outline",
                   size: "lg",
-                  className: "w-full sm:w-auto",
+                  className:
+                    "w-full sm:w-auto border-white/60 text-white hover:bg-white/10 hover:border-white",
                 })}
               >
                 Create Free Account

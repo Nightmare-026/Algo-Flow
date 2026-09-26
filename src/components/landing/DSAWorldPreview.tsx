@@ -78,14 +78,14 @@ export function DSAWorldPreview() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: index * 0.08 }}
-              className="neu-raised group flex flex-col justify-between rounded-2xl border border-border p-5 hover:border-primary/40 hover:-translate-y-1 transition-all duration-200"
+              className="group flex flex-col justify-between rounded-[8px] border border-border-subtle bg-surface p-5 shadow-card hover:shadow-card-hover hover:border-border-strong hover:-translate-y-0.5 transition-all duration-150"
             >
               <div>
                 <div className="mb-4 flex items-center justify-between gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-inset text-primary shadow-(--shadow-inset) group-hover:scale-105 transition-transform">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-[4px] border border-primary/20 bg-primary-muted text-primary group-hover:scale-105 transition-transform">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <span className="rounded-lg border border-border bg-bg-surface-inset px-2.5 py-0.5 font-mono text-[10px] font-bold text-text-muted shadow-(--shadow-inset)">
+                  <span className="rounded-full border border-border-subtle bg-surface-secondary px-2.5 py-0.5 font-mono text-[10px] font-semibold text-text-muted">
                     {detail}
                   </span>
                 </div>

@@ -47,13 +47,13 @@ export const footerSections = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-auto border-t border-border bg-surface/50 transition-colors duration-200 px-4 sm:px-6 lg:px-8">
+    <footer className="relative mt-auto border-t border-border-subtle bg-surface-secondary/70 transition-colors duration-150 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl py-12 lg:py-16">
         <div className="grid gap-8 sm:gap-10 grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-1 flex flex-col gap-4">
-            <Link href="/" className="inline-flex min-h-11 items-center gap-3 rounded-xl pr-2">
-              <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm)">
+            <Link href="/" className="inline-flex min-h-11 items-center gap-3 rounded-[4px] pr-2">
+              <span className="relative flex h-10 w-10 items-center justify-center rounded-[4px] border border-border-subtle bg-surface shadow-card">
                 <Image
                   src="/logo.png"
                   alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
@@ -62,7 +62,7 @@ export function Footer() {
                   className="object-contain"
                 />
               </span>
-              <span className="font-display text-xl font-extrabold text-text-primary">
+              <span className="font-display text-xl font-bold text-text-primary">
                 Algo<span className="text-primary">Flow</span>
               </span>
             </Link>

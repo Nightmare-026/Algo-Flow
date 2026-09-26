@@ -40,10 +40,10 @@ export function MobileCurriculumNav({
   return (
     <>
       {/* Sticky Mobile Sub-Navbar */}
-      <div className="lg:hidden sticky top-16 z-30 flex items-center justify-between gap-2 px-4 py-2.5 bg-surface/90 backdrop-blur-md border-b border-border/80 neu-raised mb-6">
+      <div className="lg:hidden sticky top-16 z-30 flex items-center justify-between gap-2 px-4 py-2.5 bg-surface/90 backdrop-blur-md border-b border-border shadow-xs mb-6">
         <button
           onClick={() => setActiveDrawer("curriculum")}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-surface-raised/80 text-xs font-semibold text-foreground hover:bg-surface-raised cursor-pointer"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-[4px] border border-border bg-surface text-xs font-semibold text-foreground hover:bg-surface-hover cursor-pointer"
         >
           <BookOpen className="w-3.5 h-3.5 text-primary" />
           <span>Curriculum Menu</span>
@@ -51,7 +51,7 @@ export function MobileCurriculumNav({
 
         <button
           onClick={() => setActiveDrawer("toc")}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-surface-raised/80 text-xs font-semibold text-foreground hover:bg-surface-raised cursor-pointer"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-[4px] border border-border bg-surface text-xs font-semibold text-foreground hover:bg-surface-hover cursor-pointer"
         >
           <ListTree className="w-3.5 h-3.5 text-primary" />
           <span>On This Page</span>
@@ -63,7 +63,7 @@ export function MobileCurriculumNav({
         <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center bg-black/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-200">
           <div className="fixed inset-0" onClick={() => setActiveDrawer(null)} aria-hidden="true" />
 
-          <div className="relative z-10 max-h-[85vh] bg-surface rounded-t-3xl sm:rounded-3xl p-5 border border-border shadow-2xl flex flex-col mx-auto w-full max-w-lg neu-raised">
+          <div className="relative z-10 max-h-[85vh] bg-surface rounded-t-[8px] sm:rounded-[8px] p-5 border border-border shadow-elevated flex flex-col mx-auto w-full max-w-lg">
             {/* Drawer Header */}
             <div className="flex items-center justify-between pb-3 border-b border-border mb-4">
               <h3 className="text-sm font-bold text-foreground truncate pr-2">
@@ -75,7 +75,7 @@ export function MobileCurriculumNav({
               </h3>
               <button
                 onClick={() => setActiveDrawer(null)}
-                className="p-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-surface-raised"
+                className="p-1.5 rounded-[4px] border border-border text-muted-foreground hover:text-foreground hover:bg-surface-hover cursor-pointer"
                 aria-label="Close menu"
               >
                 <X className="w-4 h-4" />

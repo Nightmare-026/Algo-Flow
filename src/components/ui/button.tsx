@@ -8,22 +8,21 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variants: Record<NonNullable<ButtonProps["variant"]>, string> = {
   default:
-    "border border-primary/30 bg-primary text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover hover:border-primary active:scale-[0.98]",
+    "border border-primary bg-primary text-white shadow-card hover:bg-primary-hover hover:border-primary-hover focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.99]",
   secondary:
-    "border border-border bg-surface text-foreground shadow-(--shadow-raised-sm) hover:bg-surface-hover hover:border-border-hover active:scale-[0.98]",
+    "border border-border-subtle bg-surface text-foreground shadow-card hover:bg-surface-hover hover:border-border-strong active:scale-[0.99]",
   ghost:
-    "border border-transparent text-muted-foreground hover:bg-primary-muted hover:text-primary active:scale-[0.98]",
+    "border border-transparent text-text-secondary hover:bg-surface-hover hover:text-text-primary active:scale-[0.99]",
   outline:
-    "border border-border bg-surface/50 text-foreground shadow-(--shadow-raised-sm) hover:border-primary/50 hover:bg-surface-hover hover:text-primary active:scale-[0.98]",
-  destructive:
-    "border border-destructive/40 bg-destructive text-destructive-foreground hover:brightness-95 active:scale-[0.98]",
+    "border-[1.5px] border-primary bg-transparent text-primary hover:bg-primary-muted/60 active:scale-[0.99]",
+  destructive: "border border-error bg-error text-white hover:bg-error/90 active:scale-[0.99]",
 };
 
 const sizes: Record<NonNullable<ButtonProps["size"]>, string> = {
-  sm: "min-h-[var(--btn-size-sm)] px-3 text-xs rounded-lg",
-  md: "min-h-[var(--btn-size-md)] px-4 text-sm rounded-xl",
-  lg: "min-h-[var(--btn-size-lg)] px-6 text-base rounded-xl font-bold",
-  icon: "h-[var(--btn-size-icon)] w-[var(--btn-size-icon)] p-0 rounded-xl",
+  sm: "min-h-9 px-3 text-xs rounded-[4px]",
+  md: "min-h-11 px-4 text-sm rounded-[4px]",
+  lg: "min-h-12 px-6 text-base rounded-[4px] font-bold",
+  icon: "h-11 w-11 p-0 rounded-[4px]",
 };
 
 export const buttonVariants = ({
@@ -37,19 +36,19 @@ export const buttonVariants = ({
 } = {}) => {
   const hasCustomHeight = Boolean(className && /\bh-\d+/.test(className));
   const hasCustomRadius = Boolean(
-    className && /\brounded-(?:none|sm|md|lg|xl|2xl|3xl|full)\b/.test(className)
+    className && /\brounded-(?:none|sm|md|lg|xl|2xl|3xl|full|\[[^\]]+\])\b/.test(className)
   );
 
   let sizeClass = sizes[size];
   if (hasCustomHeight) {
-    sizeClass = sizeClass.replace(/min-h-\[[^\]]+\]\s*/g, "");
+    sizeClass = sizeClass.replace(/min-h-\d+\s*/g, "");
   }
   if (hasCustomRadius) {
-    sizeClass = sizeClass.replace(/rounded-(?:lg|xl)\s*/g, "");
+    sizeClass = sizeClass.replace(/rounded-\[[^\]]+\]\s*/g, "");
   }
 
   return cn(
-    "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer",
+    "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer",
     variants[variant],
     sizeClass,
     className

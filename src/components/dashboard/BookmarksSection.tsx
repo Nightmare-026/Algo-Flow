@@ -10,18 +10,18 @@ export interface BookmarksSectionProps {
 
 export function BookmarksSection({ bookmarks }: BookmarksSectionProps) {
   return (
-    <section className="neu-raised p-6 rounded-3xl border border-border flex flex-col justify-between">
+    <section className="p-6 rounded-[8px] border border-border bg-surface shadow-card flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-secondary-muted text-secondary border border-secondary/20">
+            <span className="flex h-7 w-7 items-center justify-center rounded-[4px] bg-secondary-muted text-secondary border border-secondary/20">
               <Bookmark className="w-3.5 h-3.5 fill-current" />
             </span>
             <h2 className="text-base font-bold font-display text-text-primary">
               Saved Visualizers
             </h2>
           </div>
-          <span className="text-[11px] font-mono font-bold text-text-muted bg-surface-inset px-2.5 py-0.5 rounded-lg border border-border">
+          <span className="text-[11px] font-mono font-bold text-text-muted bg-surface-secondary px-2.5 py-0.5 rounded-full border border-border">
             {bookmarks.length} Saved
           </span>
         </div>
@@ -31,7 +31,7 @@ export function BookmarksSection({ bookmarks }: BookmarksSectionProps) {
             {bookmarks.slice(0, 4).map((item) => (
               <div
                 key={item.id}
-                className="flex items-center justify-between p-3 rounded-2xl border border-border/80 bg-surface hover:bg-surface-hover/80 hover:border-primary/30 transition-all group"
+                className="flex items-center justify-between p-3 rounded-[6px] border border-border bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-xs"
               >
                 <div className="min-w-0 pr-3">
                   <div className="flex items-center gap-2">
@@ -39,7 +39,7 @@ export function BookmarksSection({ bookmarks }: BookmarksSectionProps) {
                     {item.difficulty && (
                       <span
                         className={cn(
-                          "px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase",
+                          "px-1.5 py-0.2 rounded-[2px] text-[9px] font-mono font-bold uppercase",
                           item.difficulty === "easy" && "bg-success-muted text-success",
                           item.difficulty === "medium" && "bg-warning-muted text-warning",
                           item.difficulty === "hard" && "bg-error-muted text-error"
@@ -58,7 +58,7 @@ export function BookmarksSection({ bookmarks }: BookmarksSectionProps) {
 
                 <Link
                   href={`/visualizer/${item.slug}`}
-                  className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-hover shadow-(--shadow-raised-sm) transition-transform active:scale-95 shrink-0"
+                  className="flex h-8 w-8 items-center justify-center rounded-[4px] bg-primary text-white hover:bg-primary-hover shadow-xs transition-transform active:scale-[0.99] shrink-0"
                   aria-label={`Launch ${item.name} visualizer`}
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
@@ -67,7 +67,7 @@ export function BookmarksSection({ bookmarks }: BookmarksSectionProps) {
             ))}
           </div>
         ) : (
-          <div className="neu-inset p-5 rounded-2xl border border-border text-center flex flex-col items-center justify-center">
+          <div className="p-5 rounded-[8px] border border-border bg-surface-secondary/50 text-center flex flex-col items-center justify-center shadow-xs">
             <Bookmark className="w-6 h-6 text-text-muted mb-2 stroke-[1.5]" />
             <p className="text-xs font-bold text-text-primary">No bookmarks yet</p>
             <p className="text-[11px] text-text-secondary mt-1 max-w-55">

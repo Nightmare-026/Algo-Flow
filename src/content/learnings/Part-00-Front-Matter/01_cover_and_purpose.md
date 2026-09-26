@@ -40,7 +40,7 @@ AlgoFlow bridges this divide by enforcing four foundational pillars across every
 └──────────────────────────────────┴─────────────────────────────────────┘
 ```
 
-<div class="my-8 p-6 rounded-2xl border border-border/80 bg-surface/80 neu-raised">
+<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Architecture Blueprint</span>
 <span>•</span>
@@ -100,7 +100,7 @@ Educational psychologist Benjamin Bloom established a hierarchical ordering of c
 
 Passive reading (skimming solution videos or reading textbook code) confines students to the bottom two levels, generating the illusion of competence. True software engineering and high-performance systems design demand mastery through Level 6.
 
-<div class="my-8 p-6 rounded-2xl border border-border/80 bg-surface/80 neu-raised">
+<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Cognitive Hierarchy</span>
 <span>•</span>
@@ -174,7 +174,7 @@ Under modern computer architectures (e.g., x86-64 and ARM64), CPU arithmetic ope
 └─────────────────────┴──────────────┴──────────────┴────────────────────┘
 ```
 
-<div class="my-8 p-6 rounded-2xl border border-border/80 bg-surface/80 neu-raised">
+<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Hardware Physics</span>
 <span>•</span>

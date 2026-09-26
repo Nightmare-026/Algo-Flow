@@ -26,7 +26,7 @@ In 1945, mathematician George Pólya published *How to Solve It*, identifying fo
 
 In contemporary computer science, Pólya's framework is operationalized into the **6-Step Engineering Problem-Solving Pipeline**:
 
-<div class="my-8 p-6 rounded-2xl border border-border/80 bg-surface/80 neu-raised">
+<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Engineering Methodology</span>
 <span>•</span>

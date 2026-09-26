@@ -89,11 +89,11 @@ export function CodeLanguages() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5 }}
-          className="neu-float overflow-hidden rounded-3xl border border-border bg-surface shadow-(--shadow-float)"
+          className="overflow-hidden rounded-[8px] border border-border-subtle bg-surface shadow-card"
         >
           {/* Language Selector Tabs */}
           <div
-            className="flex items-center gap-1.5 overflow-x-auto border-b border-border bg-surface-inset p-2 sm:px-3.5"
+            className="flex items-center gap-1.5 overflow-x-auto border-b border-border-subtle bg-surface-secondary/70 p-2 sm:px-3.5"
             role="tablist"
             aria-label="Algorithm code languages"
           >
@@ -111,10 +111,10 @@ export function CodeLanguages() {
                   onClick={() => setActiveTab(language.language)}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
                   className={cn(
-                    "flex min-h-9 items-center gap-2 rounded-xl px-3.5 text-xs sm:text-[13px] font-bold transition-all duration-200 cursor-pointer select-none",
+                    "flex min-h-9 items-center gap-2 rounded-[4px] px-3.5 text-xs sm:text-[13px] font-semibold transition-all duration-150 cursor-pointer select-none",
                     isActive
-                      ? "border border-primary/30 bg-primary text-white shadow-(--shadow-raised-sm)"
-                      : "text-text-secondary hover:bg-surface hover:text-text-primary"
+                      ? "border border-primary bg-primary text-white shadow-card"
+                      : "text-text-secondary hover:bg-surface hover:text-text-primary border border-transparent"
                   )}
                 >
                   <span className="font-mono text-[10px] uppercase tracking-wider opacity-80">
@@ -127,18 +127,18 @@ export function CodeLanguages() {
           </div>
 
           {/* Description & Copy Action Header */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface px-5 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle bg-surface px-5 py-3">
             <span className="text-xs sm:text-[13px] font-medium text-text-secondary">
               {activeLanguage.description}
             </span>
             <button
               type="button"
-              className="inline-flex h-8 items-center gap-2 rounded-xl border border-border bg-surface px-3 text-xs font-bold text-text-primary shadow-(--shadow-raised-sm) hover:border-primary/40 hover:text-primary active:scale-95 transition-all"
+              className="inline-flex h-8 items-center gap-2 rounded-[4px] border border-border-subtle bg-surface px-3 text-xs font-semibold text-text-primary shadow-card hover:border-primary hover:text-primary active:scale-95 transition-all cursor-pointer"
               onClick={handleCopy}
               aria-label={`Copy ${activeLanguage.name} code`}
             >
               {copyStatus === "copied" ? (
-                <Check className="h-3.5 w-3.5 text-success" />
+                <Check className="h-3.5 w-3.5 text-credential-emerald" />
               ) : (
                 <Copy className="h-3.5 w-3.5" />
               )}
@@ -162,13 +162,11 @@ export function CodeLanguages() {
           >
             <div className="table w-full border-collapse">
               {activeLanguage.code.split("\n").map((line, idx) => (
-                <div key={idx} className="table-row hover:bg-emerald-500/5 transition-colors">
-                  <span className="table-cell select-none pr-4 sm:pr-5 text-right text-emerald-500/35 font-mono text-[10px] sm:text-[11px] w-7">
+                <div key={idx} className="table-row hover:bg-slate-800/40 transition-colors">
+                  <span className="table-cell select-none pr-4 sm:pr-5 text-right text-slate-500 font-mono text-[10px] sm:text-[11px] w-7">
                     {idx + 1}
                   </span>
-                  <span className="table-cell text-emerald-100 font-mono whitespace-pre">
-                    {line}
-                  </span>
+                  <span className="table-cell text-slate-200 font-mono whitespace-pre">{line}</span>
                 </div>
               ))}
             </div>

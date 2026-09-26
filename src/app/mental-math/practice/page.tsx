@@ -160,7 +160,7 @@ export default function PracticeGamePage() {
       />
 
       {status === "paused" ? (
-        <div className="neu-float flex flex-col items-center justify-center p-10 sm:p-12 rounded-3xl border border-border text-center my-6 shadow-xl max-w-xl mx-auto w-full">
+        <div className="flex flex-col items-center justify-center p-10 sm:p-12 rounded-[8px] border border-border bg-surface text-center my-6 shadow-card max-w-xl mx-auto w-full">
           <h2 className="text-2xl font-bold font-display text-text-primary">Session Paused</h2>
           <p className="text-xs sm:text-sm text-text-secondary mt-1 mb-6">
             Take a breath. Your score and progress are saved.
@@ -168,13 +168,13 @@ export default function PracticeGamePage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowConfig(true)}
-              className="py-3 px-6 rounded-2xl border border-border bg-surface text-text-primary text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-surface-hover active:scale-95 transition-all cursor-pointer"
+              className="py-3 px-6 rounded-[4px] border border-border bg-surface text-text-primary text-xs font-bold font-display shadow-xs hover:bg-surface-secondary active:scale-[0.99] transition-all cursor-pointer"
             >
               Change Drill
             </button>
             <button
               onClick={resumeSession}
-              className="py-3 px-8 rounded-2xl bg-primary text-white text-xs font-bold font-display shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+              className="py-3 px-8 rounded-[4px] bg-primary text-white text-xs font-bold font-display shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all cursor-pointer"
             >
               Resume Practice
             </button>

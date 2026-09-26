@@ -284,7 +284,7 @@ export function VisualizerLayout({
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 450, damping: 30 }}
               aria-live="polite"
-              className="fixed right-4 top-16 z-[70] flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3 text-xs font-bold text-text-primary shadow-(--shadow-float) backdrop-blur-md"
+              className="fixed right-4 top-16 z-[70] flex items-center gap-3 rounded-[8px] border border-border bg-surface px-4 py-3 text-xs font-bold text-text-primary shadow-elevated backdrop-blur-md"
             >
               <span>{statusMessage}</span>
               {statusMessage.toLowerCase().includes("log in") && (
@@ -331,7 +331,7 @@ export function VisualizerLayout({
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.92, opacity: 0, y: 10 }}
                         transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                        className="neu-float w-full max-w-md rounded-3xl border border-border bg-surface p-6 shadow-(--shadow-float)"
+                        className="w-full max-w-md rounded-[8px] border border-border bg-surface p-6 shadow-elevated"
                       >
                         <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
                           Interactive Challenge
@@ -349,9 +349,9 @@ export function VisualizerLayout({
                               key={i}
                               onClick={() => setPracticeSelected(opt)}
                               className={cn(
-                                "w-full rounded-xl border p-3.5 text-left text-xs font-bold transition-all cursor-pointer select-none",
+                                "w-full rounded-[4px] border p-3.5 text-left text-xs font-bold transition-all cursor-pointer select-none",
                                 practiceSelected === opt
-                                  ? "border-primary bg-primary-muted text-primary shadow-(--shadow-inset)"
+                                  ? "border-primary bg-primary-muted text-primary shadow-xs"
                                   : "border-border bg-surface text-text-secondary hover:border-border-hover hover:text-text-primary",
                                 practiceFeedback === "correct" &&
                                   opt === practiceAnswer &&
@@ -376,7 +376,7 @@ export function VisualizerLayout({
                           <button
                             onClick={handlePracticeSubmit}
                             disabled={!practiceSelected || practiceFeedback === "correct"}
-                            className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover disabled:opacity-40 cursor-pointer"
+                            className="rounded-[4px] bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-card hover:bg-primary-hover disabled:opacity-40 cursor-pointer"
                           >
                             Submit Answer
                           </button>
@@ -387,7 +387,7 @@ export function VisualizerLayout({
                 </AnimatePresence>
 
                 {/* Floating Step Badge */}
-                <div className="neu-inset absolute right-4 top-4 rounded-xl px-3 py-1.5 text-xs font-mono font-bold text-text-primary border border-border shadow-(--shadow-inset) backdrop-blur-md">
+                <div className="absolute right-4 top-4 rounded-[4px] px-3 py-1.5 text-xs font-mono font-bold text-text-primary border border-border bg-surface/90 shadow-card backdrop-blur-md">
                   {totalSteps > 0 ? (
                     `Step ${currentStepIndex + 1} / ${totalSteps}`
                   ) : (
@@ -398,7 +398,7 @@ export function VisualizerLayout({
                 {/* Fullscreen Button */}
                 <button
                   onClick={handleFullscreen}
-                  className="absolute bottom-4 right-4 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-surface text-text-muted shadow-(--shadow-raised-sm) transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
+                  className="absolute bottom-4 right-4 inline-flex h-9 w-9 items-center justify-center rounded-[4px] border border-border bg-surface text-text-muted shadow-card transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
                   title="Toggle Fullscreen Canvas"
                   aria-label="Fullscreen Canvas"
                 >
@@ -424,7 +424,7 @@ export function VisualizerLayout({
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.92, opacity: 0, y: 10 }}
                     transition={{ type: "spring", stiffness: 400, damping: 28 }}
-                    className="neu-float w-full max-w-md rounded-3xl border border-border bg-surface p-6 shadow-(--shadow-float) max-h-[85vh] overflow-y-auto"
+                    className="w-full max-w-md rounded-[8px] border border-border bg-surface p-6 shadow-elevated max-h-[85vh] overflow-y-auto"
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h2
@@ -435,7 +435,7 @@ export function VisualizerLayout({
                       </h2>
                       <button
                         onClick={closeShortcuts}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-all cursor-pointer"
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-all cursor-pointer"
                         aria-label="Close shortcuts"
                       >
                         <X className="h-4 w-4" />
@@ -613,7 +613,7 @@ export function VisualizerLayout({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 10 }}
               transition={{ type: "spring", stiffness: 400, damping: 28 }}
-              className="neu-float w-full max-w-md rounded-3xl border border-border bg-surface p-6 shadow-(--shadow-float) focus:outline-none"
+              className="w-full max-w-md rounded-[8px] border border-border bg-surface p-6 shadow-elevated focus:outline-none"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 id="tour-title" className="text-xl font-bold font-display text-text-primary">
@@ -621,7 +621,7 @@ export function VisualizerLayout({
                 </h2>
                 <button
                   onClick={closeTour}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-colors cursor-pointer"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-colors cursor-pointer"
                   aria-label="Close tour"
                 >
                   <X className="h-4 w-4" />
@@ -665,14 +665,14 @@ export function VisualizerLayout({
                       {tourStep < tourSteps.length - 1 ? (
                         <button
                           onClick={nextTourStep}
-                          className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover cursor-pointer"
+                          className="rounded-[4px] bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-card hover:bg-primary-hover cursor-pointer"
                         >
                           Next
                         </button>
                       ) : (
                         <button
                           onClick={closeTour}
-                          className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover cursor-pointer"
+                          className="rounded-[4px] bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-card hover:bg-primary-hover cursor-pointer"
                         >
                           Get Started
                         </button>

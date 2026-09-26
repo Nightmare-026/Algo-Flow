@@ -64,9 +64,9 @@ export default function MentalMathHubPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-(--shadow-raised-sm)">
+          <div className="p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
             <div>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-inset border border-border text-primary shadow-inner mb-4 font-mono font-bold text-sm">
+              <span className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-surface-secondary border border-border text-primary shadow-xs mb-4 font-mono font-bold text-sm">
                 01
               </span>
               <h3 className="text-base font-bold font-display text-text-primary tracking-tight">
@@ -82,9 +82,9 @@ export default function MentalMathHubPage() {
             </div>
           </div>
 
-          <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-(--shadow-raised-sm)">
+          <div className="p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
             <div>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-inset border border-border text-primary shadow-inner mb-4 font-mono font-bold text-sm">
+              <span className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-surface-secondary border border-border text-primary shadow-xs mb-4 font-mono font-bold text-sm">
                 02
               </span>
               <h3 className="text-base font-bold font-display text-text-primary tracking-tight">
@@ -100,9 +100,9 @@ export default function MentalMathHubPage() {
             </div>
           </div>
 
-          <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-(--shadow-raised-sm)">
+          <div className="p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
             <div>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-inset border border-border text-primary shadow-inner mb-4 font-mono font-bold text-sm">
+              <span className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-surface-secondary border border-border text-primary shadow-xs mb-4 font-mono font-bold text-sm">
                 03
               </span>
               <h3 className="text-base font-bold font-display text-text-primary tracking-tight">
@@ -118,30 +118,30 @@ export default function MentalMathHubPage() {
             </div>
           </div>
 
-          <div className="neu-raised p-6 rounded-3xl border border-border bg-surface flex flex-col justify-between shadow-(--shadow-raised-sm)">
+          <div className="p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
             <div>
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-inset border border-border text-primary shadow-inner mb-4 font-mono font-bold text-sm">
+              <span className="flex h-10 w-10 items-center justify-center rounded-[4px] bg-surface-secondary border border-border text-primary shadow-xs mb-4 font-mono font-bold text-sm">
                 04
               </span>
               <h3 className="text-base font-bold font-display text-text-primary tracking-tight">
-                Anchor Squaring (a±b)Â²
+                Anchor Squaring (a±b)²
               </h3>
               <p className="text-xs text-text-secondary mt-2 leading-relaxed">
-                Square numbers close to base-50 anchors instantly using (50±d)Â² = (25±d)×100 + dÂ².
+                Square numbers close to base-50 anchors instantly using (50±d)² = (25±d)×100 + d².
                 Solves two-digit squares in under 2 seconds.
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-border/60 text-[11px] font-mono text-primary font-bold">
-              53Â² → (25+3)×100 + 3Â² = 2,809
+              53² → (25+3)×100 + 3² = 2,809
             </div>
           </div>
         </div>
       </section>
 
       {/* Mastery Telemetry & Student Command Center Gateway Banner */}
-      <section className="neu-float relative overflow-hidden rounded-3xl p-6 sm:p-8 border border-border bg-surface shadow-(--shadow-raised) flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <section className="relative overflow-hidden rounded-[8px] p-6 sm:p-8 border border-border bg-surface shadow-card flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-start gap-4 max-w-2xl">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-surface-inset border border-border text-primary shadow-inner">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[6px] bg-surface-secondary border border-border text-primary shadow-xs">
             <BarChart3 className="w-6 h-6" />
           </span>
           <div>
@@ -159,14 +159,14 @@ export default function MentalMathHubPage() {
         <div className="flex flex-wrap items-center gap-3 shrink-0 self-stretch md:self-auto">
           <Link
             href="/mental-math/progress"
-            className="flex-1 md:flex-none inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="flex-1 md:flex-none inline-flex min-h-11 items-center justify-center gap-2 rounded-[4px] bg-primary px-5 text-xs font-bold font-display text-white shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all cursor-pointer"
           >
             <span>View Mastery & Stats</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
           <Link
             href="/dashboard"
-            className="flex-1 md:flex-none inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-5 text-xs font-bold font-display text-text-primary hover:text-primary hover:bg-surface-hover shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer"
+            className="flex-1 md:flex-none inline-flex min-h-11 items-center justify-center gap-2 rounded-[4px] border border-border bg-surface px-5 text-xs font-bold font-display text-text-primary hover:text-primary hover:bg-surface-secondary shadow-xs active:scale-[0.99] transition-all cursor-pointer"
           >
             <span>Student Dashboard</span>
           </Link>

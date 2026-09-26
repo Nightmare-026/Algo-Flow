@@ -52,12 +52,12 @@ export function CalculationDisplay({
     return (
       <div
         className={cn(
-          "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-2xl sm:rounded-3xl border transition-all duration-300 backdrop-blur-xl p-4 sm:p-6 lg:p-8 shadow-(--shadow-raised-sm) neu-raised relative overflow-hidden select-none",
+          "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-[8px] border transition-all duration-300 bg-surface p-4 sm:p-6 lg:p-8 shadow-card relative overflow-hidden select-none",
           isAnswered
             ? isCorrect
-              ? "border-success/50 bg-success-muted/10 shadow-[0_0_40px_rgba(34,197,94,0.15)]"
-              : "border-error/50 bg-error-muted/10 shadow-[0_0_40px_rgba(239,68,68,0.15)]"
-            : "border-border/80 bg-surface/90"
+              ? "border-success/50 bg-success-muted/10 shadow-[0_0_40px_rgba(15,138,95,0.15)]"
+              : "border-error/50 bg-error-muted/10 shadow-[0_0_40px_rgba(186,26,26,0.15)]"
+            : "border-border/80 bg-surface"
         )}
         role="region"
         aria-label={screenReaderText}
@@ -74,16 +74,16 @@ export function CalculationDisplay({
           <div>
             {isAnswered ? (
               isCorrect ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
                   Correct ✓
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
                   Incorrect ✗
                 </span>
               )
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-bold text-text-muted bg-surface-inset border border-border">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-mono font-bold text-text-muted bg-surface-secondary border border-border">
                 Solve
               </span>
             )}
@@ -93,7 +93,7 @@ export function CalculationDisplay({
         {/* Vertical Calculation Rule Box */}
         <div className="flex-1 flex items-center justify-center my-2 sm:my-4">
           <div
-            className="neu-inset relative inline-flex flex-col items-end px-6 sm:px-10 py-4 sm:py-6 rounded-2xl sm:rounded-3xl border border-border bg-surface-inset shadow-(--shadow-inset)"
+            className="relative inline-flex flex-col items-end px-6 sm:px-10 py-4 sm:py-6 rounded-[8px] border border-border bg-surface-secondary/70 shadow-xs"
             style={{ minWidth: `${Math.max(160, maxLen * 32)}px` }}
           >
             {/* Top Operand */}
@@ -105,7 +105,7 @@ export function CalculationDisplay({
             <div className="flex items-center justify-between w-full font-mono tabular-nums text-3xl sm:text-5xl font-extrabold text-text-primary tracking-wider select-none mt-2">
               <span
                 className={cn(
-                  "inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl border text-lg sm:text-xl font-bold font-display shadow-sm mr-4",
+                  "inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-[4px] border text-lg sm:text-xl font-bold font-display shadow-xs mr-4",
                   getOpBadgeClass()
                 )}
               >
@@ -164,12 +164,12 @@ export function CalculationDisplay({
   return (
     <div
       className={cn(
-        "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-2xl sm:rounded-3xl border transition-all duration-300 backdrop-blur-xl p-4 sm:p-6 lg:p-8 shadow-(--shadow-raised-sm) neu-raised relative overflow-hidden select-none",
+        "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-[8px] border transition-all duration-300 bg-surface p-4 sm:p-6 lg:p-8 shadow-card relative overflow-hidden select-none",
         isAnswered
           ? isCorrect
-            ? "border-success/50 bg-success-muted/10 shadow-[0_0_40px_rgba(34,197,94,0.15)]"
-            : "border-error/50 bg-error-muted/10 shadow-[0_0_40px_rgba(239,68,68,0.15)]"
-          : "border-border/80 bg-surface/90"
+            ? "border-success/50 bg-success-muted/10 shadow-[0_0_40px_rgba(15,138,95,0.15)]"
+            : "border-error/50 bg-error-muted/10 shadow-[0_0_40px_rgba(186,26,26,0.15)]"
+          : "border-border/80 bg-surface"
       )}
       role="region"
       aria-label={screenReaderText}
@@ -186,16 +186,16 @@ export function CalculationDisplay({
         <div>
           {isAnswered ? (
             isCorrect ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
                 Correct ✓
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
                 Incorrect ✗
               </span>
             )
           ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-mono font-bold text-text-muted bg-surface-inset border border-border">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-mono font-bold text-text-muted bg-surface-secondary border border-border">
               Solve
             </span>
           )}
@@ -204,14 +204,14 @@ export function CalculationDisplay({
 
       {/* Main Calculation Stage */}
       <div className="flex-1 flex items-center justify-center w-full my-2 sm:my-4">
-        <div className="neu-inset relative inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-5 sm:px-8 py-4 sm:py-6 rounded-2xl sm:rounded-3xl border border-border bg-surface-inset transition-all duration-300 select-none shadow-(--shadow-inset) max-w-full">
+        <div className="relative inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-5 sm:px-8 py-4 sm:py-6 rounded-[8px] border border-border bg-surface-secondary/70 transition-all duration-300 select-none shadow-xs max-w-full">
           {signature.operation === "squares" ? (
             <div className="flex items-center">
               <span className="font-mono tabular-nums text-3xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight">
                 {op1}
               </span>
               <span className="font-mono text-xl sm:text-3xl font-bold text-primary -mt-4 sm:-mt-6 ml-0.5">
-                Â²
+                ²
               </span>
             </div>
           ) : signature.operation === "cubes" ? (
@@ -220,7 +220,7 @@ export function CalculationDisplay({
                 {op1}
               </span>
               <span className="font-mono text-xl sm:text-3xl font-bold text-primary -mt-4 sm:-mt-6 ml-0.5">
-                Â³
+                ³
               </span>
             </div>
           ) : signature.operation === "roots" ? (
@@ -251,7 +251,7 @@ export function CalculationDisplay({
               </span>
               <span
                 className={cn(
-                  "inline-flex items-center justify-center min-w-9 h-9 sm:min-w-12 sm:h-12 lg:min-w-14 lg:h-14 px-2 rounded-xl sm:rounded-2xl border text-xl sm:text-2xl lg:text-3xl font-extrabold font-display shadow-sm",
+                  "inline-flex items-center justify-center min-w-9 h-9 sm:min-w-12 sm:h-12 lg:min-w-14 lg:h-14 px-2 rounded-[4px] border text-xl sm:text-2xl lg:text-3xl font-extrabold font-display shadow-xs",
                   getOpBadgeClass()
                 )}
               >

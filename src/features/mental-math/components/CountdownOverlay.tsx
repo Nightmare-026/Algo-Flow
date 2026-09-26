@@ -56,7 +56,7 @@ export function CountdownOverlay({ onComplete }: CountdownOverlayProps) {
         {/* Glowing pulse ring */}
         <div className="absolute -inset-4 rounded-full bg-primary/20 blur-xl animate-pulse" />
 
-        <div className="neu-float relative flex flex-col items-center justify-center h-52 w-52 rounded-full border-2 border-primary/40 bg-surface text-center shadow-2xl animate-in zoom-in-90 duration-300">
+        <div className="relative flex flex-col items-center justify-center h-52 w-52 rounded-full border-2 border-primary/40 bg-surface text-center shadow-elevated animate-in zoom-in-90 duration-300">
           <span className="font-mono tabular-nums text-7xl sm:text-8xl font-black text-primary tracking-tighter drop-shadow-sm">
             {count > 0 ? count : "GO!"}
           </span>

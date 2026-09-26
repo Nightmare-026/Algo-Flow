@@ -172,7 +172,7 @@ export function OperationsExplorer() {
   return (
     <div className="flex flex-col gap-6">
       {/* Search & Filter Bar with Balanced Alignment */}
-      <div className="neu-raised flex flex-col gap-3.5 rounded-2xl p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between border border-border shadow-(--shadow-raised-sm) bg-surface">
+      <div className="flex flex-col gap-3.5 rounded-[8px] p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between border border-border shadow-card bg-surface">
         {/* Search Input */}
         <div className="relative w-full lg:max-w-md shrink-0">
           <label htmlFor="operation-search" className="sr-only">
@@ -191,20 +191,20 @@ export function OperationsExplorer() {
             onKeyDown={(e) => {
               if (e.key === "Escape") setSearchQuery("");
             }}
-            className="h-11 w-full rounded-xl border border-border bg-surface-inset py-2.5 pl-10 pr-10 text-xs sm:text-sm font-medium text-text-primary shadow-(--shadow-inset) placeholder:text-text-muted/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
+            className="h-11 w-full rounded-[4px] border border-border bg-surface-secondary py-2.5 pl-10 pr-10 text-xs sm:text-sm font-medium text-text-primary shadow-xs placeholder:text-text-muted/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
           />
           {searchQuery ? (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-[4px] text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
               aria-label="Clear search"
             >
               <X className="h-3.5 w-3.5" />
             </button>
           ) : (
             <span
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center rounded border border-border bg-surface px-1.5 py-0.5 text-[10px] font-mono text-text-muted shadow-xs"
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center rounded-[4px] border border-border bg-surface px-1.5 py-0.5 text-[10px] font-mono text-text-muted shadow-xs"
               aria-hidden="true"
             >
               ESC
@@ -233,19 +233,19 @@ export function OperationsExplorer() {
                 aria-selected={selected}
                 onClick={() => setActiveCategory(cat.id)}
                 className={cn(
-                  "h-11 shrink-0 rounded-xl px-3.5 text-xs font-bold font-display transition-all duration-200 cursor-pointer select-none flex items-center justify-center gap-1.5 whitespace-nowrap",
+                  "h-9 shrink-0 rounded-full px-3.5 text-xs font-bold font-display transition-all duration-200 cursor-pointer select-none flex items-center justify-center gap-1.5 whitespace-nowrap",
                   selected
-                    ? "bg-primary text-white shadow-(--shadow-raised-sm)"
-                    : "border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) hover:text-text-primary hover:bg-surface-hover active:scale-95"
+                    ? "bg-primary text-white shadow-xs"
+                    : "border border-border bg-surface text-text-secondary shadow-xs hover:text-text-primary hover:bg-surface-hover active:scale-95"
                 )}
               >
                 <span>{cat.label}</span>
                 <span
                   className={cn(
-                    "px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold leading-none",
+                    "px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold leading-none",
                     selected
                       ? "bg-white/20 text-white"
-                      : "bg-surface-inset text-text-muted border border-border/60"
+                      : "bg-surface-secondary text-text-muted border border-border/60"
                   )}
                 >
                   {count}
@@ -288,17 +288,17 @@ export function OperationsExplorer() {
               >
                 <Link
                   href={`/mental-math/practice?operation=${op.id}&autostart=true`}
-                  className="neu-raised group flex h-full flex-col justify-between rounded-3xl border border-border bg-surface p-6 shadow-(--shadow-raised-sm) hover:border-primary/50 hover:-translate-y-1 hover:shadow-(--shadow-raised) transition-all duration-200 relative overflow-hidden cursor-pointer"
+                  className="group flex h-full flex-col justify-between rounded-[8px] border border-border bg-surface p-6 shadow-card hover:border-primary/50 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200 relative overflow-hidden cursor-pointer"
                   aria-label={`Launch ${op.name} calculation drill`}
                 >
                   <div>
                     {/* Card Top: Icon, Category Badge & Complexity Tier */}
                     <div className="flex items-start justify-between gap-3">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-surface-inset text-primary shadow-inner transition-transform duration-200 group-hover:scale-110 group-hover:border-primary/40 group-hover:bg-primary/10">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-[6px] border border-border bg-surface-secondary text-primary shadow-xs transition-transform duration-200 group-hover:scale-110 group-hover:border-primary/40 group-hover:bg-primary/10">
                         <Icon className="h-6 w-6" aria-hidden="true" />
                       </span>
                       <div className="flex flex-col items-end gap-1">
-                        <span className="rounded-lg border border-border bg-surface-inset px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted shadow-inner">
+                        <span className="rounded-full border border-border bg-surface-secondary px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted shadow-xs">
                           {op.categoryLabel}
                         </span>
                         <span className="text-[10px] font-mono font-semibold text-primary/80">
@@ -317,7 +317,7 @@ export function OperationsExplorer() {
                     </p>
 
                     {/* Example Formula Badge */}
-                    <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-border/80 bg-surface-inset px-3 py-1.5 shadow-inner max-w-full">
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-[4px] border border-border/80 bg-surface-secondary px-3 py-1.5 shadow-xs max-w-full">
                       <span className="text-[10px] font-mono uppercase tracking-wider text-text-muted font-bold shrink-0">
                         e.g.
                       </span>
@@ -343,7 +343,7 @@ export function OperationsExplorer() {
           })}
         </motion.div>
       ) : (
-        <div className="neu-inset rounded-3xl p-12 text-center border border-border bg-surface-inset">
+        <div className="rounded-[8px] p-12 text-center border border-border bg-surface shadow-card">
           <Search className="mx-auto h-10 w-10 text-text-muted" aria-hidden="true" />
           <h3 className="mt-4 text-lg font-bold font-display text-text-primary">
             No matching operations
@@ -357,7 +357,7 @@ export function OperationsExplorer() {
               setSearchQuery("");
               setActiveCategory("all");
             }}
-            className="mt-5 min-h-10 rounded-xl bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-(--shadow-raised-sm) cursor-pointer"
+            className="mt-5 min-h-11 rounded-[4px] bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-card cursor-pointer"
           >
             Reset Filters
           </button>

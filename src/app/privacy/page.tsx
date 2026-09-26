@@ -63,13 +63,13 @@ export default async function PrivacyPage() {
         </div>
 
         {/* Privacy at a Glance (Executive Summary) */}
-        <div className="mt-10 neu-raised p-6 sm:p-8 rounded-3xl border border-border bg-surface shadow-(--shadow-raised-sm)">
+        <div className="mt-10 p-6 sm:p-8 rounded-[8px] border border-border bg-surface shadow-card">
           <h2 className="font-bold uppercase tracking-wider text-xs font-mono text-primary flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-primary" />
             <span>Privacy Principles at a Glance</span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
+            <div className="p-4 rounded-[6px] border border-border bg-surface-secondary/70">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 Zero Commercial Ad Monetization
@@ -81,7 +81,7 @@ export default async function PrivacyPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
+            <div className="p-4 rounded-[6px] border border-border bg-surface-secondary/70">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 Anonymous Public Exploration
@@ -92,7 +92,7 @@ export default async function PrivacyPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
+            <div className="p-4 rounded-[6px] border border-border bg-surface-secondary/70">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 Minimalist OAuth (Google &amp; GitHub)
@@ -104,7 +104,7 @@ export default async function PrivacyPage() {
               </p>
             </div>
 
-            <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset)">
+            <div className="p-4 rounded-[6px] border border-border bg-surface-secondary/70">
               <p className="text-xs font-bold font-display text-text-primary flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-success" />
                 PostgreSQL Row-Level Security
@@ -118,7 +118,7 @@ export default async function PrivacyPage() {
         </div>
 
         {/* Detailed Legal Sections */}
-        <div className="neu-float mt-10 rounded-3xl border border-border bg-surface p-6 sm:p-10 shadow-xl divide-y divide-border/60">
+        <div className="mt-10 rounded-[8px] border border-border bg-surface p-6 sm:p-10 shadow-elevated divide-y divide-border/60">
           {/* Section 1: Overview & Public Mode */}
           <section className="py-8 first:pt-0">
             <div className="flex items-center gap-3 mb-3">
@@ -529,7 +529,7 @@ export default async function PrivacyPage() {
                 occur, we will update the version number and effective date at the top of this
                 document.
               </p>
-              <div className="neu-inset p-4 rounded-2xl border border-border bg-surface-inset shadow-(--shadow-inset) mt-4">
+              <div className="p-4 rounded-[6px] border border-border bg-surface-secondary/70 mt-4">
                 <p className="font-bold text-text-primary text-xs">
                   Official Privacy & Legal Contact:
                 </p>

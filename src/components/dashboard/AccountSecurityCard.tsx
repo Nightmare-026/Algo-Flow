@@ -16,11 +16,11 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
   const [state, formAction, isPending] = useActionState(setAccountPassword, null);
 
   return (
-    <section className="neu-raised rounded-3xl p-6 sm:p-8 border border-border bg-surface flex flex-col justify-between gap-6 shadow-(--shadow-raised-sm) h-full">
+    <section className="rounded-[8px] p-6 sm:p-8 border border-border bg-surface flex flex-col justify-between gap-6 shadow-card h-full">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="flex h-11 w-11 rounded-2xl bg-primary-muted border border-primary/20 text-primary items-center justify-center shadow-inner shrink-0">
+          <div className="flex h-11 w-11 rounded-[4px] bg-primary/10 border border-primary/20 text-primary items-center justify-center shadow-xs shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
@@ -38,9 +38,9 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
           className={cn(
-            "inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-xs font-bold font-display shadow-(--shadow-raised-sm) transition-all active:scale-95 cursor-pointer shrink-0 self-start sm:self-auto",
+            "inline-flex min-h-10 items-center gap-2 rounded-[4px] px-4 text-xs font-bold font-display shadow-card transition-all active:scale-[0.99] cursor-pointer shrink-0 self-start sm:self-auto",
             isOpen
-              ? "border border-border bg-surface text-text-secondary hover:bg-surface-hover"
+              ? "border border-border bg-surface text-text-secondary hover:bg-surface-secondary"
               : "bg-primary text-white hover:bg-primary-hover"
           )}
         >
@@ -62,7 +62,7 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
 
       {/* Accordion Content */}
       {isOpen && (
-        <div className="neu-inset p-5 sm:p-6 rounded-2xl border border-border bg-surface-inset shadow-inner flex flex-col gap-4 mt-1 transition-all">
+        <div className="p-5 sm:p-6 rounded-[8px] border border-border bg-surface-secondary/50 shadow-xs flex flex-col gap-4 mt-1 transition-all">
           <div>
             <h3 className="text-sm font-bold font-display text-text-primary flex items-center gap-2">
               <Lock className="w-4 h-4 text-primary" />
@@ -78,14 +78,14 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
           </div>
 
           {state?.error && (
-            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-error-muted/30 border border-error/30 text-error text-xs">
+            <div className="flex items-start gap-2.5 p-3 rounded-[4px] bg-error-muted/30 border border-error/30 text-error text-xs">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{state.error}</span>
             </div>
           )}
 
           {state?.ok && (
-            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-success-muted/30 border border-success/30 text-success text-xs">
+            <div className="flex items-start gap-2.5 p-3 rounded-[4px] bg-success-muted/30 border border-success/30 text-success text-xs">
               <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{state.message}</span>
             </div>
@@ -106,7 +106,7 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
                 placeholder="At least 8 characters"
                 minLength={8}
                 required
-                className="h-10 rounded-xl border border-border bg-surface px-3 text-xs text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="h-10 rounded-[4px] border border-border bg-surface px-3 text-xs text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
@@ -124,7 +124,7 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
                 placeholder="Re-type new password"
                 minLength={8}
                 required
-                className="h-10 rounded-xl border border-border bg-surface px-3 text-xs text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="h-10 rounded-[4px] border border-border bg-surface px-3 text-xs text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
@@ -132,7 +132,7 @@ export function AccountSecurityCard({ email, providers = ["google"] }: AccountSe
               <button
                 type="submit"
                 disabled={isPending}
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[4px] bg-primary px-6 text-xs font-bold font-display text-white shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all disabled:opacity-50 cursor-pointer"
               >
                 <Lock className="w-3.5 h-3.5" />
                 <span>{isPending ? "Setting Password..." : "Save Account Password"}</span>

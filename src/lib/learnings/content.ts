@@ -98,7 +98,7 @@ export function renderMathInMarkdown(markdown: string): string {
         throwOnError: false,
         output: "html",
       });
-      return `<div class="katex-display-wrapper my-5 overflow-x-auto text-center py-2.5 neu-inset rounded-2xl bg-surface/40 p-2">${rendered}</div>`;
+      return `<div class="katex-display-wrapper my-5 overflow-x-auto text-center py-2.5 rounded-[6px] border border-border bg-surface-secondary/70 p-2">${rendered}</div>`;
     } catch {
       return `$$${math}$$`;
     }
@@ -267,12 +267,12 @@ export async function getParsedChapter(
             })
             .join("");
 
-          return `<div class="overflow-x-auto my-7 rounded-2xl border border-border/80 neu-inset bg-surface/50 p-1 shadow-inner"><table class="w-full text-left border-collapse"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table></div>`;
+          return `<div class="overflow-x-auto my-7 rounded-[8px] border border-border bg-surface-secondary/70 p-1"><table class="w-full text-left border-collapse"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table></div>`;
         },
 
         blockquote({ tokens }) {
           const body = this.parser.parse(tokens);
-          return `<blockquote class="border-l-4 border-primary pl-4 py-2 my-5 text-foreground/90 bg-surface-raised/40 rounded-r-xl font-medium">${body}</blockquote>`;
+          return `<blockquote class="border-l-4 border-primary pl-4 py-2 my-5 text-foreground/90 bg-surface-secondary/60 rounded-r-[4px] font-medium">${body}</blockquote>`;
         },
 
         code({ text, lang }) {
@@ -291,7 +291,7 @@ export async function getParsedChapter(
 
           const escaped = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-          return `<div class="code-block-wrapper relative my-6 rounded-2xl overflow-hidden border border-border/80 bg-surface/90 neu-raised group"><div class="flex items-center justify-between px-4 py-2.5 bg-surface-raised/80 border-b border-border/60 text-xs font-mono text-muted-foreground"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-green-500/60 inline-block"></span><span class="ml-2 font-semibold text-foreground/80">${language}</span>${isAsciiDiagram ? '<span class="ml-2 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-sans font-bold uppercase tracking-wider">Physical Memory Layout</span>' : ""}</div><button type="button" data-copy-btn class="text-[11px] font-sans font-medium px-2.5 py-1 rounded-lg border border-border bg-surface hover:bg-surface-raised text-foreground/70 hover:text-foreground transition-all cursor-pointer">Copy</button></div><pre class="p-4 md:p-5 text-xs md:text-sm font-mono overflow-x-auto leading-relaxed text-foreground/90 bg-background/50"><code>${escaped}</code></pre></div>`;
+          return `<div class="code-block-wrapper relative my-6 rounded-[8px] overflow-hidden border border-border bg-surface shadow-card group"><div class="flex items-center justify-between px-4 py-2.5 bg-surface-secondary/80 border-b border-border text-xs font-mono text-muted-foreground"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-green-500/60 inline-block"></span><span class="ml-2 font-semibold text-foreground/80">${language}</span>${isAsciiDiagram ? '<span class="ml-2 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-sans font-bold uppercase tracking-wider">Physical Memory Layout</span>' : ""}</div><button type="button" data-copy-btn class="text-[11px] font-sans font-medium px-2.5 py-1 rounded-[4px] border border-border bg-surface hover:bg-surface-secondary text-foreground/70 hover:text-foreground transition-all cursor-pointer">Copy</button></div><pre class="p-4 md:p-5 text-xs md:text-sm font-mono overflow-x-auto leading-relaxed text-foreground/90 bg-background/50"><code>${escaped}</code></pre></div>`;
         },
       },
     });

@@ -154,11 +154,11 @@ export default function LeaderboardPage() {
           {top2 ? (
             <div
               className={cn(
-                "neu-raised order-2 md:order-1 p-5 rounded-3xl border bg-surface/90 flex flex-col items-center text-center shadow-md relative",
+                "order-2 md:order-1 p-5 rounded-[8px] border bg-surface flex flex-col items-center text-center shadow-card relative",
                 top2.isCurrentUser ? "border-primary ring-2 ring-primary/20" : "border-slate-400/40"
               )}
             >
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-extrabold text-sm mb-2 shadow-inner">
+              <span className="flex h-12 w-12 items-center justify-center rounded-[4px] bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-extrabold text-sm mb-2 shadow-xs">
                 #2
               </span>
               <div className="flex items-center gap-1.5">
@@ -166,7 +166,7 @@ export default function LeaderboardPage() {
                   {top2.displayName}
                 </h2>
                 {top2.isCurrentUser && (
-                  <span className="px-1.5 py-0.5 rounded bg-primary text-white text-[9px] font-bold">
+                  <span className="px-1.5 py-0.5 rounded-[2px] bg-primary text-white text-[9px] font-bold">
                     You
                   </span>
                 )}
@@ -197,11 +197,11 @@ export default function LeaderboardPage() {
           {top1 ? (
             <div
               className={cn(
-                "neu-float order-1 md:order-2 p-6 sm:p-7 rounded-3xl border-2 bg-amber-500/5 flex flex-col items-center text-center shadow-xl md:-translate-y-2 relative",
+                "order-1 md:order-2 p-6 sm:p-7 rounded-[8px] border-2 bg-amber-500/5 flex flex-col items-center text-center shadow-elevated md:-translate-y-2 relative",
                 top1.isCurrentUser ? "border-primary ring-4 ring-primary/30" : "border-amber-500/50"
               )}
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500 text-white font-extrabold text-base mb-2 shadow-lg ring-4 ring-amber-500/20">
+              <span className="flex h-14 w-14 items-center justify-center rounded-[6px] bg-amber-500 text-white font-extrabold text-base mb-2 shadow-md ring-4 ring-amber-500/20">
                 <Crown className="w-7 h-7 fill-current" />
               </span>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-mono font-bold uppercase mb-1">
@@ -246,11 +246,11 @@ export default function LeaderboardPage() {
           {top3 ? (
             <div
               className={cn(
-                "neu-raised order-3 p-5 rounded-3xl border bg-surface/90 flex flex-col items-center text-center shadow-md relative",
+                "order-3 p-5 rounded-[8px] border bg-surface flex flex-col items-center text-center shadow-card relative",
                 top3.isCurrentUser ? "border-primary ring-2 ring-primary/20" : "border-amber-700/30"
               )}
             >
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-700 text-white font-extrabold text-sm mb-2 shadow-inner">
+              <span className="flex h-12 w-12 items-center justify-center rounded-[4px] bg-amber-700 text-white font-extrabold text-sm mb-2 shadow-xs">
                 #3
               </span>
               <div className="flex items-center gap-1.5">
@@ -258,7 +258,7 @@ export default function LeaderboardPage() {
                   {top3.displayName}
                 </h2>
                 {top3.isCurrentUser && (
-                  <span className="px-1.5 py-0.5 rounded bg-primary text-white text-[9px] font-bold">
+                  <span className="px-1.5 py-0.5 rounded-[2px] bg-primary text-white text-[9px] font-bold">
                     You
                   </span>
                 )}
@@ -310,7 +310,7 @@ export default function LeaderboardPage() {
       </div>
 
       {/* Leaderboard Table Container */}
-      <div className="neu-raised p-6 sm:p-8 rounded-3xl border border-border flex flex-col gap-4 shadow-(--shadow-raised-sm) bg-surface">
+      <div className="p-6 sm:p-8 rounded-[8px] border border-border flex flex-col gap-4 shadow-card bg-surface">
         {isLoading ? (
           <div className="py-16 flex flex-col items-center justify-center gap-3 text-center">
             <RefreshCw className="w-8 h-8 text-primary animate-spin" />
@@ -337,20 +337,20 @@ export default function LeaderboardPage() {
                     key={entry.id}
                     className={cn(
                       "hover:bg-surface-hover/50 transition-colors",
-                      entry.isCurrentUser && "bg-primary-muted/15 border-l-2 border-l-primary"
+                      entry.isCurrentUser && "bg-primary/10 border-l-2 border-l-primary"
                     )}
                   >
                     <td className="py-3.5 px-3.5">
                       <span
                         className={cn(
-                          "inline-flex h-7 w-7 items-center justify-center rounded-xl font-extrabold text-xs shadow-sm",
+                          "inline-flex h-7 w-7 items-center justify-center rounded-[4px] font-extrabold text-xs shadow-xs",
                           entry.rank === 1
                             ? "bg-amber-500 text-white"
                             : entry.rank === 2
                               ? "bg-slate-300 dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                               : entry.rank === 3
                                 ? "bg-amber-700 text-white"
-                                : "bg-surface-inset border border-border text-text-secondary"
+                                : "bg-surface-secondary border border-border text-text-secondary"
                         )}
                       >
                         #{entry.rank}
@@ -358,14 +358,14 @@ export default function LeaderboardPage() {
                     </td>
                     <td className="py-3.5 px-3.5 font-sans font-bold text-text-primary text-sm">
                       <div className="flex items-center gap-2">
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-muted text-primary text-[10px] font-mono shrink-0">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-[10px] font-mono shrink-0">
                           {entry.displayName.charAt(0).toUpperCase()}
                         </span>
                         <span className="truncate max-w-[160px] sm:max-w-xs">
                           {entry.displayName}
                         </span>
                         {entry.isCurrentUser && (
-                          <span className="px-1.5 py-0.5 rounded bg-primary text-white text-[9px] font-bold shrink-0">
+                          <span className="px-1.5 py-0.5 rounded-[2px] bg-primary text-white text-[9px] font-bold shrink-0">
                             You
                           </span>
                         )}
@@ -389,8 +389,8 @@ export default function LeaderboardPage() {
             </table>
           </div>
         ) : (
-          <div className="neu-inset p-10 rounded-2xl border border-border text-center flex flex-col items-center justify-center gap-3 shadow-inner">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-muted text-primary border border-primary/20 shadow-sm">
+          <div className="p-10 rounded-[8px] border border-border bg-surface-secondary/50 text-center flex flex-col items-center justify-center gap-3 shadow-xs">
+            <div className="flex h-14 w-14 items-center justify-center rounded-[6px] bg-primary/10 text-primary border border-primary/20 shadow-xs">
               <Trophy className="w-7 h-7" />
             </div>
             <h3 className="text-base font-bold font-display text-text-primary tracking-tight">
@@ -413,7 +413,7 @@ export default function LeaderboardPage() {
                     ? "/mental-math/speed"
                     : "/mental-math/test"
               }
-              className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+              className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-[4px] bg-primary px-6 text-xs font-bold font-display text-white shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all cursor-pointer"
             >
               <span>
                 Start{" "}

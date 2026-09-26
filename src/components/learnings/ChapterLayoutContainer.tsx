@@ -105,7 +105,7 @@ export function ChapterLayoutContainer({
         <article
           id="chapter-reader-container"
           className={cn(
-            "flex-1 h-full min-w-0 overflow-y-auto custom-scrollbar rounded-2xl border border-border/80 bg-surface shadow-(--shadow-raised) transition-all duration-300",
+            "flex-1 h-full min-w-0 overflow-y-auto custom-scrollbar rounded-[8px] border border-border bg-surface shadow-card transition-all duration-300",
             focusMode
               ? "p-6 sm:p-10 md:p-12 xl:p-16 max-w-5xl mx-auto"
               : "p-5 sm:p-7 md:p-8 xl:p-10"

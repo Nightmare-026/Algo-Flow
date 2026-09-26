@@ -16,13 +16,13 @@ export function AuthVisual() {
 
   return (
     <div className="relative mx-auto w-full max-w-md" aria-hidden="true">
-      <div className="neu-raised relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border-white/90 bg-white/72 p-5">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(134,239,172,0.28),transparent_38%),radial-gradient(circle_at_50%_86%,rgba(15,118,110,0.09),transparent_42%)]" />
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[8px] border border-border bg-surface p-5 shadow-card">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(0,86,210,0.12),transparent_38%),radial-gradient(circle_at_50%_86%,rgba(15,138,95,0.08),transparent_42%)]" />
         <svg className="absolute inset-x-[8%] top-[12%] h-[55%] w-[84%]" viewBox="0 0 100 78">
           <path
             d="M14 62 L31 36 L50 18 L69 36 L86 62 M31 36 L69 36"
             fill="none"
-            stroke="rgba(21,128,61,0.34)"
+            stroke="rgba(0,86,210,0.3)"
             strokeWidth="1.6"
             strokeLinecap="round"
             strokeDasharray="3 3"
@@ -32,7 +32,7 @@ export function AuthVisual() {
         {nodes.map((node, index) => (
           <motion.span
             key={node.value}
-            className="absolute grid h-11 w-11 place-items-center rounded-full border border-white/90 bg-[radial-gradient(circle_at_30%_24%,#ffffff_0%,#dcfce7_42%,#86efac_100%)] font-mono text-xs font-bold text-green-900 shadow-[0_10px_24px_rgba(21,128,61,0.18),inset_-3px_-4px_8px_rgba(21,128,61,0.13)]"
+            className="absolute grid h-11 w-11 place-items-center rounded-full border border-border bg-surface font-mono text-xs font-bold text-primary shadow-xs"
             style={{ left: `${node.x}%`, top: `${node.y}%`, translate: "-50% -50%" }}
             initial={reducedMotion ? false : { opacity: 0, scale: 0.65, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -47,13 +47,13 @@ export function AuthVisual() {
         ))}
 
         <motion.div
-          className="neu-float absolute bottom-5 left-1/2 w-[72%] -translate-x-1/2 rounded-2xl p-3.5"
+          className="absolute bottom-5 left-1/2 w-[72%] -translate-x-1/2 rounded-[6px] border border-border bg-surface shadow-elevated p-3.5"
           initial={reducedMotion ? false : { opacity: 0, y: 16, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: reducedMotion ? 0.01 : 0.55, delay: reducedMotion ? 0 : 0.38 }}
         >
           <div className="flex items-center justify-between gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white shadow-(--shadow-raised-sm)">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-primary text-white shadow-xs">
               <Play className="h-4 w-4 fill-current" />
             </span>
             <div className="min-w-0 flex-1">

@@ -41,7 +41,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "neu-raised p-6 rounded-2xl border border-border flex flex-col justify-between transition-colors",
+        "p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-colors",
         variantStyles,
         className
       )}
@@ -51,7 +51,10 @@ export function StatCard({
           {title}
         </span>
         <span
-          className={cn("flex h-8 w-8 items-center justify-center rounded-lg border", iconStyles)}
+          className={cn(
+            "flex h-8 w-8 items-center justify-center rounded-[4px] border shadow-xs",
+            iconStyles
+          )}
         >
           {icon}
         </span>
@@ -59,7 +62,7 @@ export function StatCard({
       <div className="mt-4">
         <div className="text-3xl font-extrabold font-display text-text-primary">{value}</div>
         {typeof progress === "number" && (
-          <div className="w-full bg-bg-surface-inset h-2 rounded-full overflow-hidden border border-border shadow-(--shadow-inset) mt-2">
+          <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden border border-border mt-2">
             <div
               className={cn("h-full rounded-full transition-all duration-500", progressBg)}
               style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}

@@ -66,16 +66,16 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
       : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur-xl transition-colors duration-200 px-4 sm:px-6 lg:px-8">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border-subtle bg-surface/92 backdrop-blur-xl transition-colors duration-150 px-4 sm:px-6 lg:px-8">
       <nav aria-label="Primary navigation" className="mx-auto max-w-7xl">
         <div className="flex h-18 items-center justify-between gap-4">
           {/* Brand Logo */}
           <Link
             href="/"
-            className="group flex min-h-11 items-center gap-3 rounded-xl pr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="group flex min-h-11 items-center gap-3 rounded-[4px] pr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="AlgoFlow home"
           >
-            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm) transition-transform duration-200 group-hover:scale-105">
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-[4px] border border-border-subtle bg-surface shadow-card transition-transform duration-150 group-hover:scale-105">
               <Image
                 src="/logo.png"
                 alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
@@ -85,7 +85,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                 priority
               />
             </span>
-            <span className="font-display text-xl font-extrabold tracking-tight text-text-primary">
+            <span className="font-display text-xl font-bold tracking-tight text-text-primary">
               Algo<span className="text-primary">Flow</span>
             </span>
           </Link>
@@ -101,16 +101,16 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   href={link.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors duration-200 z-10 select-none",
+                    "relative inline-flex min-h-10 items-center gap-2 rounded-[4px] px-3.5 text-sm font-semibold transition-colors duration-150 z-10 select-none",
                     active
-                      ? "font-bold text-white shadow-(--shadow-raised-sm)"
-                      : "text-text-secondary hover:text-text-primary hover:bg-surface-hover/60"
+                      ? "font-bold text-white shadow-card"
+                      : "text-text-secondary hover:text-text-primary hover:bg-surface-hover/80"
                   )}
                 >
                   {active && (
                     <motion.div
                       layoutId="activeNavPill"
-                      className="absolute inset-0 rounded-xl border border-primary/30 bg-primary shadow-(--shadow-raised-sm) -z-10"
+                      className="absolute inset-0 rounded-[4px] bg-primary shadow-card -z-10"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -137,7 +137,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   href="/dashboard"
                   title={`Signed in as ${user.email} - View Dashboard`}
                   aria-label={`Go to dashboard for ${user.email}`}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface font-display text-sm font-bold text-text-primary shadow-(--shadow-raised-sm) transition-colors duration-200 hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-[4px] border border-border-subtle bg-surface font-display text-sm font-bold text-text-primary shadow-card transition-colors duration-150 hover:border-primary hover:text-primary active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                 >
                   {(
                     user.user_metadata?.first_name ||
@@ -164,7 +164,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-text-secondary shadow-(--shadow-raised-sm) hover:text-primary active:scale-95 md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-[4px] border border-border-subtle bg-surface text-text-secondary shadow-card hover:text-primary active:scale-95 md:hidden cursor-pointer"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation"
@@ -184,7 +184,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 onClick={() => setMobileMenuOpen(false)}
-                className="fixed inset-0 top-18 bg-background/60 backdrop-blur-sm z-40 md:hidden"
+                className="fixed inset-0 top-18 bg-black/40 backdrop-blur-xs z-40 md:hidden"
                 aria-hidden="true"
               />
               <motion.div
@@ -193,9 +193,9 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                className="relative z-50 overflow-hidden border-t border-border bg-surface/98 backdrop-blur-2xl shadow-2xl rounded-b-2xl md:hidden"
+                className="relative z-50 overflow-hidden border-t border-border-subtle bg-surface shadow-elevated rounded-b-[8px] md:hidden"
               >
-                <div className="grid gap-2 py-4">
+                <div className="grid gap-2 py-4 px-2">
                   {navLinks.map((link) => {
                     const active = isActive(link.href);
                     const Icon = link.icon;
@@ -206,9 +206,9 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                         onClick={() => setMobileMenuOpen(false)}
                         aria-current={active ? "page" : undefined}
                         className={cn(
-                          "flex min-h-11 items-center gap-3 rounded-xl px-4 text-sm font-semibold transition-colors",
+                          "flex min-h-11 items-center gap-3 rounded-[4px] px-4 text-sm font-semibold transition-colors",
                           active
-                            ? "border border-primary/30 bg-primary font-bold text-white shadow-(--shadow-raised-sm)"
+                            ? "border border-primary bg-primary font-bold text-white shadow-card"
                             : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
                         )}
                       >
@@ -222,7 +222,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   })}
 
                   {user ? (
-                    <div className="mt-2 border-t border-border pt-3">
+                    <div className="mt-2 border-t border-border-subtle pt-3">
                       <div className="mb-3 px-4 text-xs text-text-muted">
                         Signed in as{" "}
                         <span className="font-semibold text-text-primary">{user.email}</span>
@@ -230,7 +230,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                       <form action={signout}>
                         <button
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex min-h-11 w-full items-center gap-2 rounded-xl px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error cursor-pointer"
+                          className="flex min-h-11 w-full items-center gap-2 rounded-[4px] px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error cursor-pointer"
                           type="submit"
                         >
                           <LogOut className="h-4 w-4" aria-hidden="true" />
@@ -239,7 +239,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                       </form>
                     </div>
                   ) : (
-                    <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
+                    <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border-subtle pt-3">
                       <Link
                         href="/login"
                         onClick={() => setMobileMenuOpen(false)}
