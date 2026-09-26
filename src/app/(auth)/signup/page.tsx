@@ -48,12 +48,12 @@ export default async function SignupPage({
     >
       {!ACCOUNT_REGISTRATION_AVAILABLE ? (
         <div className="text-center">
-          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-warning-muted text-warning shadow-(--shadow-inset)">
+          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-warning-muted text-warning shadow-card">
             <ShieldAlert className="h-8 w-8" aria-hidden="true" />
           </span>
           <div
             role="status"
-            className="mt-6 rounded-2xl border border-warning/30 bg-warning-muted p-4 text-xs font-semibold leading-relaxed text-text-secondary"
+            className="mt-6 rounded-lg border border-warning/30 bg-warning-muted p-4 text-xs font-semibold leading-relaxed text-text-secondary"
           >
             {REGISTRATION_BLOCK_REASON}
           </div>
@@ -66,7 +66,7 @@ export default async function SignupPage({
         </div>
       ) : params.success ? (
         <div className="text-center">
-          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success-muted text-success shadow-(--shadow-inset)">
+          <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-success-muted text-success shadow-card">
             <MailCheck className="h-8 w-8" aria-hidden="true" />
           </span>
           <Callout variant="success" title="Verification email sent" dismissible className="mt-6">
@@ -139,13 +139,13 @@ export default async function SignupPage({
               required
             />
 
-            <label className="flex items-start gap-3 rounded-xl border border-border bg-surface p-3.5 text-xs leading-relaxed text-text-secondary cursor-pointer shadow-(--shadow-raised-sm) transition-colors hover:border-primary/40">
+            <label className="flex items-start gap-3 rounded-lg border border-border bg-surface p-3.5 text-xs leading-relaxed text-text-secondary cursor-pointer shadow-card transition-colors hover:border-primary/40">
               <input
                 type="checkbox"
                 name="legal_accepted"
                 value="yes"
                 required
-                className="mt-0.5 h-4 w-4 shrink-0 rounded border-border text-primary focus:ring-primary accent-primary cursor-pointer"
+                className="mt-0.5 h-4 w-4 shrink-0 rounded-xs border-border text-primary focus:ring-primary accent-primary cursor-pointer"
               />
               <span>
                 I confirm I am 18 years of age or older (or have parental consent), agree to the{" "}

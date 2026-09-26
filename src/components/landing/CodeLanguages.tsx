@@ -89,7 +89,7 @@ export function CodeLanguages() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5 }}
-          className="overflow-hidden rounded-[8px] border border-border-subtle bg-surface shadow-card"
+          className="overflow-hidden rounded-lg border border-border-subtle bg-surface shadow-card"
         >
           {/* Language Selector Tabs */}
           <div
@@ -111,7 +111,7 @@ export function CodeLanguages() {
                   onClick={() => setActiveTab(language.language)}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
                   className={cn(
-                    "flex min-h-9 items-center gap-2 rounded-[4px] px-3.5 text-xs sm:text-[13px] font-semibold transition-all duration-150 cursor-pointer select-none",
+                    "flex min-h-9 items-center gap-2 rounded-sm px-3.5 text-xs sm:text-[13px] font-semibold transition-all duration-150 cursor-pointer select-none",
                     isActive
                       ? "border border-primary bg-primary text-white shadow-card"
                       : "text-text-secondary hover:bg-surface hover:text-text-primary border border-transparent"
@@ -133,7 +133,7 @@ export function CodeLanguages() {
             </span>
             <button
               type="button"
-              className="inline-flex h-8 items-center gap-2 rounded-[4px] border border-border-subtle bg-surface px-3 text-xs font-semibold text-text-primary shadow-card hover:border-primary hover:text-primary active:scale-95 transition-all cursor-pointer"
+              className="inline-flex h-8 items-center gap-2 rounded-sm border border-border-subtle bg-surface px-3 text-xs font-semibold text-text-primary shadow-card hover:border-primary hover:text-primary active:scale-95 transition-all cursor-pointer"
               onClick={handleCopy}
               aria-label={`Copy ${activeLanguage.name} code`}
             >

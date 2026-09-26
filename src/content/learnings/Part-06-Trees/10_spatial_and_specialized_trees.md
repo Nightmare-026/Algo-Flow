@@ -9,6 +9,7 @@
 Invented by Jon Bentley in 1975, the Kd-Tree partitions $k$-dimensional space via alternating axis-aligned hyperplanes, enabling nearest-neighbor and range searches. Quadtrees and Octrees generalize spatial subdivision into four or eight simultaneous quadrants. Cartesian trees (Jean Vuillemin, 1980) map 1D sequence arrays into heap-ordered trees via linear-time monotonic stacks, establishing the fundamental equivalence between Range Minimum Queries (RMQ) and Lowest Common Ancestors (LCA). Finally, Threaded Binary Trees (Perlis & Thornton, 1960) eliminate call stacks and extra memory during in-order traversal by weaving predecessor and successor pointers directly through leaf null references.
 
 By the end of this chapter, you will be able to:
+
 1. **Formulate** the alternating splitting axis invariant ($\text{depth} \bmod k$) of Kd-Trees and execute nearest neighbor queries with hyper-plane pruning.
 2. **Deconstruct** Quadtree and Octree spatial decompositions and contrast their applications in spatial indexing, collision detection, and Barnes-Hut $N$-body simulations.
 3. **Construct** a Cartesian tree in strictly $O(n)$ linear time using an increasing monotonic stack.
@@ -24,11 +25,13 @@ Standard binary search trees organize 1-dimensional keys along a total order. Fo
 A **Kd-Tree** ($k$-dimensional tree) is a space-partitioning data structure that stores points in $k$-dimensional Euclidean space.
 
 ### The Alternating Splitting Axes Invariant
+
 At depth $d$, the tree partitions space along coordinate axis:
 
 $$\text{Axis} = d \bmod k$$
 
 For 2D points $(x, y)$ where $k = 2$:
+
 - **Level 0 (Root)**: Splits along the **$X$-axis** (vertical line through median point).
 - **Level 1**: Splits along the **$Y$-axis** (horizontal line through median point).
 - **Level 2**: Cycles back to split along the **$X$-axis**, and so forth.
@@ -37,20 +40,21 @@ For 2D points $(x, y)$ where $k = 2$:
 
 Consider 2D points: $P = \{(5, 4), (2, 3), (8, 6), (1, 1), (4, 7), (9, 2)\}$:
 
-| Node Point $(x, y)$ | Tree Depth | Splitting Axis | Splitting Criterion | Left Subtree Coordinate Region | Right Subtree Coordinate Region |
-| :---: | :---: | :---: | :---: | :--- | :--- |
-| **$(5, 4)$** | $0$ (Root) | $X$-axis ($d \bmod 2 = 0$) | $x = 5$ | $x < 5$: $\{(2, 3), (1, 1), (4, 7)\}$ | $x > 5$: $\{(8, 6), (9, 2)\}$ |
-| **$(2, 3)$** | $1$ | $Y$-axis ($d \bmod 2 = 1$) | $y = 3$ | $y < 3$: $\{(1, 1)\}$ | $y > 3$: $\{(4, 7)\}$ |
-| **$(8, 6)$** | $1$ | $Y$-axis ($d \bmod 2 = 1$) | $y = 6$ | $y < 6$: $\{(9, 2)\}$ | $y > 6$: $\emptyset$ |
-| **$(1, 1)$** | $2$ | $X$-axis ($d \bmod 2 = 0$) | $x = 1$ | Leaf Node | Leaf Node |
-| **$(4, 7)$** | $2$ | $X$-axis ($d \bmod 2 = 0$) | $x = 4$ | Leaf Node | Leaf Node |
-| **$(9, 2)$** | $2$ | $X$-axis ($d \bmod 2 = 0$) | $x = 9$ | Leaf Node | Leaf Node |
+| Node Point $(x, y)$ | Tree Depth |       Splitting Axis       | Splitting Criterion | Left Subtree Coordinate Region        | Right Subtree Coordinate Region |
+| :-----------------: | :--------: | :------------------------: | :-----------------: | :------------------------------------ | :------------------------------ |
+|    **$(5, 4)$**     | $0$ (Root) | $X$-axis ($d \bmod 2 = 0$) |       $x = 5$       | $x < 5$: $\{(2, 3), (1, 1), (4, 7)\}$ | $x > 5$: $\{(8, 6), (9, 2)\}$   |
+|    **$(2, 3)$**     |    $1$     | $Y$-axis ($d \bmod 2 = 1$) |       $y = 3$       | $y < 3$: $\{(1, 1)\}$                 | $y > 3$: $\{(4, 7)\}$           |
+|    **$(8, 6)$**     |    $1$     | $Y$-axis ($d \bmod 2 = 1$) |       $y = 6$       | $y < 6$: $\{(9, 2)\}$                 | $y > 6$: $\emptyset$            |
+|    **$(1, 1)$**     |    $2$     | $X$-axis ($d \bmod 2 = 0$) |       $x = 1$       | Leaf Node                             | Leaf Node                       |
+|    **$(4, 7)$**     |    $2$     | $X$-axis ($d \bmod 2 = 0$) |       $x = 4$       | Leaf Node                             | Leaf Node                       |
+|    **$(9, 2)$**     |    $2$     | $X$-axis ($d \bmod 2 = 0$) |       $x = 9$       | Leaf Node                             | Leaf Node                       |
 
 ---
 
 ## 3. Nearest Neighbor Search ($k$-NN) with Branch Pruning
 
 To locate the nearest point to query coordinate $Q$:
+
 1. Traverse downward through splitting hyperplanes to reach the leaf bounding box containing $Q$.
 2. Initialize `bestDistance` to $\text{EuclideanDistance}(Q, \text{leaf})$.
 3. Backtrack up the recursive stack:
@@ -81,7 +85,7 @@ export class KdNode {
 export function buildKdTree(points: Point2D[], depth: number = 0): KdNode | null {
   if (points.length === 0) return null;
 
-  const axis = depth % 2 === 0 ? 'x' : 'y';
+  const axis = depth % 2 === 0 ? "x" : "y";
   points.sort((a, b) => a[axis] - b[axis]);
 
   const mid = Math.floor(points.length / 2);
@@ -100,12 +104,12 @@ export function buildKdTree(points: Point2D[], depth: number = 0): KdNode | null
 
 While Kd-Trees alternate splitting one dimension per level, a **Quadtree** decomposes two-dimensional space by recursively subdividing a bounding rectangle into four quadrants:
 
-| Quadrant | Coordinate Range Condition | Spatial Direction | Engineering Applications |
-| :---: | :---: | :---: | :--- |
-| **NW** | $x < x_{\text{mid}}, \quad y \ge y_{\text{mid}}$ | North-West (Upper-Left) | Image compression, 2D terrain mapping |
-| **NE** | $x \ge x_{\text{mid}}, \quad y \ge y_{\text{mid}}$ | North-East (Upper-Right) | Spatial collision detection, GIS maps |
-| **SW** | $x < x_{\text{mid}}, \quad y < y_{\text{mid}}$ | South-West (Lower-Left) | Video game broad-phase physics engines |
-| **SE** | $x \ge x_{\text{mid}}, \quad y < y_{\text{mid}}$ | South-East (Lower-Right) | Barnes-Hut $N$-body astronomical simulations |
+| Quadrant |             Coordinate Range Condition             |    Spatial Direction     | Engineering Applications                     |
+| :------: | :------------------------------------------------: | :----------------------: | :------------------------------------------- |
+|  **NW**  |  $x < x_{\text{mid}}, \quad y \ge y_{\text{mid}}$  | North-West (Upper-Left)  | Image compression, 2D terrain mapping        |
+|  **NE**  | $x \ge x_{\text{mid}}, \quad y \ge y_{\text{mid}}$ | North-East (Upper-Right) | Spatial collision detection, GIS maps        |
+|  **SW**  |   $x < x_{\text{mid}}, \quad y < y_{\text{mid}}$   | South-West (Lower-Left)  | Video game broad-phase physics engines       |
+|  **SE**  |  $x \ge x_{\text{mid}}, \quad y < y_{\text{mid}}$  | South-East (Lower-Right) | Barnes-Hut $N$-body astronomical simulations |
 
 In three dimensions, an **Octree** subdivides space into eight octants, widely utilized in 3D game engines (Unreal, Unity) for frustum culling and point cloud processing (LiDAR).
 
@@ -114,10 +118,12 @@ In three dimensions, an **Octree** subdivides space into eight octants, widely u
 ## 5. Cartesian Trees & Linear-Time Monotonic Stack Construction
 
 Invented by Jean Vuillemin in 1980, a **Cartesian Tree** derived from a 1D sequence $A[0 \dots n-1]$ is a binary tree satisfying two simultaneous invariants:
+
 1. **Inorder Traversal Invariant**: An inorder traversal of the Cartesian tree visits the nodes in the exact sequential order of their original indices: $0, 1, 2, \dots, n-1$.
 2. **Min-Heap Invariant**: For every node $u$, $A[u] \le A[\text{left}(u)]$ and $A[u] \le A[\text{right}(u)]$. The root is the global minimum of the entire array.
 
 ### Linear-Time $O(n)$ Construction Algorithm
+
 Scanning array $A$ from left to right while maintaining the tree's right spine in an increasing monotonic stack guarantees $O(n)$ total time:
 
 ```typescript
@@ -166,14 +172,14 @@ export function buildCartesianTree(arr: number[]): CartesianNode | null {
 
 Consider building a Cartesian Tree on array: $A = [9, 3, 7, 1]$:
 
-| Step | Current Node $(i, A[i])$ | Stack State Before | Elements Popped (`val > curr.val`) | Child Pointer Assignments | Stack State After |
-| :---: | :---: | :--- | :--- | :--- | :--- |
-| **1** | $(0, 9)$ | `[]` | None | Stack empty: `curr.left = null`. | `[(0, 9)]` |
-| **2** | $(1, 3)$ | `[(0, 9)]` | Pop $(0, 9)$ ($9 > 3$) | `curr.left = (0, 9)`. Stack empty: no parent. | `[(1, 3)]` |
-| **3** | $(2, 7)$ | `[(1, 3)]` | None ($3 < 7$) | Stack top $(1, 3)$ links `right = (2, 7)`. | `[(1, 3), (2, 7)]` |
-| **4** | $(3, 1)$ | `[(1, 3), (2, 7)]` | Pop $(2, 7)$ ($7 > 1$)<br>Pop $(1, 3)$ ($3 > 1$) | Last popped is $(1, 3) \implies \text{curr.left} = (1, 3)$. | `[(3, 1)]` |
+| Step  | Current Node $(i, A[i])$ | Stack State Before | Elements Popped (`val > curr.val`)               | Child Pointer Assignments                                   | Stack State After  |
+| :---: | :----------------------: | :----------------- | :----------------------------------------------- | :---------------------------------------------------------- | :----------------- |
+| **1** |         $(0, 9)$         | `[]`               | None                                             | Stack empty: `curr.left = null`.                            | `[(0, 9)]`         |
+| **2** |         $(1, 3)$         | `[(0, 9)]`         | Pop $(0, 9)$ ($9 > 3$)                           | `curr.left = (0, 9)`. Stack empty: no parent.               | `[(1, 3)]`         |
+| **3** |         $(2, 7)$         | `[(1, 3)]`         | None ($3 < 7$)                                   | Stack top $(1, 3)$ links `right = (2, 7)`.                  | `[(1, 3), (2, 7)]` |
+| **4** |         $(3, 1)$         | `[(1, 3), (2, 7)]` | Pop $(2, 7)$ ($7 > 1$)<br>Pop $(1, 3)$ ($3 > 1$) | Last popped is $(1, 3) \implies \text{curr.left} = (1, 3)$. | `[(3, 1)]`         |
 
-*Resulting Tree:* Node $(3, 1)$ is root with left child $(1, 3)$. Node $(1, 3)$ has left child $(0, 9)$ and right child $(2, 7)$. Inorder traversal yields: $0 \to 1 \to 2 \to 3$. Min-heap invariant is preserved across all nodes!
+_Resulting Tree:_ Node $(3, 1)$ is root with left child $(1, 3)$. Node $(1, 3)$ has left child $(0, 9)$ and right child $(2, 7)$. Inorder traversal yields: $0 \to 1 \to 2 \to 3$. Min-heap invariant is preserved across all nodes!
 
 ---
 
@@ -185,6 +191,7 @@ $$\text{the Lowest Common Ancestor (LCA) of nodes } L \text{ and } R \text{ in t
 $$\mathbf{RMQ}_A(L, R) = \mathbf{LCA}_{\text{CartesianTree}}(L, R)$$
 
 ### Theoretical Significance
+
 By constructing the Cartesian tree in $O(n)$ time and preprocessing the tree for LCA queries using the Euler Tour technique + Farach-Colton & Bender algorithm, Range Minimum Queries can be answered in **strictly $O(1)$ worst-case time with $O(n)$ preprocessing**!
 
 ---
@@ -194,6 +201,7 @@ By constructing the Cartesian tree in $O(n)$ time and preprocessing the tree for
 In an ordinary binary tree of $n$ nodes, there are $2n$ child pointer fields, but only $n - 1$ are used. The remaining $n + 1$ pointers store `null`.
 
 Invented by A. J. Perlis and C. Thornton in 1960, **Threaded Binary Trees** repurpose these unused pointers:
+
 - A `null` left child pointer is repurposed to point to the node's **Inorder Predecessor**.
 - A `null` right child pointer is repurposed to point to the node's **Inorder Successor**.
 - Two boolean tags (`isLeftThread`, `isRightThread`) differentiate structural edges from threads.
@@ -227,7 +235,7 @@ export function inorderSuccessor<T>(node: ThreadedNode<T>): ThreadedNode<T> | nu
 }
 ```
 
-*Architectural Consequence:* Inorder traversal runs in $O(n)$ time with **strictly $O(1)$ auxiliary space**, requiring zero recursion, call stacks, or explicit heap memory.
+_Architectural Consequence:_ Inorder traversal runs in $O(n)$ time with **strictly $O(1)$ auxiliary space**, requiring zero recursion, call stacks, or explicit heap memory.
 
 ---
 
@@ -244,8 +252,8 @@ export function inorderSuccessor<T>(node: ThreadedNode<T>): ThreadedNode<T> | nu
 
 ## 10. References & Academic Attribution
 
-1. **Bentley, J. L.** (1975). Multidimensional binary search trees used for associative searching. *Communications of the ACM*, 18(9), 509–517.
-2. **Finkel, R. A., & Bentley, J. L.** (1974). Quad trees a data structure for retrieval on composite keys. *Acta Informatica*, 4(1), 1–9.
-3. **Vuillemin, J.** (1980). A unifying look at data structures. *Communications of the ACM*, 23(4), 229–239.
-4. **Perlis, A. J., & Thornton, C.** (1960). Symbol manipulation by threaded lists. *Communications of the ACM*, 3(4), 195–204.
-5. **Bender, M. A., & Farach-Colton, M.** (2000). The LCA problem revisited. *Latin American Symposium on Theoretical Informatics (LATIN)*, 88–94.
+1. **Bentley, J. L.** (1975). Multidimensional binary search trees used for associative searching. _Communications of the ACM_, 18(9), 509–517.
+2. **Finkel, R. A., & Bentley, J. L.** (1974). Quad trees a data structure for retrieval on composite keys. _Acta Informatica_, 4(1), 1–9.
+3. **Vuillemin, J.** (1980). A unifying look at data structures. _Communications of the ACM_, 23(4), 229–239.
+4. **Perlis, A. J., & Thornton, C.** (1960). Symbol manipulation by threaded lists. _Communications of the ACM_, 3(4), 195–204.
+5. **Bender, M. A., & Farach-Colton, M.** (2000). The LCA problem revisited. _Latin American Symposium on Theoretical Informatics (LATIN)_, 88–94.

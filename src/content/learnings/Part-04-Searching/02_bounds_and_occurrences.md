@@ -8,6 +8,7 @@
 Beyond locating exact single-element matches, binary search serves as a precision tool for locating boundaries in sorted sequences. Standard binary search halts unpredictably on any arbitrary instance of a duplicate target. In production algorithms, standard libraries (such as C++ `std::lower_bound` and `std::upper_bound`, Java `Arrays.binarySearch`, and Python `bisect_left`/`bisect_right`) rely on invariant-preserving predicates to find the exact boundaries of duplicate runs. This chapter formalizes binary search interval models, strict versus non-strict monotonic boundary predicates, candidate-tracking state machines, and $O(\log n)$ frequency range evaluations.
 
 ### Learning Objectives
+
 - Differentiate the three fundamental binary search interval paradigms (Closed $[low, high]$, Half-Open $[low, high)$, and Open $(low, high)$).
 - Formulate the exact mathematical predicates defining Lower Bound ($A[i] \ge \text{target}$) and Upper Bound ($A[i] > \text{target}$).
 - Prove why the total frequency of any element in a sorted array equals $\text{UpperBound} - \text{LowerBound}$ in guaranteed $O(\log n)$ time.
@@ -20,11 +21,11 @@ Beyond locating exact single-element matches, binary search serves as a precisio
 
 ### 1. The Three Interval Paradigms
 
-| Interval Model | Mathematical Window | Loop Invariant Condition | Left Pointer Update | Right Pointer Update | Post-Loop Termination State |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Model 1: Closed Interval** | $[low, high]$ | `while low <= high:` | $low \leftarrow mid + 1$ | $high \leftarrow mid - 1$ | $low = high + 1$ |
-| **Model 2: Half-Open Interval**| $[low, high)$ | `while low < high:` | $low \leftarrow mid + 1$ | $high \leftarrow mid$ | $low = high$ |
-| **Model 3: Open Interval** | $(low, high)$ | `while low + 1 < high:`| $low \leftarrow mid$ | $high \leftarrow mid$ | $low + 1 = high$ |
+| Interval Model                  | Mathematical Window | Loop Invariant Condition |   Left Pointer Update    |   Right Pointer Update    | Post-Loop Termination State |
+| :------------------------------ | :-----------------: | :----------------------: | :----------------------: | :-----------------------: | :-------------------------: |
+| **Model 1: Closed Interval**    |    $[low, high]$    |   `while low <= high:`   | $low \leftarrow mid + 1$ | $high \leftarrow mid - 1$ |      $low = high + 1$       |
+| **Model 2: Half-Open Interval** |    $[low, high)$    |   `while low < high:`    | $low \leftarrow mid + 1$ |   $high \leftarrow mid$   |        $low = high$         |
+| **Model 3: Open Interval**      |    $(low, high)$    | `while low + 1 < high:`  |   $low \leftarrow mid$   |   $high \leftarrow mid$   |      $low + 1 = high$       |
 
 ---
 
@@ -108,6 +109,7 @@ Beyond locating exact single-element matches, binary search serves as a precisio
 ### 2. Concrete Production Implementations
 
 #### C++20 Lower Bound, Upper Bound & Range Count
+
 ```cpp
 #include <span>
 #include <cstddef>
@@ -169,6 +171,6 @@ size_t count_occurrences(std::span<const int> arr, int target) {
 
 ## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Section 2.3 & Chapter 12. MIT Press.
-2. **Bentley, J.** (2000). *Programming Pearls* (2nd ed.), Column 4: *Writing Correct Programs*. Addison-Wesley.
-3. **Stepanov, A., & Lee, M.** (1995). *The Standard Template Library (STL)*. HP Laboratories Technical Report.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Section 2.3 & Chapter 12. MIT Press.
+2. **Bentley, J.** (2000). _Programming Pearls_ (2nd ed.), Column 4: _Writing Correct Programs_. Addison-Wesley.
+3. **Stepanov, A., & Lee, M.** (1995). _The Standard Template Library (STL)_. HP Laboratories Technical Report.

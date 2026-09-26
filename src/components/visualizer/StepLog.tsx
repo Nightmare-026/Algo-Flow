@@ -43,7 +43,7 @@ export function StepLog() {
                 onClick={() => goToStep(index)}
                 aria-current={isCurrent ? "step" : undefined}
                 className={cn(
-                  "w-full rounded-[4px] border p-2 text-left transition-all duration-150 cursor-pointer select-none",
+                  "w-full rounded-sm border p-2 text-left transition-all duration-150 cursor-pointer select-none",
                   isCurrent
                     ? "border-primary bg-primary/10 text-primary border-l-4 font-semibold shadow-xs"
                     : "border-border bg-surface text-text-secondary hover:border-border-hover hover:text-text-primary"
@@ -53,7 +53,7 @@ export function StepLog() {
                   <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
                     Step {step.stepNumber}
                   </span>
-                  <span className="rounded-[4px] border border-border bg-surface px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase text-text-muted">
+                  <span className="rounded-sm border border-border bg-surface px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase text-text-muted">
                     {step.actionType}
                   </span>
                 </div>

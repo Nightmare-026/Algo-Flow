@@ -8,6 +8,7 @@
 Standard linked lists suffer from two major architectural shortcomings: the inability to perform binary search over sorted data due to lack of random indexing, and severe CPU cache-line underutilization caused by scattered heap allocations. Specialized linked list variants resolve these limitations through mathematical and hardware co-design. Skip Lists introduce probabilistic geometric multi-level towers to deliver $O(\log n)$ search and range queries without tree rotations; Unrolled Linked Lists bundle small contiguous arrays into nodes to saturate CPU cache lines; and XOR Linked Lists halve pointer storage by multiplexing bidirectional links through bitwise arithmetic. This chapter analyzes the mathematics, invariants, and systems implementations of these three advanced linear structures.
 
 ### Learning Objectives
+
 - Explain why standard sorted linked lists cannot execute binary search and how Skip List express lanes restore $O(\log n)$ expected search time.
 - Derive the geometric probability distribution governing Skip List level promotion and bound maximum tower heights.
 - Model Unrolled Linked List node sizing ($B$-factor) to align node footprints with 64-byte or 128-byte hardware CPU cache lines.
@@ -23,7 +24,9 @@ Standard linked lists suffer from two major architectural shortcomings: the inab
 In a sorted static array or balanced binary search tree, search operations take $O(\log n)$ time by halving the search space at each comparison. In a standard sorted linked list, even though elements appear in strict ascending order, **binary search is impossible** because finding the middle node requires $\Theta(n)$ sequential pointer steps.
 
 #### The William Pugh Express Lane Solution (1989)
+
 A **Skip List** layers a hierarchy of express-lane forward pointer chains over a base sorted linked list:
+
 - **Level 0 (Base Track)**: Contains every element in the dataset.
 - **Level 1 (Express Track)**: Probabilistically includes roughly $1/2$ of the elements.
 - **Level 2 (Super Express)**: Includes roughly $1/4$ of the elements.
@@ -31,10 +34,11 @@ A **Skip List** layers a hierarchy of express-lane forward pointer chains over a
 
 #### Multi-Level Structural Mapping
 
-| Level | Station Coverage | Relative Node Density | Expected Step Distance |
-| :---: | :--- | :---: | :---: |
-| **Level 3** | `[-∞] ---------------------------------------------> [30] ----------> [+∞]` | $12.5\%$ ($1/8$) | Skips $8$ base elements |
-| **Level 2** | `[-∞] -------------------------> [17] -------------> [30] ----------> [+∞]` | $25\%$ ($1/4$) | Skips $4$ base elements |
+|    Level    | Station Coverage                                                            | Relative Node Density | Expected Step Distance  |
+| :---------: | :-------------------------------------------------------------------------- | :-------------------: | :---------------------: |
+| **Level 3** | `[-∞] ---------------------------------------------> [30] ----------> [+∞]` |   $12.5\%$ ($1/8$)    | Skips $8$ base elements |
+| **Level 2** | `[-∞] -------------------------> [17] -------------> [30] ----------> [+∞]` |    $25\%$ ($1/4$)     | Skips $4$ base elements |
+
 <svg viewBox="0 0 880 240" width="100%" height="auto" class="rounded-xl border border-border shadow-sm my-6 bg-surface">
   <defs>
     <marker id="skipArrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
@@ -104,8 +108,8 @@ A **Skip List** layers a hierarchy of express-lane forward pointer chains over a
   <line x1="422" y1="95" x2="422" y2="130" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#pathArrow)" />
   <!-- Step 4: From 17 (L1), advance to 25 (L1) -> Target Located! -->
   <line x1="445" y1="130" x2="485" y2="130" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#pathArrow)" />
-  
-  <text x="440" y="218" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#f59e0b">Amber Track: Search for 25 visits only 4 nodes across 3 levels (O(log n) expected steps)</text>
+
+<text x="440" y="218" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#f59e0b">Amber Track: Search for 25 visits only 4 nodes across 3 levels (O(log n) expected steps)</text>
 </svg>
 
 ---
@@ -113,19 +117,20 @@ A **Skip List** layers a hierarchy of express-lane forward pointer chains over a
 ### 2. Search Navigation & Step-by-Step Trace
 
 Searching begins at the highest active level of the head sentinel (`-∞`):
+
 1. Walk forward horizontally along the current level as long as the succeeding node's value is **strictly less than** the target.
 2. When the forward node's value is greater than or equal to the target (or is `+∞`), **drop down vertically by one level**.
 3. Repeat until reaching Level 0. If the adjacent node on Level 0 equals the target, the element is found; otherwise, it does not exist.
 
 #### Trace: Searching for Target Value $25$
 
-| Step | Current Position | Current Level | Inspected Forward Node | Comparison vs Target ($25$) | Action Taken |
-| :---: | :---: | :---: | :---: | :---: | :--- |
-| **1** | `[-∞]` | Level 3 | `[30]` | $30 > 25$ | Overshot target $\implies$ Drop to Level 2 |
-| **2** | `[-∞]` | Level 2 | `[17]` | $17 < 25$ | Advance horizontally to `[17]` |
-| **3** | `[17]` | Level 2 | `[30]` | $30 > 25$ | Overshot target $\implies$ Drop to Level 1 |
-| **4** | `[17]` | Level 1 | `[25]` | $25 == 25$ | Candidate found $\implies$ Drop to Level 0 to verify |
-| **5** | `[17]` | Level 0 | `[25]` | $25 == 25$ | **Target Located! Return Success** |
+| Step  | Current Position | Current Level | Inspected Forward Node | Comparison vs Target ($25$) | Action Taken                                         |
+| :---: | :--------------: | :-----------: | :--------------------: | :-------------------------: | :--------------------------------------------------- |
+| **1** |      `[-∞]`      |    Level 3    |         `[30]`         |          $30 > 25$          | Overshot target $\implies$ Drop to Level 2           |
+| **2** |      `[-∞]`      |    Level 2    |         `[17]`         |          $17 < 25$          | Advance horizontally to `[17]`                       |
+| **3** |      `[17]`      |    Level 2    |         `[30]`         |          $30 > 25$          | Overshot target $\implies$ Drop to Level 1           |
+| **4** |      `[17]`      |    Level 1    |         `[25]`         |         $25 == 25$          | Candidate found $\implies$ Drop to Level 0 to verify |
+| **5** |      `[17]`      |    Level 0    |         `[25]`         |         $25 == 25$          | **Target Located! Return Success**                   |
 
 **Expected Number of Comparisons**: At each level, the search traverses at most $1/p = 2$ nodes before dropping. With $O(\log n)$ levels, total expected search time is $O(\log n)$.
 
@@ -213,12 +218,12 @@ CLASS SkipList:
 
 ### 5. Systems Applications: Why Redis Prefers Skip Lists over Trees
 
-| Feature | Skip List (Redis Sorted Sets `ZSET`) | Self-Balancing BST (Red-Black / AVL) |
-| :--- | :--- | :--- |
-| **Range Queries (`ZRANGEBYSCORE`)** | Blazing fast: walk to start node in $O(\log n)$, then traverse Level 0 horizontally | Requires in-order tree traversal ($O(\log n + k)$ with high constant factors) |
-| **Concurrency / Lock-Free** | Simpler: mutations touch only local forward pointers; lock-free CAS algorithms exist | Highly complex: tree rotations alter distant parent/sibling links, requiring coarse locks |
-| **Implementation Complexity** | Simple: ~150 lines of clean code; zero rotation cases | High: multiple rotation rebalancing cases (left-left, left-right, color changes) |
-| **Memory Footprint** | $1 / (1 - p) \approx 2$ pointers per node (customizable via $p = 0.25$) | Fixed 3 pointers (`parent`, `left`, `right`) $+ 1$ byte color flag |
+| Feature                             | Skip List (Redis Sorted Sets `ZSET`)                                                 | Self-Balancing BST (Red-Black / AVL)                                                      |
+| :---------------------------------- | :----------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- |
+| **Range Queries (`ZRANGEBYSCORE`)** | Blazing fast: walk to start node in $O(\log n)$, then traverse Level 0 horizontally  | Requires in-order tree traversal ($O(\log n + k)$ with high constant factors)             |
+| **Concurrency / Lock-Free**         | Simpler: mutations touch only local forward pointers; lock-free CAS algorithms exist | Highly complex: tree rotations alter distant parent/sibling links, requiring coarse locks |
+| **Implementation Complexity**       | Simple: ~150 lines of clean code; zero rotation cases                                | High: multiple rotation rebalancing cases (left-left, left-right, color changes)          |
+| **Memory Footprint**                | $1 / (1 - p) \approx 2$ pointers per node (customizable via $p = 0.25$)              | Fixed 3 pointers (`parent`, `left`, `right`) $+ 1$ byte color flag                        |
 
 ---
 
@@ -244,13 +249,13 @@ An **Unrolled Linked List** combines the dynamic insertion flexibility of linked
 
 #### Node Layout & Hardware Alignment ($B = 12$ for 4-byte integers)
 
-| Field | Size | Hardware Alignment Role |
-| :--- | :---: | :--- |
-| **`elements[B]`** | $12 \times 4 = 48\text{ bytes}$ | Contiguous payload buffer filling cache line body |
-| **`numElements`** | $4\text{ bytes}$ | Active elements counter ($0 \le \text{count} \le B$) |
-| **`padding`** | $4\text{ bytes}$ | Structural padding to preserve 8-byte alignment |
-| **`next`** | $8\text{ bytes}$ | Virtual address pointer to succeeding unrolled node |
-| **Total Node Footprint** | **$64\text{ bytes}$** | **Exact match for one hardware CPU Cache Line!** |
+| Field                    |              Size               | Hardware Alignment Role                              |
+| :----------------------- | :-----------------------------: | :--------------------------------------------------- |
+| **`elements[B]`**        | $12 \times 4 = 48\text{ bytes}$ | Contiguous payload buffer filling cache line body    |
+| **`numElements`**        |        $4\text{ bytes}$         | Active elements counter ($0 \le \text{count} \le B$) |
+| **`padding`**            |        $4\text{ bytes}$         | Structural padding to preserve 8-byte alignment      |
+| **`next`**               |        $8\text{ bytes}$         | Virtual address pointer to succeeding unrolled node  |
+| **Total Node Footprint** |      **$64\text{ bytes}$**      | **Exact match for one hardware CPU Cache Line!**     |
 
 ---
 
@@ -272,6 +277,7 @@ An **Unrolled Linked List** combines the dynamic insertion flexibility of linked
 A standard doubly linked list requires two pointer fields per node (`prev` and `next`), consuming $16$ bytes of pointer memory per node. An **XOR Linked List** stores bidirectional navigation state using **only ONE pointer field per node**, cutting pointer memory overhead in half.
 
 #### Fundamental Algebraic Properties of Bitwise XOR:
+
 1. **Self-Inverse**: $X \oplus X = 0$
 2. **Identity**: $X \oplus 0 = X$
 3. **Commutative & Associative**: $A \oplus B = B \oplus A$, $(A \oplus B) \oplus C = A \oplus (B \oplus C)$
@@ -300,11 +306,11 @@ npx = 0x0000 ^ 0x2000                npx = 0x1000 ^ 0x3000                npx = 
     = 0x2000                             = 0x2000 (hex XOR result)            = 0x2000
 ```
 
-| Node | Physical Address | Logical Predecessor | Logical Successor | Stored `npx` Equation |
-| :---: | :---: | :---: | :---: | :--- |
-| **A** | `0x1000` | `0x0000` (`NULL`) | `0x2000` (Node B) | $\text{npx} = 0 \oplus \text{0x2000} = \text{0x2000}$ |
-| **B** | `0x2000` | `0x1000` (Node A) | `0x3000` (Node C) | $\text{npx} = \text{0x1000} \oplus \text{0x3000}$ |
-| **C** | `0x3000` | `0x2000` (Node B) | `0x0000` (`NULL`) | $\text{npx} = \text{0x2000} \oplus 0 = \text{0x2000}$ |
+| Node  | Physical Address | Logical Predecessor | Logical Successor | Stored `npx` Equation                                 |
+| :---: | :--------------: | :-----------------: | :---------------: | :---------------------------------------------------- |
+| **A** |     `0x1000`     |  `0x0000` (`NULL`)  | `0x2000` (Node B) | $\text{npx} = 0 \oplus \text{0x2000} = \text{0x2000}$ |
+| **B** |     `0x2000`     |  `0x1000` (Node A)  | `0x3000` (Node C) | $\text{npx} = \text{0x1000} \oplus \text{0x3000}$     |
+| **C** |     `0x3000`     |  `0x2000` (Node B)  | `0x0000` (`NULL`) | $\text{npx} = \text{0x2000} \oplus 0 = \text{0x2000}$ |
 
 ---
 
@@ -313,6 +319,7 @@ npx = 0x0000 ^ 0x2000                npx = 0x1000 ^ 0x3000                npx = 
 Because `npx` holds $\text{prev} \oplus \text{next}$, knowing the address of one neighbor allows instant decoding of the other neighbor using the cancellation identity!
 
 #### Forward Traversal (Head to Tail):
+
 $$\text{next} = \text{curr.npx} \oplus \text{prev} = (\text{prev} \oplus \text{next}) \oplus \text{prev} = \text{next}$$
 
 ```text
@@ -327,17 +334,18 @@ FUNCTION TraverseForward(head: Node Pointer) -> Void:
 ```
 
 #### Backward Traversal (Tail to Head):
+
 $$\text{prev} = \text{curr.npx} \oplus \text{next} = (\text{prev} \oplus \text{next}) \oplus \text{next} = \text{prev}$$
 
 ---
 
 ### 4. Critical Engineering Trade-offs
 
-| Systems Advantage | Severe Practical Disadvantage |
-| :--- | :--- |
-| **50% Pointer Memory Reduction**: Consumes only 8 bytes of pointer storage per node while supporting two-way traversal. | **Loss of Arbitrary Node References**: Given a raw pointer to interior node $B$ alone, you **cannot traverse** forward or backward because you do not know either neighbor's address to decode `npx`. |
-| Ideal for memory-constrained embedded systems and microcontrollers. | **Garbage Collector Incompatibility**: Modern garbage collectors (Go, Java, .NET) cannot trace XOR-encoded pointers because `npx` does not contain a valid memory address, triggering memory corruption. |
-| Eliminates pointer asymmetry. | **Debugging Invisibility**: Valgrind, AddressSanitizer, and IDE memory inspection tools cannot inspect XOR chains. |
+| Systems Advantage                                                                                                       | Severe Practical Disadvantage                                                                                                                                                                            |
+| :---------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **50% Pointer Memory Reduction**: Consumes only 8 bytes of pointer storage per node while supporting two-way traversal. | **Loss of Arbitrary Node References**: Given a raw pointer to interior node $B$ alone, you **cannot traverse** forward or backward because you do not know either neighbor's address to decode `npx`.    |
+| Ideal for memory-constrained embedded systems and microcontrollers.                                                     | **Garbage Collector Incompatibility**: Modern garbage collectors (Go, Java, .NET) cannot trace XOR-encoded pointers because `npx` does not contain a valid memory address, triggering memory corruption. |
+| Eliminates pointer asymmetry.                                                                                           | **Debugging Invisibility**: Valgrind, AddressSanitizer, and IDE memory inspection tools cannot inspect XOR chains.                                                                                       |
 
 ---
 
@@ -352,7 +360,7 @@ $$\text{prev} = \text{curr.npx} \oplus \text{next} = (\text{prev} \oplus \text{n
 
 ## Academic Attribution & References
 
-1. **Pugh, W.** (1990). *Skip Lists: A Probabilistic Alternative to Balanced Trees*. Communications of the ACM, 33(6), 668-676.
-2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
-3. **Sinha, R.** (2004). *A Memory-Efficient Doubly Linked List*. ACM SIGPLAN Notices, 39(8), 24-27.
-4. **Hennessy, J. L., & Patterson, D. A.** (2019). *Computer Architecture: A Quantitative Approach* (6th ed.), Chapter 2: Memory Hierarchy Design. Morgan Kaufmann.
+1. **Pugh, W.** (1990). _Skip Lists: A Probabilistic Alternative to Balanced Trees_. Communications of the ACM, 33(6), 668-676.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 10: Elementary Data Structures. MIT Press.
+3. **Sinha, R.** (2004). _A Memory-Efficient Doubly Linked List_. ACM SIGPLAN Notices, 39(8), 24-27.
+4. **Hennessy, J. L., & Patterson, D. A.** (2019). _Computer Architecture: A Quantitative Approach_ (6th ed.), Chapter 2: Memory Hierarchy Design. Morgan Kaufmann.

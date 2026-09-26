@@ -196,7 +196,7 @@ export function InteractiveCanvas({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       className={cn(
-        "relative flex items-center justify-center w-full h-full overflow-hidden rounded-2xl border border-border/60 bg-surface shadow-xs select-none",
+        "relative flex items-center justify-center w-full h-full overflow-hidden rounded-lg border border-border/60 bg-surface shadow-xs select-none",
         isDragging ? "cursor-grabbing" : "cursor-grab",
         className
       )}
@@ -241,7 +241,7 @@ export function InteractiveCanvas({
       {/* 3. Floating Canvas Navigation Controls (Bottom-Right HUD) */}
       <div
         data-no-pan="true"
-        className="absolute bottom-3 right-3 z-40 flex items-center gap-1 rounded-xl border border-border/80 bg-surface/90 px-1.5 py-1 shadow-(--shadow-raised-sm) backdrop-blur-md select-none pointer-events-auto transition-opacity hover:opacity-100 opacity-80"
+        className="absolute bottom-3 right-3 z-40 flex items-center gap-1 rounded-sm border border-border/80 bg-surface/90 px-1.5 py-1 shadow-card backdrop-blur-md select-none pointer-events-auto transition-opacity hover:opacity-100 opacity-80"
         aria-label="Canvas zoom controls"
       >
         <Button

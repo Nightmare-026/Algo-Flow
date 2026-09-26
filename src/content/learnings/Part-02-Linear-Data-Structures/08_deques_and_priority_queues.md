@@ -8,6 +8,7 @@
 Linear data structures culminate in two powerful generalized container models: Double-Ended Queues (Deques) and Priority Queues. While a Deque generalizes sequence boundaries by enabling constant-time insertions and removals at both the front and rear, a Priority Queue breaks away from chronological arrival ordering entirely, servicing elements based on an intrinsic priority key. This chapter formalizes bidirectional ring buffer mathematics, monotonic deque algorithms for optimal $O(n)$ sliding window queries, the Priority Queue abstract contract, and comparative trade-offs across contiguous, linked, and tree-backed implementations.
 
 ### Learning Objectives
+
 - Formalize the Double-Ended Queue (Deque) ADT contract and demonstrate how it subsumes both LIFO stacks and FIFO queues.
 - Implement circular array deques using bidirectional modular arithmetic to step backward and forward in physical RAM without shifting.
 - Formulate the decreasing monotonic deque invariant and prove how it solves the Sliding Window Maximum problem in optimal $\Theta(n)$ time using the Physicist's Potential Method.
@@ -20,9 +21,10 @@ Linear data structures culminate in two powerful generalized container models: D
 
 ### 1. Conceptual Architecture & Dual-Boundary Access
 
-A **Double-Ended Queue (Deque)**, pronounced *"deck"*, is a generalized linear container that permits element insertion and deletion with equal efficiency at **both ends**: the **Front** and the **Rear**.
+A **Double-Ended Queue (Deque)**, pronounced _"deck"_, is a generalized linear container that permits element insertion and deletion with equal efficiency at **both ends**: the **Front** and the **Rear**.
 
 Because access is permitted at both boundaries, the Deque serves as a universal linear primitive:
+
 - Restricting mutations to `PushFront` and `PopFront` forms a **LIFO Stack**.
 - Restricting mutations to `PushBack` and `PopFront` forms a **FIFO Queue**.
 
@@ -40,16 +42,16 @@ Because access is permitted at both boundaries, the Deque serves as a universal 
 
 ### 2. The Deque Abstract Data Type (ADT) Interface
 
-| Operation | Description | Target Time | Auxiliary Space | Boundary Condition / Check |
-| :--- | :--- | :---: | :---: | :--- |
-| **`PushFront(x)`** | Prepends element $x$ at the `Front` | $\Theta(1)$ | $O(1)$ | Fails if bounded capacity is saturated |
-| **`PushBack(x)`** | Appends element $x$ at the `Rear` | $\Theta(1)$ | $O(1)$ | Fails if bounded capacity is saturated |
-| **`PopFront()`** | Removes and returns element at `Front` | $\Theta(1)$ | $O(1)$ | Fails with Underflow if deque is empty |
-| **`PopBack()`** | Removes and returns element at `Rear` | $\Theta(1)$ | $O(1)$ | Fails with Underflow if deque is empty |
-| **`PeekFront()`** | Inspects front-most element without removal | $\Theta(1)$ | $O(1)$ | Requires non-empty deque |
-| **`PeekBack()`** | Inspects rear-most element without removal | $\Theta(1)$ | $O(1)$ | Requires non-empty deque |
-| **`IsEmpty()`** | Returns `true` if size is 0 | $\Theta(1)$ | $O(1)$ | Verified via `count == 0` |
-| **`IsFull()`** | Returns `true` if count equals capacity | $\Theta(1)$ | $O(1)$ | Verified via `count == capacity` |
+| Operation          | Description                                 | Target Time | Auxiliary Space | Boundary Condition / Check             |
+| :----------------- | :------------------------------------------ | :---------: | :-------------: | :------------------------------------- |
+| **`PushFront(x)`** | Prepends element $x$ at the `Front`         | $\Theta(1)$ |     $O(1)$      | Fails if bounded capacity is saturated |
+| **`PushBack(x)`**  | Appends element $x$ at the `Rear`           | $\Theta(1)$ |     $O(1)$      | Fails if bounded capacity is saturated |
+| **`PopFront()`**   | Removes and returns element at `Front`      | $\Theta(1)$ |     $O(1)$      | Fails with Underflow if deque is empty |
+| **`PopBack()`**    | Removes and returns element at `Rear`       | $\Theta(1)$ |     $O(1)$      | Fails with Underflow if deque is empty |
+| **`PeekFront()`**  | Inspects front-most element without removal | $\Theta(1)$ |     $O(1)$      | Requires non-empty deque               |
+| **`PeekBack()`**   | Inspects rear-most element without removal  | $\Theta(1)$ |     $O(1)$      | Requires non-empty deque               |
+| **`IsEmpty()`**    | Returns `true` if size is 0                 | $\Theta(1)$ |     $O(1)$      | Verified via `count == 0`              |
+| **`IsFull()`**     | Returns `true` if count equals capacity     | $\Theta(1)$ |     $O(1)$      | Verified via `count == capacity`       |
 
 ---
 
@@ -58,9 +60,11 @@ Because access is permitted at both boundaries, the Deque serves as a universal 
 To achieve $O(1)$ time across all four boundary operations without dynamic node allocations or memory shifting, an implementation wraps a contiguous array using modular arithmetic in both directions:
 
 #### Advancing Forward (`PushBack`, `PopFront`):
+
 $$\text{nextIndex} = (\text{currentIndex} + 1) \pmod{\text{Capacity}}$$
 
 #### Stepping Backward (`PushFront`, `PopBack`):
+
 Adding `Capacity` before modulo ensures the intermediate value remains strictly non-negative in languages where `%` calculates truncated remainder rather than Euclidean modulo:
 $$\text{prevIndex} = (\text{currentIndex} - 1 + \text{Capacity}) \pmod{\text{Capacity}}$$
 
@@ -69,7 +73,9 @@ $$\text{prevIndex} = (\text{currentIndex} - 1 + \text{Capacity}) \pmod{\text{Cap
 ### 4. Algorithmic Mastery: Sliding Window Maximum via Monotonic Deque
 
 #### The Problem:
+
 Given an array $A$ of $n$ numbers and a sliding window of size $k$, find the maximum value in every window as it slides from left to right.
+
 - **Brute Force**: Inspecting all $k$ elements per window requires $O((n - k + 1) \cdot k) = O(n \cdot k)$ time.
 - **Monotonic Deque Solution**: Achieves optimal **$\Theta(n)$ linear time** by maintaining a strictly decreasing invariant!
 
@@ -146,6 +152,7 @@ Given an array $A$ of $n$ numbers and a sliding window of size $k$, find the max
 </div>
 
 #### Formal Amortized Analysis via the Physicist's Potential Method:
+
 Define the potential function $\Phi$ at step $i$ as the number of elements currently stored in the deque:
 $$\Phi_i = |\text{Deque}_i|$$
 Notice that $\Phi_0 = 0$ (initially empty) and $\Phi_i \ge 0$ for all $0 \le i \le n$.
@@ -167,6 +174,7 @@ Across the entire array of length $n$, total operations $\sum_{i=1}^n c_i \le 2n
 ### 1. The Priority Queue Abstract Data Type (ADT)
 
 A **Priority Queue** is an Abstract Data Type where element servicing is governed not by chronological arrival order, but by an associated **Priority Key**:
+
 - **Max-Priority Queue**: The element with the highest key is extracted first (`ExtractMax`).
 - **Min-Priority Queue**: The element with the lowest key is extracted first (`ExtractMin`).
 
@@ -183,20 +191,21 @@ Next Serviced: Patient B (Priority 10), superseding Patient A regardless of arri
 
 ### 2. Architectural Comparison of Underlying Implementations
 
-| Underlying Storage Architecture | `Insert(x, p)` | `Peek()` | `Extract()` | Memory Overhead | Practical Systems Evaluation |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **Unsorted Array** | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $0\text{ bytes}$ | Fast insert, unacceptably slow extract |
-| **Sorted Array** | $\Theta(n)$ | $\Theta(1)$ | $\Theta(1)$ | $0\text{ bytes}$ | Expensive insertion shift cascade |
-| **Unsorted Linked List** | $\Theta(1)$ | $\Theta(n)$ | $\Theta(n)$ | $8\text{ bytes / node}$ | Poor cache locality, slow scan |
-| **Sorted Linked List** | $\Theta(n)$ | $\Theta(1)$ | $\Theta(1)$ | $8\text{ bytes / node}$ | Linear traversal to find insertion point |
-| **Balanced BST (AVL / Red-Black)**| $\Theta(\log n)$ | $\Theta(1)^*$ | $\Theta(\log n)$ | $24\text{ bytes / node}$ | High pointer and rebalancing overhead |
-| **Binary Heap (Complete Tree in Array)**| **$O(\log n)$** | **$\Theta(1)$** | **$O(\log n)$** | **$0\text{ bytes}$** | **The Gold Standard**: Zero pointer overhead, contiguous array storage, maximum L1 cache efficiency |
+| Underlying Storage Architecture          |  `Insert(x, p)`  |    `Peek()`     |   `Extract()`    |     Memory Overhead      | Practical Systems Evaluation                                                                        |
+| :--------------------------------------- | :--------------: | :-------------: | :--------------: | :----------------------: | :-------------------------------------------------------------------------------------------------- |
+| **Unsorted Array**                       |   $\Theta(1)$    |   $\Theta(n)$   |   $\Theta(n)$    |     $0\text{ bytes}$     | Fast insert, unacceptably slow extract                                                              |
+| **Sorted Array**                         |   $\Theta(n)$    |   $\Theta(1)$   |   $\Theta(1)$    |     $0\text{ bytes}$     | Expensive insertion shift cascade                                                                   |
+| **Unsorted Linked List**                 |   $\Theta(1)$    |   $\Theta(n)$   |   $\Theta(n)$    | $8\text{ bytes / node}$  | Poor cache locality, slow scan                                                                      |
+| **Sorted Linked List**                   |   $\Theta(n)$    |   $\Theta(1)$   |   $\Theta(1)$    | $8\text{ bytes / node}$  | Linear traversal to find insertion point                                                            |
+| **Balanced BST (AVL / Red-Black)**       | $\Theta(\log n)$ |  $\Theta(1)^*$  | $\Theta(\log n)$ | $24\text{ bytes / node}$ | High pointer and rebalancing overhead                                                               |
+| **Binary Heap (Complete Tree in Array)** | **$O(\log n)$**  | **$\Theta(1)$** | **$O(\log n)$**  |   **$0\text{ bytes}$**   | **The Gold Standard**: Zero pointer overhead, contiguous array storage, maximum L1 cache efficiency |
 
 ---
 
 ### 3. Production Multi-Language Implementations
 
 #### A. C++20 Optimal Sliding Window Maximum Monotonic Deque
+
 ```cpp
 #include <vector>
 #include <deque>
@@ -204,7 +213,7 @@ Next Serviced: Patient B (Priority 10), superseding Patient A regardless of arri
 
 std::vector<int> maxSlidingWindow(std::span<const int> nums, int k) {
     if (nums.empty() || k <= 0) return {};
-    
+
     std::deque<int> dq; // Stores indices of candidate maximums
     std::vector<int> result;
     result.reserve(nums.size() - k + 1);
@@ -234,6 +243,7 @@ std::vector<int> maxSlidingWindow(std::span<const int> nums, int k) {
 ```
 
 #### B. Python 3 Monotonic Deque with Type Annotations
+
 ```python
 from collections import deque
 from typing import List
@@ -278,7 +288,7 @@ def max_sliding_window(nums: List[int], k: int) -> List[int]:
 
 ## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 6: *Heapsort*, Chapter 10: *Elementary Data Structures*. MIT Press.
-2. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: *Linear Lists*. Addison-Wesley.
-3. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 2.4: *Priority Queues*. Addison-Wesley.
-4. **Huffman, D. A.** (1952). *A Method for the Construction of Minimum-Redundancy Codes*. Proceedings of the IRE, 40(9), 1098-1101.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 6: _Heapsort_, Chapter 10: _Elementary Data Structures_. MIT Press.
+2. **Knuth, D. E.** (1997). _The Art of Computer Programming, Volume 1: Fundamental Algorithms_ (3rd ed.), Section 2.2: _Linear Lists_. Addison-Wesley.
+3. **Sedgewick, R., & Wayne, K.** (2011). _Algorithms_ (4th ed.), Section 2.4: _Priority Queues_. Addison-Wesley.
+4. **Huffman, D. A.** (1952). _A Method for the Construction of Minimum-Redundancy Codes_. Proceedings of the IRE, 40(9), 1098-1101.

@@ -90,7 +90,7 @@ export default async function ModuleSyllabusPage({ params }: ModulePageProps) {
           </nav>
 
           {/* Module Header Card */}
-          <div className="rounded-[8px] border border-border bg-surface p-6 sm:p-8 md:p-10 shadow-card mb-10">
+          <div className="rounded-lg border border-border bg-surface p-6 sm:p-8 md:p-10 shadow-card mb-10">
             <div className="flex items-center gap-2 mb-4">
               <span className="px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs">
                 Part {mod.partNumber.toString().padStart(2, "0")}
@@ -111,7 +111,7 @@ export default async function ModuleSyllabusPage({ params }: ModulePageProps) {
             <div className="pt-4 border-t border-border/50 flex flex-wrap items-center justify-between gap-4">
               <Link
                 href={`/learnings/${mod.slug}/${mod.chapters[0].slug}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 min-h-11 rounded-[4px] border border-primary/30 bg-primary text-white font-semibold text-sm hover:bg-primary-hover hover:border-primary transition-colors shadow-card cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 min-h-11 rounded-sm border border-primary/30 bg-primary text-white font-semibold text-sm hover:bg-primary-hover hover:border-primary transition-colors shadow-card cursor-pointer"
               >
                 <span>Start Chapter 1</span>
                 <ArrowRight className="w-4 h-4" />
@@ -143,10 +143,10 @@ export default async function ModuleSyllabusPage({ params }: ModulePageProps) {
                 <Link
                   key={chapter.slug}
                   href={`/learnings/${mod.slug}/${chapter.slug}`}
-                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-[8px] border border-border bg-surface hover:bg-surface-secondary p-5 md:p-6 shadow-card hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-card-hover transition-all"
+                  className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-lg border border-border bg-surface hover:bg-surface-secondary p-5 md:p-6 shadow-card hover:border-primary/40 hover:-translate-y-0.5 hover:shadow-card-hover transition-all"
                 >
                   <div className="flex items-start gap-4 flex-1 min-w-0">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-[4px] bg-surface-secondary text-foreground/80 font-mono text-xs font-bold shrink-0 border border-border">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-sm bg-surface-secondary text-foreground/80 font-mono text-xs font-bold shrink-0 border border-border">
                       {chapter.order.toString().padStart(2, "0")}
                     </span>
 
@@ -164,7 +164,7 @@ export default async function ModuleSyllabusPage({ params }: ModulePageProps) {
                           {chapter.topicsCovered.slice(0, 3).map((t, i) => (
                             <span
                               key={i}
-                              className="px-2 py-0.5 rounded-[4px] bg-surface-secondary text-[11px] text-foreground/70 font-mono"
+                              className="px-2 py-0.5 rounded-sm bg-surface-secondary text-[11px] text-foreground/70 font-mono"
                             >
                               {t}
                             </span>
@@ -181,7 +181,7 @@ export default async function ModuleSyllabusPage({ params }: ModulePageProps) {
                         <span>Simulator</span>
                       </span>
                     )}
-                    <div className="w-8 h-8 rounded-[4px] border border-border bg-surface flex items-center justify-center text-muted-foreground group-hover:text-primary group-hover:border-primary/40 transition-colors">
+                    <div className="w-8 h-8 rounded-sm border border-border bg-surface flex items-center justify-center text-muted-foreground group-hover:text-primary group-hover:border-primary/40 transition-colors">
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                     </div>
                   </div>
@@ -195,7 +195,7 @@ export default async function ModuleSyllabusPage({ params }: ModulePageProps) {
             {prevModule ? (
               <Link
                 href={`/learnings/${prevModule.slug}`}
-                className="flex items-center gap-3 p-4 rounded-[8px] border border-border bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-card text-left"
+                className="flex items-center gap-3 p-4 rounded-lg border border-border bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-card text-left"
               >
                 <ChevronLeft className="w-5 h-5 text-primary shrink-0 transition-transform group-hover:-translate-x-1" />
                 <div className="overflow-hidden">
@@ -214,7 +214,7 @@ export default async function ModuleSyllabusPage({ params }: ModulePageProps) {
             {nextModule ? (
               <Link
                 href={`/learnings/${nextModule.slug}`}
-                className="flex items-center justify-between gap-3 p-4 rounded-[8px] border border-border bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-card text-right sm:col-start-2"
+                className="flex items-center justify-between gap-3 p-4 rounded-lg border border-border bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-card text-right sm:col-start-2"
               >
                 <div className="overflow-hidden">
                   <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">

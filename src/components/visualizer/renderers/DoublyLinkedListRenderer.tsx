@@ -102,7 +102,7 @@ export function DoublyLinkedListRenderer() {
                   <div className="flex flex-row items-center h-12 sm:h-16 rounded-lg sm:rounded-xl border-2 overflow-hidden shadow-sm">
                     {/* Prev Pointer Area */}
                     <div
-                      className="flex items-center justify-center w-5 sm:w-6 h-full bg-bg-surface-light border-r-2 border-border"
+                      className="flex items-center justify-center w-5 sm:w-6 h-full bg-surface-secondary border-r-2 border-border"
                       title="Prev pointer"
                     >
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-text-muted" />
@@ -118,7 +118,7 @@ export function DoublyLinkedListRenderer() {
                     </div>
                     {/* Next Pointer Area */}
                     <div
-                      className="flex items-center justify-center w-5 sm:w-6 h-full bg-bg-surface-light border-l-2 border-border"
+                      className="flex items-center justify-center w-5 sm:w-6 h-full bg-surface-secondary border-l-2 border-border"
                       title="Next pointer"
                     >
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-text-muted" />
@@ -184,7 +184,7 @@ export function DoublyLinkedListRenderer() {
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     className="flex flex-row items-center h-12 sm:h-16 rounded-lg sm:rounded-xl border-2 border-dashed overflow-hidden shadow-sm"
                   >
-                    <div className="flex items-center justify-center w-5 sm:w-6 h-full bg-bg-surface-light border-r-2 border-border border-dashed">
+                    <div className="flex items-center justify-center w-5 sm:w-6 h-full bg-surface-secondary border-r-2 border-border border-dashed">
                       <div className="w-1.5 h-1.5 rounded-full bg-text-muted/50" />
                     </div>
                     <div
@@ -195,7 +195,7 @@ export function DoublyLinkedListRenderer() {
                     >
                       {node.value}
                     </div>
-                    <div className="flex items-center justify-center w-5 sm:w-6 h-full bg-bg-surface-light border-l-2 border-border border-dashed">
+                    <div className="flex items-center justify-center w-5 sm:w-6 h-full bg-surface-secondary border-l-2 border-border border-dashed">
                       <div className="w-1.5 h-1.5 rounded-full bg-text-muted/50" />
                     </div>
                   </motion.div>

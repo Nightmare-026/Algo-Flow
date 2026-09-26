@@ -7,6 +7,7 @@ Confronting an unseen algorithmic challenge without a systematic process leads t
 ### Learning Objectives
 
 By the end of this chapter, you will be able to:
+
 - Execute George Pólya's 4-Phase Mathematical Framework adapted for modern computer science.
 - Apply the 6-Step Engineering Problem-Solving Pipeline to systematically decompose complex algorithmic challenges.
 - Use the B.U.D. (Bottlenecks, Unnecessary work, Duplicated work) optimization heuristic to transition from naive $O(N^2)$ solutions to optimal $O(N)$ or $O(N \log N)$ implementations.
@@ -18,7 +19,8 @@ By the end of this chapter, you will be able to:
 
 ## 1. The Epistemic Framework: Pólya to Software Engineering
 
-In 1945, mathematician George Pólya published *How to Solve It*, identifying four fundamental cognitive phases for mathematical problem solving:
+In 1945, mathematician George Pólya published _How to Solve It_, identifying four fundamental cognitive phases for mathematical problem solving:
+
 1. **Understand the problem** (Identify unknown, data, and condition).
 2. **Devise a plan** (Find connection between data and unknown; inspect related problems).
 3. **Carry out the plan** (Check each step for mathematical correctness).
@@ -26,7 +28,7 @@ In 1945, mathematician George Pólya published *How to Solve It*, identifying fo
 
 In contemporary computer science, Pólya's framework is operationalized into the **6-Step Engineering Problem-Solving Pipeline**:
 
-<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
+<div class="my-8 p-6 rounded-lg border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Engineering Methodology</span>
 <span>•</span>
@@ -91,16 +93,16 @@ $$\text{Typical Allowable Operations Budget} \approx 10^8 \text{ ops/sec}$$
 
 The following heuristic table maps typical input bounds to target complexities:
 
-| Input Bound ($N$) | Empirical Target Complexity | Representative Algorithmic Paradigms |
-| :--- | :--- | :--- |
-| **$N \le 10$** | $O(N!)$ or $O(N^2 \cdot 2^N)$ | Traveling Salesperson, Permutation Generation, Exact Set Cover |
-| **$N \le 20\text{–}25$** | $O(2^N)$ or $O(N \cdot 2^N)$ | Subset Generation, Hamiltonian Path, Bitmask DP, Meet-in-the-Middle |
-| **$N \le 100$** | $O(N^4)$ or $O(N^3)$ | All-Pairs Shortest Path (Floyd-Warshall), Matrix Chain Multiplication |
-| **$N \le 500$** | $O(N^3)$ | Dense Matrix Multiplication, 2D Dynamic Programming |
-| **$N \le 5,000$** | $O(N^2)$ | Nested Loops, All-Pairs Comparisons, Dynamic Programming ($N \times M$) |
-| **$N \le 10^5\text{–}10^6$** | $O(N \log N)$ or $O(N)$ | Comparison Sorting (Quicksort/Mergesort), Heaps, Segment Trees, Sliding Window |
-| **$N \le 10^8$** | $O(N)$ (tight constants) | Linear Scan, Prefix Sums, Counting Sort, Kadane's Algorithm |
-| **$N \ge 10^9$** | $O(\log N)$ or $O(1)$ | Binary Search on Answer Space, Matrix Exponentiation, Closed-form Math |
+| Input Bound ($N$)            | Empirical Target Complexity   | Representative Algorithmic Paradigms                                           |
+| :--------------------------- | :---------------------------- | :----------------------------------------------------------------------------- |
+| **$N \le 10$**               | $O(N!)$ or $O(N^2 \cdot 2^N)$ | Traveling Salesperson, Permutation Generation, Exact Set Cover                 |
+| **$N \le 20\text{–}25$**     | $O(2^N)$ or $O(N \cdot 2^N)$  | Subset Generation, Hamiltonian Path, Bitmask DP, Meet-in-the-Middle            |
+| **$N \le 100$**              | $O(N^4)$ or $O(N^3)$          | All-Pairs Shortest Path (Floyd-Warshall), Matrix Chain Multiplication          |
+| **$N \le 500$**              | $O(N^3)$                      | Dense Matrix Multiplication, 2D Dynamic Programming                            |
+| **$N \le 5,000$**            | $O(N^2)$                      | Nested Loops, All-Pairs Comparisons, Dynamic Programming ($N \times M$)        |
+| **$N \le 10^5\text{–}10^6$** | $O(N \log N)$ or $O(N)$       | Comparison Sorting (Quicksort/Mergesort), Heaps, Segment Trees, Sliding Window |
+| **$N \le 10^8$**             | $O(N)$ (tight constants)      | Linear Scan, Prefix Sums, Counting Sort, Kadane's Algorithm                    |
+| **$N \ge 10^9$**             | $O(\log N)$ or $O(1)$         | Binary Search on Answer Space, Matrix Exponentiation, Closed-form Math         |
 
 ### 2.2 Critical Heuristic Qualifications & Real-World Variables
 
@@ -115,12 +117,12 @@ These thresholds represent **empirical guidelines**, not universal physical laws
    - An $O(N)$ loop executing simple bitwise shifts or additions has $c \approx 1$.
    - An $O(N)$ loop executing 64-bit integer modulo division, memory allocations, or scattered node dereferencing with L3 cache misses may have $c \approx 100\text{–}200$, reducing allowable $N$ by two orders of magnitude!
 3. **Multi-Test Case Constraints ($T$)**:
-   - Many contest problems specify $T$ test cases per file (e.g., $T \le 1000$). Check whether the problem states *"The sum of $N$ over all test cases does not exceed $10^5$"* ($\sum N \le 10^5$). If the bound applies per test case without a cumulative limit, an $O(T \cdot N)$ solution will TLE.
+   - Many contest problems specify $T$ test cases per file (e.g., $T \le 1000$). Check whether the problem states _"The sum of $N$ over all test cases does not exceed $10^5$"_ ($\sum N \le 10^5$). If the bound applies per test case without a cumulative limit, an $O(T \cdot N)$ solution will TLE.
 4. **I/O Bottlenecks**:
    - In languages like C++, unoptimized standard streams (`std::cin` / `std::cout`) synchronize with C stdio by default. Reading $10^6$ integers can take $1.5$ seconds purely in I/O. Always decouple streams in competitive environments: `std::cin.tie(nullptr); std::ios_base::sync_with_stdio(false);`.
 
 > [!IMPORTANT]
-> **Diagnostic Rule**: Before writing code, inspect the maximum value of $N$ and test multipliers. If $N = 2 \times 10^5$, an $O(N^2)$ algorithm requires $(2 \times 10^5)^2 = 4 \times 10^{10}$ operations, requiring approximately **400 seconds** of compute time on standard hardware. You *must* target $O(N \log N)$ or $O(N)$.
+> **Diagnostic Rule**: Before writing code, inspect the maximum value of $N$ and test multipliers. If $N = 2 \times 10^5$, an $O(N^2)$ algorithm requires $(2 \times 10^5)^2 = 4 \times 10^{10}$ operations, requiring approximately **400 seconds** of compute time on standard hardware. You _must_ target $O(N \log N)$ or $O(N)$.
 
 ---
 
@@ -143,6 +145,7 @@ Developed by Gayle Laakmann McDowell, the **B.U.D. Method** is a systematic diag
 A bottleneck occurs when one phase of an algorithm dominates the total asymptotic complexity. Any optimization performed on non-bottleneck phases produces zero asymptotic speedup (Amdahl's Law).
 
 Consider an algorithm that:
+
 1. Sorts an array of size $N$: costs $O(N \log N)$.
 2. Runs a nested loop over $N$ items: costs $O(N^2)$.
 3. Total time: $T(N) = O(N \log N) + O(N^2) = O(N^2)$.
@@ -172,7 +175,9 @@ To observe the B.U.D. methodology in practice, consider the **Subarray Sum Equal
 Given an array of integers $A$ and an integer $K$, find the total count of continuous subarrays whose elements sum to $K$.
 
 ### Phase 1: Brute Force Baseline ($O(N^3)$)
+
 Examine all possible subarrays $[i \dots j]$ and sum their contents:
+
 ```python
 def subarray_sum_bruteforce(A: list[int], K: int) -> int:
     n = len(A)
@@ -186,12 +191,15 @@ def subarray_sum_bruteforce(A: list[int], K: int) -> int:
                 count += 1
     return count
 ```
+
 - **Complexity**: Three nested loops $\implies O(N^3)$ time, $O(1)$ space.
 - **B.U.D. Diagnosis**:
   - **Duplicated Work**: When extending subarray from $[i \dots j-1]$ to $[i \dots j]$, the inner loop re-sums elements $A[i \dots j-1]$ from scratch!
 
 ### Phase 2: Eliminating Duplicated Work ($O(N^2)$)
+
 Maintain a running cumulative sum across the inner loop:
+
 ```python
 def subarray_sum_running(A: list[int], K: int) -> int:
     n = len(A)
@@ -204,6 +212,7 @@ def subarray_sum_running(A: list[int], K: int) -> int:
                 count += 1
     return count
 ```
+
 - **Complexity**: $O(N^2)$ time, $O(1)$ space.
 - **B.U.D. Diagnosis**:
   - **Bottleneck**: We are still scanning all $\frac{N(N+1)}{2}$ pairs of indices $(i, j)$ looking for subarrays satisfying $\sum_{m=i}^j A[m] = K$.
@@ -212,6 +221,7 @@ def subarray_sum_running(A: list[int], K: int) -> int:
   - Instead of searching for all starting indices $i$ in $O(N)$ time, we can query how many prior prefix sums equaled $P[j] - K$ in **$O(1)$ time using a Hash Map**!
 
 ### Phase 3: Optimal Hash Map Algorithm ($O(N)$)
+
 ```python
 def subarray_sum_optimal(A: list[int], K: int) -> int:
     """Computes count of continuous subarrays summing to K in O(N) time."""
@@ -228,6 +238,7 @@ def subarray_sum_optimal(A: list[int], K: int) -> int:
 
     return total_count
 ```
+
 - **Complexity**: $O(N)$ time, $O(N)$ space.
 - **Performance Comparison for $N = 10^5$**:
   - $O(N^3)$ Brute Force: $\approx 10^{15}$ operations ($\approx 115\text{ days}$).
@@ -309,7 +320,7 @@ A flowchart visualizes state transitions and control divergence before committin
 
 ## 6. Formal Pseudocode Conventions (CLRS Standard)
 
-To communicate algorithmic logic across engineering teams without language bias, we adopt the formal conventions established by Cormen, Leiserson, Rivest, and Stein (*CLRS*):
+To communicate algorithmic logic across engineering teams without language bias, we adopt the formal conventions established by Cormen, Leiserson, Rivest, and Stein (_CLRS_):
 
 1. **Indentation Replaces Block Delimiters**: Indentation indicates block structure; no braces (`{}`) or `begin`/`end` statements are permitted.
 2. **Standard Control Structures**:
@@ -354,22 +365,22 @@ Before writing a single line of target code, always execute a **Dry-Run State Ta
 - **Input Array**: $A = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]$ ($N = 10$).
 - **Search Target**: $K = 23$.
 
-| Step | `low` | `high` | Predicate `low ≤ high` | `mid` Calculation | $A[\text{mid}]$ | Predicate Evaluation | New State / Action |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **0** | $0$ | $9$ | $0 \le 9 \implies \text{True}$ | $0 + \lfloor 9/2 \rfloor = 4$ | $A[4] = 16$ | $16 < 23 \implies \text{True}$ | `low ← mid + 1 = 5` |
-| **1** | $5$ | $9$ | $5 \le 9 \implies \text{True}$ | $5 + \lfloor 4/2 \rfloor = 7$ | $A[7] = 56$ | $56 > 23 \implies \text{True}$ | `high ← mid - 1 = 6` |
-| **2** | $5$ | $6$ | $5 \le 6 \implies \text{True}$ | $5 + \lfloor 1/2 \rfloor = 5$ | $A[5] = 23$ | $23 == 23 \implies \text{True}$ | **Return $\text{mid} = 5$** (Success!) |
+| Step  | `low` | `high` |     Predicate `low ≤ high`     |       `mid` Calculation       | $A[\text{mid}]$ |      Predicate Evaluation       | New State / Action                     |
+| :---: | :---: | :----: | :----------------------------: | :---------------------------: | :-------------: | :-----------------------------: | :------------------------------------- |
+| **0** |  $0$  |  $9$   | $0 \le 9 \implies \text{True}$ | $0 + \lfloor 9/2 \rfloor = 4$ |   $A[4] = 16$   | $16 < 23 \implies \text{True}$  | `low ← mid + 1 = 5`                    |
+| **1** |  $5$  |  $9$   | $5 \le 9 \implies \text{True}$ | $5 + \lfloor 4/2 \rfloor = 7$ |   $A[7] = 56$   | $56 > 23 \implies \text{True}$  | `high ← mid - 1 = 6`                   |
+| **2** |  $5$  |  $6$   | $5 \le 6 \implies \text{True}$ | $5 + \lfloor 1/2 \rfloor = 5$ |   $A[5] = 23$   | $23 == 23 \implies \text{True}$ | **Return $\text{mid} = 5$** (Success!) |
 
 ### 7.2 Verifying the Not-Found Failure Path
 
 - **Search Target**: $K = 20$ (absent from array).
 
-| Step | `low` | `high` | Predicate `low ≤ high` | `mid` | $A[\text{mid}]$ | Comparison | Action |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **0** | $0$ | $9$ | $0 \le 9 \implies \text{True}$ | $4$ | $16$ | $16 < 20$ | `low ← 5` |
-| **1** | $5$ | $9$ | $5 \le 9 \implies \text{True}$ | $7$ | $56$ | $56 > 20$ | `high ← 6` |
-| **2** | $5$ | $6$ | $5 \le 6 \implies \text{True}$ | $5$ | $23$ | $23 > 20$ | `high ← 4` |
-| **3** | $5$ | $4$ | $5 \le 4 \implies \text{False}$ | — | — | Loop Exits | **Return -1** (Correct failure) |
+| Step  | `low` | `high` |     Predicate `low ≤ high`      | `mid` | $A[\text{mid}]$ | Comparison | Action                          |
+| :---: | :---: | :----: | :-----------------------------: | :---: | :-------------: | :--------: | :------------------------------ |
+| **0** |  $0$  |  $9$   | $0 \le 9 \implies \text{True}$  |  $4$  |      $16$       | $16 < 20$  | `low ← 5`                       |
+| **1** |  $5$  |  $9$   | $5 \le 9 \implies \text{True}$  |  $7$  |      $56$       | $56 > 20$  | `high ← 6`                      |
+| **2** |  $5$  |  $6$   | $5 \le 6 \implies \text{True}$  |  $5$  |      $23$       | $23 > 20$  | `high ← 4`                      |
+| **3** |  $5$  |  $4$   | $5 \le 4 \implies \text{False}$ |   —   |        —        | Loop Exits | **Return -1** (Correct failure) |
 
 ---
 
@@ -405,8 +416,8 @@ Before writing a single line of target code, always execute a **Dry-Run State Ta
 
 ## References & Academic Attribution
 
-1. **Pólya, G.** (1945). *How to Solve It: A New Aspect of Mathematical Method*. Princeton University Press.
-2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press. (Chapter 1: The Role of Algorithms in Computing; Chapter 2: Pseudocode Conventions).
-3. **McDowell, G. L.** (2015). *Cracking the Coding Interview: 189 Programming Questions and Solutions* (6th ed.). CareerCup. (Chapter VI: Big O; Chapter VII: Technical Questions & The B.U.D. Approach).
-4. **Bentley, J.** (2000). *Programming Pearls* (2nd ed.). Addison-Wesley. (Column 2: Aha! Algorithms; Column 4: Writing Correct Programs).
-5. **International Organization for Standardization.** (1985). *Information processing — Documentation symbols and conventions for data, program and system flowcharts, program network charts and system resources charts (ISO Standard No. 5807:1985)*.
+1. **Pólya, G.** (1945). _How to Solve It: A New Aspect of Mathematical Method_. Princeton University Press.
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.). MIT Press. (Chapter 1: The Role of Algorithms in Computing; Chapter 2: Pseudocode Conventions).
+3. **McDowell, G. L.** (2015). _Cracking the Coding Interview: 189 Programming Questions and Solutions_ (6th ed.). CareerCup. (Chapter VI: Big O; Chapter VII: Technical Questions & The B.U.D. Approach).
+4. **Bentley, J.** (2000). _Programming Pearls_ (2nd ed.). Addison-Wesley. (Column 2: Aha! Algorithms; Column 4: Writing Correct Programs).
+5. **International Organization for Standardization.** (1985). _Information processing — Documentation symbols and conventions for data, program and system flowcharts, program network charts and system resources charts (ISO Standard No. 5807:1985)_.

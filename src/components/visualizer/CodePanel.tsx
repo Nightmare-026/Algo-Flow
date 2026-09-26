@@ -190,7 +190,7 @@ export function CodePanel({
 
   return (
     <section
-      className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-(--shadow-raised-sm)"
+      className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-card"
       aria-label="Source code"
     >
       <div className="flex min-h-9.5 shrink-0 items-center justify-between border-b border-border bg-surface px-2">
@@ -211,9 +211,9 @@ export function CodePanel({
                 aria-controls="code-language-panel"
                 onClick={() => setActiveLang(example.language)}
                 className={cn(
-                  "min-h-7 rounded px-2 text-[11px] font-semibold transition-all cursor-pointer select-none",
+                  "min-h-7 rounded-sm px-2 text-[11px] font-semibold transition-all cursor-pointer select-none",
                   isActive
-                    ? "bg-primary text-white shadow-(--shadow-raised-sm)"
+                    ? "bg-primary text-white shadow-card"
                     : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
                 )}
               >
@@ -224,7 +224,7 @@ export function CodePanel({
         </div>
         <div className="flex items-center gap-1.5">
           {activeLineNum ? (
-            <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-2 py-0.5 rounded-md border border-primary/30 shadow-[0_0_8px_rgba(34,197,94,0.15)]">
+            <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-2 py-0.5 rounded-sm border border-primary/30 shadow-card">
               Line {activeLineNum}
             </span>
           ) : null}
@@ -232,7 +232,7 @@ export function CodePanel({
             type="button"
             onClick={handleCopy}
             disabled={!codeString}
-            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border bg-surface text-text-muted transition-all hover:border-primary/40 hover:text-primary disabled:opacity-40"
+            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm border border-border bg-surface text-text-muted shadow-card transition-all hover:border-primary/40 hover:text-primary disabled:opacity-40"
             aria-label={copied ? "Code copied" : "Copy code"}
             title="Copy code"
           >
@@ -247,7 +247,7 @@ export function CodePanel({
         role="tabpanel"
         aria-labelledby={`code-tab-${activeLang}`}
         aria-busy={!isDocumentReady && Boolean(codeString)}
-        className="group relative flex-1 overflow-auto bg-code-panel-bg shadow-(--shadow-inset)"
+        className="group relative flex-1 overflow-auto bg-code-panel-bg shadow-inset"
       >
         {isDocumentReady && htmlContent && codeString ? (
           <div

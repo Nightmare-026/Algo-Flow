@@ -1,11 +1,13 @@
 # Part 00: Front Matter — Curriculum Philosophy, Cognitive Architecture & Learning Framework
 
-Mastering data structures and algorithms requires connecting abstract mathematical proofs to concrete physical memory layouts and deterministic step-by-step state transitions. Classical computer science education often fails because it isolates these domains: theoretical lectures present asymptotic formalisms disconnected from CPU architecture, while interview preparation platforms encourage shallow pattern memorization without underlying invariants. 
+Mastering data structures and algorithms requires connecting abstract mathematical proofs to concrete physical memory layouts and deterministic step-by-step state transitions. Classical computer science education often fails because it isolates these domains: theoretical lectures present asymptotic formalisms disconnected from CPU architecture, while interview preparation platforms encourage shallow pattern memorization without underlying invariants.
 
 This curriculum establishes a rigorous university-level and industry-standard pedagogical framework. Across 62 in-depth chapters, theory is unified with mechanical sympathy, deterministic dry-run state tables, and interactive algorithmic visualizers.
 
 ### Learning Objectives
+
 By the end of this chapter, you will be able to:
+
 - Deconstruct algorithmic problems across the three foundational domains: mathematical correctness, physical memory layouts, and discrete state transitions.
 - Apply Bloom's Revised Taxonomy specifically calibrated for Computer Science to benchmark and elevate your algorithmic problem-solving maturity.
 - Navigate the 12-Stage Algorithmic Learning Continuum from problem motivation down to loop invariants, state tables, and polyglot implementation.
@@ -40,7 +42,7 @@ AlgoFlow bridges this divide by enforcing four foundational pillars across every
 └──────────────────────────────────┴─────────────────────────────────────┘
 ```
 
-<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
+<div class="my-8 p-6 rounded-lg border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Architecture Blueprint</span>
 <span>•</span>
@@ -100,7 +102,7 @@ Educational psychologist Benjamin Bloom established a hierarchical ordering of c
 
 Passive reading (skimming solution videos or reading textbook code) confines students to the bottom two levels, generating the illusion of competence. True software engineering and high-performance systems design demand mastery through Level 6.
 
-<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
+<div class="my-8 p-6 rounded-lg border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Cognitive Hierarchy</span>
 <span>•</span>
@@ -132,24 +134,24 @@ Passive reading (skimming solution videos or reading textbook code) confines stu
 
 ### 2.1 The 6 Cognitive Stages in Computer Science
 
-| Level | Cognitive Stage | Algorithmic Definition | Operational Verbs | Concrete Deliverable |
-| :---: | :--- | :--- | :--- | :--- |
-| **6** | **Create / Architect** | Synthesize novel data structures, combine paradigms, and architect bespoke solutions for complex system constraints. | *Synthesize, Architect, Adapt, Generalize, Formulate* | Novel data structure design, cache-conscious system architecture |
-| **5** | **Evaluate & Prove** | Audit competing approaches, prove loop invariants, mathematically establish correctness, and verify boundary limits. | *Prove, Verify, Validate, Benchmark, Defend, Audit* | Formal correctness proof, comprehensive edge-case test suite |
-| **4** | **Analyze & Deconstruct** | Deconstruct algorithms into recurrence trees, isolate memory bottlenecks, calculate amortized costs, and profile cache misses. | *Deconstruct, Profile, Calculate, Classify, Dissect* | Amortized proof, recurrence tree derivation, memory profile |
-| **3** | **Apply & Trace** | Implement the algorithm from scratch with zero boilerplate bugs, manual dry-run on paper, and trace variable mutations. | *Implement, Trace, Calculate, Execute, Simulate* | Verified code implementation, manual dry-run trace table |
-| **2** | **Understand & Visualize** | Articulate mechanical intuition, draw node transitions and pointer rearrangements, and explain trade-offs without code. | *Diagram, Illustrate, Paraphrase, Compare, Predict* | Pointer mutation diagrams, conceptual summary in plain English |
-| **1** | **Remember & Recall** | State definitions, retrieve standard asymptotic bounds from memory, and define ADT interfaces. | *Recall, Define, List, Identify, Recite* | Flashcard verification of time/space complexities and definitions |
+| Level | Cognitive Stage            | Algorithmic Definition                                                                                                         | Operational Verbs                                     | Concrete Deliverable                                              |
+| :---: | :------------------------- | :----------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------- | :---------------------------------------------------------------- |
+| **6** | **Create / Architect**     | Synthesize novel data structures, combine paradigms, and architect bespoke solutions for complex system constraints.           | _Synthesize, Architect, Adapt, Generalize, Formulate_ | Novel data structure design, cache-conscious system architecture  |
+| **5** | **Evaluate & Prove**       | Audit competing approaches, prove loop invariants, mathematically establish correctness, and verify boundary limits.           | _Prove, Verify, Validate, Benchmark, Defend, Audit_   | Formal correctness proof, comprehensive edge-case test suite      |
+| **4** | **Analyze & Deconstruct**  | Deconstruct algorithms into recurrence trees, isolate memory bottlenecks, calculate amortized costs, and profile cache misses. | _Deconstruct, Profile, Calculate, Classify, Dissect_  | Amortized proof, recurrence tree derivation, memory profile       |
+| **3** | **Apply & Trace**          | Implement the algorithm from scratch with zero boilerplate bugs, manual dry-run on paper, and trace variable mutations.        | _Implement, Trace, Calculate, Execute, Simulate_      | Verified code implementation, manual dry-run trace table          |
+| **2** | **Understand & Visualize** | Articulate mechanical intuition, draw node transitions and pointer rearrangements, and explain trade-offs without code.        | _Diagram, Illustrate, Paraphrase, Compare, Predict_   | Pointer mutation diagrams, conceptual summary in plain English    |
+| **1** | **Remember & Recall**      | State definitions, retrieve standard asymptotic bounds from memory, and define ADT interfaces.                                 | _Recall, Define, List, Identify, Recite_              | Flashcard verification of time/space complexities and definitions |
 
 ### 2.2 Case Study: Binary Search Across the Taxonomy
 
 To observe the taxonomy in action, consider how a student's relationship with **Binary Search** evolves as they climb through the cognitive levels:
 
 - **Level 1 (Remember)**: The student recites that Binary Search operates in $O(\log N)$ time and $O(1)$ auxiliary space on sorted arrays.
-- **Level 2 (Understand)**: The student explains *why* the time complexity is logarithmic: every comparison divides the search space $[L, R]$ strictly in half, yielding the recurrence $T(N) = T(N/2) + O(1)$, terminating when $N/2^k = 1 \implies k = \log_2 N$.
+- **Level 2 (Understand)**: The student explains _why_ the time complexity is logarithmic: every comparison divides the search space $[L, R]$ strictly in half, yielding the recurrence $T(N) = T(N/2) + O(1)$, terminating when $N/2^k = 1 \implies k = \log_2 N$.
 - **Level 3 (Apply)**: The student constructs a manual dry-run table tracing indices $L$, $R$, and $M = L + \lfloor(R - L)/2\rfloor$ over the array `[-3, 0, 2, 8, 14, 22]`, explaining why integer midpoint calculation avoids integer overflow compared to $(L + R)/2$.
 - **Level 4 (Analyze)**: The student identifies that Binary Search is not restricted to explicit sorted arrays, but generalizes to any monotonic predicate function $P(x): X \to \{0, 1\}$. They derive the lower-bound index theorem and isolate the termination conditions of left-biased vs. right-biased midpoints.
-- **Level 5 (Evaluate)**: The student proves the loop invariant: *"If the target exists in the array, it must lie within the closed interval $[L, R]$."* They prove initialization ($L=0, R=N-1$), maintenance (if $A[M] < \text{target}$, then for all $i \le M, A[i] \le A[M] < \text{target}$, so the target must lie in $[M+1, R]$), and termination ($L > R$ guarantees absence).
+- **Level 5 (Evaluate)**: The student proves the loop invariant: _"If the target exists in the array, it must lie within the closed interval $[L, R]$."_ They prove initialization ($L=0, R=N-1$), maintenance (if $A[M] < \text{target}$, then for all $i \le M, A[i] \le A[M] < \text{target}$, so the target must lie in $[M+1, R]$), and termination ($L > R$ guarantees absence).
 - **Level 6 (Create)**: When designing a low-latency database index, the student recognizes that traditional Binary Search suffers from branch mispredictions and random memory reads. They redesign the search using an **Eytzinger layout** (breadth-first array layout matching binary heap serialization), eliminating branch mispredictions via SIMD bitwise instructions and prefetching cache lines ahead of node traversal.
 
 ---
@@ -174,7 +176,7 @@ Under modern computer architectures (e.g., x86-64 and ARM64), CPU arithmetic ope
 └─────────────────────┴──────────────┴──────────────┴────────────────────┘
 ```
 
-<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
+<div class="my-8 p-6 rounded-lg border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Hardware Physics</span>
 <span>•</span>
@@ -233,6 +235,7 @@ To mitigate this massive latency penalty, hardware architects design CPUs to tra
 In standard algorithm analysis, both an Array and a Singly Linked List exhibit identical $O(N)$ linear time complexity for searching or iterating over $N$ items.
 
 However, in physical hardware benchmarks across modern hardware (Intel Core i9, AMD Ryzen, Apple M-series):
+
 - Iterating through an array of $10^7$ integers requires approximately **3 to 5 milliseconds** due to sequential prefetching and vector SIMD pipelining.
 - Iterating through an identically sized linked list of $10^7$ heap-allocated nodes requires **150 to 300 milliseconds**—a 50x slowdown!
 
@@ -268,21 +271,25 @@ To develop robust problem-solving intuition, every data structure and algorithm 
 ### 4.1 Deconstruction of the Critical Stages
 
 #### Stage 8: The Deterministic Dry-Run State Table
+
 A dry-run table tracks every variable, register, and condition across each cycle of execution. It is the definitive bridge between abstract logic and verified code.
 
-*Example Dry-Run Table Structure for In-Place Array Partition:*
-| Step | Loop $j$ | Element $A[j]$ | Condition ($A[j] \le \text{pivot}$) | Swap Target $i$ | Array State After Step | Invariant Holds? |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 0 | — | — | Initial State | $-1$ | `[3, 8, 2, 5, 1, 4]` (pivot = 4) | True ($i < 0$) |
-| 1 | 0 | 3 | $3 \le 4$ (True) | 0 | `[3, 8, 2, 5, 1, 4]` (swap $A[0], A[0]$) | True ($A[0 \dots 0] \le 4$) |
-| 2 | 1 | 8 | $8 \le 4$ (False) | 0 | `[3, 8, 2, 5, 1, 4]` (no swap) | True ($A[1] > 4$) |
-| 3 | 2 | 2 | $2 \le 4$ (True) | 1 | `[3, 2, 8, 5, 1, 4]` (swap $A[1], A[2]$) | True ($A[0 \dots 1] \le 4$) |
-| 4 | 3 | 5 | $5 \le 4$ (False) | 1 | `[3, 2, 8, 5, 1, 4]` (no swap) | True ($A[2 \dots 3] > 4$) |
-| 5 | 4 | 1 | $1 \le 4$ (True) | 2 | `[3, 2, 1, 5, 8, 4]` (swap $A[2], A[4]$) | True ($A[0 \dots 2] \le 4$) |
-| End | — | — | Place Pivot | 3 | `[3, 2, 1, 4, 8, 5]` (swap $A[3], A[5]$) | Partition Complete |
+_Example Dry-Run Table Structure for In-Place Array Partition:_
+
+| Step | Loop $j$ | Element $A[j]$ | Condition ($A[j] \le \text{pivot}$) | Swap Target $i$ |          Array State After Step          |      Invariant Holds?       |
+| :--: | :------: | :------------: | :---------------------------------: | :-------------: | :--------------------------------------: | :-------------------------: |
+|  0   |    —     |       —        |            Initial State            |      $-1$       |     `[3, 8, 2, 5, 1, 4]` (pivot = 4)     |       True ($i < 0$)        |
+|  1   |    0     |       3        |          $3 \le 4$ (True)           |        0        | `[3, 8, 2, 5, 1, 4]` (swap $A[0], A[0]$) | True ($A[0 \dots 0] \le 4$) |
+|  2   |    1     |       8        |          $8 \le 4$ (False)          |        0        |      `[3, 8, 2, 5, 1, 4]` (no swap)      |      True ($A[1] > 4$)      |
+|  3   |    2     |       2        |          $2 \le 4$ (True)           |        1        | `[3, 2, 8, 5, 1, 4]` (swap $A[1], A[2]$) | True ($A[0 \dots 1] \le 4$) |
+|  4   |    3     |       5        |          $5 \le 4$ (False)          |        1        |      `[3, 2, 8, 5, 1, 4]` (no swap)      |  True ($A[2 \dots 3] > 4$)  |
+|  5   |    4     |       1        |          $1 \le 4$ (True)           |        2        | `[3, 2, 1, 5, 8, 4]` (swap $A[2], A[4]$) | True ($A[0 \dots 2] \le 4$) |
+| End  |    —     |       —        |             Place Pivot             |        3        | `[3, 2, 1, 4, 8, 5]` (swap $A[3], A[5]$) |     Partition Complete      |
 
 #### Stage 9: Correctness Invariants & Termination Proofs
+
 Every iterative or recursive algorithm relies on an invariant. Establishing an invariant requires proving three properties analogous to mathematical induction:
+
 1. **Initialization**: The invariant is true prior to the first iteration of the loop.
 2. **Maintenance**: If the invariant is true before an iteration, the execution of the loop body guarantees it remains true prior to the next iteration.
 3. **Termination**: When the loop terminates, the invariant provides a useful property that proves the algorithm achieves its stated goal.
@@ -324,13 +331,13 @@ High-performing engineers do not measure progress by how many problems they solv
 
 Maintain a dedicated **Algorithmic Bug Journal** using this standardized schema:
 
-| Failure ID | Problem / Algorithm | Specific Symptom / Bug | Root Cause Category | Exact Code Defect | Universal Prevention Rule |
-| :---: | :--- | :--- | :--- | :--- | :--- |
-| **ERR-01** | Binary Search | Infinite loop on 2-element array | Off-by-one / Midpoint Bias | `mid = (L + R) / 2` with `L = mid` | Use right-biased mid `L + (R - L + 1) / 2` when shrinking `L = mid` |
-| **ERR-02** | Linked List Reversal | Cyclic pointer / Memory leak | Pointer overwrite | Overwrote `curr->next` before caching `next` | Cache next node reference: `temp = curr->next` before reassignment |
-| **ERR-03** | Merge Sort | Stack Overflow on $N=10^6$ | Call Stack Physics | Recursion tree depth exceeds default thread stack (1-8 MB) | Use iterative bottom-up merge sort or allocate explicit heap stack |
-| **ERR-04** | Hash Table | Severe $O(N)$ lookup regression | Hash Distribution / Collision | Poor hash function clustering hash codes into single bucket | Enforce universal hash function and dynamic rehashing at $\alpha \ge 0.75$ |
-| **ERR-05** | Dijkstra's Algorithm | Infinite loop on negative cycle | Invariant Precondition | Negative edge weights violate greedy optimality invariant | Verify non-negative edge precondition; switch to Bellman-Ford or SPFA |
+| Failure ID | Problem / Algorithm  | Specific Symptom / Bug           | Root Cause Category           | Exact Code Defect                                           | Universal Prevention Rule                                                  |
+| :--------: | :------------------- | :------------------------------- | :---------------------------- | :---------------------------------------------------------- | :------------------------------------------------------------------------- |
+| **ERR-01** | Binary Search        | Infinite loop on 2-element array | Off-by-one / Midpoint Bias    | `mid = (L + R) / 2` with `L = mid`                          | Use right-biased mid `L + (R - L + 1) / 2` when shrinking `L = mid`        |
+| **ERR-02** | Linked List Reversal | Cyclic pointer / Memory leak     | Pointer overwrite             | Overwrote `curr->next` before caching `next`                | Cache next node reference: `temp = curr->next` before reassignment         |
+| **ERR-03** | Merge Sort           | Stack Overflow on $N=10^6$       | Call Stack Physics            | Recursion tree depth exceeds default thread stack (1-8 MB)  | Use iterative bottom-up merge sort or allocate explicit heap stack         |
+| **ERR-04** | Hash Table           | Severe $O(N)$ lookup regression  | Hash Distribution / Collision | Poor hash function clustering hash codes into single bucket | Enforce universal hash function and dynamic rehashing at $\alpha \ge 0.75$ |
+| **ERR-05** | Dijkstra's Algorithm | Infinite loop on negative cycle  | Invariant Precondition        | Negative edge weights violate greedy optimality invariant   | Verify non-negative edge precondition; switch to Bellman-Ford or SPFA      |
 
 ---
 
@@ -339,6 +346,7 @@ Maintain a dedicated **Algorithmic Bug Journal** using this standardized schema:
 The AlgoFlow curriculum spans 12 structured modules containing 62 chapters, 168 syllabus topics, and 525+ curated practice problems. Depending on your current academic or professional goals, follow one of three tailored study tracks:
 
 ### Track A: Academic Foundations (University Exams & Deep Theory)
+
 - **Primary Goal**: Excel in undergraduate and graduate Computer Science courses (CS61B, MIT 6.006, Stanford CS161), master formal mathematical derivations, and prove algorithmic correctness.
 - **Core Focus**:
   - **Part 01 (Algorithmic Foundations)**: Asymptotic limits ($\epsilon$-$\delta$ formalisms), recurrence relations (Master Theorem, Akra-Bazzi, substitution proofs), and loop invariants.
@@ -347,6 +355,7 @@ The AlgoFlow curriculum spans 12 structured modules containing 62 chapters, 168 
 - **Workflow**: Prioritize mathematical proofs and loop invariants before inspecting concrete code.
 
 ### Track B: Technical Interview Mastery (FAANG / Tier-1 Tech)
+
 - **Primary Goal**: Secure senior software engineering roles at top-tier technology firms by mastering core algorithmic patterns, communication, and rapid dry-running under time constraints.
 - **Core Focus**:
   - **Part 02 (Linear Data Structures)**: Monotonic stacks, sliding window deques, and cycle detection.
@@ -357,6 +366,7 @@ The AlgoFlow curriculum spans 12 structured modules containing 62 chapters, 168 
 - **Workflow**: Emphasize Core Intuition, Dry-Run State Tables, Boundary Checks, and verbalizing trade-offs.
 
 ### Track C: Systems Architecture & High-Performance Computing
+
 - **Primary Goal**: Build low-latency database engines, operating system kernels, distributed consensus protocols, and game engines where memory layout and micro-benchmarks dictate viability.
 - **Core Focus**:
   - **Part 01 & Part 02**: Cache line alignment, SIMD vectorization friendliness, contiguous memory structures vs. pointer indirection.
@@ -406,11 +416,11 @@ AlgoFlow features **138 published interactive visualizers** seamlessly integrate
 
 ## References & Academic Attribution
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press. (The international gold standard for formal algorithmic analysis, recurrence derivations, and loop invariants).
-2. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.). Addison-Wesley. (The seminal mathematical foundation of data structures and discrete algorithm analysis).
-3. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.). Addison-Wesley. (Pioneering integration of empirical performance profiling, visual state models, and clean modular implementations).
-4. **Kleinberg, J., & Tardos, É.** (2006). *Algorithm Design*. Pearson. (Authoritative framework for algorithmic paradigms, greedy choice proofs, and dynamic programming reductions).
-5. **Hennessy, J. L., & Patterson, D. A.** (2019). *Computer Architecture: A Quantitative Approach* (6th ed.). Morgan Kaufmann. (The definitive reference on modern CPU cache hierarchies, memory access latencies, and mechanical sympathy).
-6. **Anderson, L. W., & Krathwohl, D. R. (Eds.)**. (2001). *A Taxonomy for Learning, Teaching, and Assessing: A Revision of Bloom's Taxonomy of Educational Objectives*. Longman.
-7. **Karpicke, J. D., & Roediger, H. L.** (2008). The Critical Importance of Retrieval Practice in Long-Term Retention. *Science*, 319(5865), 966–968.
-8. **IEEE / ACM Computing Curricula Guidelines** (2020). *Curriculum Guidelines for Undergraduate Degree Programs in Computer Science*. Joint Task Force on Computing Curricula.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.). MIT Press. (The international gold standard for formal algorithmic analysis, recurrence derivations, and loop invariants).
+2. **Knuth, D. E.** (1997). _The Art of Computer Programming, Volume 1: Fundamental Algorithms_ (3rd ed.). Addison-Wesley. (The seminal mathematical foundation of data structures and discrete algorithm analysis).
+3. **Sedgewick, R., & Wayne, K.** (2011). _Algorithms_ (4th ed.). Addison-Wesley. (Pioneering integration of empirical performance profiling, visual state models, and clean modular implementations).
+4. **Kleinberg, J., & Tardos, É.** (2006). _Algorithm Design_. Pearson. (Authoritative framework for algorithmic paradigms, greedy choice proofs, and dynamic programming reductions).
+5. **Hennessy, J. L., & Patterson, D. A.** (2019). _Computer Architecture: A Quantitative Approach_ (6th ed.). Morgan Kaufmann. (The definitive reference on modern CPU cache hierarchies, memory access latencies, and mechanical sympathy).
+6. **Anderson, L. W., & Krathwohl, D. R. (Eds.)**. (2001). _A Taxonomy for Learning, Teaching, and Assessing: A Revision of Bloom's Taxonomy of Educational Objectives_. Longman.
+7. **Karpicke, J. D., & Roediger, H. L.** (2008). The Critical Importance of Retrieval Practice in Long-Term Retention. _Science_, 319(5865), 966–968.
+8. **IEEE / ACM Computing Curricula Guidelines** (2020). _Curriculum Guidelines for Undergraduate Degree Programs in Computer Science_. Joint Task Force on Computing Curricula.

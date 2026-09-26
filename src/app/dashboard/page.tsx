@@ -300,17 +300,17 @@ export default async function DashboardPage() {
       <div className="mx-auto w-full max-w-7xl flex flex-col gap-8">
         {/* Local Dev Mode Isolation Notice */}
         {isMockSession && (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-primary/30 bg-primary-muted/20 px-4 py-3 text-xs text-primary shadow-(--shadow-raised-sm)">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary-muted/20 px-4 py-3 text-xs text-primary shadow-card">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary text-white text-xs font-bold shrink-0">
-                ðŸ› ï¸
+              <span className="flex h-6 w-6 items-center justify-center rounded-sm bg-primary text-white text-xs font-bold shrink-0">
+                🛠️
               </span>
               <span>
                 <strong>Local Dev Mode Active:</strong> Logged in with local mock profile (
                 <code>developer@algoflow.local</code>). Zero risk to production.
               </span>
             </div>
-            <span className="font-mono text-[11px] font-semibold bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-lg w-fit">
+            <span className="font-mono text-[11px] font-semibold bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-sm w-fit">
               DEV_MOCK_AUTH=true
             </span>
           </div>
@@ -329,8 +329,8 @@ export default async function DashboardPage() {
           </div>
 
           {/* Unified Platform Streak Pill */}
-          <div className="flex items-center gap-3.5 bg-bg-surface-inset px-5 py-3 rounded-2xl border border-border shadow-(--shadow-inset)">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-warning-muted text-warning border border-warning/30">
+          <div className="flex items-center gap-3.5 bg-surface-secondary px-5 py-3 rounded-lg border border-border shadow-card">
+            <span className="flex h-10 w-10 items-center justify-center rounded-sm bg-warning-muted text-warning border border-warning/30">
               <Flame className="h-5 w-5 fill-current" />
             </span>
             <div>
@@ -398,7 +398,7 @@ export default async function DashboardPage() {
             />
 
             {/* 2. Category Mastery Breakdown */}
-            <section className="p-6 sm:p-8 rounded-[8px] border border-border bg-surface shadow-card flex flex-col gap-5">
+            <section className="p-6 sm:p-8 rounded-lg border border-border bg-surface shadow-card flex flex-col gap-5">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold font-display text-text-primary">
@@ -415,7 +415,7 @@ export default async function DashboardPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                 {/* Linear */}
-                <div className="p-4 rounded-[6px] border border-border bg-surface-secondary/70 shadow-xs flex flex-col justify-between gap-2">
+                <div className="p-4 rounded-md border border-border bg-surface-secondary/70 shadow-xs flex flex-col justify-between gap-2">
                   <div className="flex justify-between items-center text-xs font-bold">
                     <span className="text-text-secondary">Linear Collections</span>
                     <span className="font-mono text-primary">{linearProgress}%</span>
@@ -432,7 +432,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Non-Linear */}
-                <div className="p-4 rounded-[6px] border border-border bg-surface-secondary/70 shadow-xs flex flex-col justify-between gap-2">
+                <div className="p-4 rounded-md border border-border bg-surface-secondary/70 shadow-xs flex flex-col justify-between gap-2">
                   <div className="flex justify-between items-center text-xs font-bold">
                     <span className="text-text-secondary">Hierarchical &amp; Graphs</span>
                     <span className="font-mono text-secondary">{nonLinearProgress}%</span>
@@ -449,7 +449,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Hash-Based */}
-                <div className="p-4 rounded-[6px] border border-border bg-surface-secondary/70 shadow-xs flex flex-col justify-between gap-2">
+                <div className="p-4 rounded-md border border-border bg-surface-secondary/70 shadow-xs flex flex-col justify-between gap-2">
                   <div className="flex justify-between items-center text-xs font-bold">
                     <span className="text-text-secondary">Hash Mappings</span>
                     <span className="font-mono text-accent">{hashProgress}%</span>
@@ -468,7 +468,7 @@ export default async function DashboardPage() {
             </section>
 
             {/* 3. Recent Learning Activity Timeline */}
-            <section className="p-6 sm:p-8 rounded-[8px] border border-border bg-surface shadow-card flex flex-col gap-4">
+            <section className="p-6 sm:p-8 rounded-lg border border-border bg-surface shadow-card flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold font-display text-text-primary">
@@ -491,7 +491,7 @@ export default async function DashboardPage() {
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center p-8 rounded-[8px] border border-border bg-surface-secondary/50 text-center shadow-xs">
+                <div className="flex flex-col items-center justify-center p-8 rounded-lg border border-border bg-surface-secondary/50 text-center shadow-xs">
                   <ListChecks className="w-8 h-8 text-text-muted mb-2 stroke-[1.5]" />
                   <p className="text-xs font-bold text-text-primary">No recorded sessions yet</p>
                   <p className="text-xs text-text-secondary mt-1">
@@ -509,7 +509,7 @@ export default async function DashboardPage() {
             <MentalMathRadar stats={mentalMathStats} />
 
             {/* 2. Up Next in Syllabus */}
-            <section className="p-6 rounded-[8px] border border-border bg-surface shadow-card flex flex-col justify-between">
+            <section className="p-6 rounded-lg border border-border bg-surface shadow-card flex flex-col justify-between">
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
                   Continue Learning
@@ -522,9 +522,9 @@ export default async function DashboardPage() {
                 </p>
 
                 {nextAlgorithm ? (
-                  <div className="p-4 rounded-[6px] border border-border bg-surface-secondary/70 shadow-xs">
+                  <div className="p-4 rounded-md border border-border bg-surface-secondary/70 shadow-xs">
                     <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-[2px] bg-primary/10 text-primary">
+                      <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-xs bg-primary/10 text-primary">
                         {nextAlgorithm.difficulty || "Recommended"}
                       </span>
                       <span className="text-[10px] font-mono text-text-muted">
@@ -539,7 +539,7 @@ export default async function DashboardPage() {
                     </p>
                     <Link
                       href={`/visualizer/${nextAlgorithm.slug}`}
-                      className="mt-4 w-full min-h-10 bg-primary text-white text-xs font-bold font-display rounded-[4px] flex items-center justify-center gap-2 shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all"
+                      className="mt-4 w-full min-h-10 bg-primary text-white text-xs font-bold font-display rounded-sm flex items-center justify-center gap-2 shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all"
                     >
                       <Play className="w-3.5 h-3.5 fill-current" /> Launch Visualizer
                     </Link>

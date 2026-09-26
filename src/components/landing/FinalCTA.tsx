@@ -16,7 +16,7 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[8px] border border-border-strong/40 bg-secondary p-8 sm:p-12 md:p-16 text-center text-white shadow-elevated"
+          className="relative overflow-hidden rounded-lg border border-border-strong/40 bg-secondary p-8 sm:p-12 md:p-16 text-center text-white shadow-elevated"
         >
           {/* Subtle Ambient Glow */}
           <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-96 rounded-full bg-primary/20 blur-3xl" />

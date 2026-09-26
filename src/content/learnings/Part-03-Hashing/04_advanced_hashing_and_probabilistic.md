@@ -8,6 +8,7 @@
 Standard hashing algorithms achieve $O(1)$ average-case latency, but suffer from potential $O(n)$ degradation under adversarial inputs or high load factors. Advanced hashing architectures conquer these performance limits through two distinct paradigms: deterministic worst-case guarantees and sublinear probabilistic approximation. This chapter analyzes Cuckoo Hashing's multi-choice displacement eviction, Robin Hood probe sequence length variance reduction, Fredman-Komlós-Szemerédi (FKS) two-level perfect hashing with $O(n)$ space proofs, Bloom filter dimensioning equations, and Count-Min sketch streaming frequency estimation.
 
 ### Learning Objectives
+
 - Formulate Cuckoo Hashing's displacement eviction algorithm and prove its guaranteed $O(1)$ worst-case lookup in at most two memory reads.
 - Implement Robin Hood Hashing and evaluate how probe sequence length (PSL) variance reduction enables early search termination.
 - Formalize the FKS (Fredman-Komlós-Szemerédi) two-level perfect hashing scheme and prove why expected total space is strictly $O(n)$ despite quadratic secondary buckets.
@@ -25,6 +26,7 @@ In standard open addressing or separate chaining, worst-case lookup latency degr
 $$\text{Valid Location}(k) \in \{ T_1[h_1(k)], \, T_2[h_2(k)] \}$$
 
 #### The Lookup Superpower:
+
 To locate key $k$, the algorithm inspects $T_1[h_1(k)]$ and $T_2[h_2(k)]$. If neither slot contains $k$, **the key is guaranteed not to exist**. Lookup never probes a third slot!
 
 ---
@@ -34,6 +36,7 @@ To locate key $k$, the algorithm inspects $T_1[h_1(k)]$ and $T_2[h_2(k)]$. If ne
 ### 1. Conceptual Architecture & Zero False Negatives
 
 A **Bloom Filter** (Burton H. Bloom, 1970) is a space-efficient probabilistic data structure designed to test whether an element is a member of a set:
+
 - **No False Negatives**: If the filter returns `false`, the element is **guaranteed** not to be in the set.
 - **Potential False Positives**: If the filter returns `true`, the element **might** be in the set with bounded probability $p$.
 
@@ -131,6 +134,7 @@ A **Bloom Filter** (Burton H. Bloom, 1970) is a space-efficient probabilistic da
 ### 2. Formal Mathematical Sizing Derivation
 
 Let $m$ be the bit-array length, $n$ be the number of inserted elements, and $k$ be the number of independent hash functions:
+
 1. Probability a specific bit remains $0$ after one hash: $1 - \frac{1}{m}$.
 2. Probability bit remains $0$ after $n$ elements inserted:
    $$\left(1 - \frac{1}{m}\right)^{kn} \approx e^{-kn/m}$$
@@ -141,13 +145,14 @@ Let $m$ be the bit-array length, $n$ be the number of inserted elements, and $k$
 5. Minimum required bits for desired false positive rate $p$:
    $$m = -\frac{n \ln p}{(\ln 2)^2} \approx -1.44 \cdot n \cdot \log_2 p$$
 
-*Practical Rule*: For a $1\%$ false positive rate ($p = 0.01$), allocate approximately **$9.6\text{ bits per key}$** and **$k = 7\text{ hash functions}$**.
+_Practical Rule_: For a $1\%$ false positive rate ($p = 0.01$), allocate approximately **$9.6\text{ bits per key}$** and **$k = 7\text{ hash functions}$**.
 
 ---
 
 ### 3. Production Implementations
 
 #### C++20 Standard-Compliant Bloom Filter
+
 ```cpp
 #include <vector>
 #include <string_view>
@@ -223,7 +228,7 @@ public:
 
 ## Academic Attribution & References
 
-1. **Pagh, R., & Rodler, F. F.** (2004). *Cuckoo Hashing*. Journal of Algorithms, 51(2), 122-144.
-2. **Bloom, B. H.** (1970). *Space/Time Trade-offs in Hash Coding with Allowable Errors*. Communications of the ACM, 13(7), 422-426.
-3. **Kirsch, A., & Mitzenmacher, M.** (2008). *Less Hashing, Same Performance: Building a Better Bloom Filter*. Random Structures & Algorithms, 33(2), 187-218.
-4. **Fredman, M. L., Komlós, J., & Szemerédi, E.** (1984). *Storing a Sparse Table with O(1) Worst Case Access Time*. Journal of the ACM, 31(3), 538-544.
+1. **Pagh, R., & Rodler, F. F.** (2004). _Cuckoo Hashing_. Journal of Algorithms, 51(2), 122-144.
+2. **Bloom, B. H.** (1970). _Space/Time Trade-offs in Hash Coding with Allowable Errors_. Communications of the ACM, 13(7), 422-426.
+3. **Kirsch, A., & Mitzenmacher, M.** (2008). _Less Hashing, Same Performance: Building a Better Bloom Filter_. Random Structures & Algorithms, 33(2), 187-218.
+4. **Fredman, M. L., Komlós, J., & Szemerédi, E.** (1984). _Storing a Sparse Table with O(1) Worst Case Access Time_. Journal of the ACM, 31(3), 538-544.

@@ -144,7 +144,7 @@ export function HashTableRenderer() {
           /* ================= DUAL TABLE SYNCHRONIZED REHASH VIEW ================= */
           <div className="flex flex-col lg:flex-row items-stretch justify-center gap-4 lg:gap-8 w-full max-w-5xl">
             {/* Old Table Column */}
-            <div className="flex-1 flex flex-col items-center rounded-2xl border border-border/80 bg-surface/50 p-3 sm:p-4 shadow-sm min-w-65">
+            <div className="flex-1 flex flex-col items-center rounded-lg border border-border/80 bg-surface/50 p-3 sm:p-4 shadow-card min-w-65">
               <div className="w-full flex items-center justify-between pb-2 mb-3 border-b border-border">
                 <div className="flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-text-muted" />
@@ -181,13 +181,13 @@ export function HashTableRenderer() {
                           "flex h-8 w-10 sm:h-9 sm:w-12 items-center justify-center rounded-lg font-mono text-xs font-bold shrink-0 border",
                           isOldActive
                             ? "border-primary bg-primary text-white"
-                            : "border-border bg-bg-surface-inset text-text-muted"
+                            : "border-border bg-surface-secondary text-text-muted"
                         )}
                       >
                         {index}
                       </div>
 
-                      <div className="flex-1 flex items-center justify-center h-8 sm:h-9 rounded-lg border border-dashed border-border/60 bg-bg-base/30 font-mono text-sm font-bold text-text-primary">
+                      <div className="flex-1 flex items-center justify-center h-8 sm:h-9 rounded-lg border border-dashed border-border/60 bg-background/30 font-mono text-sm font-bold text-text-primary">
                         {entry ? entry.key : <span className="text-text-muted/40">—</span>}
                       </div>
                     </div>
@@ -207,7 +207,7 @@ export function HashTableRenderer() {
             </div>
 
             {/* New Table Column */}
-            <div className="flex-1 flex flex-col items-center rounded-2xl border border-border/80 bg-surface/50 p-3 sm:p-4 shadow-sm min-w-65">
+            <div className="flex-1 flex flex-col items-center rounded-lg border border-border/80 bg-surface/50 p-3 sm:p-4 shadow-card min-w-65">
               <div className="w-full flex items-center justify-between pb-2 mb-3 border-b border-border">
                 <div className="flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-success" />
@@ -242,13 +242,13 @@ export function HashTableRenderer() {
                           "flex h-8 w-10 sm:h-9 sm:w-12 items-center justify-center rounded-lg font-mono text-xs font-bold shrink-0 border",
                           isNewActive
                             ? "border-success bg-success text-white"
-                            : "border-border bg-bg-surface-inset text-text-muted"
+                            : "border-border bg-surface-secondary text-text-muted"
                         )}
                       >
                         {index}
                       </div>
 
-                      <div className="flex-1 flex items-center justify-center h-8 sm:h-9 rounded-lg border border-dashed border-border/60 bg-bg-base/30 relative">
+                      <div className="flex-1 flex items-center justify-center h-8 sm:h-9 rounded-lg border border-dashed border-border/60 bg-background/30 relative">
                         <AnimatePresence mode="popLayout">
                           {entry ? (
                             <motion.div
@@ -289,9 +289,9 @@ export function HashTableRenderer() {
                 <div
                   key={bucketId}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-2xl border p-2 transition-all duration-200",
+                    "flex w-full items-center gap-3 rounded-lg border p-2 transition-all duration-200",
                     isBucketHighlighted
-                      ? "bg-surface/90 shadow-md border-primary/40"
+                      ? "bg-surface/90 shadow-card border-primary/40"
                       : "bg-surface/40 border-border"
                   )}
                 >
@@ -307,7 +307,7 @@ export function HashTableRenderer() {
                   </div>
 
                   {/* Bucket Entry Slot */}
-                  <div className="flex-1 flex h-11 sm:h-12 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-bg-base/30 relative overflow-hidden">
+                  <div className="flex-1 flex h-11 sm:h-12 items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-background/30 relative overflow-hidden">
                     <AnimatePresence mode="popLayout">
                       {entry ? (
                         <motion.div
@@ -350,7 +350,7 @@ export function HashTableRenderer() {
               return (
                 <div
                   key={bucketId}
-                  className="flex w-full items-center gap-3 rounded-2xl border border-border bg-surface/50 p-2.5 shadow-xs"
+                  className="flex w-full items-center gap-3 rounded-lg border border-border bg-surface/50 p-2.5 shadow-card"
                 >
                   {/* Bucket Index Indicator */}
                   <div
@@ -396,7 +396,7 @@ export function HashTableRenderer() {
                               <div className="flex h-10 min-w-10 sm:h-12 sm:min-w-12 items-center justify-center px-2 text-sm sm:text-base font-bold font-mono">
                                 {entry.key}
                               </div>
-                              <div className="flex items-center justify-center border-l border-inherit bg-bg-base/20 px-1.5 text-[9px] font-mono text-text-muted">
+                              <div className="flex items-center justify-center border-l border-inherit bg-background/20 px-1.5 text-[9px] font-mono text-text-muted">
                                 next
                               </div>
                             </motion.div>

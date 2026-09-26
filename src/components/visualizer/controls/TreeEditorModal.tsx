@@ -354,16 +354,16 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="flex h-full w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-bg-base border border-border shadow-2xl">
+      <div className="flex h-full w-full max-w-6xl flex-col overflow-hidden rounded-lg bg-background border border-border shadow-elevated">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border p-4 bg-bg-surface">
+        <div className="flex items-center justify-between border-b border-border p-4 bg-surface">
           <div className="flex items-center gap-3">
             <Settings2 className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-bold text-text-primary">Tree Editor</h2>
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-text-muted transition-colors hover:bg-bg-surface-light hover:text-text-primary"
+            className="rounded-full p-2 text-text-muted transition-colors hover:bg-surface-hover hover:text-text-primary"
           >
             <X className="h-5 w-5" />
           </button>
@@ -372,13 +372,13 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
         {/* Body */}
         <div className="flex flex-1 overflow-hidden">
           {/* Main Canvas */}
-          <div className="relative flex-1 bg-bg-base overflow-hidden" ref={containerRef}>
+          <div className="relative flex-1 bg-background overflow-hidden" ref={containerRef}>
             {!treeRoot ? (
               <div className="flex items-center justify-center w-full h-full text-text-muted flex-col gap-4">
                 <p>Tree is empty.</p>
                 <button
                   onClick={handleAddRoot}
-                  className="px-4 py-2 bg-primary text-primary-foreground font-bold rounded-lg flex gap-2 items-center"
+                  className="px-4 py-2 bg-primary text-primary-foreground font-bold rounded-sm shadow-card flex gap-2 items-center"
                 >
                   <Plus className="h-4 w-4" /> Add Root Node
                 </button>
@@ -412,7 +412,7 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
           </div>
 
           {/* Sidebar */}
-          <div className="w-80 border-l border-border bg-bg-surface p-6 overflow-y-auto flex flex-col justify-between">
+          <div className="w-80 border-l border-border bg-surface p-6 overflow-y-auto flex flex-col justify-between">
             <div>
               <div className="mb-6 flex flex-col gap-3">
                 <h3 className="text-sm font-bold uppercase tracking-wide text-text-muted">
@@ -430,35 +430,35 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
                         type="number"
                         value={selectedNodeData.value}
                         onChange={(e) => handleUpdateValue(parseInt(e.target.value, 10))}
-                        className="rounded-lg border border-border bg-bg-surface-light px-3 py-2 text-text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                        className="rounded-sm border border-border bg-surface-secondary px-3 py-2 text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                       />
                     </label>
                     <div className="flex gap-2 mt-2">
                       <button
                         onClick={() => handleAddChild("left")}
                         disabled={!!selectedNodeData.left}
-                        className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-bg-surface-light px-2 py-2 text-sm font-bold text-text-primary transition-colors hover:bg-bg-surface-light/80 disabled:opacity-50"
+                        className="flex flex-1 items-center justify-center gap-1 rounded-sm bg-surface-secondary px-2 py-2 text-sm font-bold text-text-primary shadow-card transition-colors hover:bg-surface-hover disabled:opacity-50"
                       >
                         <Plus className="h-3 w-3" /> Left
                       </button>
                       <button
                         onClick={() => handleAddChild("right")}
                         disabled={!!selectedNodeData.right}
-                        className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-bg-surface-light px-2 py-2 text-sm font-bold text-text-primary transition-colors hover:bg-bg-surface-light/80 disabled:opacity-50"
+                        className="flex flex-1 items-center justify-center gap-1 rounded-sm bg-surface-secondary px-2 py-2 text-sm font-bold text-text-primary shadow-card transition-colors hover:bg-surface-hover disabled:opacity-50"
                       >
                         <Plus className="h-3 w-3" /> Right
                       </button>
                     </div>
                     <button
                       onClick={handleDeleteNode}
-                      className="flex items-center justify-center gap-2 rounded-lg bg-error/10 px-4 py-2 text-sm font-bold text-error transition-colors hover:bg-error/20 mt-2"
+                      className="flex items-center justify-center gap-2 rounded-sm bg-error-muted px-4 py-2 text-sm font-bold text-error transition-colors hover:bg-error-muted/80 shadow-card mt-2"
                     >
                       <Trash2 className="h-4 w-4" /> Delete Node{" "}
                       {treeRoot?.id === selectedNodeId && "(Root)"}
                     </button>
                   </div>
                 ) : (
-                  <div className="h-32 flex items-center justify-center border border-dashed border-border rounded-lg text-text-muted text-sm text-center p-4">
+                  <div className="h-32 flex items-center justify-center border border-dashed border-border rounded-sm text-text-muted text-sm text-center p-4">
                     Select a node on the canvas to add children or edit its value.
                   </div>
                 )}
@@ -474,7 +474,7 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
                       type="checkbox"
                       checked={isBSTMode}
                       onChange={(e) => setIsBSTMode(e.target.checked)}
-                      className="peer h-5 w-5 cursor-pointer appearance-none rounded border-2 border-border bg-bg-surface-light checked:border-primary checked:bg-primary transition-colors"
+                      className="peer h-5 w-5 cursor-pointer appearance-none rounded-sm border-2 border-border bg-surface-secondary checked:border-primary checked:bg-primary transition-colors"
                     />
                     <svg
                       className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100"
@@ -508,33 +508,33 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
                 <div className="flex gap-2">
                   <button
                     onClick={handleClear}
-                    className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-border bg-transparent px-2 py-2 text-sm font-bold text-text-secondary transition-colors hover:bg-bg-surface-light"
+                    className="flex flex-1 items-center justify-center gap-1 rounded-sm border border-border bg-surface-secondary px-2 py-2 text-sm font-bold text-text-secondary shadow-card transition-colors hover:bg-surface-hover"
                   >
                     <RotateCcw className="h-3 w-3" /> Clear
                   </button>
                   <button
                     onClick={handleRandomTree}
-                    className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-border bg-transparent px-2 py-2 text-sm font-bold text-text-secondary transition-colors hover:bg-bg-surface-light"
+                    className="flex flex-1 items-center justify-center gap-1 rounded-sm border border-border bg-surface-secondary px-2 py-2 text-sm font-bold text-text-secondary shadow-card transition-colors hover:bg-surface-hover"
                   >
                     Random
                   </button>
                 </div>
                 <button
                   onClick={handleRandomBST}
-                  className="flex w-full items-center justify-center gap-1 rounded-lg border border-border bg-transparent px-2 py-2 text-sm font-bold text-text-secondary transition-colors hover:bg-bg-surface-light"
+                  className="flex w-full items-center justify-center gap-1 rounded-sm border border-border bg-surface-secondary px-2 py-2 text-sm font-bold text-text-secondary shadow-card transition-colors hover:bg-surface-hover"
                 >
                   Random BST
                 </button>
                 <div className="flex gap-2 mt-2">
                   <button
                     onClick={handleImport}
-                    className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-bg-surface-light px-2 py-2 text-sm font-bold text-text-primary transition-colors hover:bg-bg-surface-light/80"
+                    className="flex flex-1 items-center justify-center gap-1 rounded-sm bg-surface-secondary px-2 py-2 text-sm font-bold text-text-primary shadow-card transition-colors hover:bg-surface-hover"
                   >
                     <Upload className="h-3 w-3" /> Import
                   </button>
                   <button
                     onClick={handleExport}
-                    className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-bg-surface-light px-2 py-2 text-sm font-bold text-text-primary transition-colors hover:bg-bg-surface-light/80"
+                    className="flex flex-1 items-center justify-center gap-1 rounded-sm bg-surface-secondary px-2 py-2 text-sm font-bold text-text-primary shadow-card transition-colors hover:bg-surface-hover"
                   >
                     <Download className="h-3 w-3" /> Export
                   </button>
@@ -544,7 +544,7 @@ export function TreeEditorModal({ isOpen, onClose, initialState, onSave }: TreeE
 
             <button
               onClick={handleSave}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 font-bold text-primary-foreground shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98]"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-sm bg-primary px-4 py-3 font-bold text-white shadow-card transition-colors hover:bg-primary-hover active:scale-[0.98]"
             >
               <Save className="h-5 w-5" />
               Save & Exit

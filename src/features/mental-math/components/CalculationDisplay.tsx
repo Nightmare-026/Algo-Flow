@@ -52,7 +52,7 @@ export function CalculationDisplay({
     return (
       <div
         className={cn(
-          "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-[8px] border transition-all duration-300 bg-surface p-4 sm:p-6 lg:p-8 shadow-card relative overflow-hidden select-none",
+          "w-full h-full min-h-55 sm:min-h-70 lg:min-h-95 flex flex-col justify-between items-center rounded-lg border transition-all duration-300 bg-surface p-4 sm:p-6 lg:p-8 shadow-card relative overflow-hidden select-none",
           isAnswered
             ? isCorrect
               ? "border-success/50 bg-success-muted/10 shadow-[0_0_40px_rgba(15,138,95,0.15)]"
@@ -74,16 +74,16 @@ export function CalculationDisplay({
           <div>
             {isAnswered ? (
               isCorrect ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
                   Correct ✓
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
                   Incorrect ✗
                 </span>
               )
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-mono font-bold text-text-muted bg-surface-secondary border border-border">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-sm text-[10px] font-mono font-bold text-text-muted bg-surface-secondary border border-border">
                 Solve
               </span>
             )}
@@ -93,7 +93,7 @@ export function CalculationDisplay({
         {/* Vertical Calculation Rule Box */}
         <div className="flex-1 flex items-center justify-center my-2 sm:my-4">
           <div
-            className="relative inline-flex flex-col items-end px-6 sm:px-10 py-4 sm:py-6 rounded-[8px] border border-border bg-surface-secondary/70 shadow-xs"
+            className="relative inline-flex flex-col items-end px-6 sm:px-10 py-4 sm:py-6 rounded-lg border border-border bg-surface-secondary/70 shadow-xs"
             style={{ minWidth: `${Math.max(160, maxLen * 32)}px` }}
           >
             {/* Top Operand */}
@@ -105,7 +105,7 @@ export function CalculationDisplay({
             <div className="flex items-center justify-between w-full font-mono tabular-nums text-3xl sm:text-5xl font-extrabold text-text-primary tracking-wider select-none mt-2">
               <span
                 className={cn(
-                  "inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-[4px] border text-lg sm:text-xl font-bold font-display shadow-xs mr-4",
+                  "inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-sm border text-lg sm:text-xl font-bold font-display shadow-xs mr-4",
                   getOpBadgeClass()
                 )}
               >
@@ -120,7 +120,7 @@ export function CalculationDisplay({
             {/* Answer Preview */}
             <div
               className={cn(
-                "font-mono tabular-nums text-3xl sm:text-5xl font-extrabold tracking-wider min-h-11 sm:min-h-[3.25rem] flex items-center justify-end w-full",
+                "font-mono tabular-nums text-3xl sm:text-5xl font-extrabold tracking-wider min-h-11 sm:min-h-13 flex items-center justify-end w-full",
                 isAnswered
                   ? isCorrect
                     ? "text-success"
@@ -164,7 +164,7 @@ export function CalculationDisplay({
   return (
     <div
       className={cn(
-        "w-full h-full min-h-[220px] sm:min-h-[280px] lg:min-h-[380px] flex flex-col justify-between items-center rounded-[8px] border transition-all duration-300 bg-surface p-4 sm:p-6 lg:p-8 shadow-card relative overflow-hidden select-none",
+        "w-full h-full min-h-55 sm:min-h-70 lg:min-h-95 flex flex-col justify-between items-center rounded-lg border transition-all duration-300 bg-surface p-4 sm:p-6 lg:p-8 shadow-card relative overflow-hidden select-none",
         isAnswered
           ? isCorrect
             ? "border-success/50 bg-success-muted/10 shadow-[0_0_40px_rgba(15,138,95,0.15)]"
@@ -186,16 +186,16 @@ export function CalculationDisplay({
         <div>
           {isAnswered ? (
             isCorrect ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider bg-success-muted text-success border border-success/30">
                 Correct ✓
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider bg-error-muted text-error border border-error/30">
                 Incorrect ✗
               </span>
             )
           ) : (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-[10px] font-mono font-bold text-text-muted bg-surface-secondary border border-border">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-sm text-[10px] font-mono font-bold text-text-muted bg-surface-secondary border border-border">
               Solve
             </span>
           )}
@@ -204,7 +204,7 @@ export function CalculationDisplay({
 
       {/* Main Calculation Stage */}
       <div className="flex-1 flex items-center justify-center w-full my-2 sm:my-4">
-        <div className="relative inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-5 sm:px-8 py-4 sm:py-6 rounded-[8px] border border-border bg-surface-secondary/70 transition-all duration-300 select-none shadow-xs max-w-full">
+        <div className="relative inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 px-5 sm:px-8 py-4 sm:py-6 rounded-lg border border-border bg-surface-secondary/70 transition-all duration-300 select-none shadow-xs max-w-full">
           {signature.operation === "squares" ? (
             <div className="flex items-center">
               <span className="font-mono tabular-nums text-3xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight">
@@ -251,7 +251,7 @@ export function CalculationDisplay({
               </span>
               <span
                 className={cn(
-                  "inline-flex items-center justify-center min-w-9 h-9 sm:min-w-12 sm:h-12 lg:min-w-14 lg:h-14 px-2 rounded-[4px] border text-xl sm:text-2xl lg:text-3xl font-extrabold font-display shadow-xs",
+                  "inline-flex items-center justify-center min-w-9 h-9 sm:min-w-12 sm:h-12 lg:min-w-14 lg:h-14 px-2 rounded-sm border text-xl sm:text-2xl lg:text-3xl font-extrabold font-display shadow-xs",
                   getOpBadgeClass()
                 )}
               >

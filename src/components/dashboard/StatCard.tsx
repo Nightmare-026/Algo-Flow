@@ -41,7 +41,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-colors",
+        "p-6 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-colors",
         variantStyles,
         className
       )}
@@ -52,7 +52,7 @@ export function StatCard({
         </span>
         <span
           className={cn(
-            "flex h-8 w-8 items-center justify-center rounded-[4px] border shadow-xs",
+            "flex h-8 w-8 items-center justify-center rounded-sm border shadow-xs",
             iconStyles
           )}
         >

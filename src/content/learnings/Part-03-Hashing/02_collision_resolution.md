@@ -8,6 +8,7 @@
 Because the universe of possible search keys vastly exceeds the physical capacity of any hash table, collisions are mathematically unavoidable. An effective hash table is therefore defined by the resilience and efficiency of its collision resolution mechanism. This chapter explores the two dominant architectural paradigms: **Separate Chaining** (storing colliding elements in external node structures) and **Open Addressing** (probing for open slots directly within the primary array). We analyze probe sequence mechanics, the `TOMBSTONE` deletion state machine, primary and secondary clustering phenomena, and coprimality constraints in double hashing.
 
 ### Learning Objectives
+
 - Contrast the physical memory layouts, cache performance, and load factor tolerances of Separate Chaining versus Open Addressing.
 - Formulate the Open Addressing deletion dilemma and implement the `TOMBSTONE` sentinel protocol to preserve probe continuity.
 - Diagnose the physical causes of Primary Clustering in Linear Probing and Secondary Clustering in Quadratic Probing.
@@ -132,15 +133,21 @@ In **Separate Chaining**, the hash table is an array of pointers (or bucket head
 ### 2. Probing Mathematical Formulations
 
 #### A. Linear Probing:
+
 $$h(k, i) = (h(k) + i) \pmod m$$
+
 - **Primary Clustering**: Clusters grow and merge into large blocks, increasing expected probe length.
 
 #### B. Quadratic Probing:
+
 $$h(k, i) = (h(k) + c_1 i + c_2 i^2) \pmod m$$
+
 - Jumps across primary clusters, but identical initial hashes follow identical probe paths (**Secondary Clustering**).
 
 #### C. Double Hashing:
+
 $$h(k, i) = (h_1(k) + i \cdot h_2(k)) \pmod m$$
+
 - To ensure full table traversal, $h_2(k)$ must be coprime to $m$ ($\gcd(h_2(k), m) = 1$) and $h_2(k) \ne 0$. For prime $m$:
   $$h_1(k) = k \pmod m, \quad h_2(k) = 1 + (k \pmod{m - 1})$$
 
@@ -149,6 +156,7 @@ $$h(k, i) = (h_1(k) + i \cdot h_2(k)) \pmod m$$
 ### 3. Production Multi-Language Implementation
 
 #### C++20 Open Addressing Hash Table with TOMBSTONE Protocol
+
 ```cpp
 #include <vector>
 #include <string>
@@ -279,6 +287,6 @@ private:
 
 ## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: *Hash Tables*. MIT Press.
-2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: *Hashing*. Addison-Wesley.
-3. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 3.4: *Hash Tables*. Addison-Wesley.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 11: _Hash Tables_. MIT Press.
+2. **Knuth, D. E.** (1998). _The Art of Computer Programming, Volume 3: Sorting and Searching_ (2nd ed.), Section 6.4: _Hashing_. Addison-Wesley.
+3. **Sedgewick, R., & Wayne, K.** (2011). _Algorithms_ (4th ed.), Section 3.4: _Hash Tables_. Addison-Wesley.

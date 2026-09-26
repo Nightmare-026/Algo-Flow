@@ -98,7 +98,7 @@ export function TableOfContents({ items, className, onSelect }: TableOfContentsP
     <nav
       aria-label="Table of contents"
       className={cn(
-        "flex flex-col rounded-2xl border border-border/80 bg-surface/90 shadow-(--shadow-raised) p-3.5 h-full overflow-hidden",
+        "flex flex-col rounded-lg border border-border/80 bg-surface/90 shadow-card p-3.5 h-full overflow-hidden",
         className
       )}
     >

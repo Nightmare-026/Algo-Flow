@@ -1,13 +1,15 @@
 # Part 01: Foundations — Module 03: Asymptotic Analysis & Growth of Functions
 
-Evaluating computational efficiency solely through wall-clock execution benchmarks is fundamentally flawed: wall-clock runtimes fluctuate wildly based on CPU clock frequency, microarchitectural pipeline depth, cache sizes, memory bus contention, operating system thread scheduling, and compiler optimization flags. 
+Evaluating computational efficiency solely through wall-clock execution benchmarks is fundamentally flawed: wall-clock runtimes fluctuate wildly based on CPU clock frequency, microarchitectural pipeline depth, cache sizes, memory bus contention, operating system thread scheduling, and compiler optimization flags.
 
 Asymptotic analysis provides an objective, hardware-independent mathematical framework. By isolating the growth rate of computational operations as input size $n \to \infty$, asymptotic analysis allows software engineers and computer scientists to compare algorithmic architectures rigorously and predict how systems scale under planetary-scale workloads.
 
 ---
 
 ### Learning Objectives
+
 By the end of this chapter, you will be able to:
+
 - Deconstruct execution runtimes using the theoretical **Random Access Machine (RAM)** model and express total work as a closed-form polynomial $T(n)$.
 - Formulate and prove asymptotic bounds using formal $\epsilon-n_0$ limit criteria for Big-$O$, Big-$\Omega$, Big-$\Theta$, Small-$o$, and Small-$\omega$.
 - Dispel the pervasive industry fallacy that conflates data input scenarios (**Best, Worst, Average case**) with mathematical bounding notations ($O, \Omega, \Theta$).
@@ -22,6 +24,7 @@ By the end of this chapter, you will be able to:
 To evaluate algorithms independently of physical hardware, computer science relies on an idealized abstract computing model: the **Random Access Machine (RAM)** model.
 
 ### The RAM Model Postulates
+
 1. **Instruction Atomicity**: Basic instructions execute sequentially, one after another, with no concurrent thread interleaving (unless explicitly modeling parallel architectures).
 2. **Uniform Memory Access**: Accessing any cell in memory takes uniform $O(1)$ time, regardless of physical address (ignoring the memory hierarchy of L1/L2/L3 caches and TLB misses for the purpose of primary algorithmic classification).
 3. **Uniform Cost Criterion**: Standard primitive machine instructions execute in a single normalized step ($c = 1$):
@@ -52,13 +55,13 @@ return sum;                            // Line 5: 1 return
 
 Let us count the exact execution frequency of each statement:
 
-| Statement Line | Primitive Operations Per Iteration | Execution Frequency Count | Total Sub-Cost |
-| :--- | :--- | :--- | :--- |
-| **Line 1** (`sum = 0`) | $c_1$ (Assignment) | $1$ | $c_1$ |
-| **Line 2** (`i = 0; i < n; i++`) | $c_2$ (Init, test, step) | $1 + (n + 1) + n = 2n + 2$ | $c_2(2n + 2)$ |
-| **Line 3** (`j = i + 1; j < n; j++`) | $c_3$ (Init, test, step) | $\sum_{i=0}^{n-1} [1 + (n - i) + (n - 1 - i)]$ | $c_3 \left( n + 2 \sum_{k=1}^n k \right)$ |
-| **Line 4** (`sum += A[i] * A[j]`) | $c_4$ (Index, mult, add, assign) | $\sum_{i=0}^{n-1} (n - 1 - i) = \frac{n(n - 1)}{2}$ | $c_4 \left( \frac{n^2 - n}{2} \right)$ |
-| **Line 5** (`return sum`) | $c_5$ (Return) | $1$ | $c_5$ |
+| Statement Line                       | Primitive Operations Per Iteration | Execution Frequency Count                           | Total Sub-Cost                            |
+| :----------------------------------- | :--------------------------------- | :-------------------------------------------------- | :---------------------------------------- |
+| **Line 1** (`sum = 0`)               | $c_1$ (Assignment)                 | $1$                                                 | $c_1$                                     |
+| **Line 2** (`i = 0; i < n; i++`)     | $c_2$ (Init, test, step)           | $1 + (n + 1) + n = 2n + 2$                          | $c_2(2n + 2)$                             |
+| **Line 3** (`j = i + 1; j < n; j++`) | $c_3$ (Init, test, step)           | $\sum_{i=0}^{n-1} [1 + (n - i) + (n - 1 - i)]$      | $c_3 \left( n + 2 \sum_{k=1}^n k \right)$ |
+| **Line 4** (`sum += A[i] * A[j]`)    | $c_4$ (Index, mult, add, assign)   | $\sum_{i=0}^{n-1} (n - 1 - i) = \frac{n(n - 1)}{2}$ | $c_4 \left( \frac{n^2 - n}{2} \right)$    |
+| **Line 5** (`return sum`)            | $c_5$ (Return)                     | $1$                                                 | $c_5$                                     |
 
 Summing the costs algebraically:
 $$T(n) = c_1 + c_2(2n + 2) + c_3 \left( \frac{n^2 + 3n}{2} \right) + c_4 \left( \frac{n^2 - n}{2} \right) + c_5$$
@@ -144,28 +147,38 @@ Below is an interactive SVG vector diagram illustrating the asymptotic envelope:
 ### The Five Canonical Asymptotic Notations
 
 #### 1. Big-O: Asymptotic Upper Bound ($\le$)
+
 $$O(g(n)) = \left\{ f(n) : \exists \, c > 0, n_0 \ge 1 \text{ such that } 0 \le f(n) \le c \cdot g(n) \quad \forall n \ge n_0 \right\}$$
-- **Intuition**: $f(n)$ grows *no faster than* $g(n)$.
+
+- **Intuition**: $f(n)$ grows _no faster than_ $g(n)$.
 - **Engineering Guarantee**: Provides a deterministic ceiling on resource consumption.
 
 #### 2. Big-Omega: Asymptotic Lower Bound ($\ge$)
+
 $$\Omega(g(n)) = \left\{ f(n) : \exists \, c > 0, n_0 \ge 1 \text{ such that } 0 \le c \cdot g(n) \le f(n) \quad \forall n \ge n_0 \right\}$$
-- **Intuition**: $f(n)$ grows *at least as fast as* $g(n)$.
+
+- **Intuition**: $f(n)$ grows _at least as fast as_ $g(n)$.
 - **Engineering Guarantee**: Establishes theoretical limitations (e.g., comparison sorting requires $\Omega(n \log n)$ comparisons).
 
 #### 3. Big-Theta: Asymptotic Tight Bound ($=$)
+
 $$\Theta(g(n)) = \left\{ f(n) : \exists \, c_1 > 0, c_2 > 0, n_0 \ge 1 \text{ such that } 0 \le c_1 g(n) \le f(n) \le c_2 g(n) \quad \forall n \ge n_0 \right\}$$
+
 - **Intuition**: $f(n)$ is asymptotically bounded tightly from above and below by $g(n)$.
 - **Theorem (Sandwich Criterion)**:
   $$f(n) \in \Theta(g(n)) \iff f(n) \in O(g(n)) \quad \text{and} \quad f(n) \in \Omega(g(n))$$
 
 #### 4. Little-o: Non-Tight Upper Bound ($<$)
+
 $$o(g(n)) = \left\{ f(n) : \forall \, c > 0, \exists \, n_0 \ge 1 \text{ such that } 0 \le f(n) < c \cdot g(n) \quad \forall n \ge n_0 \right\}$$
+
 - **Limit Test**: $\lim_{n \to \infty} \frac{f(n)}{g(n)} = 0$.
 - **Example**: $2n \in o(n^2)$, but $3n^2 \notin o(n^2)$.
 
 #### 5. Little-omega: Non-Tight Lower Bound ($>$)
+
 $$\omega(g(n)) = \left\{ f(n) : \forall \, c > 0, \exists \, n_0 \ge 1 \text{ such that } 0 \le c \cdot g(n) < f(n) \quad \forall n \ge n_0 \right\}$$
+
 - **Limit Test**: $\lim_{n \to \infty} \frac{f(n)}{g(n)} = \infty$.
 - **Example**: $n^3 \in \omega(n^2)$, but $5n^2 \notin \omega(n^2)$.
 
@@ -204,14 +217,14 @@ Therefore, $7n^2 - 3n + 12 \in \Theta(n^2)$. $\blacksquare$
 
 Asymptotic notations mirror relational arithmetic between real numbers:
 
-| Property | Mathematical Formulation | Analogous Real Relation |
-| :--- | :--- | :---: |
-| **Transitivity** | $f(n) \in O(g(n)) \land g(n) \in O(h(n)) \implies f(n) \in O(h(n))$ | $a \le b \land b \le c \implies a \le c$ |
-| **Reflexivity** | $f(n) \in O(f(n))$, $f(n) \in \Omega(f(n))$, $f(n) \in \Theta(f(n))$ | $a \le a$ |
-| **Symmetry** | $f(n) \in \Theta(g(n)) \iff g(n) \in \Theta(f(n))$ | $a = b \iff b = a$ |
-| **Transpose Symmetry** | $f(n) \in O(g(n)) \iff g(n) \in \Omega(f(n))$ | $a \le b \iff b \ge a$ |
-| **Summation Rule** | $O(f(n)) + O(g(n)) = O(\max(f(n), g(n)))$ | Dominant term absorption |
-| **Product Rule** | $O(f(n)) \cdot O(g(n)) = O(f(n) \cdot g(n))$ | Nested loop multiplicative cost |
+| Property               | Mathematical Formulation                                             |         Analogous Real Relation          |
+| :--------------------- | :------------------------------------------------------------------- | :--------------------------------------: |
+| **Transitivity**       | $f(n) \in O(g(n)) \land g(n) \in O(h(n)) \implies f(n) \in O(h(n))$  | $a \le b \land b \le c \implies a \le c$ |
+| **Reflexivity**        | $f(n) \in O(f(n))$, $f(n) \in \Omega(f(n))$, $f(n) \in \Theta(f(n))$ |                $a \le a$                 |
+| **Symmetry**           | $f(n) \in \Theta(g(n)) \iff g(n) \in \Theta(f(n))$                   |            $a = b \iff b = a$            |
+| **Transpose Symmetry** | $f(n) \in O(g(n)) \iff g(n) \in \Omega(f(n))$                        |          $a \le b \iff b \ge a$          |
+| **Summation Rule**     | $O(f(n)) + O(g(n)) = O(\max(f(n), g(n)))$                            |         Dominant term absorption         |
+| **Product Rule**       | $O(f(n)) \cdot O(g(n)) = O(f(n) \cdot g(n))$                         |     Nested loop multiplicative cost      |
 
 ---
 
@@ -220,6 +233,7 @@ Asymptotic notations mirror relational arithmetic between real numbers:
 A frequent and damaging error in algorithmic discourse is treating **Best Case = $\Omega$**, **Worst Case = $O$**, and **Average Case = $\Theta$**.
 
 These concepts operate on two completely orthogonal dimensions:
+
 1. **Input Scenarios (Horizontal Axis)**: The structural configuration of input data presented to the algorithm.
 2. **Asymptotic Notations (Vertical Axis)**: The mathematical bounding precision ($O, \Omega, \Theta$) applied to whatever scenario is being evaluated.
 
@@ -252,7 +266,7 @@ Let $T_{\text{best}}(n)$, $T_{\text{worst}}(n)$, and $T_{\text{avg}}(n)$ represe
    - Every single insertion must shift all $i$ previously sorted elements.
    - Total operations: $T_{\text{worst}}(n) = \sum_{i=1}^{n-1} i = \frac{n(n - 1)}{2}$.
    - Mathematical descriptions: $T_{\text{worst}}(n) \in O(n^2)$, $T_{\text{worst}}(n) \in \Omega(n^2)$, and tightly $T_{\text{worst}}(n) \in \Theta(n^2)$.
-   - **Crucial Takeaway**: The statement *"Insertion sort is $O(n^2)$"* means that in the worst case, its runtime is upper-bounded by $c n^2$. The statement *"Insertion sort is $\Omega(n)$"* means that even in the best conceivable input, it requires at least linear work to verify order.
+   - **Crucial Takeaway**: The statement _"Insertion sort is $O(n^2)$"_ means that in the worst case, its runtime is upper-bounded by $c n^2$. The statement _"Insertion sort is $\Omega(n)$"_ means that even in the best conceivable input, it requires at least linear work to verify order.
 
 3. **Average Case ($T_{\text{avg}}(n)$)**:
    - Formally defined over a uniform probability distribution across all $n!$ input permutations:
@@ -282,7 +296,9 @@ $$\text{Total Space Complexity} = \text{Input Space} + \text{Auxiliary Space}$$
 ```
 
 ### In-Place Algorithms
+
 An algorithm is formally defined as **in-place** if its auxiliary memory allocation is asymptotically bounded by $O(1)$ (or $O(\log n)$ for recursive stack frames):
+
 - **MergeSort**: Requires an auxiliary buffer of size $n$ to merge sorted subarrays. Auxiliary Space $= \Theta(n)$ (not in-place).
 - **QuickSort**: Partitions the array in-place via pointer swaps. Auxiliary Space $= \Theta(\log n)$ average call-stack frames ($\Theta(n)$ worst-case).
 - **HeapSort**: Reorganizes the array into an implicit binary heap. Auxiliary Space $= \Theta(1)$ (strictly in-place).
@@ -295,12 +311,12 @@ Big-O ignores constant factors, but production software architectures crash when
 
 Consider storing $10^7$ integers ($10\text{ million}$ elements) in memory:
 
-| Representation | Per-Element Physical Footprint | Total Memory Consumption | Cache Locality |
-| :--- | :--- | :--- | :--- |
-| **Contiguous Primitive Array** (`int32_t[]` in C++) | $4\text{ bytes}$ | **$38.15\text{ MB}$** | **Optimal**: 16 integers per 64-byte L1 cache line. |
-| **Doubly Linked List** (`std::list<int32_t>` in C++) | $4\text{ bytes (data)} + 16\text{ bytes (next/prev)} + 4\text{ bytes (padding)} = \mathbf{24\text{ bytes}}$ | **$228.88\text{ MB}$** | **Catastrophic**: Pointer chasing across fragmented heap. |
-| **Java Object Array** (`Integer[]` in 64-bit JVM) | $24\text{ bytes (Integer obj)} + 8\text{ bytes (array ref)} = \mathbf{32\text{ bytes}}$ | **$305.18\text{ MB}$** | **Poor**: 8x overhead compared to primitive array. |
-| **Python List** (`[x for x in range(10**7)]`) | $8\text{ bytes (ptr)} + 28\text{ bytes (PyLongObject)} = \mathbf{36\text{ bytes}}$ | **$343.32\text{ MB}$** | **Poor**: Massive heap fragmentation. |
+| Representation                                       | Per-Element Physical Footprint                                                                              | Total Memory Consumption | Cache Locality                                            |
+| :--------------------------------------------------- | :---------------------------------------------------------------------------------------------------------- | :----------------------- | :-------------------------------------------------------- |
+| **Contiguous Primitive Array** (`int32_t[]` in C++)  | $4\text{ bytes}$                                                                                            | **$38.15\text{ MB}$**    | **Optimal**: 16 integers per 64-byte L1 cache line.       |
+| **Doubly Linked List** (`std::list<int32_t>` in C++) | $4\text{ bytes (data)} + 16\text{ bytes (next/prev)} + 4\text{ bytes (padding)} = \mathbf{24\text{ bytes}}$ | **$228.88\text{ MB}$**   | **Catastrophic**: Pointer chasing across fragmented heap. |
+| **Java Object Array** (`Integer[]` in 64-bit JVM)    | $24\text{ bytes (Integer obj)} + 8\text{ bytes (array ref)} = \mathbf{32\text{ bytes}}$                     | **$305.18\text{ MB}$**   | **Poor**: 8x overhead compared to primitive array.        |
+| **Python List** (`[x for x in range(10**7)]`)        | $8\text{ bytes (ptr)} + 28\text{ bytes (PyLongObject)} = \mathbf{36\text{ bytes}}$                          | **$343.32\text{ MB}$**   | **Poor**: Massive heap fragmentation.                     |
 
 ```
 64-bit Linked List Node Layout (24 bytes total):
@@ -312,7 +328,7 @@ Consider storing $10^7$ integers ($10\text{ million}$ elements) in memory:
 
 > [!WARNING]
 > **Stack Frame Exhaustion (Stack Overflow)**:
-> Each recursive stack frame consumes memory for local variables, arguments, and the return instruction address (typically $32$ to $128\text{ bytes}$ per frame). 
+> Each recursive stack frame consumes memory for local variables, arguments, and the return instruction address (typically $32$ to $128\text{ bytes}$ per frame).
 > Standard OS defaults allocate **$8\text{ MB}$** for the process stack on Linux and **$1\text{ MB}$** on Windows.
 > A recursive depth of $n = 100,000$ with $64\text{ bytes}$ per frame consumes:
 > $$100,000 \times 64\text{ bytes} \approx 6.4\text{ MB}$$
@@ -322,7 +338,7 @@ Consider storing $10^7$ integers ($10\text{ million}$ elements) in memory:
 
 ## 5. Amortized Analysis: The Three Fundamental Frameworks
 
-When an operation occasionally incurs a high computational cost but runs in cheap $O(1)$ time for the vast majority of invocations, standard worst-case analysis gives an overly pessimistic bound. 
+When an operation occasionally incurs a high computational cost but runs in cheap $O(1)$ time for the vast majority of invocations, standard worst-case analysis gives an overly pessimistic bound.
 
 **Amortized analysis** computes the guaranteed average cost per operation over a worst-case sequence of $k$ operations:
 
@@ -337,6 +353,7 @@ Unlike Average-Case analysis, amortized analysis **does not involve probability*
 In the aggregate method, we compute an upper bound on the total cost of a sequence of $n$ operations, $T(n)$, and show that the amortized cost per operation is $\frac{T(n)}{n}$.
 
 #### Case Study: Dynamic Array Resizing (Vector Appends)
+
 Consider a dynamic array starting at capacity $1$ that doubles its capacity whenever full.
 
 Let us trace $n = 16$ sequential `push_back` operations:
@@ -350,7 +367,8 @@ Total Cost: 1   2   3   1   5   1   1   1   9   1   1   1   1   1   1  17
 ```
 
 The cost $c_i$ of the $i$-th push operation is:
-$$c_i = \begin{cases} 
+
+$$ c_i = \begin{cases}
 i & \text{if } i - 1 \text{ is an exact power of } 2 \text{ (triggering a reallocation \& copy)} \\
 1 & \text{otherwise (simple write to pre-allocated slot)}
 \end{cases}$$
@@ -627,3 +645,4 @@ Expected Execution Profile (x86-64 Clang 18 -O3):
 2. **Knuth, D. E.** (1976). *Big Omicron and big Omega and big Theta*. ACM SIGACT News, 8(2), 18–24.
 3. **Tarjan, R. E.** (1985). *Amortized computational complexity*. SIAM Journal on Algebraic Discrete Methods, 6(2), 306–318.
 4. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.4: "Analysis of Algorithms". Addison-Wesley.
+$$

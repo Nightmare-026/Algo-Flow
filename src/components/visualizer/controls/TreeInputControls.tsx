@@ -105,7 +105,7 @@ export function TreeInputControls({
           <button
             type="button"
             onClick={() => setIsEditorOpen(true)}
-            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary-muted px-2.5 text-[11px] font-bold text-primary shadow-(--shadow-raised-sm) transition-all hover:bg-primary hover:text-white hover:border-primary active:scale-95 cursor-pointer shrink-0"
+            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary-muted px-2.5 text-[11px] font-bold text-primary shadow-card transition-all hover:bg-primary hover:text-white hover:border-primary active:scale-95 cursor-pointer shrink-0"
             title="Open Tree Structure Editor"
           >
             <Network className="h-3.5 w-3.5 shrink-0" />
@@ -113,7 +113,7 @@ export function TreeInputControls({
           </button>
 
           {isAVL && (
-            <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-(--shadow-raised-sm)">
+            <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-card">
               <span className="font-mono text-[10px] font-semibold text-text-muted mr-0.5">
                 AVL:
               </span>
@@ -164,7 +164,7 @@ export function TreeInputControls({
           {showTarget && (
             <form
               onSubmit={handleTargetSubmit}
-              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-card"
             >
               <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
@@ -172,7 +172,7 @@ export function TreeInputControls({
               </span>
               <input
                 type="number"
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                 value={targetInput}
                 onChange={(e) => setTargetInput(e.target.value)}
                 aria-label="Target"
@@ -190,13 +190,13 @@ export function TreeInputControls({
           {showValue && (
             <form
               onSubmit={handleValueSubmit}
-              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
+              className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-card"
             >
               <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">Val:</span>
               <input
                 type="number"
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                 value={valInput}
                 onChange={(e) => setValInput(e.target.value)}
                 aria-label="Value"

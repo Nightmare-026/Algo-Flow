@@ -31,7 +31,7 @@ export function QueueRenderer() {
       role="img"
       aria-label={`${currentStep.title}. Queue contains ${dataState.elements.map((element) => element.value).join(", ") || "no values"}.`}
     >
-      <div className="flex h-40 w-full max-w-3xl flex-row items-center justify-start gap-4 overflow-visible border-y-4 border-border bg-bg-surface-light/35 px-4 py-4">
+      <div className="flex h-40 w-full max-w-3xl flex-row items-center justify-start gap-4 overflow-visible border-y-4 border-border bg-surface-secondary/35 px-4 py-4">
         <AnimatePresence mode="popLayout" initial={!reducedMotion}>
           {dataState.elements.map((element, index) => {
             const state = getVisualElementState(highlights, element.id);

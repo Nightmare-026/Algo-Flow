@@ -7,6 +7,7 @@ All computer software fundamentally executes a single physical objective: transf
 ### Learning Objectives
 
 By the end of this chapter, you will be able to:
+
 - Formulate the epistemological distinction between raw data, semantic information, and systemic knowledge (the DIKW hierarchy).
 - Trace the physical binary encodings of primitive types (Two's complement integers, IEEE 754 floating-point, UTF-8 variable-length byte encodings of Unicode scalar values) and diagnose hardware alignment padding.
 - Define an Abstract Data Type (ADT) through formal algebraic axioms and contrast it against concrete memory topologies (contiguous arrays vs. linked nodes).
@@ -21,7 +22,7 @@ By the end of this chapter, you will be able to:
 
 In computational theory, we distinguish between unstructured syntactic entities and semantic knowledge. The transition from raw electric potentials in transistors to algorithmic decision-making follows the **DIKW Hierarchy (Data, Information, Knowledge, Wisdom)**.
 
-<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
+<div class="my-8 p-6 rounded-lg border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Information Architecture</span>
 <span>•</span>
@@ -99,7 +100,9 @@ $$B = b_{w-1}b_{w-2}\dots b_1 b_0 \implies \text{Value}(B) = -b_{w-1} \cdot 2^{w
 ```
 
 #### Integer Overflow & Algorithmic Hazards
+
 In languages such as C, C++, and Java, integer arithmetic wraps around upon exceeding bounds. A classic production bug occurs in Binary Search when calculating the midpoint:
+
 ```c
 // DANGEROUS: If low + high > 2,147,483,647 (INT_MAX), sum overflows to negative!
 int mid = (low + high) / 2;
@@ -114,6 +117,7 @@ uint32_t mid = ((uint32_t)low + (uint32_t)high) >> 1;
 ### 2.2 Floating-Point Arithmetic: IEEE 754
 
 Real numbers are approximated in hardware via the **IEEE 754 Standard**. A 64-bit double-precision float allocates:
+
 - 1 Sign bit ($s$)
 - 11 Biased Exponent bits ($e$), bias = $1023$
 - 52 Fraction/Mantissa bits ($m$)
@@ -130,6 +134,7 @@ $$(a + b) + c \neq a + (b + c) \quad \text{in IEEE 754}$$
 ### 2.3 Character Encodings: Unicode Scalars vs. UTF-8 Byte Encodings
 
 A common conceptual error is conflating abstract character values with their physical wire or memory encodings:
+
 - **Unicode Code Points / Scalar Values**: An abstract mathematical integer space ranging from $\text{U+0000}$ to $\text{U+10FFFF}$ (excluding surrogate code points $\text{U+D800}\dots\text{U+DFFF}$), encompassing $1,112,064$ possible characters and symbols across human history.
 - **UTF-8 Encoding Form**: A **variable-length byte encoding** that maps every Unicode scalar value into a sequence of $1$, $2$, $3$, or $4$ octets (8-bit bytes). ASCII characters ($\text{U+0000}\dots\text{U+007F}$) occupy exactly 1 byte, European alphabets typically 2 bytes, East Asian scripts 3 bytes, and emoji/historic scripts 4 bytes.
 
@@ -147,13 +152,14 @@ A common conceptual error is conflating abstract character values with their phy
 ```
 
 > [!IMPORTANT]
-> **Algorithmic Implication**: In UTF-8, string byte length does *not* equal character count. Consequently, random string indexing $S[i]$ is **not $O(1)$** in UTF-8 without an auxiliary index translation table; finding the $i$-th character requires an $O(N)$ linear scan of byte headers.
+> **Algorithmic Implication**: In UTF-8, string byte length does _not_ equal character count. Consequently, random string indexing $S[i]$ is **not $O(1)$** in UTF-8 without an auxiliary index translation table; finding the $i$-th character requires an $O(N)$ linear scan of byte headers.
 
 ### 2.4 Boolean Semantics: Logical Cardinality vs. Physical Byte Representation
 
 Mathematically, a boolean possesses an ontological **cardinality of 2**: the logical states $\{\text{True}, \text{False}\}$ or $\{1, 0\}$.
 
 However, in physical computer architecture:
+
 - Microprocessors are byte- and word-addressable; ALUs cannot read or write an isolated single bit on a memory bus without dedicated bitmasking operations.
 - Therefore, physical representation is **implementation-dependent**:
   - In C, C++, and Java, a `bool` / `boolean` occupies **1 full byte (8 bits)** in memory to allow direct addressability (`sizeof(bool) == 1`).
@@ -196,6 +202,7 @@ struct OptimalRecord {
 ```
 
 When storing an array of $10^7$ records:
+
 - `NaiveRecord`: Requires **240 Megabytes** of RAM and generates substantial L1/L2 cache misses.
 - `OptimalRecord`: Requires **160 Megabytes** of RAM, fitting $50\%$ more records per 64-byte cache line and accelerating traversal loops by $1.5\times$ to $2\times$!
 
@@ -228,6 +235,7 @@ The separation of interface from physical implementation is the foundational pil
 An Abstract Data Type is formally specified through algebraic equations over states, independent of programming language:
 
 Let $S$ be a Stack of elements of type $T$.
+
 - $\text{NewStack}() \to S$
 - $\text{Push}(S, x: T) \to S'$
 - $\text{Pop}(S) \to (S', T) \cup \{\text{Error}\}$
@@ -235,26 +243,27 @@ Let $S$ be a Stack of elements of type $T$.
 - $\text{IsEmpty}(S) \to \text{Boolean}$
 
 **Axiomatic Invariants**:
+
 1. $\text{IsEmpty}(\text{NewStack}()) = \text{True}$
 2. $\text{IsEmpty}(\text{Push}(S, x)) = \text{False}$
 3. $\text{Pop}(\text{Push}(S, x)) = (S, x)$
 4. $\text{Peek}(\text{Push}(S, x)) = x$
 5. $\text{Pop}(\text{NewStack}()) = \text{Error (Underflow)}$
 
-Notice what is absent: there is no mention of contiguous buffers, dynamic arrays, heap pointers, nodes, or resizing strategies. The ADT describes *behavioral correctness*.
+Notice what is absent: there is no mention of contiguous buffers, dynamic arrays, heap pointers, nodes, or resizing strategies. The ADT describes _behavioral correctness_.
 
 ### 3.2 Concrete Realization: Array Stack vs. Linked Stack
 
 Now consider two distinct physical implementations of this identical Stack ADT:
 
-| Operational Metric | Contiguous Dynamic Array Stack | Heap-Allocated Linked List Stack |
-| :--- | :--- | :--- |
-| **Push(x) Amortized** | $O(1)$ amortized ($O(n)$ during rare buffer reallocation) | $O(1)$ strict worst-case |
-| **Pop()** | $O(1)$ strict worst-case | $O(1)$ strict worst-case |
-| **Peek()** | $O(1)$ strict worst-case | $O(1)$ strict worst-case |
-| **Memory per Element** | $4$ or $8$ bytes (pure contiguous data) | $16$ to $24$ bytes (value + $8$-byte pointer + allocator padding) |
+| Operational Metric         | Contiguous Dynamic Array Stack                                     | Heap-Allocated Linked List Stack                                          |
+| :------------------------- | :----------------------------------------------------------------- | :------------------------------------------------------------------------ |
+| **Push(x) Amortized**      | $O(1)$ amortized ($O(n)$ during rare buffer reallocation)          | $O(1)$ strict worst-case                                                  |
+| **Pop()**                  | $O(1)$ strict worst-case                                           | $O(1)$ strict worst-case                                                  |
+| **Peek()**                 | $O(1)$ strict worst-case                                           | $O(1)$ strict worst-case                                                  |
+| **Memory per Element**     | $4$ or $8$ bytes (pure contiguous data)                            | $16$ to $24$ bytes (value + $8$-byte pointer + allocator padding)         |
 | **Cache Line Utilization** | **100% (Dense)**: 16 contiguous 4-byte integers per 64B cache line | **Low (Sparse)**: Each node at random heap address, frequent cache misses |
-| **Memory Allocations** | $O(\log n)$ total allocations via doubling | $O(n)$ allocations (every push triggers `malloc`/`new`) |
+| **Memory Allocations**     | $O(\log n)$ total allocations via doubling                         | $O(n)$ allocations (every push triggers `malloc`/`new`)                   |
 
 #### Multi-Language Comparative Implementation
 
@@ -348,7 +357,7 @@ impl<T> VecStack<T> {
 
 ## 4. Donald Knuth's 5 Cardinal Criteria for Algorithmic Validity
 
-In *The Art of Computer Programming, Vol. 1*, Prof. Donald E. Knuth established that a mathematical computational procedure must satisfy five rigorous criteria to qualify as a valid **Algorithm**:
+In _The Art of Computer Programming, Vol. 1_, Prof. Donald E. Knuth established that a mathematical computational procedure must satisfy five rigorous criteria to qualify as a valid **Algorithm**:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -365,8 +374,8 @@ In *The Art of Computer Programming, Vol. 1*, Prof. Donald E. Knuth established 
 ### 4.1 Deconstruction with Counterexamples
 
 1. **Finiteness**:
-   - *Requirement*: The algorithm must terminate for all valid inputs in a finite count of elementary operations.
-   - *Counterexample*: The $3n + 1$ Collatz procedure:
+   - _Requirement_: The algorithm must terminate for all valid inputs in a finite count of elementary operations.
+   - _Counterexample_: The $3n + 1$ Collatz procedure:
      ```python
      def collatz_procedure(n: int):
          while n > 1:
@@ -379,18 +388,18 @@ In *The Art of Computer Programming, Vol. 1*, Prof. Donald E. Knuth established 
      Although this terminates for all tested integers up to $2^{68}$, mathematics has not yet proven that it terminates for all $n \in \mathbb{N}$. A procedure without a formal termination guarantee is not proven to be an algorithm.
 
 2. **Definiteness (Unambiguity)**:
-   - *Requirement*: Each step must be rigorously defined without room for interpretation or non-deterministic variance.
-   - *Counterexample*: *"Add salt to taste"* or *"Pick the best element"*. What is the formal ordering metric? Without a strict mathematical predicate (e.g., $\text{compare}(a, b) \to \{-1, 0, 1\}$), the instruction is invalid.
+   - _Requirement_: Each step must be rigorously defined without room for interpretation or non-deterministic variance.
+   - _Counterexample_: _"Add salt to taste"_ or _"Pick the best element"_. What is the formal ordering metric? Without a strict mathematical predicate (e.g., $\text{compare}(a, b) \to \{-1, 0, 1\}$), the instruction is invalid.
 
 3. **Input**:
-   - *Requirement*: The algorithm accepts inputs from a mathematically specified domain $\mathcal{D}$. If inputs violate domain bounds (such as negative weights in Dijkstra's algorithm), the algorithm's contract is void.
+   - _Requirement_: The algorithm accepts inputs from a mathematically specified domain $\mathcal{D}$. If inputs violate domain bounds (such as negative weights in Dijkstra's algorithm), the algorithm's contract is void.
 
 4. **Output**:
-   - *Requirement*: The algorithm produces quantities having a specified relation to the inputs. A procedure that mutates global state without an observable return, exit status, or verified side-effect fails this criterion.
+   - _Requirement_: The algorithm produces quantities having a specified relation to the inputs. A procedure that mutates global state without an observable return, exit status, or verified side-effect fails this criterion.
 
 5. **Effectiveness (Feasibility)**:
-   - *Requirement*: Each elementary instruction must be sufficiently basic that it could, in principle, be executed exactly by a human using pencil and paper in finite time.
-   - *Counterexample*: *"Set $x$ equal to the largest real root of the halting problem"* is an uncomputable operation that violates effectiveness.
+   - _Requirement_: Each elementary instruction must be sufficiently basic that it could, in principle, be executed exactly by a human using pencil and paper in finite time.
+   - _Counterexample_: _"Set $x$ equal to the largest real root of the halting problem"_ is an uncomputable operation that violates effectiveness.
 
 ### 4.2 Worked Example: Euclid's Greatest Common Divisor (GCD) Algorithm
 
@@ -410,6 +419,7 @@ def euclidean_gcd(a: int, b: int) -> int:
 ```
 
 #### Formal Verification Against Knuth's Criteria:
+
 1. **Input**: Accepts two non-negative integers $a, b \in \mathbb{Z}_{\ge 0}$.
 2. **Output**: Returns a single integer $g = \gcd(a, b)$.
 3. **Definiteness**: Operations (`%`, `=`, `!=`) are deterministically defined by integer arithmetic.
@@ -428,7 +438,7 @@ def euclidean_gcd(a: int, b: int) -> int:
 
 Every computational procedure operates within three interdependent boundaries:
 
-<div class="my-8 p-6 rounded-[8px] border border-border bg-surface shadow-card">
+<div class="my-8 p-6 rounded-lg border border-border bg-surface shadow-card">
 <div class="text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
 <span>Systems Physics</span>
 <span>•</span>
@@ -456,10 +466,12 @@ Every computational procedure operates within three interdependent boundaries:
 ### 5.1 The RAM Model vs. Modern Silicon
 
 In theoretical computer science, we frequently analyze algorithms under the **Uniform RAM Model** (Random Access Machine):
+
 - All memory accesses take identical $O(1)$ time regardless of address.
 - All basic arithmetic instructions (`+`, `-`, `*`, `&`) take $1$ unit of time.
 
 While the RAM model is mathematically convenient, **modern hardware violates the uniform access assumption**:
+
 - L1 cache access takes $\approx 1\text{ ns}$ ($3\text{–}4$ CPU cycles).
 - DRAM memory transaction takes $\approx 60\text{–}100\text{ ns}$ ($200\text{–}300$ stalled cycles).
 
@@ -515,6 +527,7 @@ To eliminate ad-hoc, error-prone coding, we train you to approach every algorith
 Let us walk through this complete 7-stage pipeline on a concrete foundational problem: **Element Uniqueness** (determining if all elements in an array are distinct).
 
 #### Stage 1: Constraint Bounds & Edge Cases
+
 - **Input**: Array $A$ of $N$ integers.
 - **Bounds**: $0 \le N \le 10^6$, $-10^9 \le A[i] \le 10^9$.
 - **Edge Cases**:
@@ -523,11 +536,14 @@ Let us walk through this complete 7-stage pipeline on a concrete foundational pr
   - $N > 10^5$: An $O(N^2)$ brute-force solution executes $10^{10}$ operations, triggering a Time Limit Exceeded ($> 1\text{ s}$).
 
 #### Stage 2: Mathematical Formulation
+
 Given sequence $A = (a_0, a_1, \dots, a_{N-1})$, determine the truth value of predicate $P$:
 $$P \iff \forall i, j \in \{0, \dots, N-1\}, \quad (i \neq j \implies a_i \neq a_j)$$
 
 #### Stage 3: Brute Force Baseline
+
 Compare all $\binom{N}{2}$ distinct pairs:
+
 ```python
 def is_unique_bruteforce(A: list[int]) -> bool:
     n = len(A)
@@ -537,16 +553,20 @@ def is_unique_bruteforce(A: list[int]) -> bool:
                 return False
     return True
 ```
+
 - **Complexity**: $T(N) = \sum_{i=0}^{N-2} (N - 1 - i) = \frac{N(N-1)}{2} = \Theta(N^2)$ time, $S(N) = \Theta(1)$ auxiliary space.
 
 #### Stage 4: Structural Insight
-If the array were sorted in non-decreasing order ($A[0] \le A[1] \le \dots \le A[N-1]$), any duplicate elements *must* reside at adjacent indices ($A[i] = A[i+1]$).
+
+If the array were sorted in non-decreasing order ($A[0] \le A[1] \le \dots \le A[N-1]$), any duplicate elements _must_ reside at adjacent indices ($A[i] = A[i+1]$).
+
 - Sorting costs $O(N \log N)$ using Heapsort or Mergesort.
 - Linear scan costs $O(N)$ operations.
 - Total time: $O(N \log N)$, dropping runtime for $N=10^6$ from $10^{12}$ operations to $\approx 2 \times 10^7$ operations!
 - Alternatively, inserting into a Hash Set provides expected $O(N)$ time with $O(N)$ space.
 
 #### Stage 5: Optimal Algorithm & Formal Pseudocode
+
 ```
 Algorithm: ElementUniquenessSort(A)
 Input: Array A of N elements
@@ -562,15 +582,16 @@ Output: True if all elements are distinct; False otherwise
 ```
 
 #### Stage 6: Dry-Run State Mutation Table
+
 Trace dataset: $A = [14, 7, 2, 7, 9]$ ($N=5$).
 
 1. Post-Sort: $A = [2, 7, 7, 9, 14]$
 2. Trace loop iterations:
 
-| Iteration $i$ | $A[i]$ | $A[i+1]$ | Predicate $A[i] == A[i+1]$ | Invariant Status | Action |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **$i = 0$** | $2$ | $7$ | $2 == 7 \implies \text{False}$ | Prefix $A[0..1]$ unique | Increment $i \to 1$ |
-| **$i = 1$** | $7$ | $7$ | $7 == 7 \implies \text{True}$ | Duplicate detected! | **Return False** (Terminates) |
+| Iteration $i$ | $A[i]$ | $A[i+1]$ | Predicate $A[i] == A[i+1]$     | Invariant Status        | Action                        |
+| :------------ | :----- | :------- | :----------------------------- | :---------------------- | :---------------------------- |
+| **$i = 0$**   | $2$    | $7$      | $2 == 7 \implies \text{False}$ | Prefix $A[0..1]$ unique | Increment $i \to 1$           |
+| **$i = 1$**   | $7$    | $7$      | $7 == 7 \implies \text{True}$  | Duplicate detected!     | **Return False** (Terminates) |
 
 #### Stage 7: Correctness Invariant Proof
 
@@ -604,8 +625,8 @@ When designing production software, avoid these 5 prevalent pitfalls:
 ## 9. Key Takeaways & Epistemic Synthesis
 
 1. **Data vs. Information**: Data is raw syntactic bit patterns; Information is data structured by a type system with semantic meaning.
-2. **Abstract Data Types (ADTs)**: Define mathematical operational contracts (*WHAT* operations are valid) independent of memory layout.
-3. **Concrete Data Structures**: Physical byte layouts in RAM (*HOW* operations are executed in silicon), governing cache locality and real-world latency.
+2. **Abstract Data Types (ADTs)**: Define mathematical operational contracts (_WHAT_ operations are valid) independent of memory layout.
+3. **Concrete Data Structures**: Physical byte layouts in RAM (_HOW_ operations are executed in silicon), governing cache locality and real-world latency.
 4. **Hardware Sympathy**: CPU ALUs execute instructions in sub-nanoseconds, but memory transactions take hundreds of stalled cycles. Contiguous cache-aligned arrays routinely out-perform node-based structures.
 5. **Memory Alignment**: 64-bit architectures require data to align to word boundaries; suboptimal struct layout wastes substantial memory via padding.
 6. **Floating Point Non-Associativity**: IEEE 754 floats are discrete approximations; never use strict equality comparisons in algorithmic invariants.
@@ -618,9 +639,9 @@ When designing production software, avoid these 5 prevalent pitfalls:
 
 ## References & Academic Attribution
 
-1. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.). Addison-Wesley. (Sections 1.1–1.2: Algorithms, Mathematical Induction, and Data Representations).
-2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press. (Chapter 2: Getting Started & Loop Invariants; Chapter 10: Elementary Data Structures).
-3. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.). Addison-Wesley. (Section 1.1–1.2: Programming Models and Data Abstraction).
-4. **Hennessy, J. L., & Patterson, D. A.** (2019). *Computer Architecture: A Quantitative Approach* (6th ed.). Morgan Kaufmann. (Chapter 2: Memory Hierarchy Design and Cache Locality).
-5. **Aho, A. V., Hopcroft, J. E., & Ullman, J. D.** (1983). *Data Structures and Algorithms*. Addison-Wesley. (Chapter 1: Design and Analysis of Algorithms).
-6. **IEEE Computer Society.** (2019). *IEEE Standard for Floating-Point Arithmetic (IEEE Std 754-2019)*. IEEE.
+1. **Knuth, D. E.** (1997). _The Art of Computer Programming, Volume 1: Fundamental Algorithms_ (3rd ed.). Addison-Wesley. (Sections 1.1–1.2: Algorithms, Mathematical Induction, and Data Representations).
+2. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.). MIT Press. (Chapter 2: Getting Started & Loop Invariants; Chapter 10: Elementary Data Structures).
+3. **Sedgewick, R., & Wayne, K.** (2011). _Algorithms_ (4th ed.). Addison-Wesley. (Section 1.1–1.2: Programming Models and Data Abstraction).
+4. **Hennessy, J. L., & Patterson, D. A.** (2019). _Computer Architecture: A Quantitative Approach_ (6th ed.). Morgan Kaufmann. (Chapter 2: Memory Hierarchy Design and Cache Locality).
+5. **Aho, A. V., Hopcroft, J. E., & Ullman, J. D.** (1983). _Data Structures and Algorithms_. Addison-Wesley. (Chapter 1: Design and Analysis of Algorithms).
+6. **IEEE Computer Society.** (2019). _IEEE Standard for Floating-Point Arithmetic (IEEE Std 754-2019)_. IEEE.

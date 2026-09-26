@@ -513,7 +513,7 @@ export function GraphEditorModal({
   return createPortal(
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-bg-deep/90 p-4 backdrop-blur-sm sm:p-8"
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm sm:p-8"
     >
       <div
         ref={dialogRef}
@@ -521,11 +521,11 @@ export function GraphEditorModal({
         aria-modal="true"
         aria-labelledby="graph-editor-title"
         tabIndex={-1}
-        className="flex h-full w-full max-w-7xl flex-col overflow-hidden rounded-xl border border-border bg-bg-surface shadow-2xl lg:flex-row"
+        className="flex h-full w-full max-w-7xl flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-elevated lg:flex-row"
       >
         {/* Editor Main Canvas */}
-        <div className="relative flex-1 bg-bg-surface-light overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between border-b border-border bg-bg-surface p-4 shrink-0">
+        <div className="relative flex-1 bg-background overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between border-b border-border bg-surface p-4 shrink-0">
             <h2 id="graph-editor-title" className="text-lg font-bold">
               Interactive Graph Editor
             </h2>
@@ -534,7 +534,7 @@ export function GraphEditorModal({
                 ref={closeButtonRef}
                 type="button"
                 onClick={onClose}
-                className="rounded-lg p-2 text-text-muted hover:bg-bg-surface-light hover:text-text-primary"
+                className="rounded-sm p-2 text-text-muted hover:bg-surface-hover hover:text-text-primary"
                 aria-label="Close graph editor"
               >
                 <X className="h-5 w-5" aria-hidden="true" />
@@ -589,32 +589,32 @@ export function GraphEditorModal({
         </div>
 
         {/* Sidebar / Tools */}
-        <div className="flex w-full shrink-0 flex-col overflow-y-auto border-t border-border bg-bg-surface p-4 lg:w-80 lg:border-l lg:border-t-0">
+        <div className="flex w-full shrink-0 flex-col overflow-y-auto border-t border-border bg-surface p-4 lg:w-80 lg:border-l lg:border-t-0">
           <div className="mb-6 flex flex-col gap-3">
             <h3 className="text-sm font-bold uppercase tracking-wide text-text-muted">Tools</h3>
             <button
               onClick={handleAddNode}
-              className="flex items-center justify-center gap-2 rounded-lg bg-primary/10 px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary/20"
+              className="flex items-center justify-center gap-2 rounded-sm bg-primary-muted px-4 py-2 text-sm font-bold text-primary shadow-card transition-colors hover:bg-primary-muted/80"
             >
               <Plus className="h-4 w-4" /> Add Vertex
             </button>
             <button
               onClick={handleDeleteSelected}
               disabled={!selectedNode && !selectedEdge}
-              className="flex items-center justify-center gap-2 rounded-lg bg-error/10 px-4 py-2 text-sm font-bold text-error transition-colors hover:bg-error/20 disabled:opacity-50"
+              className="flex items-center justify-center gap-2 rounded-sm bg-error-muted px-4 py-2 text-sm font-bold text-error shadow-card transition-colors hover:bg-error-muted/80 disabled:opacity-50"
             >
               <Trash2 className="h-4 w-4" /> Delete Selected
             </button>
             <div className="flex gap-2">
               <button
                 onClick={handleClear}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-2 py-2 text-sm font-bold text-text-secondary transition-colors hover:bg-bg-surface-light"
+                className="flex flex-1 items-center justify-center gap-2 rounded-sm border border-border bg-surface-secondary px-2 py-2 text-sm font-bold text-text-secondary shadow-card transition-colors hover:bg-surface-hover"
               >
                 <RotateCcw className="h-4 w-4" /> Clear
               </button>
               <button
                 onClick={handleRandomGraph}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-2 py-2 text-sm font-bold text-text-secondary transition-colors hover:bg-bg-surface-light"
+                className="flex flex-1 items-center justify-center gap-2 rounded-sm border border-border bg-surface-secondary px-2 py-2 text-sm font-bold text-text-secondary shadow-card transition-colors hover:bg-surface-hover"
               >
                 <Dices className="h-4 w-4" /> Random
               </button>
@@ -632,13 +632,13 @@ export function GraphEditorModal({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-bg-surface-light px-2 py-2 text-sm font-bold text-text-primary transition-colors hover:bg-bg-surface-light/80"
+                className="flex flex-1 items-center justify-center gap-2 rounded-sm bg-surface-secondary px-2 py-2 text-sm font-bold text-text-primary shadow-card transition-colors hover:bg-surface-hover"
               >
                 <Upload className="h-4 w-4" /> Import
               </button>
               <button
                 onClick={handleExport}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-bg-surface-light px-2 py-2 text-sm font-bold text-text-primary transition-colors hover:bg-bg-surface-light/80"
+                className="flex flex-1 items-center justify-center gap-2 rounded-sm bg-surface-secondary px-2 py-2 text-sm font-bold text-text-primary shadow-card transition-colors hover:bg-surface-hover"
               >
                 <Download className="h-4 w-4" /> Export
               </button>
@@ -701,7 +701,7 @@ export function GraphEditorModal({
                       setEditLabel(e.target.value);
                       setIsDirty(true);
                     }}
-                    className="rounded-lg border border-border bg-bg-surface-light px-3 py-2 text-text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                    className="rounded-sm border border-border bg-surface-secondary px-3 py-2 text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                     maxLength={3}
                   />
                 </label>
@@ -718,7 +718,7 @@ export function GraphEditorModal({
                       setIsDirty(true);
                     }}
                     disabled={!weighted}
-                    className="rounded-lg border border-border bg-bg-surface-light px-3 py-2 text-text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:opacity-50"
+                    className="rounded-sm border border-border bg-surface-secondary px-3 py-2 text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:opacity-50"
                   />
                 </label>
                 {!weighted && (
@@ -728,7 +728,7 @@ export function GraphEditorModal({
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-24 rounded-lg border border-dashed border-border bg-bg-surface-light/50 text-text-muted text-center p-4">
+              <div className="flex flex-col items-center justify-center h-24 rounded-sm border border-dashed border-border bg-surface-secondary/50 text-text-muted text-center p-4">
                 <p className="text-xs">
                   Select a node or edge on the canvas to edit its properties.
                 </p>
@@ -739,7 +739,7 @@ export function GraphEditorModal({
           <div className="mt-auto border-t border-border pt-4">
             <button
               onClick={handleSave}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-primary-dark"
+              className="flex w-full items-center justify-center gap-2 rounded-sm bg-primary px-4 py-3 text-sm font-bold text-white shadow-card transition-colors hover:bg-primary-hover active:scale-[0.98]"
             >
               <Save className="h-5 w-5" /> Save Graph & Exit
             </button>

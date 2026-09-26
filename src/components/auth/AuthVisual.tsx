@@ -16,7 +16,7 @@ export function AuthVisual() {
 
   return (
     <div className="relative mx-auto w-full max-w-md" aria-hidden="true">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-[8px] border border-border bg-surface p-5 shadow-card">
+      <div className="relative aspect-4/3 overflow-hidden rounded-lg border border-border bg-surface p-5 shadow-card">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(0,86,210,0.12),transparent_38%),radial-gradient(circle_at_50%_86%,rgba(15,138,95,0.08),transparent_42%)]" />
         <svg className="absolute inset-x-[8%] top-[12%] h-[55%] w-[84%]" viewBox="0 0 100 78">
           <path
@@ -47,13 +47,13 @@ export function AuthVisual() {
         ))}
 
         <motion.div
-          className="absolute bottom-5 left-1/2 w-[72%] -translate-x-1/2 rounded-[6px] border border-border bg-surface shadow-elevated p-3.5"
+          className="absolute bottom-5 left-1/2 w-[72%] -translate-x-1/2 rounded-md border border-border bg-surface shadow-elevated p-3.5"
           initial={reducedMotion ? false : { opacity: 0, y: 16, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: reducedMotion ? 0.01 : 0.55, delay: reducedMotion ? 0 : 0.38 }}
         >
           <div className="flex items-center justify-between gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-primary text-white shadow-xs">
+            <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary text-white shadow-xs">
               <Play className="h-4 w-4 fill-current" />
             </span>
             <div className="min-w-0 flex-1">
@@ -61,7 +61,7 @@ export function AuthVisual() {
                 <span>Binary search</span>
                 <span>04 / 07</span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-primary-muted shadow-(--shadow-inset)">
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-primary-muted shadow-inset">
                 <motion.div
                   className="h-full rounded-full bg-primary"
                   initial={reducedMotion ? false : { scaleX: 0 }}

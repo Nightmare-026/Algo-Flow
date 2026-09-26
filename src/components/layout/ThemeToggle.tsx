@@ -27,7 +27,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       type="button"
       onClick={toggleTheme}
       className={cn(
-        "relative inline-flex h-10 w-10 items-center justify-center rounded-[4px] border border-border-subtle bg-surface text-foreground shadow-card transition-colors duration-150 hover:border-primary hover:text-primary active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 cursor-pointer overflow-hidden",
+        "relative inline-flex h-10 w-10 items-center justify-center rounded-sm border border-border-subtle bg-surface text-foreground shadow-card transition-colors duration-150 hover:border-primary hover:text-primary active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 cursor-pointer overflow-hidden",
         className
       )}
       aria-label={

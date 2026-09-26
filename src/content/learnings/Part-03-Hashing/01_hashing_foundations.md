@@ -8,6 +8,7 @@
 Direct address tables offer constant-time retrieval by assigning every possible key a distinct physical array index, but demand catastrophic memory allocations when key universes are sparse. Hashing bridges this efficiency gap by compressing vast key spaces into compact array bounds through deterministic mathematical transformations. This chapter examines the Direct Address Dilemma, Simple Uniform Hashing Assumptions (SUHA), division and multiplication hash generators, polynomial rolling hashes for strings, the mathematical inevitability of collisions under the Birthday Paradox, and load factor ($\alpha$) thresholds for dynamic rehashing.
 
 ### Learning Objectives
+
 - Contrast direct addressing with compact hash tables and quantify the memory savings achieved across sparse key spaces.
 - Formalize the Simple Uniform Hashing Assumption (SUHA) and evaluate the mathematical properties of division, multiplication, and polynomial rolling hash functions.
 - Prove why hash collisions are mathematically unavoidable using Dirichlet's Pigeonhole Principle.
@@ -24,12 +25,15 @@ Direct address tables offer constant-time retrieval by assigning every possible 
 In an ideal computational model, data retrieval executes in $\Theta(1)$ time by using the search key directly as an array index. This pattern is known as **Direct Addressing**.
 
 #### The Direct Addressing Dilemma:
+
 Suppose an enterprise needs to store employee profiles indexed by a 9-digit Social Security Number (SSN: `000-00-0000` to `999-99-9999`):
+
 - **Universe of Keys ($\mathcal{U}$)**: Contains $10^9$ possible keys ($|\mathcal{U}| = 1,000,000,000$).
 - **Direct Address Table**: Requires allocating a contiguous array of $10^9$ pointers. At 8 bytes per pointer, this demands **$8\text{ Gigabytes}$ of RAM**!
 - **Sparsity Reality**: If the company employs only $500$ workers, **$99.99995\%$ of the allocated memory sits permanently empty and wasted**.
 
 #### The Hashing Resolution:
+
 Rather than allocating memory for every conceivable key in universe $\mathcal{U}$, allocate a compact table of size $m \ll |\mathcal{U}|$ (e.g., $m = 1,000$ slots, requiring mere kilobytes of RAM). A deterministic mathematical function $h(k)$, called a **Hash Function**, maps keys into table index slots:
 
 $$h: \mathcal{U} \to \{0, 1, \dots, m - 1\}$$
@@ -115,16 +119,20 @@ $$h: \mathcal{U} \to \{0, 1, \dots, m - 1\}$$
 ### 2. Classic Hash Function Algorithms
 
 #### A. The Division Method
+
 $$h(k) = k \pmod m$$
+
 - **Rule for Table Size $m$**: Choose $m$ to be a **prime number** not close to powers of 2 or 10.
-- *Why Avoid Powers of Two ($m = 2^p$)?* Computing $k \pmod{2^p}$ simply isolates the lowest $p$ bits of $k$ (equivalent to a bitwise mask `k & (m - 1)`). All higher-order bits are completely ignored!
+- _Why Avoid Powers of Two ($m = 2^p$)?_ Computing $k \pmod{2^p}$ simply isolates the lowest $p$ bits of $k$ (equivalent to a bitwise mask `k & (m - 1)`). All higher-order bits are completely ignored!
 
 #### B. The Multiplication Method (Knuth's Golden Ratio Method)
+
 $$h(k) = \lfloor m \cdot (k \cdot A \pmod 1) \rfloor$$
 Where $0 < A < 1$ is a fractional constant. Donald Knuth recommends the conjugate of the Golden Ratio ($\phi \approx 1.6180339887$):
 $$A = \frac{\sqrt{5} - 1}{2} \approx 0.6180339887\dots$$
 
 #### C. Polynomial Rolling Hash for Strings
+
 A string $S = s_0 s_1 \dots s_{L-1}$ is treated as a polynomial where character code units are coefficients evaluated at base $p$:
 $$h(S) = \left( \sum_{i=0}^{L-1} s_i \cdot p^i \right) \pmod m$$
 Where $p$ is a prime roughly equal to alphabet size (e.g., $p = 31$ for lowercase English; $p = 53$ for mixed-case ASCII) and $m$ is a large prime modulus ($10^9 + 7$).
@@ -145,6 +153,7 @@ $$k_1 \ne k_2 \quad \text{and} \quad h(k_1) = h(k_2)$$
 How many randomly chosen people must gather in a room before the probability that at least two share a birthday exceeds $50\%$? The mathematical answer is **just 23 people**!
 
 #### Formal Mathematical Derivation:
+
 Let $n$ be the number of inserted keys and $m$ be the number of hash table slots. The probability that all $n$ keys hash into distinct slots (zero collisions) is:
 $$P(\text{No Collision}) = \prod_{i=1}^{n-1} \left(1 - \frac{i}{m}\right)$$
 Using $1 - x \approx e^{-x}$:
@@ -152,18 +161,19 @@ $$P(\text{No Collision}) \approx \prod_{i=1}^{n-1} e^{-i/m} = e^{-\sum_{i=1}^{n-
 To find the threshold where collision probability reaches $50\%$ ($P(\text{Collision}) \ge 0.5$):
 $$e^{-\frac{n^2}{2m}} \le 0.5 \implies n \approx \sqrt{2 \ln(2)} \cdot \sqrt{m} \approx 1.1774\sqrt{m}$$
 
-| Table Capacity ($m$) | 50% Collision Threshold ($n \approx 1.177\sqrt{m}$) | Percentage of Table Utilized |
-| :---: | :---: | :---: |
-| **$365$** (Days in Year) | **$23\text{ keys}$** | $6.3\%$ |
-| **$1,000$** | **$38\text{ keys}$** | $3.8\%$ |
-| **$10,000$** | **$118\text{ keys}$** | $1.18\%$ |
-| **$1,000,000$** | **$1,177\text{ keys}$** | $0.12\%$ |
+|   Table Capacity ($m$)   | 50% Collision Threshold ($n \approx 1.177\sqrt{m}$) | Percentage of Table Utilized |
+| :----------------------: | :-------------------------------------------------: | :--------------------------: |
+| **$365$** (Days in Year) |                **$23\text{ keys}$**                 |           $6.3\%$            |
+|       **$1,000$**        |                **$38\text{ keys}$**                 |           $3.8\%$            |
+|       **$10,000$**       |                **$118\text{ keys}$**                |           $1.18\%$           |
+|     **$1,000,000$**      |               **$1,177\text{ keys}$**               |           $0.12\%$           |
 
 ---
 
 ### 3. Production Implementations
 
 #### A. C++20 Polynomial String Hash with Avalanche Bit-Mixer
+
 ```cpp
 #include <string_view>
 #include <cstdint>
@@ -193,6 +203,7 @@ public:
 ```
 
 #### B. Python 3 Rolling Hash with Substring Slice O(1) Equality
+
 ```python
 class RollingHash:
     """Computes polynomial string hash and prefix hash powers for O(1) substring queries."""
@@ -203,7 +214,7 @@ class RollingHash:
         n = len(s)
         self.prefix_hash = [0] * (n + 1)
         self.power = [1] * (n + 1)
-        
+
         for i in range(n):
             val = ord(s[i]) + 1
             self.prefix_hash[i + 1] = (self.prefix_hash[i] * base + val) % mod
@@ -229,6 +240,6 @@ class RollingHash:
 
 ## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: *Hash Tables*. MIT Press.
-2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: *Hashing*. Addison-Wesley.
-3. **Mitzenmacher, M., & Upfal, E.** (2017). *Probability and Computing: Randomization and Probabilistic Techniques in Algorithms* (2nd ed.), Chapter 5: *Balls, Bins, and Random Graphs*. Cambridge University Press.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 11: _Hash Tables_. MIT Press.
+2. **Knuth, D. E.** (1998). _The Art of Computer Programming, Volume 3: Sorting and Searching_ (2nd ed.), Section 6.4: _Hashing_. Addison-Wesley.
+3. **Mitzenmacher, M., & Upfal, E.** (2017). _Probability and Computing: Randomization and Probabilistic Techniques in Algorithms_ (2nd ed.), Chapter 5: _Balls, Bins, and Random Graphs_. Cambridge University Press.

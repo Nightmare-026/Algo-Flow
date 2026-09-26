@@ -42,7 +42,7 @@ export function HashSetRenderer() {
       aria-label={`${currentStep.title}. Hash set state: ${dataState.elementCount} elements, load factor ${dataState.loadFactor.toFixed(2)}`}
     >
       {/* Metrics Banner */}
-      <div className="mb-8 flex gap-4 sm:gap-8 rounded-lg border border-border bg-bg-surface/50 p-4 shrink-0">
+      <div className="mb-8 flex gap-4 sm:gap-8 rounded-lg border border-border bg-surface/50 p-4 shrink-0">
         <div className="flex flex-col items-center">
           <span className="text-xs uppercase tracking-wider text-text-muted">Set Size</span>
           <span className="font-mono text-xl font-bold text-text-primary">{dataState.setSize}</span>
@@ -90,7 +90,7 @@ export function HashSetRenderer() {
                       {index}
                     </div>
 
-                    <div className="flex h-12 w-32 sm:h-14 sm:w-48 items-center justify-center rounded-lg border-2 border-dashed border-border/50 bg-bg-base/30 relative">
+                    <div className="flex h-12 w-32 sm:h-14 sm:w-48 items-center justify-center rounded-lg border-2 border-dashed border-border/50 bg-background/30 relative">
                       <AnimatePresence mode="popLayout">
                         {entry && (
                           <motion.div
@@ -126,7 +126,7 @@ export function HashSetRenderer() {
                       {index}
                     </div>
 
-                    <div className="flex min-h-12 sm:min-h-14 items-center gap-2 rounded-lg border-2 border-dashed border-border/50 bg-bg-base/30 p-2">
+                    <div className="flex min-h-12 sm:min-h-14 items-center gap-2 rounded-lg border-2 border-dashed border-border/50 bg-background/30 p-2">
                       {chain.length === 0 ? (
                         <span className="px-4 text-sm text-text-muted/50">Empty</span>
                       ) : (

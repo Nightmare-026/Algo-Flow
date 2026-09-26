@@ -63,7 +63,7 @@ export function HashTableInputControls({
         {/* Left Section: Generators & Custom Input */}
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Pod 1: Elements Size & Random Preset */}
-          <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
+          <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-card">
             <div className="flex items-center gap-1.5 pr-1">
               <span className="font-mono text-[10px] font-semibold text-text-muted">Keys</span>
               <input
@@ -97,7 +97,7 @@ export function HashTableInputControls({
           {/* Pod 2: Custom Input Form */}
           <form
             onSubmit={handleCustomSubmit}
-            className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
+            className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-2 shadow-card"
           >
             <FileEdit className="h-3.5 w-3.5 text-text-muted shrink-0" aria-hidden="true" />
             <input
@@ -119,7 +119,7 @@ export function HashTableInputControls({
 
           {/* Pod 3: Probing Strategy Selector for Open Addressing */}
           {isOpenAddressing(slug) && (
-            <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-(--shadow-raised-sm)">
+            <div className="flex h-8 items-center gap-1 rounded-lg border border-border bg-surface px-1.5 shadow-card">
               <span className="font-mono text-[10px] font-semibold text-text-muted px-1">
                 Probe:
               </span>
@@ -167,7 +167,7 @@ export function HashTableInputControls({
         </div>
 
         {/* Right Section: Context Parameters Pod */}
-        <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-(--shadow-raised-sm) lg:ml-auto">
+        <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-card lg:ml-auto">
           <label className="flex items-center gap-1.5 font-mono text-[10px] font-semibold text-text-secondary">
             <Database className="h-3 w-3 text-primary" aria-hidden="true" />
             <span className="hidden sm:inline">Capacity (m):</span>
@@ -180,7 +180,7 @@ export function HashTableInputControls({
                   Math.max(1, parseInputNumber(event.target.value, options.capacity))
                 )
               }
-              className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
+              className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
               min={1}
               max={31}
               aria-label="Table capacity size"
@@ -199,7 +199,7 @@ export function HashTableInputControls({
                 onChange={(event) =>
                   updateOption("value", parseInputNumber(event.target.value, options.value))
                 }
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                 aria-label="Key to hash or insert"
               />
             </label>
@@ -214,7 +214,7 @@ export function HashTableInputControls({
                 onChange={(event) =>
                   updateOption("target", parseInputNumber(event.target.value, options.target))
                 }
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                 aria-label="Target search key"
               />
             </label>

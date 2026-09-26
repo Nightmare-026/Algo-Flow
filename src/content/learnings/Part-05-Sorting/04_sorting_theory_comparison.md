@@ -8,6 +8,7 @@
 Sorting algorithms are defined not merely by empirical runtime benchmarks, but by deep mathematical constraints that govern all computational order. This module investigates the theoretical boundaries of sorting: the formal definition and real-world necessity of algorithmic stability, the strict information-theoretic proof of the $\Omega(n \log n)$ comparison lower bound via the decision tree model, and the comprehensive trade-off matrix governing modern sorting system selection. We also analyze how production language runtimes synthesize these theoretical paradigms into robust hybrid engines like Timsort, Introsort, and Dual-Pivot Quicksort.
 
 ### Learning Objectives
+
 - Define algorithmic stability formally and prove how stable algorithms guarantee deterministic multi-key lexicographical ordering.
 - Differentiate in-place from out-of-place computational paradigms and evaluate auxiliary memory bounds ($O(1)$ vs $O(\log n)$ vs $O(n)$).
 - Formulate the Decision Tree Model for comparison sorting and derive the information-theoretic lower bound $\Omega(n \log n)$ via Stirling's approximation.
@@ -24,9 +25,9 @@ Let $A = [a_0, a_1, \dots, a_{n-1}]$ be an array of records where each element $
 
 > **Formal Definition (Algorithmic Stability):**  
 > A sorting algorithm is **Stable** if and only if for all pairs of indices $i$ and $j$:
-> 
+>
 > $$\text{key}(a_i) = \text{key}(a_j) \quad \text{and} \quad i < j \implies \pi(i) < \pi(j)$$
-> 
+>
 > That is, whenever two records possess identical sorting keys, their relative original order in the input array is strictly preserved in the sorted output.
 
 ---
@@ -36,17 +37,18 @@ Let $A = [a_0, a_1, \dots, a_{n-1}]$ be an array of records where each element $
 The practical importance of stability emerges in multi-column sorting (e.g., in spreadsheets, database query engines, and UI tables). Suppose a user wants to sort employee records by **Department** as the primary key and **Employee Name** as the secondary key.
 
 By leveraging a stable sorting algorithm, multi-key sorting can be achieved by sorting keys from **least significant to most significant**:
+
 1. **Pass 1:** Sort the entire dataset alphabetically by **Name**.
 2. **Pass 2:** Sort the dataset by **Department** using a **stable sort**.
 
 The table below demonstrates the behavior on a sample dataset:
 
 | Employee ID | Name (Secondary Key) | Department (Primary Key) | After Pass 1 (Sorted by Name) | Pass 2 Stable Sort (by Dept) | Pass 2 Unstable Sort (by Dept) |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| **`E101`** | Charlie | Engineering | Alice (Sales) | **Alice (Marketing)** | Bob (Marketing) |
-| **`E102`** | Alice | Marketing | Alice (Marketing) | **Bob (Marketing)** | Alice (Marketing) |
-| **`E103`** | Bob | Marketing | Bob (Marketing) | **Charlie (Engineering)** | Charlie (Engineering) |
-| **`E104`** | Alice | Sales | Charlie (Engineering) | **Alice (Sales)** | Alice (Sales) |
+| :---------: | :------------------: | :----------------------: | :---------------------------: | :--------------------------: | :----------------------------: |
+| **`E101`**  |       Charlie        |       Engineering        |         Alice (Sales)         |    **Alice (Marketing)**     |        Bob (Marketing)         |
+| **`E102`**  |        Alice         |        Marketing         |       Alice (Marketing)       |     **Bob (Marketing)**      |       Alice (Marketing)        |
+| **`E103`**  |         Bob          |        Marketing         |        Bob (Marketing)        |  **Charlie (Engineering)**   |     Charlie (Engineering)      |
+| **`E104`**  |        Alice         |          Sales           |     Charlie (Engineering)     |      **Alice (Sales)**       |         Alice (Sales)          |
 
 - **Stable Output:** In the Marketing department, Alice (E102) strictly precedes Bob (E103) because they were already sorted alphabetically in Pass 1. Stability preserved the secondary sort!
 - **Unstable Output:** The relative positions of Alice and Bob within Marketing can be arbitrarily swapped, corrupting the alphabetical sub-order.
@@ -55,17 +57,17 @@ The table below demonstrates the behavior on a sample dataset:
 
 ### 3. Comprehensive Stability Taxonomy of Sorting Algorithms
 
-| Sorting Algorithm | Stability Classification | Physical Cause & Mechanism |
-| :--- | :---: | :--- |
-| **Bubble Sort** | **Stable** | Strictly adjacent transpositions; `A[j] > A[j+1]` condition ignores equal elements |
-| **Insertion Sort** | **Stable** | Backward scan halts when `A[j] <= key`; identical elements are never shifted past |
-| **Merge Sort** | **Stable** | When `L[i] == R[j]`, tie-breaker deterministically selects from left buffer `L[i]` |
-| **Counting Sort** | **Stable** | Backward traversal from $n - 1$ down to $0$ fills prefix-reserved slots from right to left |
-| **Radix Sort (LSD)** | **Stable** | Mandatory requirement; relies on stable digit sub-sorter (Counting Sort) |
-| **Bucket Sort** | **Stable** | Preserves order assuming individual bucket sort subroutine (Insertion Sort) is stable |
-| **Selection Sort** | **Unstable** | Long-distance swaps bypass identical intermediate elements (e.g., $[4_a, 4_b, 2] \to [2, 4_b, 4_a]$) |
-| **Quick Sort** | **Unstable** | Partitioning swaps elements across the pivot over arbitrary distances |
-| **Heap Sort** | **Unstable** | Binary tree heapify operations sift elements through non-contiguous tree branches |
+| Sorting Algorithm    | Stability Classification | Physical Cause & Mechanism                                                                           |
+| :------------------- | :----------------------: | :--------------------------------------------------------------------------------------------------- |
+| **Bubble Sort**      |        **Stable**        | Strictly adjacent transpositions; `A[j] > A[j+1]` condition ignores equal elements                   |
+| **Insertion Sort**   |        **Stable**        | Backward scan halts when `A[j] <= key`; identical elements are never shifted past                    |
+| **Merge Sort**       |        **Stable**        | When `L[i] == R[j]`, tie-breaker deterministically selects from left buffer `L[i]`                   |
+| **Counting Sort**    |        **Stable**        | Backward traversal from $n - 1$ down to $0$ fills prefix-reserved slots from right to left           |
+| **Radix Sort (LSD)** |        **Stable**        | Mandatory requirement; relies on stable digit sub-sorter (Counting Sort)                             |
+| **Bucket Sort**      |        **Stable**        | Preserves order assuming individual bucket sort subroutine (Insertion Sort) is stable                |
+| **Selection Sort**   |       **Unstable**       | Long-distance swaps bypass identical intermediate elements (e.g., $[4_a, 4_b, 2] \to [2, 4_b, 4_a]$) |
+| **Quick Sort**       |       **Unstable**       | Partitioning swaps elements across the pivot over arbitrary distances                                |
+| **Heap Sort**        |       **Unstable**       | Binary tree heapify operations sift elements through non-contiguous tree branches                    |
 
 ---
 
@@ -77,25 +79,25 @@ In computational complexity theory, memory overhead is categorized into input sp
 
 > **In-Place Sorting Algorithm:**  
 > An algorithm is defined as **in-place** if it transforms the input array using only a small, bounded amount of auxiliary memory outside the array itself. Formally:
-> 
+>
 > $$\text{Auxiliary Space } S(n) = O(\log n)$$
-> 
-> *(Strict in-place algorithms require $O(1)$ auxiliary space. Quicksort is classified as in-place because its $O(\log n)$ memory is restricted solely to call stack activation frames).*
+>
+> _(Strict in-place algorithms require $O(1)$ auxiliary space. Quicksort is classified as in-place because its $O(\log n)$ memory is restricted solely to call stack activation frames)._
 
 > **Out-of-Place Sorting Algorithm:**  
 > An algorithm is defined as **out-of-place** if its auxiliary memory scales linearly with input size:
-> 
+>
 > $$\text{Auxiliary Space } S(n) = \Omega(n)$$
 
 ---
 
 ### 2. Memory Footprint & Hardware Architecture Trade-offs
 
-| Sorting Paradigm | Representative Algorithms | Auxiliary Space | Cache & Hardware Implications |
-| :--- | :--- | :---: | :--- |
-| **Strict In-Place ($O(1)$)** | Bubble Sort, Selection Sort, Insertion Sort, Heap Sort | $\Theta(1)$ | No memory allocation overhead; zero risk of `OutOfMemory` exceptions on embedded devices |
-| **Stack-Bounded In-Place ($O(\log n)$)** | Quick Sort (with tail-call optimization), Introsort | $\Theta(\log n)$ | Activation records reside in high-speed stack memory; zero heap allocation |
-| **Linear Out-of-Place ($O(n)$)** | Merge Sort, Counting Sort, Radix Sort, Bucket Sort | $\Theta(n)$ or $\Theta(n + k)$ | Requires allocating dynamic heap buffers; high memory pressure on large datasets |
+| Sorting Paradigm                         | Representative Algorithms                              |        Auxiliary Space         | Cache & Hardware Implications                                                            |
+| :--------------------------------------- | :----------------------------------------------------- | :----------------------------: | :--------------------------------------------------------------------------------------- |
+| **Strict In-Place ($O(1)$)**             | Bubble Sort, Selection Sort, Insertion Sort, Heap Sort |          $\Theta(1)$           | No memory allocation overhead; zero risk of `OutOfMemory` exceptions on embedded devices |
+| **Stack-Bounded In-Place ($O(\log n)$)** | Quick Sort (with tail-call optimization), Introsort    |        $\Theta(\log n)$        | Activation records reside in high-speed stack memory; zero heap allocation               |
+| **Linear Out-of-Place ($O(n)$)**         | Merge Sort, Counting Sort, Radix Sort, Bucket Sort     | $\Theta(n)$ or $\Theta(n + k)$ | Requires allocating dynamic heap buffers; high memory pressure on large datasets         |
 
 ---
 
@@ -110,6 +112,7 @@ A comparison-based sorting algorithm determines the sorted order of an array $A 
 ### 2. The Decision Tree Formalism
 
 Any comparison sort operating on an input of $n$ distinct elements can be represented as an abstract **Binary Decision Tree**:
+
 1. **Internal Nodes:** Each internal node represents a comparison between two elements $a_i$ and $a_j$ ($a_i \le a_j$).
 2. **Branches:** Each comparison produces a binary outcome: the left branch represents $a_i \le a_j$, and the right branch represents $a_i > a_j$.
 3. **Leaves:** Each leaf node represents a definitive permutation $\langle \pi(0), \pi(1), \dots, \pi(n-1) \rangle$ specifying the final sorted sequence.
@@ -120,12 +123,12 @@ Any comparison sort operating on an input of $n$ distinct elements can be repres
 
 An array of 3 distinct elements has $3! = 6$ possible permutations. The decision tree must have at least 6 leaves to correctly differentiate all inputs:
 
-| Tree Level | Node Inspection | Comparison Query | Branch Taken | Permutations Remaining |
-| :---: | :---: | :---: | :---: | :---: |
-| **Level 0** (Root) | Node 1 | Is $a_1 \le a_2$? | Left ($\le$) vs Right ($>$) | 6 possible permutations |
-| **Level 1** | Left Child | Is $a_2 \le a_3$? | Left ($\le$) vs Right ($>$) | 3 possible permutations |
-| **Level 2** | Subtree Child | Is $a_1 \le a_3$? | Left ($\le$) vs Right ($>$) | 1–2 permutations |
-| **Level 3** (Leaves) | Leaf Nodes | Fully Resolved Order | Reached Leaf | **Exactly 1 Permutation** (e.g., $\langle a_1, a_2, a_3 \rangle$) |
+|      Tree Level      | Node Inspection |   Comparison Query   |        Branch Taken         |                      Permutations Remaining                       |
+| :------------------: | :-------------: | :------------------: | :-------------------------: | :---------------------------------------------------------------: |
+|  **Level 0** (Root)  |     Node 1      |  Is $a_1 \le a_2$?   | Left ($\le$) vs Right ($>$) |                      6 possible permutations                      |
+|     **Level 1**      |   Left Child    |  Is $a_2 \le a_3$?   | Left ($\le$) vs Right ($>$) |                      3 possible permutations                      |
+|     **Level 2**      |  Subtree Child  |  Is $a_1 \le a_3$?   | Left ($\le$) vs Right ($>$) |                         1–2 permutations                          |
+| **Level 3** (Leaves) |   Leaf Nodes    | Fully Resolved Order |        Reached Leaf         | **Exactly 1 Permutation** (e.g., $\langle a_1, a_2, a_3 \rangle$) |
 
 The height of this binary tree is $h = 3$, requiring at least 3 comparisons in the worst case to sort 3 elements.
 
@@ -216,6 +219,7 @@ The height of this binary tree is $h = 3$, requiring at least 3 comparisons in t
 > Any comparison-based sorting algorithm requires at least $\mathbf{\Omega(n \log n)}$ comparisons in the worst case to sort an array of $n$ elements.
 
 #### Proof:
+
 1. **Permutations:** An array of $n$ distinct elements can arrive in any of $n!$ possible initial permutations.
 2. **Leaf Count Bound:** To output the correct sorted order for every possible input permutation, the decision tree must contain at least one leaf for each permutation. Let $L$ denote the number of leaves:
    $$L \ge n!$$
@@ -243,17 +247,17 @@ Because the worst-case number of comparisons equals the height of the decision t
 
 ## Topic 62: Complete Master Sorting Comparison Matrix
 
-| Sorting Algorithm | Best-Case Time | Average-Case Time | Worst-Case Time | Auxiliary Space | In-Place? | Stable? | Adaptive? | Primary Production Application |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Bubble Sort** | $\Theta(n)$ | $\Theta(n^2)$ | $\Theta(n^2)$ | $\Theta(1)$ | Yes | **Yes** | Yes (with flag) | Educational demonstrations |
-| **Selection Sort** | $\Theta(n^2)$ | $\Theta(n^2)$ | $\Theta(n^2)$ | $\Theta(1)$ | Yes | **No** | No | Flash/EEPROM memory write minimization |
-| **Insertion Sort** | $\mathbf{\Theta(n)}$ | $\Theta(n^2)$ | $\Theta(n^2)$ | $\Theta(1)$ | Yes | **Yes** | **Yes ($O(n+I)$)** | Small partitions ($n \le 32$) in Timsort/Introsort |
-| **Merge Sort** | $\Theta(n \log n)$ | $\Theta(n \log n)$ | $\mathbf{\Theta(n \log n)}$ | $\Theta(n)$ | **No** | **Yes** | No | Linked lists, external disk sorting, Java objects |
-| **Quick Sort** | $\Theta(n \log n)$ | $\mathbf{\Theta(n \log n)}$ | $\Theta(n^2)$ | $\Theta(\log n)$ | Yes | **No** | No | General-purpose in-memory primitive sorting |
-| **Heap Sort** | $\Theta(n \log n)$ | $\Theta(n \log n)$ | $\mathbf{\Theta(n \log n)}$ | $\mathbf{\Theta(1)}$ | Yes | **No** | No | Real-time and safety-critical embedded systems |
-| **Counting Sort** | $\mathbf{\Theta(n + k)}$ | $\mathbf{\Theta(n + k)}$ | $\mathbf{\Theta(n + k)}$ | $\Theta(n + k)$ | **No** | **Yes** | No | Small integer keys where $k = O(n)$ |
-| **Radix Sort (LSD)** | $\mathbf{\Theta(d(n + b))}$ | $\mathbf{\Theta(d(n + b))}$ | $\mathbf{\Theta(d(n + b))}$ | $\Theta(n + b)$ | **No** | **Yes** | No | 32/64-bit integers, fixed-width string keys |
-| **Bucket Sort** | $\mathbf{\Theta(n)}$ | $\mathbf{\Theta(n)}$ | $\Theta(n^2)$ | $\Theta(n)$ | **No** | **Yes** | No | Uniformly distributed floating-point numbers |
+| Sorting Algorithm    |       Best-Case Time        |      Average-Case Time      |       Worst-Case Time       |   Auxiliary Space    | In-Place? | Stable? |     Adaptive?      | Primary Production Application                     |
+| :------------------- | :-------------------------: | :-------------------------: | :-------------------------: | :------------------: | :-------: | :-----: | :----------------: | :------------------------------------------------- |
+| **Bubble Sort**      |         $\Theta(n)$         |        $\Theta(n^2)$        |        $\Theta(n^2)$        |     $\Theta(1)$      |    Yes    | **Yes** |  Yes (with flag)   | Educational demonstrations                         |
+| **Selection Sort**   |        $\Theta(n^2)$        |        $\Theta(n^2)$        |        $\Theta(n^2)$        |     $\Theta(1)$      |    Yes    | **No**  |         No         | Flash/EEPROM memory write minimization             |
+| **Insertion Sort**   |    $\mathbf{\Theta(n)}$     |        $\Theta(n^2)$        |        $\Theta(n^2)$        |     $\Theta(1)$      |    Yes    | **Yes** | **Yes ($O(n+I)$)** | Small partitions ($n \le 32$) in Timsort/Introsort |
+| **Merge Sort**       |     $\Theta(n \log n)$      |     $\Theta(n \log n)$      | $\mathbf{\Theta(n \log n)}$ |     $\Theta(n)$      |  **No**   | **Yes** |         No         | Linked lists, external disk sorting, Java objects  |
+| **Quick Sort**       |     $\Theta(n \log n)$      | $\mathbf{\Theta(n \log n)}$ |        $\Theta(n^2)$        |   $\Theta(\log n)$   |    Yes    | **No**  |         No         | General-purpose in-memory primitive sorting        |
+| **Heap Sort**        |     $\Theta(n \log n)$      |     $\Theta(n \log n)$      | $\mathbf{\Theta(n \log n)}$ | $\mathbf{\Theta(1)}$ |    Yes    | **No**  |         No         | Real-time and safety-critical embedded systems     |
+| **Counting Sort**    |  $\mathbf{\Theta(n + k)}$   |  $\mathbf{\Theta(n + k)}$   |  $\mathbf{\Theta(n + k)}$   |   $\Theta(n + k)$    |  **No**   | **Yes** |         No         | Small integer keys where $k = O(n)$                |
+| **Radix Sort (LSD)** | $\mathbf{\Theta(d(n + b))}$ | $\mathbf{\Theta(d(n + b))}$ | $\mathbf{\Theta(d(n + b))}$ |   $\Theta(n + b)$    |  **No**   | **Yes** |         No         | 32/64-bit integers, fixed-width string keys        |
+| **Bucket Sort**      |    $\mathbf{\Theta(n)}$     |    $\mathbf{\Theta(n)}$     |        $\Theta(n^2)$        |     $\Theta(n)$      |  **No**   | **Yes** |         No         | Uniformly distributed floating-point numbers       |
 
 ---
 
@@ -294,9 +298,8 @@ Real-world standard libraries rarely use pure theoretical algorithms in isolatio
 
 ## References & Academic Attribution
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 8: Sorting in Linear Time (The Information-Theoretic Lower Bound). MIT Press.
-2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 5.3.1: Minimum-Comparison Sorting. Addison-Wesley.
-3. **Musser, D. R.** (1997). Introspective sorting and selection algorithms. *Software: Practice and Experience*, 27(8), 983–993.
-4. **Peters, T.** (2002). *Timsort Description*. Python Software Foundation. Available at: https://github.com/python/cpython/blob/main/Objects/listsort.txt.
-5. **Yaroslavskiy, V.** (2009). *Dual-Pivot Quicksort algorithm*. Research disclosure, Oracle Corporation.
-
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 8: Sorting in Linear Time (The Information-Theoretic Lower Bound). MIT Press.
+2. **Knuth, D. E.** (1998). _The Art of Computer Programming, Volume 3: Sorting and Searching_ (2nd ed.), Section 5.3.1: Minimum-Comparison Sorting. Addison-Wesley.
+3. **Musser, D. R.** (1997). Introspective sorting and selection algorithms. _Software: Practice and Experience_, 27(8), 983–993.
+4. **Peters, T.** (2002). _Timsort Description_. Python Software Foundation. Available at: https://github.com/python/cpython/blob/main/Objects/listsort.txt.
+5. **Yaroslavskiy, V.** (2009). _Dual-Pivot Quicksort algorithm_. Research disclosure, Oracle Corporation.

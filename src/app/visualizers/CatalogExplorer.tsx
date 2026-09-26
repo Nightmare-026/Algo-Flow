@@ -178,7 +178,7 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
         <SearchParamsSync onSync={handleUrlSync} />
       </Suspense>
       {/* Search & Filter Bar */}
-      <div className="flex flex-col gap-4 rounded-[8px] p-4 lg:flex-row lg:items-center lg:justify-between border border-border bg-surface shadow-card">
+      <div className="flex flex-col gap-4 rounded-lg p-4 lg:flex-row lg:items-center lg:justify-between border border-border bg-surface shadow-card">
         {/* Search Input with Clear Button */}
         <div className="relative w-full lg:max-w-md">
           <label htmlFor="structure-search" className="sr-only">
@@ -198,20 +198,20 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
             onKeyDown={(event) => {
               if (event.key === "Escape") handleSearchChange("");
             }}
-            className="h-11 w-full rounded-[4px] border border-border bg-surface-secondary py-2.5 pl-11 pr-10 text-sm text-text-primary shadow-xs placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="h-11 w-full rounded-sm border border-border bg-surface-secondary py-2.5 pl-11 pr-10 text-sm text-text-primary shadow-xs placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           />
           {searchQuery ? (
             <button
               type="button"
               onClick={() => handleSearchChange("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-[4px] text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-sm text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
               aria-label="Clear search"
             >
               <X className="h-4 w-4" />
             </button>
           ) : (
             <span
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center rounded-[4px] border border-border bg-surface px-1.5 py-0.5 text-[10px] font-mono text-text-muted shadow-xs"
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center rounded-sm border border-border bg-surface px-1.5 py-0.5 text-[10px] font-mono text-text-muted shadow-xs"
               aria-hidden="true"
             >
               ESC
@@ -297,12 +297,12 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
               >
                 <Link
                   href={`/visualizers/${structure.slug}`}
-                  className="group flex h-full flex-col justify-between rounded-[8px] border border-border bg-surface p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200"
+                  className="group flex h-full flex-col justify-between rounded-lg border border-border bg-surface p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200"
                 >
                   <div>
                     {/* Top: Icon and Category Badge */}
                     <div className="flex items-start justify-between gap-4">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-[8px] border border-border bg-surface-secondary text-primary shadow-xs group-hover:scale-105 transition-transform duration-200">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-surface-secondary text-primary shadow-xs group-hover:scale-105 transition-transform duration-200">
                         <Icon className="h-6 w-6" aria-hidden="true" />
                       </span>
                       <span
@@ -325,7 +325,7 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
 
                     {/* Contextual Algorithm Search Match or Algorithm Preview Tags */}
                     {matchedAlgorithms.length > 0 && searchQuery.trim() ? (
-                      <div className="mt-4 rounded-[6px] border border-primary/25 bg-primary/10 p-2.5 text-xs text-primary">
+                      <div className="mt-4 rounded-md border border-primary/25 bg-primary/10 p-2.5 text-xs text-primary">
                         <div className="flex items-center gap-1.5 font-semibold">
                           <Search className="h-3.5 w-3.5 shrink-0" />
                           <span>Matched in this structure:</span>
@@ -334,7 +334,7 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
                           {matchedAlgorithms.slice(0, 3).map((algo) => (
                             <span
                               key={algo.id}
-                              className="rounded-[4px] bg-surface px-2 py-0.5 text-[11px] font-medium text-text-primary border border-primary/20"
+                              className="rounded-sm bg-surface px-2 py-0.5 text-[11px] font-medium text-text-primary border border-primary/20"
                             >
                               {algo.name}
                             </span>
@@ -351,13 +351,13 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
                         {previewAlgos.map((algo) => (
                           <span
                             key={algo.id}
-                            className="inline-flex items-center rounded-[4px] border border-border/70 bg-surface-secondary px-2 py-0.5 text-[11px] font-medium text-text-secondary transition-colors group-hover:border-primary/25 group-hover:text-text-primary"
+                            className="inline-flex items-center rounded-sm border border-border/70 bg-surface-secondary px-2 py-0.5 text-[11px] font-medium text-text-secondary transition-colors group-hover:border-primary/25 group-hover:text-text-primary"
                           >
                             {algo.name}
                           </span>
                         ))}
                         {remainingCount > 0 && (
-                          <span className="inline-flex items-center rounded-[4px] border border-dashed border-border px-1.5 py-0.5 text-[10px] font-mono font-semibold text-text-muted">
+                          <span className="inline-flex items-center rounded-sm border border-dashed border-border px-1.5 py-0.5 text-[10px] font-mono font-semibold text-text-muted">
                             +{remainingCount} more
                           </span>
                         )}
@@ -370,7 +370,7 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
                     <span className="text-xs font-mono font-bold text-primary">
                       {count} {count === 1 ? "Visualizer" : "Visualizers"}
                     </span>
-                    <span className="flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-text-muted group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-200">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-surface text-text-muted group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-200">
                       <ChevronRight
                         className="h-4 w-4 group-hover:translate-x-0.5 transition-transform"
                         aria-hidden="true"
@@ -383,8 +383,8 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
           })}
         </motion.div>
       ) : (
-        <div className="mt-8 rounded-[8px] p-8 sm:p-10 text-center border border-border bg-surface shadow-card max-w-xl mx-auto">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-[8px] border border-border bg-surface-secondary text-text-muted shadow-xs">
+        <div className="mt-8 rounded-lg p-8 sm:p-10 text-center border border-border bg-surface shadow-card max-w-xl mx-auto">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-surface-secondary text-text-muted shadow-xs">
             <Search className="h-6 w-6" aria-hidden="true" />
           </div>
           <h2 className="mt-4 text-lg font-bold font-display text-text-primary">
@@ -400,7 +400,7 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
               setSearchQuery("");
               syncUrl("", "all");
             }}
-            className="mt-5 inline-flex items-center justify-center min-h-11 rounded-[4px] bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-card cursor-pointer transition-colors"
+            className="mt-5 inline-flex items-center justify-center min-h-11 rounded-sm bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-card cursor-pointer transition-colors"
           >
             Reset Filters
           </button>

@@ -8,6 +8,7 @@
 Tree traversals define the algorithmic protocols that linearize non-linear hierarchical graphs into deterministic, ordered sequences. Unlike linear structures (arrays, linked lists) that offer a single sequential trajectory, hierarchical trees support multiple traversal dimensions depending on scheduling mechanisms (LIFO call stacks, FIFO queues, state machines, or in-place pointer threading). This module examines the mathematical foundations, stack simulation mechanics, and geometric projections of tree traversals, culminating in J. H. Morris's optimal $O(1)$ auxiliary memory algorithm.
 
 ### Learning Objectives
+
 - Formulate the visitation invariants of Depth-First Search (Preorder, Inorder, Postorder) and construct both recursive and explicit stack implementations.
 - Prove why an Inorder traversal across a Binary Search Tree produces a strictly non-decreasing monotonic sequence.
 - Implement Morris Inorder and Preorder traversals, proving how temporary right-pointer threading achieves $O(n)$ time with strictly $O(1)$ auxiliary space.
@@ -39,19 +40,20 @@ Tree traversals are broadly categorized across four distinct algorithmic dimensi
 
 To provide clear comparative traces across all traversals, we establish a standardized 9-node reference binary tree:
 
-| Node Value | Left Child | Right Child | Tree Level | Depth ($VD$) | Horizontal Distance ($HD$) | In-Degree | Out-Degree |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`1`** | `2` | `3` | Level 0 | `0` | `0` | `0` (Root) | `2` |
-| **`2`** | `4` | `5` | Level 1 | `1` | `-1` | `1` | `2` |
-| **`3`** | `6` | `7` | Level 1 | `1` | `+1` | `1` | `2` |
-| **`4`** | `8` | `9` | Level 2 | `2` | `-2` | `1` | `2` |
-| **`5`** | None | None | Level 2 | `2` | `0` | `1` | `0` (Leaf) |
-| **`6`** | None | None | Level 2 | `2` | `0` | `1` | `0` (Leaf) |
-| **`7`** | None | None | Level 2 | `2` | `+2` | `1` | `0` (Leaf) |
-| **`8`** | None | None | Level 3 | `3` | `-3` | `1` | `0` (Leaf) |
-| **`9`** | None | None | Level 3 | `3` | `-1` | `1` | `0` (Leaf) |
+| Node Value | Left Child | Right Child | Tree Level | Depth ($VD$) | Horizontal Distance ($HD$) | In-Degree  | Out-Degree |
+| :--------: | :--------: | :---------: | :--------: | :----------: | :------------------------: | :--------: | :--------: |
+|  **`1`**   |    `2`     |     `3`     |  Level 0   |     `0`      |            `0`             | `0` (Root) |    `2`     |
+|  **`2`**   |    `4`     |     `5`     |  Level 1   |     `1`      |            `-1`            |    `1`     |    `2`     |
+|  **`3`**   |    `6`     |     `7`     |  Level 1   |     `1`      |            `+1`            |    `1`     |    `2`     |
+|  **`4`**   |    `8`     |     `9`     |  Level 2   |     `2`      |            `-2`            |    `1`     |    `2`     |
+|  **`5`**   |    None    |    None     |  Level 2   |     `2`      |            `0`             |    `1`     | `0` (Leaf) |
+|  **`6`**   |    None    |    None     |  Level 2   |     `2`      |            `0`             |    `1`     | `0` (Leaf) |
+|  **`7`**   |    None    |    None     |  Level 2   |     `2`      |            `+2`            |    `1`     | `0` (Leaf) |
+|  **`8`**   |    None    |    None     |  Level 3   |     `3`      |            `-3`            |    `1`     | `0` (Leaf) |
+|  **`9`**   |    None    |    None     |  Level 3   |     `3`      |            `-1`            |    `1`     | `0` (Leaf) |
 
 #### Master Output Sequences on Reference Tree:
+
 - **Preorder:** `1, 2, 4, 8, 9, 5, 3, 6, 7`
 - **Inorder:** `8, 4, 9, 2, 5, 1, 6, 3, 7`
 - **Postorder:** `8, 9, 4, 5, 2, 6, 7, 3, 1`
@@ -67,6 +69,7 @@ To provide clear comparative traces across all traversals, we establish a standa
 - **Primary Use Cases:** Tree cloning, structured file serialization, prefix expression evaluation (Polish Notation).
 
 #### Iterative Preorder with Explicit LIFO Stack:
+
 Because stacks are Last-In, First-Out (LIFO), when visiting node `curr`, we must push `curr.right` onto the stack **before** `curr.left`. This ensures that `curr.left` is popped and processed next.
 
 ```text
@@ -98,6 +101,7 @@ FUNCTION PreorderIterative(root: Node):
 - **The BST Inorder Theorem:** When applied to a Binary Search Tree (BST), Inorder traversal visits keys in **strictly non-decreasing sorted order**.
 
 #### Iterative Inorder with Explicit LIFO Stack:
+
 We simulate recursion by driving a pointer `curr` down left branches while pushing nodes onto the stack until hitting `NULL`. We then pop the top node, process its value, and redirect `curr` to its right child:
 
 ```text
@@ -126,6 +130,7 @@ FUNCTION InorderIterative(root: Node):
 - **Primary Use Cases:** Deleting or freeing a tree from heap memory (children must be destroyed before their parent), bottom-up subtree height/size calculation, directory disk-usage summation.
 
 #### Implementation Strategies:
+
 1. **Two-Stack Approach:** Notice that reversing postorder ($\text{Left} \to \text{Right} \to \text{Root}$) yields $\text{Root} \to \text{Right} \to \text{Left}$. We execute a modified preorder pushing to a second stack, which when emptied yields the exact postorder sequence.
 2. **Single-Stack with Previous-Node Tracking:** A single stack tracks the path. A node can only be popped and visited if its right child is `NULL` or was the immediately preceding node visited (`lastVisited == curr.right`).
 
@@ -169,17 +174,17 @@ Standard recursive or iterative DFS traversals consume $O(h)$ stack frames (up t
 
 The table below traces Morris Inorder traversal through the left subtree of our reference tree (nodes $1, 2, 4, 8, 9, 5$):
 
-| Step | Current (`curr`) | Inorder Predecessor (`pred`) | Predecessor Right (`pred.right`) | Threading Action | Output Emitted | Pointer Update | Tree Mutation State |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **1** | `1` | `7` in right? No: `6` (rightmost of left subtree from 2) $\to$ `5` | `NULL` | Create thread: `5.right = 1` | None | `curr <- curr.left` (2) | Temporary thread $5 \to 1$ active |
-| **2** | `2` | Rightmost in $2$'s left subtree $\to$ `9` | `NULL` | Create thread: `9.right = 2` | None | `curr <- curr.left` (4) | Temporary thread $9 \to 2$ active |
-| **3** | `4` | Rightmost in $4$'s left subtree $\to$ `8` | `NULL` | Create thread: `8.right = 4` | None | `curr <- curr.left` (8) | Temporary thread $8 \to 4$ active |
-| **4** | `8` | Left child is `NULL` | — | **Visit `8`** | `8` | `curr <- curr.right` (Thread $8 \to 4$) | Bridge returns to 4 |
-| **5** | `4` | Predecessor is `8` | `pred.right == curr` (`8.right == 4`) | **Sever thread:** `8.right = NULL`; **Visit `4`** | `4` | `curr <- curr.right` (9) | Original pointer restored |
-| **6** | `9` | Left child is `NULL` | — | **Visit `9`** | `9` | `curr <- curr.right` (Thread $9 \to 2$) | Bridge returns to 2 |
-| **7** | `2` | Predecessor is `9` | `pred.right == curr` (`9.right == 2`) | **Sever thread:** `9.right = NULL`; **Visit `2`** | `2` | `curr <- curr.right` (5) | Original pointer restored |
-| **8** | `5` | Left child is `NULL` | — | **Visit `5`** | `5` | `curr <- curr.right` (Thread $5 \to 1$) | Bridge returns to 1 |
-| **9** | `1` | Predecessor is `5` | `pred.right == curr` (`5.right == 1`) | **Sever thread:** `5.right = NULL`; **Visit `1`** | `1` | `curr <- curr.right` (3) | Tree fully restored! |
+| Step  | Current (`curr`) |                    Inorder Predecessor (`pred`)                    |   Predecessor Right (`pred.right`)    |                 Threading Action                  | Output Emitted |             Pointer Update              | Tree Mutation State               |
+| :---: | :--------------: | :----------------------------------------------------------------: | :-----------------------------------: | :-----------------------------------------------: | :------------: | :-------------------------------------: | :-------------------------------- |
+| **1** |       `1`        | `7` in right? No: `6` (rightmost of left subtree from 2) $\to$ `5` |                `NULL`                 |           Create thread: `5.right = 1`            |      None      |         `curr <- curr.left` (2)         | Temporary thread $5 \to 1$ active |
+| **2** |       `2`        |             Rightmost in $2$'s left subtree $\to$ `9`              |                `NULL`                 |           Create thread: `9.right = 2`            |      None      |         `curr <- curr.left` (4)         | Temporary thread $9 \to 2$ active |
+| **3** |       `4`        |             Rightmost in $4$'s left subtree $\to$ `8`              |                `NULL`                 |           Create thread: `8.right = 4`            |      None      |         `curr <- curr.left` (8)         | Temporary thread $8 \to 4$ active |
+| **4** |       `8`        |                        Left child is `NULL`                        |                   —                   |                   **Visit `8`**                   |      `8`       | `curr <- curr.right` (Thread $8 \to 4$) | Bridge returns to 4               |
+| **5** |       `4`        |                         Predecessor is `8`                         | `pred.right == curr` (`8.right == 4`) | **Sever thread:** `8.right = NULL`; **Visit `4`** |      `4`       |        `curr <- curr.right` (9)         | Original pointer restored         |
+| **6** |       `9`        |                        Left child is `NULL`                        |                   —                   |                   **Visit `9`**                   |      `9`       | `curr <- curr.right` (Thread $9 \to 2$) | Bridge returns to 2               |
+| **7** |       `2`        |                         Predecessor is `9`                         | `pred.right == curr` (`9.right == 2`) | **Sever thread:** `9.right = NULL`; **Visit `2`** |      `2`       |        `curr <- curr.right` (5)         | Original pointer restored         |
+| **8** |       `5`        |                        Left child is `NULL`                        |                   —                   |                   **Visit `5`**                   |      `5`       | `curr <- curr.right` (Thread $5 \to 1$) | Bridge returns to 1               |
+| **9** |       `1`        |                         Predecessor is `5`                         | `pred.right == curr` (`5.right == 1`) | **Sever thread:** `5.right = NULL`; **Visit `1`** |      `1`       |        `curr <- curr.right` (3)         | Tree fully restored!              |
 
 Output generated so far: `8, 4, 9, 2, 5, 1` — exactly matching standard Inorder traversal!
 
@@ -218,7 +223,9 @@ FUNCTION MorrisInorder(root: Node):
 ```
 
 #### Amortized Time Complexity Proof ($O(n)$):
+
 Each edge in the tree is traversed at most **three times**:
+
 1. Once downwards while searching for the predecessor to construct the thread.
 2. Once downwards during normal traversal.
 3. Once downwards while finding the predecessor a second time to sever the thread.
@@ -260,6 +267,7 @@ FUNCTION LevelOrderTraversal(root: Node) -> List of List of Integer:
 ```
 
 #### Queue Capacity & Memory Footprint:
+
 The maximum number of nodes residing simultaneously in the queue equals the tree's **maximum width $W$**. For a complete binary tree, the maximum width occurs at the leaf level:
 $$W_{\max} = \left\lceil \frac{n}{2} \right\rceil \implies \text{Auxiliary Space } = \Theta(n)$$
 
@@ -268,10 +276,12 @@ $$W_{\max} = \left\lceil \frac{n}{2} \right\rceil \implies \text{Auxiliary Space
 ### 2. Zigzag Level Order (Spiral) Traversal
 
 Alternates left-to-right and right-to-left visitation across consecutive levels:
+
 - Even depths (Level 0, 2, 4...): Left-to-Right.
 - Odd depths (Level 1, 3, 5...): Right-to-Left.
 
 On our reference tree:
+
 - Level 0: `[1]`
 - Level 1: `[3, 2]`
 - Level 2: `[4, 5, 6, 7]`
@@ -282,6 +292,7 @@ On our reference tree:
 ## Topic 76: Coordinate-Based Geometric Tree Views
 
 By mapping each node to a 2D integer Cartesian coordinate $(HD, VD)$ where:
+
 - $\text{Root} = (0, 0)$
 - Left Child: $(HD - 1, VD + 1)$
 - Right Child: $(HD + 1, VD + 1)$
@@ -290,19 +301,20 @@ We can project geometric perspectives of the tree.
 
 ### 1. Horizontal Distance ($HD$) Projection Table
 
-| Node Value | Horizontal Distance ($HD$) | Vertical Depth ($VD$) | In Vertical Order Column ($HD$) | Top View Visible? | Bottom View Visible? |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| **`8`** | `-3` | `3` | Column `-3` | **Yes** (Only node at $HD=-3$) | **Yes** (Only node at $HD=-3$) |
-| **`4`** | `-2` | `2` | Column `-2` | **Yes** (Smallest $VD$ at $HD=-2$) | **Yes** (Largest $VD$ at $HD=-2$) |
-| **`2`** | `-1` | `1` | Column `-1` | **Yes** ($VD=1 < 3$) | No (Occluded by Node 9) |
-| **`9`** | `-1` | `3` | Column `-1` | No (Occluded by Node 2) | **Yes** ($VD=3 > 1$) |
-| **`1`** | `0` | `0` | Column `0` | **Yes** ($VD=0$, topmost) | No (Occluded by Node 5/6) |
-| **`5`** | `0` | `2` | Column `0` | No | Overwritten |
-| **`6`** | `0` | `2` | Column `0` | No | **Yes** (Deepest at $HD=0$) |
-| **`3`** | `+1` | `1` | Column `+1` | **Yes** (Only node at $HD=+1$) | **Yes** (Only node at $HD=+1$) |
-| **`7`** | `+2` | `2` | Column `+2` | **Yes** (Only node at $HD=+2$) | **Yes** (Only node at $HD=+2$) |
+| Node Value | Horizontal Distance ($HD$) | Vertical Depth ($VD$) | In Vertical Order Column ($HD$) |         Top View Visible?          |       Bottom View Visible?        |
+| :--------: | :------------------------: | :-------------------: | :-----------------------------: | :--------------------------------: | :-------------------------------: |
+|  **`8`**   |            `-3`            |          `3`          |           Column `-3`           |   **Yes** (Only node at $HD=-3$)   |  **Yes** (Only node at $HD=-3$)   |
+|  **`4`**   |            `-2`            |          `2`          |           Column `-2`           | **Yes** (Smallest $VD$ at $HD=-2$) | **Yes** (Largest $VD$ at $HD=-2$) |
+|  **`2`**   |            `-1`            |          `1`          |           Column `-1`           |        **Yes** ($VD=1 < 3$)        |      No (Occluded by Node 9)      |
+|  **`9`**   |            `-1`            |          `3`          |           Column `-1`           |      No (Occluded by Node 2)       |       **Yes** ($VD=3 > 1$)        |
+|  **`1`**   |            `0`             |          `0`          |           Column `0`            |     **Yes** ($VD=0$, topmost)      |     No (Occluded by Node 5/6)     |
+|  **`5`**   |            `0`             |          `2`          |           Column `0`            |                 No                 |            Overwritten            |
+|  **`6`**   |            `0`             |          `2`          |           Column `0`            |                 No                 |    **Yes** (Deepest at $HD=0$)    |
+|  **`3`**   |            `+1`            |          `1`          |           Column `+1`           |   **Yes** (Only node at $HD=+1$)   |  **Yes** (Only node at $HD=+1$)   |
+|  **`7`**   |            `+2`            |          `2`          |           Column `+2`           |   **Yes** (Only node at $HD=+2$)   |  **Yes** (Only node at $HD=+2$)   |
 
 #### Resulting Geometric Views:
+
 - **Top View:** `[8, 4, 2, 1, 3, 7]` (The first node encountered at each unique $HD$ during BFS level-order traversal).
 - **Bottom View:** `[8, 4, 9, 6, 3, 7]` (The last / deepest node recorded at each unique $HD$).
 - **Vertical Order Traversal:** Sorted columns: $\text{Col}_{-3}: [8]$, $\text{Col}_{-2}: [4]$, $\text{Col}_{-1}: [2, 9]$, $\text{Col}_{0}: [1, 5, 6]$, $\text{Col}_{+1}: [3]$, $\text{Col}_{+2}: [7]$.
@@ -312,6 +324,7 @@ We can project geometric perspectives of the tree.
 ### 2. Anti-Clockwise Boundary Traversal
 
 Constructs the outer perimeter path of the tree in anti-clockwise orientation:
+
 1. **Root Node:** Included first (`1`).
 2. **Left Boundary (Top-Down):** Follow left pointers (or right if left is null), excluding leaf nodes: `[2, 4]`.
 3. **Leaf Nodes (Left-to-Right):** All leaves collected via DFS in sequence: `[8, 9, 5, 6, 7]`.
@@ -323,17 +336,17 @@ Final Boundary Traversal sequence: `[1, 2, 4, 8, 9, 5, 6, 7, 3]`.
 
 ## Master Comparison Matrix: Tree Traversal Protocols
 
-| Traversal Protocol | Sequence Rule | Data Structure | Time Complexity | Auxiliary Space | Key Production Application |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **Preorder** | Root $\to$ Left $\to$ Right | LIFO Stack | $\Theta(n)$ | $O(h)$ | Tree cloning, prefix serialization |
-| **Inorder** | Left $\to$ Root $\to$ Right | LIFO Stack | $\Theta(n)$ | $O(h)$ | **BST sorted sequence verification** |
-| **Postorder** | Left $\to$ Right $\to$ Root | LIFO Stack | $\Theta(n)$ | $O(h)$ | Memory deallocation, subtree height/diameter |
-| **Morris Inorder** | Left $\to$ Root $\to$ Right | In-Place Threading | $\Theta(n)$ | $\mathbf{O(1)}$ | Embedded / memory-critical environments |
-| **Level Order** | Layer-by-Layer | FIFO Queue | $\Theta(n)$ | $O(W) = \Theta(n)$ | Shortest unweighted paths, level printing |
-| **Zigzag Order** | Alternating Directions | FIFO Queue + Array | $\Theta(n)$ | $O(W) = \Theta(n)$ | Spiral visualization, UI layouts |
-| **Top View** | First node at each $HD$ | BFS + Hash Map | $\Theta(n \log n)$ | $O(n)$ | 2D silhouette rendering, camera projection |
-| **Bottom View** | Last node at each $HD$ | BFS + Hash Map | $\Theta(n \log n)$ | $O(n)$ | Ground-up occlusion mapping |
-| **Boundary Traversal**| Perimeter cycle | Recursive DFS | $\Theta(n)$ | $O(h)$ | Convex hull approximations, game boundary |
+| Traversal Protocol     |        Sequence Rule        |   Data Structure   |  Time Complexity   |  Auxiliary Space   | Key Production Application                   |
+| :--------------------- | :-------------------------: | :----------------: | :----------------: | :----------------: | :------------------------------------------- |
+| **Preorder**           | Root $\to$ Left $\to$ Right |     LIFO Stack     |    $\Theta(n)$     |       $O(h)$       | Tree cloning, prefix serialization           |
+| **Inorder**            | Left $\to$ Root $\to$ Right |     LIFO Stack     |    $\Theta(n)$     |       $O(h)$       | **BST sorted sequence verification**         |
+| **Postorder**          | Left $\to$ Right $\to$ Root |     LIFO Stack     |    $\Theta(n)$     |       $O(h)$       | Memory deallocation, subtree height/diameter |
+| **Morris Inorder**     | Left $\to$ Root $\to$ Right | In-Place Threading |    $\Theta(n)$     |  $\mathbf{O(1)}$   | Embedded / memory-critical environments      |
+| **Level Order**        |       Layer-by-Layer        |     FIFO Queue     |    $\Theta(n)$     | $O(W) = \Theta(n)$ | Shortest unweighted paths, level printing    |
+| **Zigzag Order**       |   Alternating Directions    | FIFO Queue + Array |    $\Theta(n)$     | $O(W) = \Theta(n)$ | Spiral visualization, UI layouts             |
+| **Top View**           |   First node at each $HD$   |   BFS + Hash Map   | $\Theta(n \log n)$ |       $O(n)$       | 2D silhouette rendering, camera projection   |
+| **Bottom View**        |   Last node at each $HD$    |   BFS + Hash Map   | $\Theta(n \log n)$ |       $O(n)$       | Ground-up occlusion mapping                  |
+| **Boundary Traversal** |       Perimeter cycle       |   Recursive DFS    |    $\Theta(n)$     |       $O(h)$       | Convex hull approximations, game boundary    |
 
 ---
 
@@ -349,8 +362,7 @@ Final Boundary Traversal sequence: `[1, 2, 4, 8, 9, 5, 6, 7, 3]`.
 
 ## References & Academic Attribution
 
-1. **Morris, J. H.** (1979). Traversing binary trees simply with stack. *Information Processing Letters*, 9(4), 197–200.
-2. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.3.1: Traversing Binary Trees. Addison-Wesley.
-3. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Section 12.1: What is a binary search tree? (Inorder tree walk proof). MIT Press.
-4. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 3.2: Binary Search Trees. Addison-Wesley.
-
+1. **Morris, J. H.** (1979). Traversing binary trees simply with stack. _Information Processing Letters_, 9(4), 197–200.
+2. **Knuth, D. E.** (1997). _The Art of Computer Programming, Volume 1: Fundamental Algorithms_ (3rd ed.), Section 2.3.1: Traversing Binary Trees. Addison-Wesley.
+3. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Section 12.1: What is a binary search tree? (Inorder tree walk proof). MIT Press.
+4. **Sedgewick, R., & Wayne, K.** (2011). _Algorithms_ (4th ed.), Section 3.2: Binary Search Trees. Addison-Wesley.

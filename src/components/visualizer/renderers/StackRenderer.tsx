@@ -45,7 +45,7 @@ function SingleStackBeaker({
 
       <div
         style={{ height: beakerHeight }}
-        className="relative flex w-28 sm:w-32 flex-col-reverse justify-start gap-1 overflow-visible rounded-b-xl border-b-4 border-x-4 border-border bg-bg-surface-light/35 p-1 pb-0 shadow-(--shadow-inset)"
+        className="relative flex w-28 sm:w-32 flex-col-reverse justify-start gap-1 overflow-visible rounded-b-lg border-b-4 border-x-4 border-border bg-surface-secondary/35 p-1 pb-0 shadow-inset"
       >
         {/* Empty Stack TOP [-1] Indicator */}
         {isEmpty && (
@@ -143,7 +143,7 @@ function SingleStackBeaker({
       </div>
 
       {/* Chamber Pedestal Base */}
-      <div className="h-2 w-32 sm:w-36 rounded-full border-t-2 border-border/70 bg-surface shadow-(--shadow-raised-sm) -mt-0.5" />
+      <div className="h-2 w-32 sm:w-36 rounded-full border-t-2 border-border/70 bg-surface shadow-card -mt-0.5" />
       <div className="h-1 w-36 sm:w-40 rounded-full bg-border/30 -mt-0.5" />
     </div>
   );
@@ -173,7 +173,7 @@ export function StackRenderer() {
           <div className="text-[9px] font-mono font-semibold uppercase tracking-wider text-text-muted">
             Input Stream Scanner
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-1 p-1 rounded-xl border border-border bg-surface/90 shadow-(--shadow-raised-sm) backdrop-blur-xs">
+          <div className="flex flex-wrap items-center justify-center gap-1 p-1 rounded-xl border border-border bg-surface/90 shadow-card backdrop-blur-xs">
             {dataState.inputTokens.map((token, idx) => {
               const isCurrent = idx === dataState.activeTokenIndex;
               return (
@@ -188,7 +188,7 @@ export function StackRenderer() {
                         : token.status === "error"
                           ? "border-error/60 bg-error-muted text-error"
                           : token.status === "scanned"
-                            ? "border-border bg-bg-surface-inset text-text-muted opacity-60"
+                            ? "border-border bg-surface-secondary text-text-muted opacity-60"
                             : "border-border bg-surface text-text-primary"
                   )}
                 >
@@ -270,7 +270,7 @@ export function StackRenderer() {
           <div className="text-[9px] font-mono font-semibold uppercase tracking-wider text-text-muted">
             Postfix Output Stream
           </div>
-          <div className="flex flex-wrap items-center justify-center min-h-8 w-full gap-1 p-1.5 rounded-xl border border-border bg-surface/90 shadow-(--shadow-inset) backdrop-blur-xs">
+          <div className="flex flex-wrap items-center justify-center min-h-8 w-full gap-1 p-1.5 rounded-xl border border-border bg-surface/90 shadow-inset backdrop-blur-xs">
             {dataState.outputTokens.length === 0 ? (
               <span className="text-[10px] font-mono text-text-muted/60 italic">
                 Waiting for operands & popped operators...
@@ -295,11 +295,11 @@ export function StackRenderer() {
           <div className="text-[9px] font-mono font-semibold uppercase tracking-wider text-text-muted">
             Next Greater Element Map
           </div>
-          <div className="grid grid-flow-col auto-cols-max items-center justify-center gap-2 p-2 rounded-xl border border-border bg-surface shadow-(--shadow-raised-sm) overflow-x-auto max-w-full">
+          <div className="grid grid-flow-col auto-cols-max items-center justify-center gap-2 p-2 rounded-xl border border-border bg-surface shadow-card overflow-x-auto max-w-full">
             {dataState.resultMapping.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col items-center p-1.5 rounded-lg border border-border bg-bg-surface-light min-w-12"
+                className="flex flex-col items-center p-1.5 rounded-lg border border-border bg-surface-secondary min-w-12"
               >
                 <span className="text-[9px] font-mono text-text-muted">[{item.index}]</span>
                 <span className="font-mono text-xs font-bold text-text-primary">{item.value}</span>

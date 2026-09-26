@@ -35,7 +35,7 @@ export function ModeSelector() {
         "Uncapped calculation sandbox. Configure 1–4 digit ranges, toggle 4-choice hints, and master mental math breakdown patterns.",
       badge: "Configurable",
       icon: BrainCircuit,
-      btnClass: "bg-primary text-white hover:bg-primary-hover shadow-(--shadow-raised-sm)",
+      btnClass: "bg-primary text-white hover:bg-primary-hover shadow-card",
       primaryCTA: "Open Studio",
       isFeatured: true,
     },
@@ -67,7 +67,7 @@ export function ModeSelector() {
         "Compete in today's official 10-problem seeded arithmetic challenge. Identical PRNG sequence for all global contenders.",
       badge: "Official Rank",
       icon: Trophy,
-      btnClass: "bg-primary text-white hover:bg-primary-hover shadow-(--shadow-raised-sm)",
+      btnClass: "bg-primary text-white hover:bg-primary-hover shadow-card",
       primaryCTA: "Play Today's Run",
       isFeatured: true,
     },
@@ -102,14 +102,14 @@ export function ModeSelector() {
             key={mode.id}
             href={mode.href}
             className={cn(
-              "group relative p-6 sm:p-7 rounded-[8px] border flex flex-col justify-between transition-all duration-200 hover:border-primary/40 hover:-translate-y-1 shadow-card hover:shadow-card-hover cursor-pointer",
+              "group relative p-6 sm:p-7 rounded-lg border flex flex-col justify-between transition-all duration-200 hover:border-primary/40 hover:-translate-y-1 shadow-card hover:shadow-card-hover cursor-pointer",
               mode.isFeatured ? "border-primary/30 bg-surface/90" : "border-border bg-surface"
             )}
             aria-label={`Open ${mode.title}`}
           >
             <div>
               <div className="flex justify-between items-start mb-4">
-                <span className="flex h-11 w-11 items-center justify-center rounded-[6px] border border-border bg-surface-secondary text-primary shadow-xs transition-transform duration-200 group-hover:scale-105 group-hover:border-primary/40">
+                <span className="flex h-11 w-11 items-center justify-center rounded-md border border-border bg-surface-secondary text-primary shadow-xs transition-transform duration-200 group-hover:scale-105 group-hover:border-primary/40">
                   <Icon className="w-5 h-5" />
                 </span>
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border border-border bg-surface-secondary text-text-muted shadow-xs">
@@ -128,7 +128,7 @@ export function ModeSelector() {
             <div className="mt-6 pt-4 border-t border-border/60">
               <div
                 className={cn(
-                  "w-full min-h-11 flex items-center justify-center gap-2 py-3 rounded-[4px] text-xs font-bold font-display transition-all duration-200 active:scale-95",
+                  "w-full min-h-11 flex items-center justify-center gap-2 py-3 rounded-sm text-xs font-bold font-display transition-all duration-200 active:scale-95",
                   mode.btnClass
                     ? mode.btnClass
                     : "bg-surface group-hover:bg-surface-hover text-text-primary group-hover:text-primary border border-border shadow-card"

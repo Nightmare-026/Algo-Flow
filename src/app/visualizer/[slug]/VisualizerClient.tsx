@@ -17,8 +17,8 @@ import { InteractiveCanvas } from "@/components/visualizer/InteractiveCanvas";
 function UnavailableCanvas({ name }: { name: string }) {
   return (
     <div className="flex h-full w-full items-center justify-center p-8 text-center">
-      <div className="max-w-md rounded-lg border border-dashed border-border bg-bg-surface p-8">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-lg bg-primary-muted text-2xl font-bold text-primary">
+      <div className="max-w-md rounded-lg border border-dashed border-border bg-surface p-8 shadow-card">
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-md bg-primary-muted text-2xl font-bold text-primary">
           AF
         </div>
         <h2 className="mb-2 text-2xl font-bold text-text-primary">{name} could not be loaded</h2>

@@ -33,7 +33,7 @@ export function StepTimeline() {
 
       {/* Mobile viewport: range scrubber with comfortable touch area */}
       <div
-        className="group relative sm:hidden flex h-6 w-full min-w-0 items-center rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-(--shadow-inset)"
+        className="group relative sm:hidden flex h-6 w-full min-w-0 items-center rounded-full bg-surface-secondary p-0.5 border border-border shadow-inset"
         role="group"
         aria-label="Select execution step"
       >
@@ -44,7 +44,7 @@ export function StepTimeline() {
           />
         </div>
         <div
-          className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-primary border-2 border-surface shadow-(--shadow-raised-sm)"
+          className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-primary border-2 border-surface shadow-card"
           style={{ left: `${clampedThumbPosition}%` }}
           aria-hidden="true"
         />
@@ -64,7 +64,7 @@ export function StepTimeline() {
       <div className="hidden sm:block w-full min-w-0">
         {isContinuous ? (
           <div
-            className="group relative flex h-2.5 w-full min-w-0 items-center rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-(--shadow-inset)"
+            className="group relative flex h-2.5 w-full min-w-0 items-center rounded-full bg-surface-secondary p-0.5 border border-border shadow-inset"
             role="group"
             aria-label="Select execution step"
           >
@@ -78,7 +78,7 @@ export function StepTimeline() {
 
             {/* Glowing thumb indicator */}
             <div
-              className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-primary border-2 border-surface shadow-(--shadow-raised-sm) transition-transform duration-75 group-hover:scale-125"
+              className="pointer-events-none absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-primary border-2 border-surface shadow-card transition-transform duration-75 group-hover:scale-125"
               style={{ left: `${clampedThumbPosition}%` }}
               aria-hidden="true"
             />
@@ -97,7 +97,7 @@ export function StepTimeline() {
           </div>
         ) : (
           <div
-            className="flex h-2.5 w-full min-w-0 items-stretch gap-0.5 overflow-hidden rounded-full bg-bg-surface-inset p-0.5 border border-border shadow-(--shadow-inset)"
+            className="flex h-2.5 w-full min-w-0 items-stretch gap-0.5 overflow-hidden rounded-full bg-surface-secondary p-0.5 border border-border shadow-inset"
             role="group"
             aria-label="Select execution step"
           >

@@ -67,7 +67,7 @@ export function CircularLinkedListInputControls({
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Pod 1: Data Size & Randomizer */}
           {onGenerate && (
-            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
+            <div className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-card">
               <div className="flex items-center gap-1.5 pr-1">
                 <span className="font-mono text-[10px] font-semibold text-text-muted">Size</span>
                 <input
@@ -103,7 +103,7 @@ export function CircularLinkedListInputControls({
           {onGenerate && (
             <form
               onSubmit={handleCustomSubmit}
-              className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)"
+              className="flex h-9 sm:h-8 items-center gap-1 rounded-xl border border-border bg-surface px-2 shadow-card"
             >
               <FileEdit className="h-3 w-3 text-text-muted shrink-0" aria-hidden="true" />
               <input
@@ -114,7 +114,7 @@ export function CircularLinkedListInputControls({
                   setCustomInput(event.target.value);
                   if (error) setError(null);
                 }}
-                className="h-6 w-24 sm:w-32 rounded-md border border-border bg-bg-surface-inset px-2 font-mono text-[10px] text-text-primary shadow-(--shadow-inset) placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-24 sm:w-32 rounded-md border border-border bg-surface-secondary px-2 font-mono text-[10px] text-text-primary shadow-inset placeholder:text-text-muted/60 focus-visible:border-primary focus-visible:outline-none"
                 aria-label="Custom comma-separated list"
               />
               <Button
@@ -129,7 +129,7 @@ export function CircularLinkedListInputControls({
 
           {/* Pod 3: Operation Parameters */}
           {showTarget && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-card">
               <Target className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">
                 Target:
@@ -139,7 +139,7 @@ export function CircularLinkedListInputControls({
                 name="target"
                 type="number"
                 inputMode="numeric"
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                 value={options.target}
                 onChange={(event) =>
                   updateOption("target", parseInputNumber(event.target.value, options.target))
@@ -150,7 +150,7 @@ export function CircularLinkedListInputControls({
           )}
 
           {showValue && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-(--shadow-raised-sm)">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border bg-surface px-2 shadow-card">
               <HardDriveDownload className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
               <span className="font-mono text-[10px] font-semibold text-text-secondary">Val:</span>
               <input
@@ -159,7 +159,7 @@ export function CircularLinkedListInputControls({
                 type="number"
                 step={1}
                 inputMode="numeric"
-                className="h-6 w-14 rounded-md border border-border bg-bg-surface-inset px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-(--shadow-inset) focus-visible:border-primary focus-visible:outline-none"
+                className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                 value={options.value}
                 onChange={(event) =>
                   updateOption("value", parseInputNumber(event.target.value, options.value))
@@ -171,7 +171,7 @@ export function CircularLinkedListInputControls({
 
           {/* Pod 4: Informative Status Pills for zero-arg operations */}
           {slug === "cll-delete-head" && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-(--shadow-raised-sm) text-[10px] text-text-muted">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-card text-[10px] text-text-muted">
               <Info className="h-3 w-3 text-primary shrink-0" />
               <span>
                 Operation: <strong className="text-text-primary">Delete Head</strong> updates tail
@@ -181,7 +181,7 @@ export function CircularLinkedListInputControls({
           )}
 
           {slug === "cll-traversal" && (
-            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-(--shadow-raised-sm) text-[10px] text-text-muted">
+            <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl border border-border/80 bg-surface/80 px-2.5 shadow-card text-[10px] text-text-muted">
               <Info className="h-3 w-3 text-primary shrink-0" />
               <span>
                 Operation: <strong className="text-text-primary">Circular Traversal</strong> loops

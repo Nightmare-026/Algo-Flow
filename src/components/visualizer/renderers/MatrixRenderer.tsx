@@ -124,7 +124,7 @@ function SingleMatrixGrid({
           >
             {label}
           </span>
-          <span className="rounded-full border border-border bg-bg-surface/80 px-2 py-0.5 text-[11px] font-mono text-text-muted">
+          <span className="rounded-full border border-border bg-surface/80 px-2 py-0.5 text-[11px] font-mono text-text-muted">
             {rows} × {cols}
           </span>
         </div>
@@ -132,10 +132,10 @@ function SingleMatrixGrid({
 
       <div
         className={cn(
-          "flex flex-col gap-1.5 p-3 rounded-2xl border transition-all duration-200",
+          "flex flex-col gap-1.5 p-3 rounded-lg border transition-all duration-200",
           isResult
-            ? "border-primary/30 bg-primary/5 shadow-md shadow-primary/5"
-            : "border-border/80 bg-bg-surface/60 backdrop-blur-sm shadow-sm"
+            ? "border-primary/30 bg-primary/5 shadow-card"
+            : "border-border/80 bg-surface/60 backdrop-blur-sm shadow-card"
         )}
       >
         {/* Column Headers */}
@@ -215,7 +215,7 @@ function SingleMatrixGrid({
                 const isDefault = state === "default";
                 const elementClass =
                   isDefault && isResult
-                    ? "border-primary/25 bg-bg-surface text-text-primary"
+                    ? "border-primary/25 bg-surface text-text-primary"
                     : getVisualStateClassName(state);
 
                 const valStr = String(element.value);
@@ -329,7 +329,7 @@ export function MatrixRenderer() {
           {/* Equality & Result: [=] Result Matrix */}
           <div className="flex items-center justify-center gap-3 sm:gap-4 shrink-0">
             {/* Equals Symbol Badge */}
-            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border bg-bg-surface/80 text-text-secondary font-bold text-lg sm:text-xl shadow-sm shrink-0 mt-5">
+            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border bg-surface/80 text-text-secondary font-bold text-lg sm:text-xl shadow-sm shrink-0 mt-5">
               =
             </div>
 

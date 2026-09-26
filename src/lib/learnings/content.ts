@@ -98,7 +98,7 @@ export function renderMathInMarkdown(markdown: string): string {
         throwOnError: false,
         output: "html",
       });
-      return `<div class="katex-display-wrapper my-5 overflow-x-auto text-center py-2.5 rounded-[6px] border border-border bg-surface-secondary/70 p-2">${rendered}</div>`;
+      return `<div class="katex-display-wrapper my-5 overflow-x-auto text-center py-2.5 rounded-md border border-border bg-surface-secondary/70 p-2">${rendered}</div>`;
     } catch {
       return `$$${math}$$`;
     }
@@ -199,7 +199,7 @@ export async function getParsedChapter(
               lower.includes("concept") ||
               lower.includes("intuition")
             ) {
-              return `<div class="callout-heading callout-concept scroll-mt-28 mt-8 mb-3 p-3.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-emerald-800 dark:text-emerald-300"><span class="text-lg">💡</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-emerald-800 dark:text-emerald-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-emerald-500/50 hover:text-emerald-500 font-mono px-1">#</a></div>\n`;
+              return `<div class="callout-heading callout-concept scroll-mt-28 mt-8 mb-3 p-3.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-emerald-800 dark:text-emerald-300"><span class="text-lg">💡</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-emerald-800 dark:text-emerald-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-emerald-500/50 hover:text-emerald-500 font-mono px-1">#</a></div>\n`;
             }
 
             if (
@@ -207,7 +207,7 @@ export async function getParsedChapter(
               lower.includes("mental model") ||
               lower.includes("core idea")
             ) {
-              return `<div class="callout-heading callout-intuition scroll-mt-28 mt-8 mb-3 p-3.5 rounded-2xl border border-indigo-500/30 bg-indigo-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-indigo-800 dark:text-indigo-300"><span class="text-lg">🧠</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-indigo-800 dark:text-indigo-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-indigo-500/50 hover:text-indigo-500 font-mono px-1">#</a></div>\n`;
+              return `<div class="callout-heading callout-intuition scroll-mt-28 mt-8 mb-3 p-3.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-indigo-800 dark:text-indigo-300"><span class="text-lg">🧠</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-indigo-800 dark:text-indigo-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-indigo-500/50 hover:text-indigo-500 font-mono px-1">#</a></div>\n`;
             }
 
             if (
@@ -217,7 +217,7 @@ export async function getParsedChapter(
               lower.includes("warning") ||
               lower.includes("traps")
             ) {
-              return `<div class="callout-heading callout-warning scroll-mt-28 mt-8 mb-3 p-3.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-amber-800 dark:text-amber-300"><span class="text-lg">⚠️</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-amber-800 dark:text-amber-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-amber-500/50 hover:text-amber-500 font-mono px-1">#</a></div>\n`;
+              return `<div class="callout-heading callout-warning scroll-mt-28 mt-8 mb-3 p-3.5 rounded-lg border border-amber-500/30 bg-amber-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-amber-800 dark:text-amber-300"><span class="text-lg">⚠️</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-amber-800 dark:text-amber-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-amber-500/50 hover:text-amber-500 font-mono px-1">#</a></div>\n`;
             }
 
             if (
@@ -227,7 +227,7 @@ export async function getParsedChapter(
               lower.includes("layout") ||
               lower.includes("cache")
             ) {
-              return `<div class="callout-heading callout-memory scroll-mt-28 mt-8 mb-3 p-3.5 rounded-2xl border border-sky-500/30 bg-sky-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-sky-800 dark:text-sky-300"><span class="text-lg">⚙️</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-sky-800 dark:text-sky-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-sky-500/50 hover:text-sky-500 font-mono px-1">#</a></div>\n`;
+              return `<div class="callout-heading callout-memory scroll-mt-28 mt-8 mb-3 p-3.5 rounded-lg border border-sky-500/30 bg-sky-500/10 flex items-center justify-between shadow-xs"><div class="flex items-center gap-2.5 font-bold text-sky-800 dark:text-sky-300"><span class="text-lg">⚙️</span><h3 id="${uniqueId}" class="text-sm md:text-base font-bold m-0 p-0 text-sky-800 dark:text-sky-300">${inlineHtml}</h3></div><a href="#${uniqueId}" class="text-xs text-sky-500/50 hover:text-sky-500 font-mono px-1">#</a></div>\n`;
             }
 
             return `<div class="group scroll-mt-28 mt-7 mb-3 flex items-center justify-between"><h3 id="${uniqueId}" class="font-bold text-lg text-foreground m-0">${inlineHtml}</h3><a href="#${uniqueId}" class="text-xs text-primary/50 opacity-0 group-hover:opacity-100 transition-opacity ml-2 font-mono px-2 py-0.5 rounded hover:bg-surface-raised" aria-label="Permalink to section">#</a></div>\n`;
@@ -267,12 +267,12 @@ export async function getParsedChapter(
             })
             .join("");
 
-          return `<div class="overflow-x-auto my-7 rounded-[8px] border border-border bg-surface-secondary/70 p-1"><table class="w-full text-left border-collapse"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table></div>`;
+          return `<div class="overflow-x-auto my-7 rounded-lg border border-border bg-surface-secondary/70 p-1"><table class="w-full text-left border-collapse"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table></div>`;
         },
 
         blockquote({ tokens }) {
           const body = this.parser.parse(tokens);
-          return `<blockquote class="border-l-4 border-primary pl-4 py-2 my-5 text-foreground/90 bg-surface-secondary/60 rounded-r-[4px] font-medium">${body}</blockquote>`;
+          return `<blockquote class="border-l-4 border-primary pl-4 py-2 my-5 text-foreground/90 bg-surface-secondary/60 rounded-r-sm font-medium">${body}</blockquote>`;
         },
 
         code({ text, lang }) {
@@ -291,7 +291,7 @@ export async function getParsedChapter(
 
           const escaped = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-          return `<div class="code-block-wrapper relative my-6 rounded-[8px] overflow-hidden border border-border bg-surface shadow-card group"><div class="flex items-center justify-between px-4 py-2.5 bg-surface-secondary/80 border-b border-border text-xs font-mono text-muted-foreground"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-green-500/60 inline-block"></span><span class="ml-2 font-semibold text-foreground/80">${language}</span>${isAsciiDiagram ? '<span class="ml-2 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-sans font-bold uppercase tracking-wider">Physical Memory Layout</span>' : ""}</div><button type="button" data-copy-btn class="text-[11px] font-sans font-medium px-2.5 py-1 rounded-[4px] border border-border bg-surface hover:bg-surface-secondary text-foreground/70 hover:text-foreground transition-all cursor-pointer">Copy</button></div><pre class="p-4 md:p-5 text-xs md:text-sm font-mono overflow-x-auto leading-relaxed text-foreground/90 bg-background/50"><code>${escaped}</code></pre></div>`;
+          return `<div class="code-block-wrapper relative my-6 rounded-lg overflow-hidden border border-border bg-surface shadow-card group"><div class="flex items-center justify-between px-4 py-2.5 bg-surface-secondary/80 border-b border-border text-xs font-mono text-muted-foreground"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60 inline-block"></span><span class="w-2.5 h-2.5 rounded-full bg-green-500/60 inline-block"></span><span class="ml-2 font-semibold text-foreground/80">${language}</span>${isAsciiDiagram ? '<span class="ml-2 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-sans font-bold uppercase tracking-wider">Physical Memory Layout</span>' : ""}</div><button type="button" data-copy-btn class="text-[11px] font-sans font-medium px-2.5 py-1 rounded-sm border border-border bg-surface hover:bg-surface-secondary text-foreground/70 hover:text-foreground transition-all cursor-pointer">Copy</button></div><pre class="p-4 md:p-5 text-xs md:text-sm font-mono overflow-x-auto leading-relaxed text-foreground/90 bg-background/50"><code>${escaped}</code></pre></div>`;
         },
       },
     });

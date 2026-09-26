@@ -13,7 +13,7 @@ export type VisualElementState =
   | "visited";
 
 const stateClasses: Record<VisualElementState, string> = {
-  default: "border-border bg-bg-surface text-text-primary",
+  default: "border-border bg-surface text-text-primary",
   current:
     "border-vis-current bg-primary-muted text-vis-current-text ring-2 ring-vis-current/25 shadow-[0_0_0_4px_rgba(34,197,94,0.15)] font-bold",
   compared:

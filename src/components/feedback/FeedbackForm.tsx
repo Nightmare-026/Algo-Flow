@@ -114,13 +114,13 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
   /* ---- Success / Trace Confirmation State ---- */
   if (result?.success) {
     return (
-      <div className="rounded-[8px] border border-border bg-surface p-8 sm:p-12 text-center shadow-elevated space-y-6">
+      <div className="rounded-lg border border-border bg-surface p-8 sm:p-12 text-center shadow-elevated space-y-6">
         <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary-muted px-3.5 py-1 text-xs font-bold font-mono uppercase tracking-wider text-primary shadow-xs">
           <CheckCircle2 className="h-3.5 w-3.5" />
           <span>Submission Received &bull; Verified</span>
         </div>
 
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[8px] border border-primary/20 bg-primary/10 text-primary shadow-card">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary shadow-card">
           <CheckCircle2 className="h-8 w-8" />
         </div>
 
@@ -135,7 +135,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
         </div>
 
         {lastSubmission && (
-          <div className="max-w-md mx-auto rounded-[6px] border border-border bg-surface-secondary/70 p-4 text-left">
+          <div className="max-w-md mx-auto rounded-md border border-border bg-surface-secondary/70 p-4 text-left">
             <div className="flex items-center justify-between text-xs font-mono text-text-muted mb-1.5">
               <span>Category: {lastSubmission.typeLabel}</span>
               <span>Status: Queued</span>
@@ -164,7 +164,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
             className={buttonVariants({
               variant: "default",
               size: "lg",
-              className: "w-full sm:w-auto gap-2 shadow-(--shadow-raised)",
+              className: "w-full sm:w-auto gap-2 shadow-card",
             })}
           >
             <Compass className="h-4 w-4" />
@@ -210,7 +210,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                   }
                 }}
                 className={cn(
-                  "group relative flex flex-col justify-between rounded-[8px] p-5 text-left transition-all duration-200 cursor-pointer select-none",
+                  "group relative flex flex-col justify-between rounded-lg p-5 text-left transition-all duration-200 cursor-pointer select-none",
                   isActive
                     ? "border-primary bg-surface shadow-card ring-2 ring-primary -translate-y-0.5"
                     : "border-border bg-surface text-text-secondary hover:border-primary/40 hover:bg-surface-secondary/50 hover:-translate-y-0.5 shadow-card"
@@ -220,7 +220,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                   <div className="flex items-center justify-between mb-3">
                     <div
                       className={cn(
-                        "flex h-10 w-10 items-center justify-center rounded-[6px] border transition-all duration-200",
+                        "flex h-10 w-10 items-center justify-center rounded-md border transition-all duration-200",
                         isActive
                           ? "border-primary/40 bg-primary-muted text-primary scale-105"
                           : "border-border bg-surface-secondary/70 text-text-muted group-hover:text-primary group-hover:scale-105"
@@ -237,7 +237,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                       )}
                       aria-hidden="true"
                     >
-                      <Check className="h-3 w-3 stroke-[3]" />
+                      <Check className="h-3 w-3 stroke-3" />
                     </span>
                   </div>
                   <p
@@ -259,7 +259,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
       </div>
 
       {/* Form Fields Card Shell — Always visible by default (FR-002 & FR-005) */}
-      <div className="rounded-[8px] border border-border bg-surface p-6 sm:p-8 space-y-6 shadow-card">
+      <div className="rounded-lg border border-border bg-surface p-6 sm:p-8 space-y-6 shadow-card">
         {/* Subject */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -315,7 +315,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                     onMouseEnter={() => setHoveredStar(starValue)}
                     onMouseLeave={() => setHoveredStar(0)}
                     aria-label={`${starValue} star${starValue > 1 ? "s" : ""} — ${STAR_LABELS[starValue - 1]}`}
-                    className="group p-1.5 rounded-[4px] border border-border bg-surface-secondary/70 hover:border-primary/40 hover:bg-primary-muted transition-all duration-150 cursor-pointer"
+                    className="group p-1.5 rounded-sm border border-border bg-surface-secondary/70 hover:border-primary/40 hover:bg-primary-muted transition-all duration-150 cursor-pointer"
                   >
                     <Star
                       className={cn(
@@ -386,7 +386,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                     ? "Tell us what you love about AlgoFlow or what we can do better…"
                     : "Share any thoughts, observations, or suggestions…"
             }
-            className="min-h-[140px] w-full rounded-[4px] border border-border bg-surface-secondary/70 p-3.5 text-sm text-text-primary transition-all duration-200 placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 resize-y"
+            className="min-h-35 w-full rounded-sm border border-border bg-surface-secondary/70 p-3.5 text-sm text-text-primary transition-all duration-200 placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 resize-y"
           />
         </div>
 
@@ -401,7 +401,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
                 <Mail className="h-3.5 w-3.5 text-text-muted" />
                 Email address
               </label>
-              <span className="text-[10px] font-mono font-normal uppercase px-2 py-0.5 rounded-[4px] border border-border bg-surface-secondary/70 text-text-muted">
+              <span className="text-[10px] font-mono font-normal uppercase px-2 py-0.5 rounded-sm border border-border bg-surface-secondary/70 text-text-muted">
                 Optional
               </span>
             </div>
@@ -423,7 +423,7 @@ export function FeedbackForm({ isAuthenticated }: FeedbackFormProps) {
         {result && !result.success && result.error && (
           <div
             role="alert"
-            className="flex items-start gap-3 rounded-[4px] border border-crimson/30 bg-crimson/10 p-4 text-sm text-crimson"
+            className="flex items-start gap-3 rounded-sm border border-crimson/30 bg-crimson/10 p-4 text-sm text-crimson"
           >
             <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
             <p className="font-medium">{result.error}</p>

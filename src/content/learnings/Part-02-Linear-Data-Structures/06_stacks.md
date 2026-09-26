@@ -8,6 +8,7 @@
 The stack is one of computing's most fundamental restricted-access linear abstractions, operating under the strict Last-In, First-Out (LIFO) principle. All element insertions and removals occur at a single designated boundary: the top. Beyond its utility as a software container, the stack is embedded directly into computer architecture as the CPU execution call stack, powering subroutine invocation, local variable scoping, and recursion. This chapter examines array and pointer-linked stack implementations, activation record lifecycles, balanced bracket validation, postfix expression evaluation, and Dijkstra's Shunting-Yard parsing algorithm.
 
 ### Learning Objectives
+
 - Formalize the Stack Abstract Data Type (ADT) interface and enforce strict Last-In, First-Out (LIFO) invariants.
 - Compare contiguous dynamic-array stack backing buffers against heap pointer-linked implementations in terms of allocation latency and memory overhead.
 - Trace hardware activation records, frame pointers (`%rbp`), and return addresses on the physical CPU call stack to diagnose stack overflow and buffer overflow conditions.
@@ -22,6 +23,7 @@ The stack is one of computing's most fundamental restricted-access linear abstra
 ### 1. Conceptual Architecture & The LIFO Invariant
 
 A **Stack** restricts element access to a single boundary called **Top**:
+
 - **Push**: Places an element onto the top of the container.
 - **Pop**: Removes and returns the element currently residing at the top.
 - **Peek / Top**: Inspects the value of the top element without mutating state.
@@ -52,49 +54,54 @@ A **Stack** restricts element access to a single boundary called **Top**:
 
 ### 2. The Stack Abstract Data Type (ADT) Interface
 
-| Operation | Description | Array Best | Array Worst | Array Amortized | Linked List | Auxiliary Space |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **`Push(x)`** | Insert element $x$ at `TOP` | $\Theta(1)$ | $O(n)$ *(resize)* | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
-| **`Pop()`** | Remove and return element at `TOP` | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
-| **`Peek()`** | Read value at `TOP` without removing | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
-| **`IsEmpty()`** | Returns `true` if size is 0 | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
-| **`Size()`** | Return current count of elements | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $\Theta(1)$ | $O(1)$ |
+| Operation       | Description                          | Array Best  |    Array Worst    | Array Amortized | Linked List | Auxiliary Space |
+| :-------------- | :----------------------------------- | :---------: | :---------------: | :-------------: | :---------: | :-------------: |
+| **`Push(x)`**   | Insert element $x$ at `TOP`          | $\Theta(1)$ | $O(n)$ _(resize)_ |   $\Theta(1)$   | $\Theta(1)$ |     $O(1)$      |
+| **`Pop()`**     | Remove and return element at `TOP`   | $\Theta(1)$ |    $\Theta(1)$    |   $\Theta(1)$   | $\Theta(1)$ |     $O(1)$      |
+| **`Peek()`**    | Read value at `TOP` without removing | $\Theta(1)$ |    $\Theta(1)$    |   $\Theta(1)$   | $\Theta(1)$ |     $O(1)$      |
+| **`IsEmpty()`** | Returns `true` if size is 0          | $\Theta(1)$ |    $\Theta(1)$    |   $\Theta(1)$   | $\Theta(1)$ |     $O(1)$      |
+| **`Size()`**    | Return current count of elements     | $\Theta(1)$ |    $\Theta(1)$    |   $\Theta(1)$   | $\Theta(1)$ |     $O(1)$      |
 
 ---
 
 ### 3. Implementation Paradigms: Contiguous Array vs. Linked List
 
 #### Paradigm A: Contiguous Array Implementation
+
 Maintains a backing array `storage[]` and an integer offset `topIndex`:
+
 - **Empty State**: `topIndex = -1`.
 - **Push($x$)**: Check bounds; `topIndex += 1; storage[topIndex] = x;`.
 - **Pop()**: Check for underflow (`topIndex == -1`); `val = storage[topIndex]; topIndex -= 1; return val;`.
 
-| Array Index | `0` | `1` | `2` | `3` | `4` |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Stored Value** | `10` | `20` | `30` | `[EMPTY]` | `[EMPTY]` |
+| Array Index       |  `0`   |   `1`    |           `2`            |    `3`    |    `4`    |
+| :---------------- | :----: | :------: | :----------------------: | :-------: | :-------: |
+| **Stored Value**  |  `10`  |   `20`   |           `30`           | `[EMPTY]` | `[EMPTY]` |
 | **Role / Marker** | Bottom | Interior | **`topIndex = 2` (TOP)** | Available | Available |
 
-*Amortized Cost*: When backed by a geometrically doubling dynamic array, `Push` incurs occasional $O(n)$ reallocations, but achieves $O(1)$ amortized cost across any sequence of $n$ operations while maintaining exceptional CPU L1/L2 cache locality.
+_Amortized Cost_: When backed by a geometrically doubling dynamic array, `Push` incurs occasional $O(n)$ reallocations, but achieves $O(1)$ amortized cost across any sequence of $n$ operations while maintaining exceptional CPU L1/L2 cache locality.
 
 #### Paradigm B: Linked-List-Based Stack
+
 Maintains a pointer to the head node:
+
 - **`Push(x)`**: Allocate new node, set `newNode.next = top`, `top = newNode`.
 - **`Pop()`**: Retrieve `top.data`, advance `top = top.next`, free old node.
 
-| Node Position | Virtual Heap Address | Node Payload | `next` Pointer Target | Architectural Role |
-| :---: | :--- | :---: | :--- | :--- |
-| **Node 3** | `0x30A0` | `30` | `0x2050` | **`top` (Head of List)** |
-| **Node 2** | `0x2050` | `20` | `0x1010` | Intermediate Frame |
-| **Node 1** | `0x1010` | `10` | `NULL` | Bottom of Stack |
+| Node Position | Virtual Heap Address | Node Payload | `next` Pointer Target | Architectural Role       |
+| :-----------: | :------------------- | :----------: | :-------------------- | :----------------------- |
+|  **Node 3**   | `0x30A0`             |     `30`     | `0x2050`              | **`top` (Head of List)** |
+|  **Node 2**   | `0x2050`             |     `20`     | `0x1010`              | Intermediate Frame       |
+|  **Node 1**   | `0x1010`             |     `10`     | `NULL`                | Bottom of Stack          |
 
-*Guaranteed Strict Bound*: Every single operation executes in guaranteed worst-case $\Theta(1)$ time without memory reallocation pauses, but consumes $16\text{ bytes}$ of pointer and padding overhead per element.
+_Guaranteed Strict Bound_: Every single operation executes in guaranteed worst-case $\Theta(1)$ time without memory reallocation pauses, but consumes $16\text{ bytes}$ of pointer and padding overhead per element.
 
 ---
 
 ### 4. Hardware Symbiosis: The CPU Call Stack & Activation Records
 
 In von Neumann computer architecture, subroutine execution is governed by the hardware call stack located in the upper region of the process virtual address space. On x86-64 / AMD64 architectures:
+
 - The stack grows **downward** from higher memory addresses toward lower memory addresses.
 - The `%rsp` (Stack Pointer) register holds the memory address of the current top of the stack.
 - The `%rbp` (Base / Frame Pointer) register anchors the base of the current subroutine activation record.
@@ -175,6 +182,7 @@ In von Neumann computer architecture, subroutine execution is governed by the ha
 </div>
 
 #### Call Stack Lifecycle:
+
 1. **Prologue**: When a function is called (`callq`):
    - The CPU pushes `%rip` (return address) onto the stack.
    - The callee executes: `pushq %rbp; movq %rsp, %rbp; subq $N, %rsp;` to allocate $N$ bytes of local stack memory.
@@ -190,9 +198,11 @@ In von Neumann computer architecture, subroutine execution is governed by the ha
 The balanced parenthesis problem requires validating whether a string $S$ over alphabet $\Sigma = \{(, ), [, ], \{, \}\}$ belongs to the **Dyck Language $D_k$**.
 
 #### Grammar of $D_k$:
+
 $$\mathcal{S} \to \varepsilon \mid (\mathcal{S}) \mid [\mathcal{S}] \mid \{\mathcal{S}\} \mid \mathcal{S}\mathcal{S}$$
 
 #### Correctness Invariant & Induction Proof:
+
 - **Loop Invariant**: Prior to scanning index $i$, the stack contains the exact sequence of unmatched open delimiters in the order they were opened.
 - **Base Case ($i = 0$)**: The stack is empty. An empty prefix $\varepsilon$ has no unmatched delimiters. Invariant holds.
 - **Inductive Step**: Assume invariant holds for prefix $S[0 \dots i-1]$.
@@ -208,6 +218,7 @@ $$\mathcal{S} \to \varepsilon \mid (\mathcal{S}) \mid [\mathcal{S}] \mid \{\math
 ### 6. Application 2: Expression Parsing & Dijkstra's Shunting-Yard Algorithm
 
 Mathematical expressions can be formalized in three distinct notations:
+
 1. **Infix**: $A + B \times C$ (human-readable; requires operator precedence and parentheses).
 2. **Prefix (Polish)**: $+ A \times B C$ (operator precedes operands).
 3. **Postfix (Reverse Polish Notation / RPN)**: $A B C \times +$ (operands precede operator; **zero parentheses required**).
@@ -266,26 +277,27 @@ Mathematical expressions can be formalized in three distinct notations:
 
 #### Step-by-Step Conversion Trace: `3 + 4 * 2 / ( 1 - 5 )`
 
-| Token | Operator Stack Action | Operator Stack (Bottom $\to$ Top) | Postfix Output Queue |
-| :---: | :--- | :--- | :--- |
-| `3` | None (Operand) | `[]` | `3` |
-| `+` | `Push('+')` | `['+']` | `3` |
-| `4` | None (Operand) | `['+']` | `3, 4` |
-| `*` | `Push('*')` ($* > +$) | `['+', '*']` | `3, 4` |
-| `2` | None (Operand) | `['+', '*']` | `3, 4, 2` |
-| `/` | Pop `*` (equal precedence), then `Push('/')` | `['+', '/']` | `3, 4, 2, *` |
-| `(` | `Push('(')` | `['+', '/', '(']` | `3, 4, 2, *` |
-| `1` | None (Operand) | `['+', '/', '(']` | `3, 4, 2, * , 1` |
-| `-` | `Push('-')` | `['+', '/', '(', '-']` | `3, 4, 2, * , 1` |
-| `5` | None (Operand) | `['+', '/', '(', '-']` | `3, 4, 2, * , 1, 5` |
-| `)` | Pop until `(` | `['+', '/']` | `3, 4, 2, * , 1, 5, -` |
-| **End** | Pop remaining operators | `[]` | `3, 4, 2, * , 1, 5, -, /, +` |
+|  Token  | Operator Stack Action                        | Operator Stack (Bottom $\to$ Top) | Postfix Output Queue         |
+| :-----: | :------------------------------------------- | :-------------------------------- | :--------------------------- |
+|   `3`   | None (Operand)                               | `[]`                              | `3`                          |
+|   `+`   | `Push('+')`                                  | `['+']`                           | `3`                          |
+|   `4`   | None (Operand)                               | `['+']`                           | `3, 4`                       |
+|   `*`   | `Push('*')` ($* > +$)                        | `['+', '*']`                      | `3, 4`                       |
+|   `2`   | None (Operand)                               | `['+', '*']`                      | `3, 4, 2`                    |
+|   `/`   | Pop `*` (equal precedence), then `Push('/')` | `['+', '/']`                      | `3, 4, 2, *`                 |
+|   `(`   | `Push('(')`                                  | `['+', '/', '(']`                 | `3, 4, 2, *`                 |
+|   `1`   | None (Operand)                               | `['+', '/', '(']`                 | `3, 4, 2, * , 1`             |
+|   `-`   | `Push('-')`                                  | `['+', '/', '(', '-']`            | `3, 4, 2, * , 1`             |
+|   `5`   | None (Operand)                               | `['+', '/', '(', '-']`            | `3, 4, 2, * , 1, 5`          |
+|   `)`   | Pop until `(`                                | `['+', '/']`                      | `3, 4, 2, * , 1, 5, -`       |
+| **End** | Pop remaining operators                      | `[]`                              | `3, 4, 2, * , 1, 5, -, /, +` |
 
 ---
 
 ### 7. Concrete Production Implementations
 
 #### A. C++20 Cache-Conscious Templated Dynamic Stack
+
 ```cpp
 #include <iostream>
 #include <vector>
@@ -367,6 +379,7 @@ public:
 ```
 
 #### B. Python 3 Production Shunting-Yard & Postfix Evaluator
+
 ```python
 from typing import List
 
@@ -440,7 +453,7 @@ def evaluate_postfix(rpn_tokens: List[str]) -> float:
 
 ## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: *Elementary Data Structures*. MIT Press.
-2. **Dijkstra, E. W.** (1961). *Making a Translator for ALGOL 60*. ALGOL Bulletin, 10, 10-11.
-3. **Aho, A. V., Lam, M. S., Sethi, R., & Ullman, J. D.** (2006). *Compilers: Principles, Techniques, and Tools* (2nd ed.), Chapter 4: *Syntax Analysis*. Addison-Wesley.
-4. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: *Bags, Queues, and Stacks*. Addison-Wesley.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 10: _Elementary Data Structures_. MIT Press.
+2. **Dijkstra, E. W.** (1961). _Making a Translator for ALGOL 60_. ALGOL Bulletin, 10, 10-11.
+3. **Aho, A. V., Lam, M. S., Sethi, R., & Ullman, J. D.** (2006). _Compilers: Principles, Techniques, and Tools_ (2nd ed.), Chapter 4: _Syntax Analysis_. Addison-Wesley.
+4. **Sedgewick, R., & Wayne, K.** (2011). _Algorithms_ (4th ed.), Section 1.3: _Bags, Queues, and Stacks_. Addison-Wesley.

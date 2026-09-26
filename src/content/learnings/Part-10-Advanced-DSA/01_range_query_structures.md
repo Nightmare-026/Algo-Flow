@@ -9,6 +9,7 @@ Interval-based queries and dynamic mutations are central to database indexing, c
 This module formalizes advanced hierarchical data structures designed to evaluate and mutate range aggregates over 1D sequences with optimal asymptotic efficiency.
 
 By the end of this chapter, you will be able to:
+
 1. **Construct Array-Backed Segment Trees**: Implement binary interval decomposition supporting range associative queries and point updates in $\mathcal{O}(\log n)$ time within $4n$ array bounds.
 2. **Apply Lazy Propagation**: Defer pending range updates via transmission tags, guaranteeing $\mathcal{O}(\log n)$ batch modifications.
 3. **Master Fenwick Trees (BIT)**: Utilize low-bit isolation $i \ \& \ (-i)$ to manage prefix sums and point mutations with zero pointer overhead in strictly $\mathcal{O}(n)$ memory.
@@ -19,20 +20,24 @@ By the end of this chapter, you will be able to:
 ## 2. Topic 148: Segment Tree
 
 ### 1. The Core Trade-off Problem
+
 Given an array $A$ of size $n$, systems require efficient handling of two competing operations:
+
 1. **Range Query**: Evaluate $\sum_{i=L}^{R} A[i]$ (or $\min$, $\max$, $\gcd$).
 2. **Point Update**: Assign $A[\text{index}] \leftarrow \text{value}$.
 
-| Architecture | Range Query Time | Point Update Time | Construction Time | Memory Bound |
-| :--- | :---: | :---: | :---: | :---: |
-| **Unindexed Array** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ | $\mathcal{O}(1)$ | $n$ |
-| **Prefix Sum Array** | $\mathcal{O}(1)$ | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | $n$ |
-| **Segment Tree** | $\mathbf{\mathcal{O}(\log n)}$ | $\mathbf{\mathcal{O}(\log n)}$ | $\mathcal{O}(n)$ | $4n$ |
+| Architecture         |        Range Query Time        |       Point Update Time        | Construction Time | Memory Bound |
+| :------------------- | :----------------------------: | :----------------------------: | :---------------: | :----------: |
+| **Unindexed Array**  |        $\mathcal{O}(n)$        |        $\mathcal{O}(1)$        | $\mathcal{O}(1)$  |     $n$      |
+| **Prefix Sum Array** |        $\mathcal{O}(1)$        |        $\mathcal{O}(n)$        | $\mathcal{O}(n)$  |     $n$      |
+| **Segment Tree**     | $\mathbf{\mathcal{O}(\log n)}$ | $\mathbf{\mathcal{O}(\log n)}$ | $\mathcal{O}(n)$  |     $4n$     |
 
 ---
 
 ### 2. Binary Interval Decomposition & 4n Bound
+
 A Segment Tree recursively divides an interval $[0, n-1]$ into two halves until reaching unit-length intervals $[i, i]$:
+
 - **Leaf Nodes**: Hold individual elements $A[i]$.
 - **Internal Nodes**: Store the aggregated result (e.g., sum) of their left child $[L, \text{mid}]$ and right child $[\text{mid}+1, R]$.
 - **Storage Layout**: Flat 1D array indexed from $0$:
@@ -151,7 +156,9 @@ export class SegmentTree {
 ## 3. Topic 149: Segment Tree with Lazy Propagation
 
 ### 1. The Challenge of Range Updates
+
 When updating an entire interval $[L, R]$ by adding delta $v$ to every element:
+
 - Iterating individual point updates requires $\mathcal{O}(k \log n)$ time, degrading to $\mathcal{O}(n \log n)$ for full-array updates.
 - **Lazy Propagation Principle**: Postpone updating child nodes until their values are strictly needed by a descendant query or update.
 - Maintain a secondary array `lazy[4n]`. When a node's interval falls completely within $[L, R]$:
@@ -166,20 +173,22 @@ When updating an entire interval $[L, R]$ by adding delta $v$ to every element:
 ## 4. Topic 150: Fenwick Tree (Binary Indexed Tree / BIT)
 
 ### 1. Low-Bit Isolation ($i \ \& \ (-i)$)
+
 Invented by Peter Fenwick in 1994, the Binary Indexed Tree maintains prefix sums and point updates in $\mathcal{O}(\log n)$ time with **zero pointer overhead and strictly $n + 1$ integer cells**.
 
 #### Mathematical Foundation
+
 Let $\text{LSB}(i) = i \ \& \ (-i)$ isolate the least significant set bit of integer $i$.
 Each 1-based index $i$ in a Fenwick Tree stores the partial sum for the left-open interval:
 
 $$(i - (i \ \& \ (-i)), \ i]$$
 
-| Index $i$ (Binary) | $\text{LSB}(i)$ | Responsible Interval Range | Span Length |
-| :--- | :--- | :--- | :---: |
-| **1** ($0001_2$) | 1 | $(0, 1] = A[1]$ | 1 |
-| **2** ($0010_2$) | 2 | $(0, 2] = A[1] + A[2]$ | 2 |
-| **3** ($0011_2$) | 1 | $(2, 3] = A[3]$ | 1 |
-| **4** ($0100_2$) | 4 | $(0, 4] = A[1] + A[2] + A[3] + A[4]$ | 4 |
+| Index $i$ (Binary) | $\text{LSB}(i)$ | Responsible Interval Range           | Span Length |
+| :----------------- | :-------------- | :----------------------------------- | :---------: |
+| **1** ($0001_2$)   | 1               | $(0, 1] = A[1]$                      |      1      |
+| **2** ($0010_2$)   | 2               | $(0, 2] = A[1] + A[2]$               |      2      |
+| **3** ($0011_2$)   | 1               | $(2, 3] = A[3]$                      |      1      |
+| **4** ($0100_2$)   | 4               | $(0, 4] = A[1] + A[2] + A[3] + A[4]$ |      4      |
 
 ---
 
@@ -233,6 +242,7 @@ export class FenwickTree {
 ## 5. Topic 151: Sparse Table (Static RMQ in Strictly $\mathcal{O}(1)$)
 
 ### 1. Idempotency Principle
+
 An algebraic binary operation $\circ$ is **idempotent** if:
 $$x \circ x = x$$
 
@@ -288,18 +298,18 @@ export class SparseTable {
 
 ## 6. Range Query Data Structures Comparison
 
-| Data Structure | Preprocessing Time | Range Query Time | Point Update Time | Range Update Time | Auxiliary Space | Idempotency Required? |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Prefix Sum Array** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ (Sum only) | $\mathcal{O}(n)$ | $\mathcal{O}(n)$ | $n$ | No |
-| **Sparse Table** | $\mathcal{O}(n \log n)$ | $\mathbf{\mathcal{O}(1)}$ (RMQ / GCD) | Not supported | Not supported | $\mathcal{O}(n \log n)$ | **Yes** |
-| **Fenwick Tree (BIT)** | $\mathcal{O}(n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ (Dual BIT) | $\mathbf{n}$ | No (Invertible only) |
-| **Segment Tree** | $\mathcal{O}(n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(n)$ | $4n$ | No (Associative only) |
-| **Segment Tree + Lazy** | $\mathcal{O}(n)$ | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ | $\mathbf{\mathcal{O}(\log n)}$ | $4n$ | No (Associative only) |
+| Data Structure          |   Preprocessing Time    |           Range Query Time            |   Point Update Time   |        Range Update Time         |     Auxiliary Space     | Idempotency Required? |
+| :---------------------- | :---------------------: | :-----------------------------------: | :-------------------: | :------------------------------: | :---------------------: | :-------------------: |
+| **Prefix Sum Array**    |    $\mathcal{O}(n)$     |      $\mathcal{O}(1)$ (Sum only)      |   $\mathcal{O}(n)$    |         $\mathcal{O}(n)$         |           $n$           |          No           |
+| **Sparse Table**        | $\mathcal{O}(n \log n)$ | $\mathbf{\mathcal{O}(1)}$ (RMQ / GCD) |     Not supported     |          Not supported           | $\mathcal{O}(n \log n)$ |        **Yes**        |
+| **Fenwick Tree (BIT)**  |    $\mathcal{O}(n)$     |         $\mathcal{O}(\log n)$         | $\mathcal{O}(\log n)$ | $\mathcal{O}(\log n)$ (Dual BIT) |      $\mathbf{n}$       | No (Invertible only)  |
+| **Segment Tree**        |    $\mathcal{O}(n)$     |         $\mathcal{O}(\log n)$         | $\mathcal{O}(\log n)$ |         $\mathcal{O}(n)$         |          $4n$           | No (Associative only) |
+| **Segment Tree + Lazy** |    $\mathcal{O}(n)$     |         $\mathcal{O}(\log n)$         | $\mathcal{O}(\log n)$ |  $\mathbf{\mathcal{O}(\log n)}$  |          $4n$           | No (Associative only) |
 
 ---
 
 ## References & Academic Attribution
 
-1. **Fenwick, P. M.** (1994). A new data structure for cumulative frequency tables. *Software: Practice and Experience*, 24(3), 327–336.
-2. **Bender, M. A., & Farach-Colton, M.** (2000). The LCA problem revisited. *Latin American Symposium on Theoretical Informatics*, 88–94. Springer.
-3. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.). MIT Press.
+1. **Fenwick, P. M.** (1994). A new data structure for cumulative frequency tables. _Software: Practice and Experience_, 24(3), 327–336.
+2. **Bender, M. A., & Farach-Colton, M.** (2000). The LCA problem revisited. _Latin American Symposium on Theoretical Informatics_, 88–94. Springer.
+3. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.). MIT Press.

@@ -72,7 +72,7 @@ function CustomDropdown({ id, label, value, options, onChange, className }: Cust
         aria-controls={`${id}-listbox`}
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          "flex h-11 w-full min-w-36 sm:min-w-40 items-center justify-between gap-2.5 rounded-[4px] border bg-surface px-3.5 text-xs font-semibold text-text-primary shadow-xs transition-all cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+          "flex h-11 w-full min-w-36 sm:min-w-40 items-center justify-between gap-2.5 rounded-sm border bg-surface px-3.5 text-xs font-semibold text-text-primary shadow-xs transition-all cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
           isOpen
             ? "border-primary/50 ring-2 ring-primary/20"
             : "border-border hover:border-border-hover"
@@ -96,7 +96,7 @@ function CustomDropdown({ id, label, value, options, onChange, className }: Cust
           id={`${id}-listbox`}
           role="listbox"
           aria-labelledby={id}
-          className="hide-scrollbar scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden absolute left-0 top-full z-50 mt-1.5 max-h-72 w-full min-w-full overflow-y-auto rounded-[8px] border border-border bg-surface p-1 shadow-elevated backdrop-blur-2xl animate-in fade-in-0 zoom-in-95 duration-150"
+          className="hide-scrollbar scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden absolute left-0 top-full z-50 mt-1.5 max-h-72 w-full min-w-full overflow-y-auto rounded-lg border border-border bg-surface p-1 shadow-elevated backdrop-blur-2xl animate-in fade-in-0 zoom-in-95 duration-150"
         >
           {options.map((option) => {
             const isSelected = option.value === value;
@@ -110,7 +110,7 @@ function CustomDropdown({ id, label, value, options, onChange, className }: Cust
                   setIsOpen(false);
                 }}
                 className={cn(
-                  "flex items-center justify-between rounded-[4px] px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer select-none",
+                  "flex items-center justify-between rounded-sm px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer select-none",
                   isSelected
                     ? "bg-primary text-white font-bold shadow-xs"
                     : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
@@ -213,7 +213,7 @@ export function CategoryExplorer({
   return (
     <div className="mt-10">
       {/* Search & Filter Toolbar */}
-      <div className="grid gap-4 rounded-[8px] p-4 lg:grid-cols-[1fr_auto_auto] border border-border bg-surface shadow-card">
+      <div className="grid gap-4 rounded-lg p-4 lg:grid-cols-[1fr_auto_auto] border border-border bg-surface shadow-card">
         {/* Search */}
         <div className="relative">
           <label htmlFor="algorithm-search" className="sr-only">
@@ -234,14 +234,14 @@ export function CategoryExplorer({
                 setSearchQuery("");
               }
             }}
-            className="h-11 w-full rounded-[4px] border border-border bg-surface-secondary py-2.5 pl-10 pr-10 text-sm text-text-primary shadow-xs placeholder:text-text-muted/80 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="h-11 w-full rounded-sm border border-border bg-surface-secondary py-2.5 pl-10 pr-10 text-sm text-text-primary shadow-xs placeholder:text-text-muted/80 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
               aria-label="Clear search query"
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-[4px] p-1 text-text-muted hover:bg-surface-hover hover:text-text-primary transition-colors cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-sm p-1 text-text-muted hover:bg-surface-hover hover:text-text-primary transition-colors cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
@@ -336,7 +336,7 @@ export function CategoryExplorer({
                     }
                     router.push(`/visualizer/${algorithm.slug}`);
                   }}
-                  className="group relative flex h-full flex-col justify-between rounded-[8px] border border-border bg-surface p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200 cursor-pointer"
+                  className="group relative flex h-full flex-col justify-between rounded-lg border border-border bg-surface p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200 cursor-pointer"
                 >
                   <div>
                     {/* Card Header: Badges & Quiz Link */}
@@ -350,7 +350,7 @@ export function CategoryExplorer({
                       <Link
                         href={`/quizzes/${algorithm.id}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="relative z-10 inline-flex items-center gap-1.5 rounded-[4px] border border-border/80 bg-surface px-2.5 py-1 text-[11px] font-bold text-text-muted hover:border-primary/40 hover:text-primary transition-colors shadow-xs cursor-pointer"
+                        className="relative z-10 inline-flex items-center gap-1.5 rounded-sm border border-border/80 bg-surface px-2.5 py-1 text-[11px] font-bold text-text-muted hover:border-primary/40 hover:text-primary transition-colors shadow-xs cursor-pointer"
                         title={`Take quiz on ${algorithm.name}`}
                       >
                         <Trophy className="h-3.5 w-3.5 text-warning" aria-hidden="true" />
@@ -385,7 +385,7 @@ export function CategoryExplorer({
                     </Link>
                     <Link
                       href={`/visualizer/${algorithm.slug}`}
-                      className="flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-text-muted group-hover:border-primary/40 group-hover:bg-primary group-hover:text-white transition-all shadow-xs"
+                      className="flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-surface text-text-muted group-hover:border-primary/40 group-hover:bg-primary group-hover:text-white transition-all shadow-xs"
                       aria-label={`Open ${algorithm.name} visualizer`}
                     >
                       <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -397,7 +397,7 @@ export function CategoryExplorer({
           })}
         </motion.div>
       ) : (
-        <div className="mt-6 rounded-[8px] p-10 sm:p-12 text-center border border-border bg-surface shadow-card max-w-xl mx-auto">
+        <div className="mt-6 rounded-lg p-10 sm:p-12 text-center border border-border bg-surface shadow-card max-w-xl mx-auto">
           <Search className="mx-auto h-10 w-10 text-text-muted" aria-hidden="true" />
           <h2 className="mt-4 text-lg font-bold font-display text-text-primary">
             No matching algorithms
@@ -409,7 +409,7 @@ export function CategoryExplorer({
           <button
             type="button"
             onClick={handleResetFilters}
-            className="mt-6 min-h-11 rounded-[4px] bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-card transition-all cursor-pointer"
+            className="mt-6 min-h-11 rounded-sm bg-primary px-5 text-xs font-bold text-white hover:bg-primary-hover shadow-card transition-all cursor-pointer"
           >
             Reset Filters
           </button>

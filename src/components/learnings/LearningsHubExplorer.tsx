@@ -96,9 +96,9 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
     <div id="curriculum-explorer" className="flex flex-col gap-8 scroll-mt-24">
       {/* Progress Card (Only shown if user has progress) */}
       {completedKeys.size > 0 && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-[8px] bg-surface border border-border shadow-card">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-surface border border-border shadow-card">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-[6px] bg-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-md bg-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0">
               <Award className="w-5 h-5" />
             </div>
             <div>
@@ -127,7 +127,7 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
       )}
 
       {/* Search & Filter Bar */}
-      <div className="flex flex-col gap-4 rounded-[8px] p-4 lg:flex-row lg:items-center lg:justify-between border border-border bg-surface shadow-card">
+      <div className="flex flex-col gap-4 rounded-lg p-4 lg:flex-row lg:items-center lg:justify-between border border-border bg-surface shadow-card">
         {/* Search Input with Clear Button */}
         <div className="relative w-full lg:max-w-md">
           <label htmlFor="curriculum-search" className="sr-only">
@@ -147,20 +147,20 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
             onKeyDown={(e) => {
               if (e.key === "Escape") setSearchQuery("");
             }}
-            className="h-11 w-full rounded-[4px] border border-border bg-surface-secondary py-2.5 pl-11 pr-10 text-sm text-text-primary shadow-xs placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="h-11 w-full rounded-sm border border-border bg-surface-secondary py-2.5 pl-11 pr-10 text-sm text-text-primary shadow-xs placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           />
           {searchQuery ? (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-[4px] text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-sm text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
               aria-label="Clear search"
             >
               <X className="h-4 w-4" />
             </button>
           ) : (
             <span
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center rounded-[4px] border border-border bg-surface px-1.5 py-0.5 text-[10px] font-mono text-text-muted shadow-xs"
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center rounded-sm border border-border bg-surface px-1.5 py-0.5 text-[10px] font-mono text-text-muted shadow-xs"
               aria-hidden="true"
             >
               ESC
@@ -199,7 +199,7 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
 
       {/* Modules Grid */}
       {filteredModules.length === 0 ? (
-        <div className="text-center py-16 rounded-[8px] border border-dashed border-border bg-surface p-8 shadow-card">
+        <div className="text-center py-16 rounded-lg border border-dashed border-border bg-surface p-8 shadow-card">
           <Layers className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-60" />
           <h3 className="text-lg font-semibold text-foreground mb-1">
             No modules match your criteria
@@ -213,7 +213,7 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
               setSearchQuery("");
               setSelectedDifficulty("all");
             }}
-            className="min-h-11 px-5 rounded-[4px] text-xs font-bold bg-primary text-white hover:bg-primary-hover shadow-card transition-colors cursor-pointer"
+            className="min-h-11 px-5 rounded-sm text-xs font-bold bg-primary text-white hover:bg-primary-hover shadow-card transition-colors cursor-pointer"
           >
             Reset Filters
           </button>
@@ -235,7 +235,7 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
                 key={mod.id}
                 itemScope
                 itemType="https://schema.org/Course"
-                className="group flex flex-col justify-between rounded-[8px] border border-border bg-surface p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200"
+                className="group flex flex-col justify-between rounded-lg border border-border bg-surface p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200"
               >
                 <meta itemProp="provider" content="AlgoFlow" />
                 <meta
@@ -355,7 +355,7 @@ export function LearningsHubExplorer({ modules }: LearningsHubExplorerProps) {
                   <Link
                     href={`/learnings/${mod.slug}/${mod.chapters[0].slug}`}
                     aria-label={`Start Part ${mod.partNumber}: ${mod.title}`}
-                    className="px-3.5 py-1.5 rounded-[4px] font-semibold text-xs bg-primary text-white hover:bg-primary-hover shadow-card transition-all cursor-pointer inline-flex items-center gap-1.5"
+                    className="px-3.5 py-1.5 rounded-sm font-semibold text-xs bg-primary text-white hover:bg-primary-hover shadow-card transition-all cursor-pointer inline-flex items-center gap-1.5"
                   >
                     <span>Start Part</span>
                     <ArrowRight className="w-3 h-3" />

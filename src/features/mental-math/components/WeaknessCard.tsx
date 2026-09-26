@@ -25,10 +25,10 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
   // 1. Initial State: No practice history yet -> Intelligent Diagnostic Calibration Overview
   if (!hasHistory) {
     return (
-      <div className="p-6 sm:p-7 rounded-[8px] border border-border bg-surface flex flex-col justify-between h-full shadow-card">
+      <div className="p-6 sm:p-7 rounded-lg border border-border bg-surface flex flex-col justify-between h-full shadow-card">
         <div>
           <div className="flex items-center gap-2.5 mb-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[6px] bg-surface-secondary border border-border text-primary shadow-xs">
+            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-surface-secondary border border-border text-primary shadow-xs">
               <BrainCircuit className="w-4 h-4" />
             </span>
             <div>
@@ -47,7 +47,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
           </p>
 
           <div className="mt-4 flex flex-col gap-2.5">
-            <div className="flex items-start gap-2.5 p-3 rounded-[4px] bg-surface-secondary border border-border/80 text-xs shadow-xs">
+            <div className="flex items-start gap-2.5 p-3 rounded-sm bg-surface-secondary border border-border/80 text-xs shadow-xs">
               <Activity className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold text-text-primary font-display block">
@@ -59,7 +59,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5 p-3 rounded-[4px] bg-surface-secondary border border-border/80 text-xs shadow-xs">
+            <div className="flex items-start gap-2.5 p-3 rounded-sm bg-surface-secondary border border-border/80 text-xs shadow-xs">
               <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold text-text-primary font-display block">
@@ -71,7 +71,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5 p-3 rounded-[4px] bg-surface-secondary border border-border/80 text-xs shadow-xs">
+            <div className="flex items-start gap-2.5 p-3 rounded-sm bg-surface-secondary border border-border/80 text-xs shadow-xs">
               <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold text-text-primary font-display block">
@@ -88,7 +88,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
         <div className="mt-6 pt-4 border-t border-border/60">
           <Link
             href="/mental-math/test"
-            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-[4px] bg-primary text-white text-xs font-bold font-display shadow-card hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-sm bg-primary text-white text-xs font-bold font-display shadow-card hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
             <span>Run Benchmark Assessment</span>
@@ -101,10 +101,10 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
   // 2. Practice done, but no bottlenecks identified
   if (!topWeakness) {
     return (
-      <div className="p-6 sm:p-7 rounded-[8px] border border-border bg-surface flex flex-col justify-between h-full shadow-card">
+      <div className="p-6 sm:p-7 rounded-lg border border-border bg-surface flex flex-col justify-between h-full shadow-card">
         <div>
           <div className="flex items-center gap-2.5 mb-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[6px] bg-surface-secondary border border-border text-primary shadow-xs">
+            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-surface-secondary border border-border text-primary shadow-xs">
               <CheckCircle2 className="w-4 h-4" />
             </span>
             <div>
@@ -125,7 +125,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
         <div className="mt-6 pt-4 border-t border-border/60">
           <Link
             href="/mental-math/speed"
-            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-[4px] bg-primary text-white text-xs font-bold font-display shadow-card hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-sm bg-primary text-white text-xs font-bold font-display shadow-card hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 fill-current" />
             <span>Launch Speed Sprint</span>
@@ -137,11 +137,11 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
 
   // 3. Bottleneck identified -> targeted practice card
   return (
-    <div className="p-6 sm:p-7 rounded-[8px] border border-primary/30 bg-surface flex flex-col justify-between h-full shadow-card">
+    <div className="p-6 sm:p-7 rounded-lg border border-primary/30 bg-surface flex flex-col justify-between h-full shadow-card">
       <div>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[6px] bg-surface-secondary border border-border text-primary shadow-xs">
+            <span className="flex h-9 w-9 items-center justify-center rounded-md bg-surface-secondary border border-border text-primary shadow-xs">
               <TrendingUp className="w-4 h-4" />
             </span>
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
@@ -166,7 +166,7 @@ export function WeaknessCard({ weaknesses, hasHistory = true }: WeaknessCardProp
       <div className="mt-6 pt-4 border-t border-border/60">
         <Link
           href={`/mental-math/practice?mode=weakness&operation=${topWeakness.operation}`}
-          className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-[4px] bg-primary text-white text-xs font-bold font-display shadow-card hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+          className="inline-flex w-full min-h-11 items-center justify-center gap-2 rounded-sm bg-primary text-white text-xs font-bold font-display shadow-card hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Launch Targeted Drill</span>

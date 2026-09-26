@@ -52,8 +52,8 @@ export function Footer() {
         <div className="grid gap-8 sm:gap-10 grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
           {/* Brand Column */}
           <div className="col-span-2 lg:col-span-1 flex flex-col gap-4">
-            <Link href="/" className="inline-flex min-h-11 items-center gap-3 rounded-[4px] pr-2">
-              <span className="relative flex h-10 w-10 items-center justify-center rounded-[4px] border border-border-subtle bg-surface shadow-card">
+            <Link href="/" className="inline-flex min-h-11 items-center gap-3 rounded-sm pr-2">
+              <span className="relative flex h-10 w-10 items-center justify-center rounded-sm border border-border-subtle bg-surface shadow-card">
                 <Image
                   src="/logo.png"
                   alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"

@@ -67,9 +67,9 @@ export default async function FeedbackPage() {
               return (
                 <div
                   key={item.title}
-                  className="group rounded-[8px] border border-border bg-surface p-5 shadow-card hover:shadow-card-hover hover:border-primary/40 transition-all duration-200"
+                  className="group rounded-lg border border-border bg-surface p-5 shadow-card hover:shadow-card-hover hover:border-primary/40 transition-all duration-200"
                 >
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-[4px] border border-border bg-surface-secondary/70 text-primary group-hover:scale-105 transition-transform">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-sm border border-border bg-surface-secondary/70 text-primary group-hover:scale-105 transition-transform">
                     <Icon className="h-5 w-5" />
                   </div>
                   <h3 className="mb-1 text-sm font-bold font-display text-text-primary group-hover:text-primary transition-colors">

@@ -9,6 +9,7 @@
 Formulated by D. H. Lehmer in the 1950s and formalized by Solomon W. Golomb and Leonard D. Baumert in 1965, Backtracking performs an informed Depth-First Search over a virtual State Space Tree. By evaluating problem constraints at each partial state vector, non-viable subtrees are pruned in $O(1)$ time, avoiding the catastrophic combinatorial explosion of brute-force enumeration.
 
 By the end of this chapter, you will be able to:
+
 1. **Model** constraint satisfaction problems as virtual State Space Trees with decision vertices, branching edges, and terminal leaves.
 2. **Implement** the universal Choose-Explore-Unchoose lifecycle with defensive copying and state-restoration invariants.
 3. **Formulate** $O(1)$ bitwise bounding functions (column and diagonal bitmasks) to prune invalid subtrees immediately.
@@ -21,7 +22,7 @@ By the end of this chapter, you will be able to:
 
 **Backtracking** incrementally constructs candidate solutions $(x_1, x_2, \dots, x_k)$ along a virtual **State Space Tree**:
 
-$$\text{Search}(u) = \begin{cases} 
+$$ \text{Search}(u) = \begin{cases}
 \text{RecordSolution}(u) & \text{if } \text{IsComplete}(u) \\
 \text{PruneBranch}(u) & \text{if } \neg \text{Feasible}(u) \\
 \bigcup_{c \in \text{Children}(u)} \text{Search}(c) & \text{otherwise}
@@ -209,3 +210,4 @@ export class NQueensSolver {
 2. **Knuth, D. E.** (2000). Dancing Links. In *Millennial Perspectives in Computer Science*, pp. 187–214.
 3. **Russell, S., & Norvig, P.** (2020). *Artificial Intelligence: A Modern Approach* (4th ed.), Chapter 6 (Constraint Satisfaction Problems). Pearson.
 4. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 34. MIT Press.
+$$

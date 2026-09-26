@@ -28,11 +28,11 @@ export function ErrorState({
         initial={{ opacity: 0, scale: 0.96, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-lg rounded-[8px] border border-border bg-surface p-8 sm:p-10 text-center shadow-elevated"
+        className="w-full max-w-lg rounded-lg border border-border bg-surface p-8 sm:p-10 text-center shadow-elevated"
         role="alert"
         aria-live="assertive"
       >
-        <span className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[8px] border border-crimson/20 bg-crimson/10 text-crimson shadow-card">
+        <span className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-lg border border-crimson/20 bg-crimson/10 text-crimson shadow-card">
           <AlertTriangle aria-hidden="true" className="h-8 w-8" />
         </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-text-primary">
@@ -40,7 +40,7 @@ export function ErrorState({
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-text-secondary">{message}</p>
         {reference ? (
-          <p className="mt-3 rounded-[4px] border border-border bg-surface-secondary/70 px-3 py-1.5 font-mono text-xs text-muted-foreground">
+          <p className="mt-3 rounded-sm border border-border bg-surface-secondary/70 px-3 py-1.5 font-mono text-xs text-muted-foreground">
             Reference: {reference}
           </p>
         ) : null}

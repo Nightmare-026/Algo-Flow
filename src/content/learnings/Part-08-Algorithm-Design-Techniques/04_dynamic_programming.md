@@ -9,6 +9,7 @@ Dynamic Programming (DP) resolves combinatorial explosions by decomposing comple
 Dynamic Programming is an algorithmic paradigm designed to optimize recursive search spaces by identifying shared subproblems, imposing a topological evaluation order, and caching intermediate states in memory.
 
 By the end of this chapter, you will be able to:
+
 1. **Formulate Formal State Definitions**: Isolate the minimal tuple $(i, w)$ capturing sufficient history and derive recurrences conforming to Bellman's Principle of Optimality.
 2. **Evaluate Architecture Trade-Offs**: Contrast Top-Down Memoization (lazy recursion) with Bottom-Up Tabulation (eager iteration) across memory overhead, recursion limits, and cache locality.
 3. **Trace Multi-Dimensional State Matrices**: Manually construct tabular matrices for 0/1 Knapsack and Longest Common Subsequence (LCS) and reconstruct optimal solution subsets via backwards pointer tracking.
@@ -21,10 +22,10 @@ By the end of this chapter, you will be able to:
 
 Formulated by Richard Bellman in 1957, dynamic programming applies strictly to problems exhibiting two core structural properties:
 
-| Pillar | Theoretical Definition | Algorithmic Consequence | Canonical Counterexample |
-| :--- | :--- | :--- | :--- |
-| **1. Optimal Substructure** | An optimal solution to the overall problem contains within it optimal solutions to its constituent subproblems. | Enables computing global optima directly from subproblem optima via recurrence equations. | **Longest Simple Path**: A longest simple path from $u$ to $v$ does not decompose into independent longest simple sub-paths because vertices cannot be revisited. |
-| **2. Overlapping Subproblems** | A naive recursive tree recomputes the exact same subproblem states multiple times across branches. | Caching states in a memo table or matrix reduces exponential $\mathcal{O}(2^n)$ branching to polynomial $\mathcal{O}(n)$ table fills. | **Merge Sort**: Subproblems ($L[0 \dots n/2]$ and $R[n/2 \dots n]$) are completely disjoint; memoization provides zero reuse. |
+| Pillar                         | Theoretical Definition                                                                                          | Algorithmic Consequence                                                                                                               | Canonical Counterexample                                                                                                                                          |
+| :----------------------------- | :-------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Optimal Substructure**    | An optimal solution to the overall problem contains within it optimal solutions to its constituent subproblems. | Enables computing global optima directly from subproblem optima via recurrence equations.                                             | **Longest Simple Path**: A longest simple path from $u$ to $v$ does not decompose into independent longest simple sub-paths because vertices cannot be revisited. |
+| **2. Overlapping Subproblems** | A naive recursive tree recomputes the exact same subproblem states multiple times across branches.              | Caching states in a memo table or matrix reduces exponential $\mathcal{O}(2^n)$ branching to polynomial $\mathcal{O}(n)$ table fills. | **Merge Sort**: Subproblems ($L[0 \dots n/2]$ and $R[n/2 \dots n]$) are completely disjoint; memoization provides zero reuse.                                     |
 
 ### Contrast with Alternative Paradigms
 
@@ -39,14 +40,14 @@ Every dynamic programming problem can be operationalized through two complementa
 
 ### Architectural Comparison Matrix
 
-| Dimension | Top-Down (Memoization) | Bottom-Up (Tabulation) |
-| :--- | :--- | :--- |
-| **Execution Model** | Demand-driven recursive traversal from target state down to base cases | Topological iteration starting from base cases up to the target state |
-| **Data Structure** | Hash map (`Map<string, number>`) or sparse lookup array | Pre-allocated contiguous matrix (`number[]` or `number[][]`) |
-| **State Exploration** | **Lazy**: Only explores states strictly reachable from the initial state | **Eager**: Computes all valid states within the grid bounds |
-| **Call Stack Overhead** | $\Theta(D)$ stack frames where $D$ is recursion depth (risk of stack overflow) | $\Theta(1)$ call stack overhead (pure nested loops) |
-| **Hardware Cache Locality** | Poor (non-contiguous memory jumps, pointer indirection) | Optimal (sequential array traversal friendly to CPU L1/L2 caches) |
-| **Space Optimization** | Difficult to discard historical states | Straightforward state compression (e.g., rolling buffers, 2-row swapping) |
+| Dimension                   | Top-Down (Memoization)                                                         | Bottom-Up (Tabulation)                                                    |
+| :-------------------------- | :----------------------------------------------------------------------------- | :------------------------------------------------------------------------ |
+| **Execution Model**         | Demand-driven recursive traversal from target state down to base cases         | Topological iteration starting from base cases up to the target state     |
+| **Data Structure**          | Hash map (`Map<string, number>`) or sparse lookup array                        | Pre-allocated contiguous matrix (`number[]` or `number[][]`)              |
+| **State Exploration**       | **Lazy**: Only explores states strictly reachable from the initial state       | **Eager**: Computes all valid states within the grid bounds               |
+| **Call Stack Overhead**     | $\Theta(D)$ stack frames where $D$ is recursion depth (risk of stack overflow) | $\Theta(1)$ call stack overhead (pure nested loops)                       |
+| **Hardware Cache Locality** | Poor (non-contiguous memory jumps, pointer indirection)                        | Optimal (sequential array traversal friendly to CPU L1/L2 caches)         |
+| **Space Optimization**      | Difficult to discard historical states                                         | Straightforward state compression (e.g., rolling buffers, 2-row swapping) |
 
 ---
 
@@ -64,13 +65,14 @@ Every dynamic programming algorithm is engineered through a disciplined four-ste
 ## 5. Canonical Problem 1: The 0/1 Knapsack Problem
 
 ### Problem Specification
+
 Given $N$ items, each characterized by weight $w_i \in \mathbb{Z}^+$ and value $v_i \in \mathbb{Z}^+$, determine the subset of items maximizing total value subject to total weight not exceeding knapsack capacity $W$. Each item can be chosen at most once ($x_i \in \{0, 1\}$).
 
 ### Recurrence Formulation
 
 Let $dp[i][w]$ represent the maximum value attainable considering a subset of the first $i$ items with remaining weight capacity $w$, where $0 \le i \le N$ and $0 \le w \le W$:
 
-$$dp[i][w] = \begin{cases} 
+$$ dp[i][w] = \begin{cases}
 0 & \text{if } i = 0 \text{ or } w = 0 \\
 dp[i-1][w] & \text{if } w_i > w \\
 \max\Big(dp[i-1][w], \, v_i + dp[i-1][w - w_i]\Big) & \text{if } w_i \le w
@@ -203,7 +205,7 @@ Given two sequences $S_1$ of length $m$ and $S_2$ of length $n$, find the length
 
 Let $dp[i][j]$ represent the length of the LCS between prefixes $S_1[0 \dots i-1]$ and $S_2[0 \dots j-1]$:
 
-$$dp[i][j] = \begin{cases} 
+$$dp[i][j] = \begin{cases}
 0 & \text{if } i = 0 \text{ or } j = 0 \\
 1 + dp[i-1][j-1] & \text{if } S_1[i-1] = S_2[j-1] \\
 \max\Big(dp[i-1][j], \, dp[i][j-1]\Big) & \text{if } S_1[i-1] \ne S_2[j-1]
@@ -288,3 +290,4 @@ Reconstructed string: **"ACE"** of length **3**.
 1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapters 14 & 15. MIT Press.
 2. **Kleinberg, J., & Tardos, É.** (2006). *Algorithm Design*, Chapter 6: Dynamic Programming. Pearson / Addison-Wesley.
 3. **Bellman, R.** (1957). *Dynamic Programming*. Princeton University Press.
+$$

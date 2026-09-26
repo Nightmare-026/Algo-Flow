@@ -34,7 +34,7 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
   );
 
   return (
-    <div className="p-6 sm:p-7 rounded-[8px] border border-border bg-surface flex flex-col justify-between h-full shadow-card">
+    <div className="p-6 sm:p-7 rounded-lg border border-border bg-surface flex flex-col justify-between h-full shadow-card">
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
@@ -76,11 +76,11 @@ export function MasteryRadar({ masteryMap }: MasteryRadarProps) {
             return (
               <div
                 key={op.id}
-                className="p-3.5 sm:p-4 rounded-[6px] border border-border bg-surface-secondary flex flex-col gap-2.5 shadow-xs transition-colors"
+                className="p-3.5 sm:p-4 rounded-md border border-border bg-surface-secondary flex flex-col gap-2.5 shadow-xs transition-colors"
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2.5">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-primary shadow-xs">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-surface text-primary shadow-xs">
                       <Icon className="w-4 h-4" />
                     </span>
                     <span className="text-xs font-bold font-display text-text-primary">

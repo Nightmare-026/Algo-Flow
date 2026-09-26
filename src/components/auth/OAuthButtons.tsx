@@ -82,9 +82,9 @@ export function OAuthButtons({
           aria-label="Continue with Google"
           onClick={() => handleOAuth("google")}
           className={cn(
-            "inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border px-4 text-sm font-semibold shadow-(--shadow-raised-sm) transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
+            "inline-flex min-h-12 items-center justify-center gap-2.5 rounded-sm border px-4 text-sm font-semibold shadow-card transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
             highlightProvider === "google"
-              ? "border-primary bg-primary-muted/25 text-primary ring-2 ring-primary/40 font-bold shadow-md animate-pulse"
+              ? "border-primary bg-primary-muted/25 text-primary ring-2 ring-primary/40 font-bold shadow-card animate-pulse"
               : "border-border bg-surface text-text-primary hover:border-primary/40 hover:bg-surface-hover hover:text-primary"
           )}
         >
@@ -103,7 +103,7 @@ export function OAuthButtons({
           aria-busy={isPending && activeProvider === "github"}
           aria-label="Continue with GitHub"
           onClick={() => handleOAuth("github")}
-          className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-text-primary shadow-(--shadow-raised-sm) transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-surface-hover hover:text-primary active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
+          className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-sm border border-border bg-surface px-4 text-sm font-semibold text-text-primary shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-surface-hover hover:text-primary active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
         >
           {isPending && activeProvider === "github" ? (
             <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden="true" />

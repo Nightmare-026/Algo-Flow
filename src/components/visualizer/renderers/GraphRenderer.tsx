@@ -180,7 +180,7 @@ export function GraphRenderer() {
 
   return (
     <div
-      className="flex items-center justify-center w-full h-full relative overflow-hidden rounded-2xl border border-border/60 bg-surface shadow-xs"
+      className="flex items-center justify-center w-full h-full relative overflow-hidden rounded-lg border border-border/60 bg-surface shadow-card"
       role="img"
       aria-label={`${currentStep.title}. Graph simulation with ${dataState.nodes.length} nodes and ${dataState.edges.length} edges`}
     >

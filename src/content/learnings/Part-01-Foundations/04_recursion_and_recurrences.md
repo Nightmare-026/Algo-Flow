@@ -1,13 +1,15 @@
 # Part 01: Foundations — Module 04: Recursion, Recurrence Relations & the Call Stack
 
-Recursion is mathematical induction realized as executable computer programs: an algorithm solves an instance of a problem by delegating to strictly smaller subproblems of identical structure until reaching a trivial base case. 
+Recursion is mathematical induction realized as executable computer programs: an algorithm solves an instance of a problem by delegating to strictly smaller subproblems of identical structure until reaching a trivial base case.
 
 Mastering recursion requires understanding both its **mathematical foundations** (recurrence relations, inductive invariants, and Master Theorem derivations) and its **physical hardware manifestations** (operating system call stack activation records, stack frame alignment, and cache performance).
 
 ---
 
 ### Learning Objectives
+
 By the end of this chapter, you will be able to:
+
 - Trace the anatomy of an **Activation Record (Stack Frame)** in x86-64 / ARM64 assembly architectures during recursive winding and unwinding.
 - Diagnose and prevent catastrophic **Stack Overflow** exceptions by computing stack memory ceilings under diverse operating systems.
 - Solve canonical recurrence relations using the **Substitution Method**, the **Recursion Tree Method**, and the **Master Theorem** across all three cases.
@@ -20,6 +22,7 @@ By the end of this chapter, you will be able to:
 ## 1. Recursion & The Call Stack: Hardware Anatomy
 
 Every mathematically sound recursive algorithm consists of two essential components:
+
 1. **Base Case(s)**: One or more termination conditions evaluated without making further recursive calls, halting the descent.
 2. **Recursive Step(s)**: Decomposes the problem instance $n$ into one or more strictly smaller subproblems ($n - 1$, $n / 2$, $n - k$), guaranteeing monotonic progress toward the base case.
 
@@ -57,10 +60,10 @@ Low Memory Address (Grows Downward)
 
 ```
                      RECURSIVE CALL STACK LIFECYCLE
-                     
+
     WINDING (Descent: Push Frames)        UNWINDING (Ascent: Pop & Return)
     ==============================        ================================
-    
+
     [ Frame 0: main()            ]        [ Frame 0: main()            ] <-- Final Result
     [ Frame 1: Factorial(3)      ]        [ Frame 1: Factorial(3)      ] <-- 3 * 2 = 6
     [ Frame 2: Factorial(2)      ]        [ Frame 2: Factorial(2)      ] <-- 2 * 1 = 2
@@ -78,26 +81,27 @@ int factorial(int n) {
 }
 ```
 
-| Step | Active Stack Frame | RSP Address | Parameter $n$ | Execution State | Deferred Operation / Return Value |
-| :---: | :--- | :---: | :---: | :--- | :--- |
-| **1** | `main()` | `0x7fff...fc00` | — | Invokes `factorial(4)` | Suspends waiting for return |
-| **2** | `factorial(4)` | `0x7fff...fbc0` | $4$ | Invokes `factorial(3)` | Suspends; deferred: $4 \times \text{Result}$ |
-| **3** | `factorial(3)` | `0x7fff...fb80` | $3$ | Invokes `factorial(2)` | Suspends; deferred: $3 \times \text{Result}$ |
-| **4** | `factorial(2)` | `0x7fff...fb40` | $2$ | Invokes `factorial(1)` | Suspends; deferred: $2 \times \text{Result}$ |
-| **5** | `factorial(1)` | `0x7fff...fb00` | $1$ | **Base Case Triggered** | **Returns 1 immediately** |
-| **6** | `factorial(2)` | `0x7fff...fb40` | $2$ | Unwinds; Frame 5 popped | Evaluates $2 \times 1 = \mathbf{2}$; returns $2$ |
-| **7** | `factorial(3)` | `0x7fff...fb80` | $3$ | Unwinds; Frame 4 popped | Evaluates $3 \times 2 = \mathbf{6}$; returns $6$ |
-| **8** | `factorial(4)` | `0x7fff...fbc0` | $4$ | Unwinds; Frame 3 popped | Evaluates $4 \times 6 = \mathbf{24}$; returns $24$ |
-| **9** | `main()` | `0x7fff...fc00` | — | Resumes execution | Receives final result $\mathbf{24}$ |
+| Step  | Active Stack Frame |   RSP Address   | Parameter $n$ | Execution State         | Deferred Operation / Return Value                  |
+| :---: | :----------------- | :-------------: | :-----------: | :---------------------- | :------------------------------------------------- |
+| **1** | `main()`           | `0x7fff...fc00` |       —       | Invokes `factorial(4)`  | Suspends waiting for return                        |
+| **2** | `factorial(4)`     | `0x7fff...fbc0` |      $4$      | Invokes `factorial(3)`  | Suspends; deferred: $4 \times \text{Result}$       |
+| **3** | `factorial(3)`     | `0x7fff...fb80` |      $3$      | Invokes `factorial(2)`  | Suspends; deferred: $3 \times \text{Result}$       |
+| **4** | `factorial(2)`     | `0x7fff...fb40` |      $2$      | Invokes `factorial(1)`  | Suspends; deferred: $2 \times \text{Result}$       |
+| **5** | `factorial(1)`     | `0x7fff...fb00` |      $1$      | **Base Case Triggered** | **Returns 1 immediately**                          |
+| **6** | `factorial(2)`     | `0x7fff...fb40` |      $2$      | Unwinds; Frame 5 popped | Evaluates $2 \times 1 = \mathbf{2}$; returns $2$   |
+| **7** | `factorial(3)`     | `0x7fff...fb80` |      $3$      | Unwinds; Frame 4 popped | Evaluates $3 \times 2 = \mathbf{6}$; returns $6$   |
+| **8** | `factorial(4)`     | `0x7fff...fbc0` |      $4$      | Unwinds; Frame 3 popped | Evaluates $4 \times 6 = \mathbf{24}$; returns $24$ |
+| **9** | `main()`           | `0x7fff...fc00` |       —       | Resumes execution       | Receives final result $\mathbf{24}$                |
 
 > [!CAUTION]
 > **Stack Overflow Mechanics**:
 > The call stack is bounded by OS process architecture:
+>
 > - **Linux / macOS**: Default stack size is typically **$8\text{ MB}$** (`ulimit -s`).
 > - **Windows (MSVC)**: Default stack size is **$1\text{ MB}$** (`/STACK:1048576`).
-> If a recursive function consumes $64\text{ bytes}$ per stack frame, a recursive depth of $n = 20,000$ requires:
-> $$20,000 \times 64\text{ bytes} = 1,280,000\text{ bytes} \approx 1.22\text{ MB}$$
-> This will crash on Windows with `EXCEPTION_STACK_OVERFLOW` (0xC00000FD) when the stack pointer crosses the OS guard page.
+>   If a recursive function consumes $64\text{ bytes}$ per stack frame, a recursive depth of $n = 20,000$ requires:
+>   $$20,000 \times 64\text{ bytes} = 1,280,000\text{ bytes} \approx 1.22\text{ MB}$$
+>   This will crash on Windows with `EXCEPTION_STACK_OVERFLOW` (0xC00000FD) when the stack pointer crosses the OS guard page.
 
 ---
 
@@ -107,16 +111,16 @@ A **Recurrence Relation** is an equation that recursively defines a sequence by 
 
 ### Primary Recurrence Archetypes
 
-| Recurrence Archetype | Mathematical Form | Canonical Algorithm | Asymptotic Solution |
-| :--- | :--- | :--- | :---: |
-| **Decrease-by-Constant** | $T(n) = T(n - 1) + O(1)$ | Linear Search, Factorial | $\Theta(n)$ |
-| **Decrease-by-Constant-Factor** | $T(n) = T(n / 2) + O(1)$ | Binary Search, Binary Exponentiation | $\Theta(\log n)$ |
-| **Divide-and-Conquer (Single Subproblem)** | $T(n) = T(n / 2) + O(n)$ | QuickSelect (Average Case) | $\Theta(n)$ |
-| **Divide-and-Conquer (Balanced Split)** | $T(n) = 2T(n / 2) + O(n)$ | MergeSort, Segment Tree Construction | $\Theta(n \log n)$ |
-| **Divide-and-Conquer (Sub-quadratic)** | $T(n) = 3T(n / 2) + O(n)$ | Karatsuba Fast Integer Multiplication | $\Theta(n^{\log_2 3}) \approx \Theta(n^{1.585})$ |
-| **Divide-and-Conquer (Matrix Strassen)** | $T(n) = 7T(n / 2) + O(n^2)$ | Strassen Matrix Multiplication | $\Theta(n^{\log_2 7}) \approx \Theta(n^{2.807})$ |
-| **Branching Decrease-by-Constant** | $T(n) = 2T(n - 1) + O(1)$ | Towers of Hanoi, Exhaustive Subsets | $\Theta(2^n)$ |
-| **Additive Branching** | $T(n) = T(n - 1) + T(n - 2) + O(1)$ | Naive Fibonacci | $\Theta(\phi^n) \approx \Theta(1.618^n)$ |
+| Recurrence Archetype                       | Mathematical Form                   | Canonical Algorithm                   |               Asymptotic Solution                |
+| :----------------------------------------- | :---------------------------------- | :------------------------------------ | :----------------------------------------------: |
+| **Decrease-by-Constant**                   | $T(n) = T(n - 1) + O(1)$            | Linear Search, Factorial              |                   $\Theta(n)$                    |
+| **Decrease-by-Constant-Factor**            | $T(n) = T(n / 2) + O(1)$            | Binary Search, Binary Exponentiation  |                 $\Theta(\log n)$                 |
+| **Divide-and-Conquer (Single Subproblem)** | $T(n) = T(n / 2) + O(n)$            | QuickSelect (Average Case)            |                   $\Theta(n)$                    |
+| **Divide-and-Conquer (Balanced Split)**    | $T(n) = 2T(n / 2) + O(n)$           | MergeSort, Segment Tree Construction  |                $\Theta(n \log n)$                |
+| **Divide-and-Conquer (Sub-quadratic)**     | $T(n) = 3T(n / 2) + O(n)$           | Karatsuba Fast Integer Multiplication | $\Theta(n^{\log_2 3}) \approx \Theta(n^{1.585})$ |
+| **Divide-and-Conquer (Matrix Strassen)**   | $T(n) = 7T(n / 2) + O(n^2)$         | Strassen Matrix Multiplication        | $\Theta(n^{\log_2 7}) \approx \Theta(n^{2.807})$ |
+| **Branching Decrease-by-Constant**         | $T(n) = 2T(n - 1) + O(1)$           | Towers of Hanoi, Exhaustive Subsets   |                  $\Theta(2^n)$                   |
+| **Additive Branching**                     | $T(n) = T(n - 1) + T(n - 2) + O(1)$ | Naive Fibonacci                       |     $\Theta(\phi^n) \approx \Theta(1.618^n)$     |
 
 ---
 
@@ -127,6 +131,7 @@ A **Recurrence Relation** is an equation that recursively defines a sequence by 
 ### Method 1: The Substitution Method (Guess & Inductive Proof)
 
 The substitution method operates in two distinct phases:
+
 1. **Formulate a Hypothesis**: Guess the form of the mathematical solution (often guided by asymptotic heuristics or recursion tree inspection).
 2. **Mathematical Induction**: Prove the bound holds for all $n \ge n_0$ and solve for constants $c$ and $n_0$.
 
@@ -135,6 +140,7 @@ The substitution method operates in two distinct phases:
 **Theorem**: Let $T(1) = 1$ and $T(n) = 2T(\lfloor n/2 \rfloor) + n$ for $n \ge 2$. Prove that $T(n) \le c n \log_2 n$ for some constant $c > 0$.
 
 **Proof by Strong Induction**:
+
 1. **Inductive Hypothesis**: Assume $T(k) \le c k \log_2 k$ holds for all $k < n$.
 2. **Inductive Step**:
    $$T(n) = 2T(\lfloor n/2 \rfloor) + n$$
@@ -210,13 +216,13 @@ Below is an SVG vector diagram illustrating a divide-and-conquer recursion tree 
 
 #### Mathematical Derivation via Level Summation
 
-| Level $i$ | Subproblem Size | Number of Nodes | Cost Per Node | Total Work at Level $i$ |
-| :---: | :---: | :---: | :---: | :--- |
-| **0** | $n$ | $1 = a^0$ | $f(n) = c n$ | $1 \cdot c n = c n$ |
-| **1** | $n/b$ | $a = 2^1$ | $c(n/2)$ | $2 \cdot c(n/2) = c n$ |
-| **2** | $n/b^2$ | $a^2 = 4$ | $c(n/4)$ | $4 \cdot c(n/4) = c n$ |
-| **$i$** | $n/b^i$ | $a^i$ | $c(n/b^i)$ | $a^i \cdot c(n/b^i) = c n \cdot (a/b)^i$ |
-| **$h = \log_b n$** | $1$ | $a^{\log_b n} = n^{\log_b a}$ | $\Theta(1)$ | $n^{\log_b a} \cdot \Theta(1) = \Theta(n^{\log_b a})$ |
+|     Level $i$      | Subproblem Size |        Number of Nodes        | Cost Per Node | Total Work at Level $i$                               |
+| :----------------: | :-------------: | :---------------------------: | :-----------: | :---------------------------------------------------- |
+|       **0**        |       $n$       |           $1 = a^0$           | $f(n) = c n$  | $1 \cdot c n = c n$                                   |
+|       **1**        |      $n/b$      |           $a = 2^1$           |   $c(n/2)$    | $2 \cdot c(n/2) = c n$                                |
+|       **2**        |     $n/b^2$     |           $a^2 = 4$           |   $c(n/4)$    | $4 \cdot c(n/4) = c n$                                |
+|      **$i$**       |     $n/b^i$     |             $a^i$             |  $c(n/b^i)$   | $a^i \cdot c(n/b^i) = c n \cdot (a/b)^i$              |
+| **$h = \log_b n$** |       $1$       | $a^{\log_b n} = n^{\log_b a}$ |  $\Theta(1)$  | $n^{\log_b a} \cdot \Theta(1) = \Theta(n^{\log_b a})$ |
 
 When $a = b$ (as in MergeSort where $a = 2, b = 2$):
 $$(a/b)^i = (2/2)^i = 1^i = 1$$
@@ -233,6 +239,7 @@ The Master Theorem provides an immediate, closed-form asymptotic solution for di
 $$T(n) = a \, T\left(\frac{n}{b}\right) + f(n) \quad \text{where } a \ge 1, b > 1$$
 
 Where:
+
 - $a$: The number of recursive subproblems generated per step.
 - $b$: The divisor by which the input size shrinks.
 - $f(n)$: The non-recursive cost to partition the input and combine/merge subproblem results.
@@ -248,7 +255,7 @@ The Master Theorem simply compares the growth rate of the combination cost $f(n)
 
 ```
                     THE THREE MASTER THEOREM REGIMES
-                    
+
    Case 1: Leaves Dominate            Case 2: Even Balance            Case 3: Root Dominates
    f(n) is polynomially smaller       f(n) matches n^(log_b a)        f(n) is polynomially larger
    than n^(log_b a)                                                   than n^(log_b a)
@@ -261,19 +268,22 @@ The Master Theorem simply compares the growth rate of the combination cost $f(n)
 ### Formal Cases of the Master Theorem
 
 #### Case 1: The Leaves Dominate ($f(n)$ is polynomially smaller)
+
 If there exists an $\varepsilon > 0$ such that:
 $$f(n) = O\left(n^{\log_b a - \varepsilon}\right)$$
 Then the leaf level accounts for asymptotically all computational work:
 $$T(n) = \Theta\left(n^{\log_b a}\right)$$
 
 #### Case 2: Evenly Balanced Work ($f(n)$ matches the watershed function)
+
 If there exists $k \ge 0$ such that:
 $$f(n) = \Theta\left(n^{\log_b a} \cdot \log^k n\right)$$
 Then work is evenly distributed across all $\log_b n$ levels:
 $$T(n) = \Theta\left(n^{\log_b a} \cdot \log^{k+1} n\right)$$
-*(For standard divide-and-conquer where $k = 0$, $T(n) = \Theta(n^{\log_b a} \log n)$).*
+_(For standard divide-and-conquer where $k = 0$, $T(n) = \Theta(n^{\log_b a} \log n)$)._
 
 #### Case 3: The Root Dominates ($f(n)$ is polynomially larger)
+
 If there exists an $\varepsilon > 0$ such that:
 $$f(n) = \Omega\left(n^{\log_b a + \varepsilon}\right)$$
 **AND** the **Regularity Condition** holds for some constant $c < 1$ and all sufficiently large $n$:
@@ -286,7 +296,9 @@ $$T(n) = \Theta(f(n))$$
 ### Master Theorem Masterclass: Four Benchmark Problems
 
 #### Example 1: Binary Search
+
 $$T(n) = T\left(\frac{n}{2}\right) + \Theta(1)$$
+
 - Parameters: $a = 1, b = 2, f(n) = 1$.
 - Watershed: $n^{\log_b a} = n^{\log_2 1} = n^0 = 1$.
 - Evaluation: $f(n) = \Theta(1) = \Theta(n^0 \log^0 n)$.
@@ -294,16 +306,20 @@ $$T(n) = T\left(\frac{n}{2}\right) + \Theta(1)$$
   $$T(n) = \Theta(1 \cdot \log^{0+1} n) = \mathbf{\Theta(\log n)}$$
 
 #### Example 2: Strassen's Fast Matrix Multiplication
+
 $$T(n) = 7 T\left(\frac{n}{2}\right) + \Theta(n^2)$$
+
 - Parameters: $a = 7, b = 2, f(n) = n^2$.
 - Watershed: $n^{\log_2 7} \approx n^{2.80735}$.
 - Evaluation: $f(n) = n^2 = O(n^{2.80735 - \varepsilon})$ where $\varepsilon \approx 0.807 > 0$.
 - Result: **Case 1** applies:
   $$T(n) = \mathbf{\Theta(n^{\log_2 7})} \approx \mathbf{\Theta(n^{2.81})}$$
-  *(A massive improvement over standard cubic matrix multiplication $\Theta(n^3)$).*
+  _(A massive improvement over standard cubic matrix multiplication $\Theta(n^3)$)._
 
 #### Example 3: Karatsuba Integer Multiplication
+
 $$T(n) = 3 T\left(\frac{n}{2}\right) + \Theta(n)$$
+
 - Parameters: $a = 3, b = 2, f(n) = n^1$.
 - Watershed: $n^{\log_2 3} \approx n^{1.585}$.
 - Evaluation: $f(n) = n^1 = O(n^{1.585 - \varepsilon})$ where $\varepsilon \approx 0.585 > 0$.
@@ -311,7 +327,9 @@ $$T(n) = 3 T\left(\frac{n}{2}\right) + \Theta(n)$$
   $$T(n) = \mathbf{\Theta(n^{\log_2 3})} \approx \mathbf{\Theta(n^{1.585})}$$
 
 #### Example 4: Root-Dominant Divide-and-Conquer
+
 $$T(n) = 2 T\left(\frac{n}{2}\right) + n^2$$
+
 - Parameters: $a = 2, b = 2, f(n) = n^2$.
 - Watershed: $n^{\log_2 2} = n^1$.
 - Evaluation: $f(n) = n^2 = \Omega(n^{1 + 1})$ ($\varepsilon = 1$).
@@ -330,7 +348,7 @@ The Master Theorem **cannot** be applied if any of the following conditions occu
 1. **Non-Polynomial Gap Between $f(n)$ and $n^{\log_b a}$**:
    $$T(n) = 2T(n/2) + n \log n$$
    Here $n^{\log_2 2} = n$. The ratio is $\frac{f(n)}{n} = \log n$. Although $\log n$ grows asymptotically, it does not grow by a **polynomial factor** $n^\varepsilon$ ($\log n \notin \Omega(n^\varepsilon)$ for any $\varepsilon > 0$).
-   *(Solution: Use the extended Master Theorem Case 2 with $k = 1 \implies \Theta(n \log^2 n)$).*
+   _(Solution: Use the extended Master Theorem Case 2 with $k = 1 \implies \Theta(n \log^2 n)$)._
 
 2. **$a$ is Not a Constant**:
    $$T(n) = n \, T(n/2) + n$$
@@ -338,8 +356,8 @@ The Master Theorem **cannot** be applied if any of the following conditions occu
 
 3. **Subproblems Have Unequal Sizes (Akra-Bazzi Domain)**:
    $$T(n) = T\left(\frac{n}{3}\right) + T\left(\frac{2n}{3}\right) + c n$$
-   The subproblems divide into asymmetric fractions ($1/3$ and $2/3$). 
-   *(Intuition: Solve via the Akra-Bazzi integral method or recursion tree summation to find $T(n) \in \Theta(n \log n)$).*
+   The subproblems divide into asymmetric fractions ($1/3$ and $2/3$).
+   _(Intuition: Solve via the Akra-Bazzi integral method or recursion tree summation to find $T(n) \in \Theta(n \log n)$)._
 
 ---
 
@@ -360,6 +378,7 @@ return factorial_tail(n - 1, acc * n);  <-- Caller has zero pending work; frame 
 ### Compiler Mechanics: Activation Record Overwrite
 
 When a modern optimizing compiler (`gcc -O2`, `clang -O3`, or Rust `rustc --release`) detects a tail call:
+
 1. Instead of emitting a `CALL` instruction (which pushes a new return address onto RSP), it emits a `JMP` instruction.
 2. It overwrites the parameter registers/slots in the **existing stack frame**.
 3. Memory complexity collapses from **$O(n)$ stack space to $O(1)$ stack space**!
@@ -394,6 +413,7 @@ sum_natural_tail(int, int):
 
 > [!IMPORTANT]
 > **Language Support for TCO**:
+>
 > - **C++ / C / Rust**: Fully supported by modern optimizing compilers under release flags (`-O2`, `-O3`, `--release`).
 > - **JavaScript (ECMAScript 6)**: Tail Call Optimization is in the ES6 specification, but only implemented by Safari's JavaScriptCore (V8 in Chrome and Node.js disabled it for call-stack debugging fidelity).
 > - **Python**: Python **intentionally does not support TCO** by design (Guido van Rossum prioritized full stack traces for debugging). Always rewrite deep recursion in Python into an explicit `while` loop!
@@ -466,10 +486,10 @@ long long sum_tail(long long n, long long acc = 0) {
 
 int main() {
     long long N = 100'000; // Safe for default stack
-    std::cout << "Sum (Tail-Recursive) for N = " << N << ": " 
+    std::cout << "Sum (Tail-Recursive) for N = " << N << ": "
               << sum_tail(N) << std::endl;
-              
-    std::cout << "Direct formula: " 
+
+    std::cout << "Direct formula: "
               << (N * (N + 1)) / 2 << std::endl;
     return 0;
 }
@@ -504,7 +524,7 @@ int main() {
 
 ## References & Academic Attribution
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 4: "Divide-and-Conquer". MIT Press.
-2. **Akra, M., & Bazzi, L.** (1998). *On the solution of marked recurrence equations*. Computational Optimization and Applications, 10(2), 195–210.
-3. **Bentley, J. L., Haken, D. T., & Saxe, J. B.** (1980). *A general method for solving divide-and-conquer recurrences*. ACM SIGACT News, 12(3), 36–44.
-4. **System V Application Binary Interface**: *AMD64 Architecture Processor Supplement* (Draft Version 1.0).
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 4: "Divide-and-Conquer". MIT Press.
+2. **Akra, M., & Bazzi, L.** (1998). _On the solution of marked recurrence equations_. Computational Optimization and Applications, 10(2), 195–210.
+3. **Bentley, J. L., Haken, D. T., & Saxe, J. B.** (1980). _A general method for solving divide-and-conquer recurrences_. ACM SIGACT News, 12(3), 36–44.
+4. **System V Application Binary Interface**: _AMD64 Architecture Processor Supplement_ (Draft Version 1.0).

@@ -7,8 +7,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type = "text", ...props }, ref) => {
     const hasCustomHeight = Boolean(className && /\bh-(?:6|7|8|9|10)\b/.test(className));
     const defaultClasses = hasCustomHeight
-      ? "rounded-[4px] border border-border-strong bg-surface text-text-primary transition-all duration-150 placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 aria-[invalid=true]:border-error aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-error/20 disabled:cursor-not-allowed disabled:opacity-50"
-      : "h-11 w-full rounded-[4px] border border-border-strong bg-surface px-3.5 text-sm text-text-primary transition-all duration-150 placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 aria-[invalid=true]:border-error aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-error/20 disabled:cursor-not-allowed disabled:opacity-50";
+      ? "rounded-sm border border-border-strong bg-surface text-text-primary transition-all duration-150 placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 aria-[invalid=true]:border-error aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-error/20 disabled:cursor-not-allowed disabled:opacity-50"
+      : "h-11 w-full rounded-sm border border-border-strong bg-surface px-3.5 text-sm text-text-primary transition-all duration-150 placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 aria-[invalid=true]:border-error aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-error/20 disabled:cursor-not-allowed disabled:opacity-50";
 
     return <input ref={ref} type={type} className={cn(defaultClasses, className)} {...props} />;
   }

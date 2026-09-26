@@ -29,7 +29,7 @@ export function PseudocodePanel({ slug, fallback, isVisible = true }: Pseudocode
 
   return (
     <section
-      className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-(--shadow-raised-sm)"
+      className="flex h-full flex-col overflow-hidden rounded-none border border-border bg-surface shadow-card"
       aria-label="Pseudocode"
     >
       <div className="flex min-h-9.5 shrink-0 items-center justify-between border-b border-border bg-surface px-3">
@@ -37,14 +37,14 @@ export function PseudocodePanel({ slug, fallback, isVisible = true }: Pseudocode
           Pseudocode
         </h2>
         {activeLineNum ? (
-          <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-2 py-0.5 rounded-md border border-primary/30 shadow-[0_0_8px_rgba(34,197,94,0.15)]">
+          <span className="font-mono text-[9px] font-bold text-primary bg-primary-muted px-2 py-0.5 rounded-sm border border-primary/30 shadow-[0_0_8px_rgba(34,197,94,0.15)]">
             Line {activeLineNum}
           </span>
         ) : null}
       </div>
       <div
         ref={scrollContainerRef}
-        className="flex-1 overflow-auto bg-pseudocode-panel-bg p-3 font-mono text-[11px] leading-5 text-emerald-100/90 shadow-(--shadow-inset) rounded-none"
+        className="flex-1 overflow-auto bg-pseudocode-panel-bg p-3 font-mono text-[11px] leading-5 text-emerald-100/90 shadow-inset rounded-none"
         role="region"
         aria-label="Pseudocode lines"
         tabIndex={0}

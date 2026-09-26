@@ -8,6 +8,7 @@
 Associative data structures represent the backbone of practical software engineering, powering database primary keys, symbol tables, routing caches, and in-memory key-value stores. While Hash Tables, Hash Maps, and Hash Sets are often used interchangeably in colloquial discussion, they embody distinct mathematical contracts, memory representations, and concurrency profiles. This chapter examines the core mechanics of associative arrays, dynamic rehashing invariants, modern runtime defenses against Hash-DoS attacks (such as Java 8+ bucket treeification and Python 3.6+ compact sparse/dense layouts), mathematical set algebra algorithms, and trade-offs against tree-based structures.
 
 ### Learning Objectives
+
 - Differentiate Hash Tables, Hash Maps, and Hash Sets by their formal mathematical invariants, interface contracts, and physical memory configurations.
 - Implement dynamic table rehashing and prove why existing elements must be recomputed via $h(k) \pmod{m_{\text{new}}}$ rather than copied verbatim.
 - Analyze production engine optimizations that foil Hash DoS attacks, including Java 8+ Red-Black tree bucket treeification and Python 3.6+ compact indices.
@@ -20,11 +21,11 @@ Associative data structures represent the backbone of practical software enginee
 
 ### 1. Conceptual Architecture & Associative Taxonomy
 
-| Associative Archetype | Mathematical Contract | Key Invariant | Value Payload | Primary Systems Role |
-| :--- | :--- | :--- | :--- | :--- |
-| **Hash Table** | Low-level bucket-indexed array | Keys must support hashing & equality | Directly stores key-value pairs in buckets | Foundational runtime building block |
-| **Hash Map** | Functional mapping $f: K \to V$ | Keys are strictly unique ($K \to V$) | Stores arbitrary client value $V$ per key | General-purpose dictionary / cache |
-| **Hash Set** | Mathematical finite set $S \subset \mathcal{U}$ | Elements are strictly unique ($E$) | Zero payload (value replaced by 0-byte sentinel) | High-speed deduplication & membership query |
+| Associative Archetype | Mathematical Contract                           | Key Invariant                        | Value Payload                                    | Primary Systems Role                        |
+| :-------------------- | :---------------------------------------------- | :----------------------------------- | :----------------------------------------------- | :------------------------------------------ |
+| **Hash Table**        | Low-level bucket-indexed array                  | Keys must support hashing & equality | Directly stores key-value pairs in buckets       | Foundational runtime building block         |
+| **Hash Map**          | Functional mapping $f: K \to V$                 | Keys are strictly unique ($K \to V$) | Stores arbitrary client value $V$ per key        | General-purpose dictionary / cache          |
+| **Hash Set**          | Mathematical finite set $S \subset \mathcal{U}$ | Elements are strictly unique ($E$)   | Zero payload (value replaced by 0-byte sentinel) | High-speed deduplication & membership query |
 
 ---
 
@@ -109,6 +110,7 @@ Associative data structures represent the backbone of practical software enginee
 ### 3. Production Multi-Language Implementations
 
 #### C++20 Templated Hash Map with Separate Chaining & RAII
+
 ```cpp
 #include <vector>
 #include <list>
@@ -203,6 +205,6 @@ public:
 
 ## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 11: *Hash Tables*, Chapter 13: *Red-Black Trees*. MIT Press.
-2. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.4: *Hashing*. Addison-Wesley.
-3. **Hettinger, R.** (2012). *Modern Dictionaries by More Compact Means*. Python Developers Conference (PyCon).
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 11: _Hash Tables_, Chapter 13: _Red-Black Trees_. MIT Press.
+2. **Knuth, D. E.** (1998). _The Art of Computer Programming, Volume 3: Sorting and Searching_ (2nd ed.), Section 6.4: _Hashing_. Addison-Wesley.
+3. **Hettinger, R.** (2012). _Modern Dictionaries by More Compact Means_. Python Developers Conference (PyCon).

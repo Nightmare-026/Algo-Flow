@@ -61,13 +61,13 @@ export default function MentalMathProgressPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-border bg-surface px-4 text-xs font-bold font-display text-text-secondary hover:text-text-primary hover:bg-surface-hover shadow-(--shadow-raised-sm) active:scale-95 transition-all cursor-pointer"
+            className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-border bg-surface px-4 text-xs font-bold font-display text-text-secondary hover:text-text-primary hover:bg-surface-hover shadow-card active:scale-95 transition-all cursor-pointer"
           >
             <span>Student Dashboard</span>
           </Link>
           <Link
             href="/mental-math/practice"
-            className="inline-flex min-h-11 items-center gap-2 rounded-2xl bg-primary px-5 text-xs font-bold font-display text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+            className="inline-flex min-h-11 items-center gap-2 rounded-sm bg-primary px-5 text-xs font-bold font-display text-white shadow-card hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
             <span>Launch Practice</span>
@@ -77,12 +77,12 @@ export default function MentalMathProgressPage() {
 
       {/* 4 Summary Stat Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
+        <div className="p-6 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Total Solved
             </span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-surface-secondary text-primary border border-border shadow-xs">
+            <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-surface-secondary text-primary border border-border shadow-xs">
               <Target className="w-4 h-4" />
             </span>
           </div>
@@ -96,12 +96,12 @@ export default function MentalMathProgressPage() {
           </div>
         </div>
 
-        <div className="p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
+        <div className="p-6 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Overall Accuracy
             </span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-surface-secondary text-primary border border-border shadow-xs">
+            <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-surface-secondary text-primary border border-border shadow-xs">
               <TrendingUp className="w-4 h-4" />
             </span>
           </div>
@@ -115,12 +115,12 @@ export default function MentalMathProgressPage() {
           </div>
         </div>
 
-        <div className="p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
+        <div className="p-6 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Active Streak
             </span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-surface-secondary text-primary border border-border shadow-xs">
+            <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-surface-secondary text-primary border border-border shadow-xs">
               <Flame className="w-4 h-4" />
             </span>
           </div>
@@ -135,12 +135,12 @@ export default function MentalMathProgressPage() {
           </div>
         </div>
 
-        <div className="p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
+        <div className="p-6 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-shadow">
           <div className="flex justify-between items-center">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
               Fastest Pace
             </span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-surface-secondary text-primary border border-border shadow-xs">
+            <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-surface-secondary text-primary border border-border shadow-xs">
               <Zap className="w-4 h-4" />
             </span>
           </div>
@@ -171,7 +171,7 @@ export default function MentalMathProgressPage() {
       )}
 
       {/* Full History Log */}
-      <section className="p-6 sm:p-8 rounded-[8px] border border-border bg-surface flex flex-col gap-4 shadow-card">
+      <section className="p-6 sm:p-8 rounded-lg border border-border bg-surface flex flex-col gap-4 shadow-card">
         <div>
           <h2 className="text-lg font-bold font-display text-text-primary tracking-tight">
             Complete Practice Session History
@@ -229,7 +229,7 @@ export default function MentalMathProgressPage() {
             </table>
           </div>
         ) : (
-          <div className="p-10 rounded-[8px] border border-border bg-surface-secondary/50 text-center flex flex-col items-center justify-center gap-2.5 shadow-xs">
+          <div className="p-10 rounded-lg border border-border bg-surface-secondary/50 text-center flex flex-col items-center justify-center gap-2.5 shadow-xs">
             <BarChart3 className="w-10 h-10 text-primary/60 mb-1" />
             <h3 className="text-base font-bold font-display text-text-primary tracking-tight">
               No Completed Sessions Recorded Yet
@@ -239,7 +239,7 @@ export default function MentalMathProgressPage() {
             </p>
             <Link
               href="/mental-math/practice"
-              className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-[4px] bg-primary px-6 text-xs font-bold font-display text-white shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all cursor-pointer"
+              className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-sm bg-primary px-6 text-xs font-bold font-display text-white shadow-card hover:bg-primary-hover active:scale-[0.99] transition-all cursor-pointer"
             >
               <span>Start Your First Drill</span>
             </Link>

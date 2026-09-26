@@ -78,7 +78,7 @@ interface SidebarProps {
 
 /**
  * Desktop Fixed Left Sidebar for Mental Math Studio
- * Spans full height from the bottom of Navbar (top-[4.5rem]) down to the bottom of the viewport (bottom-0).
+ * Spans full height from the bottom of Navbar (top-18) down to the bottom of the viewport (bottom-0).
  */
 export function MentalMathSidebar({ isCollapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
@@ -87,7 +87,7 @@ export function MentalMathSidebar({ isCollapsed, onToggle }: SidebarProps) {
     <aside
       aria-label="Mental Math Navigation"
       className={cn(
-        "hidden lg:flex flex-col fixed left-0 top-[4.5rem] bottom-0 z-40 border-r border-border/80 bg-surface/98 backdrop-blur-xl transition-all duration-300 ease-in-out select-none shadow-[2px_0_16px_rgba(0,0,0,0.03)]",
+        "hidden lg:flex flex-col fixed left-0 top-18 bottom-0 z-40 border-r border-border/80 bg-surface/98 backdrop-blur-xl transition-all duration-300 ease-in-out select-none shadow-[2px_0_16px_rgba(0,0,0,0.03)]",
         isCollapsed ? "w-16" : "w-60"
       )}
     >
@@ -101,13 +101,13 @@ export function MentalMathSidebar({ isCollapsed, onToggle }: SidebarProps) {
         {isCollapsed ? (
           <div
             title="Mental Math Calculation Studio"
-            className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm"
+            className="w-8 h-8 rounded-sm bg-primary/10 flex items-center justify-center text-primary shadow-sm"
           >
             <BrainCircuit className="w-4 h-4" />
           </div>
         ) : (
           <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 shadow-sm">
+            <div className="w-8 h-8 rounded-sm bg-primary/10 flex items-center justify-center text-primary shrink-0 shadow-sm">
               <BrainCircuit className="w-4 h-4" />
             </div>
             <div className="flex flex-col min-w-0">
@@ -134,10 +134,10 @@ export function MentalMathSidebar({ isCollapsed, onToggle }: SidebarProps) {
               href={item.href}
               title={isCollapsed ? item.label : undefined}
               className={cn(
-                "relative group flex items-center rounded-xl transition-all duration-200 font-display text-xs font-bold tracking-tight outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                "relative group flex items-center rounded-sm transition-all duration-200 font-display text-xs font-bold tracking-tight outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 isCollapsed ? "justify-center h-10 w-full px-0" : "gap-3 px-3.5 py-2.5 w-full",
                 isActive
-                  ? "bg-primary text-white shadow-(--shadow-raised-sm)"
+                  ? "bg-primary text-white shadow-card"
                   : "text-text-secondary hover:text-text-primary hover:bg-surface-hover active:scale-[0.98]"
               )}
             >
@@ -152,7 +152,7 @@ export function MentalMathSidebar({ isCollapsed, onToggle }: SidebarProps) {
 
               {/* Floating Tooltip for Collapsed State */}
               {isCollapsed && (
-                <div className="pointer-events-none absolute left-full ml-3 px-3 py-1.5 rounded-xl bg-surface-elevated text-text-primary text-xs font-semibold whitespace-nowrap opacity-0 shadow-xl border border-border group-hover:opacity-100 transition-opacity z-50">
+                <div className="pointer-events-none absolute left-full ml-3 px-3 py-1.5 rounded-sm bg-surface-elevated text-text-primary text-xs font-semibold whitespace-nowrap opacity-0 shadow-xl border border-border group-hover:opacity-100 transition-opacity z-50">
                   {item.label}
                 </div>
               )}
@@ -168,7 +168,7 @@ export function MentalMathSidebar({ isCollapsed, onToggle }: SidebarProps) {
           onClick={onToggle}
           title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           className={cn(
-            "w-full flex items-center rounded-xl p-2 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors outline-none cursor-pointer",
+            "w-full flex items-center rounded-sm p-2 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors outline-none cursor-pointer",
             isCollapsed ? "justify-center" : "justify-between"
           )}
         >
@@ -207,7 +207,7 @@ export function MentalMathBottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center min-w-[3rem] py-1 px-1.5 rounded-xl transition-all duration-150 shrink-0",
+                "flex flex-col items-center justify-center min-w-12 py-1 px-1.5 rounded-sm transition-all duration-150 shrink-0",
                 isActive
                   ? "text-primary font-bold bg-primary/10"
                   : "text-text-secondary hover:text-text-primary active:scale-95"

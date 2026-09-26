@@ -34,12 +34,12 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
   return (
     <div className="w-full max-w-3xl mx-auto flex flex-col gap-6 py-4 animate-in fade-in zoom-in-95 duration-300 pb-16">
       {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-[8px] p-6 sm:p-8 border border-border bg-surface text-center flex flex-col items-center shadow-card">
+      <div className="relative overflow-hidden rounded-lg p-6 sm:p-8 border border-border bg-surface text-center flex flex-col items-center shadow-card">
         <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
 
         <span
           className={cn(
-            "flex h-16 w-16 items-center justify-center rounded-[8px] border shadow-card mb-3 transition-transform duration-300 hover:scale-105",
+            "flex h-16 w-16 items-center justify-center rounded-lg border shadow-card mb-3 transition-transform duration-300 hover:scale-105",
             isPerfect
               ? "border-warning/40 bg-warning-muted/40 text-warning"
               : isHighAccuracy
@@ -78,7 +78,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
 
       {/* 4 Performance Metric Bento Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-        <div className="p-4 sm:p-5 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card">
+        <div className="p-4 sm:p-5 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card">
           <div className="flex items-center justify-between text-text-muted">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
               Accuracy
@@ -95,7 +95,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card">
+        <div className="p-4 sm:p-5 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card">
           <div className="flex items-center justify-between text-text-muted">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
               Avg Speed
@@ -112,7 +112,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card">
+        <div className="p-4 sm:p-5 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card">
           <div className="flex items-center justify-between text-text-muted">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
               Max Streak
@@ -129,7 +129,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card">
+        <div className="p-4 sm:p-5 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card">
           <div className="flex items-center justify-between text-text-muted">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
               Cadence
@@ -149,7 +149,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
         <Link
           href="/mental-math"
-          className="w-full sm:w-auto min-h-11 px-5 py-3 rounded-[4px] text-xs font-bold font-display text-text-secondary hover:text-text-primary border border-border bg-surface text-center transition-all shadow-card active:scale-95"
+          className="w-full sm:w-auto min-h-11 px-5 py-3 rounded-sm text-xs font-bold font-display text-text-secondary hover:text-text-primary border border-border bg-surface text-center transition-all shadow-card active:scale-95"
         >
           ← Return to Hub
         </Link>
@@ -159,7 +159,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
             <button
               onClick={onDrillWeakness}
               type="button"
-              className="flex-1 sm:flex-initial min-h-11 flex items-center justify-center gap-2 px-5 py-3 rounded-[4px] text-xs font-bold font-display text-warning border border-warning/30 bg-warning-muted/10 hover:bg-warning-muted/20 active:scale-95 transition-all shadow-card cursor-pointer"
+              className="flex-1 sm:flex-initial min-h-11 flex items-center justify-center gap-2 px-5 py-3 rounded-sm text-xs font-bold font-display text-warning border border-warning/30 bg-warning-muted/10 hover:bg-warning-muted/20 active:scale-95 transition-all shadow-card cursor-pointer"
             >
               <TrendingUp className="w-4 h-4" />
               <span>Drill Mistakes</span>
@@ -169,7 +169,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
           <button
             onClick={onRestart}
             type="button"
-            className="flex-1 sm:flex-initial min-h-11 flex items-center justify-center gap-2 px-6 py-3 rounded-[4px] text-xs font-bold font-display bg-primary text-white hover:bg-primary-hover shadow-card active:scale-95 transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial min-h-11 flex items-center justify-center gap-2 px-6 py-3 rounded-sm text-xs font-bold font-display bg-primary text-white hover:bg-primary-hover shadow-card active:scale-95 transition-all cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Practice Again</span>
@@ -180,7 +180,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
 
       {/* End-of-Session Strategy & Mistake Breakdown */}
       {summary.answers && summary.answers.length > 0 && (
-        <section className="p-6 sm:p-8 rounded-[8px] border border-border bg-surface flex flex-col gap-4 mt-2 shadow-card">
+        <section className="p-6 sm:p-8 rounded-lg border border-border bg-surface flex flex-col gap-4 mt-2 shadow-card">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-bold font-display text-text-primary flex items-center gap-2">
@@ -221,7 +221,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
                     <div className="flex items-center gap-3">
                       <span
                         className={cn(
-                          "flex h-8 w-8 items-center justify-center rounded-[4px] font-bold shadow-xs shrink-0",
+                          "flex h-8 w-8 items-center justify-center rounded-sm font-bold shadow-xs shrink-0",
                           isCorrect
                             ? "bg-success/15 text-success border border-success/30"
                             : "bg-error/15 text-error border border-error/30"
@@ -262,7 +262,7 @@ export function SessionResults({ summary, onRestart, onDrillWeakness }: SessionR
                   </div>
 
                   {ans.explanation && (
-                    <div className="ml-11 p-3 rounded-[4px] border border-border bg-surface-secondary text-xs font-mono text-text-secondary leading-relaxed shadow-xs">
+                    <div className="ml-11 p-3 rounded-sm border border-border bg-surface-secondary text-xs font-mono text-text-secondary leading-relaxed shadow-xs">
                       <span className="font-bold text-primary mr-1.5">💡 Strategy:</span>
                       <span>{ans.explanation}</span>
                     </div>

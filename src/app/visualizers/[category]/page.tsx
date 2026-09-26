@@ -64,7 +64,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           id="main-content"
           className="flex flex-1 items-center justify-center px-4 pb-20 pt-32"
         >
-          <div className="max-w-lg rounded-[8px] p-8 sm:p-10 text-center border border-border bg-surface shadow-elevated">
+          <div className="max-w-lg rounded-lg p-8 sm:p-10 text-center border border-border bg-surface shadow-elevated">
             <AlertCircle className="mx-auto h-12 w-12 text-error" aria-hidden="true" />
             <h1 className="mt-5 text-2xl sm:text-3xl font-extrabold font-display text-text-primary">
               Structure Not Found

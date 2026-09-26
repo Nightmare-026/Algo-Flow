@@ -41,11 +41,11 @@ export default async function LoginPage({
       description="Log in to return to saved algorithms, sessions, and learning progress."
     >
       {process.env.NODE_ENV === "development" && process.env.DEV_MOCK_AUTH === "true" ? (
-        <div className="mb-6 rounded-2xl border border-primary/30 bg-primary-muted/25 p-4 text-xs">
+        <div className="mb-6 rounded-lg border border-primary/30 bg-primary-muted/25 p-4 text-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <p className="font-bold text-primary flex items-center gap-1.5">
-                <span>ðŸ› ï¸</span> Local Dev Mode Active
+                <span>🛠️</span> Local Dev Mode Active
               </p>
               <p className="text-text-secondary mt-0.5">
                 You can bypass login and explore the dashboard directly with a mock developer
@@ -54,7 +54,7 @@ export default async function LoginPage({
             </div>
             <Link
               href="/dashboard"
-              className="inline-flex min-h-9 items-center justify-center rounded-xl bg-primary px-4 text-xs font-bold text-white shadow-(--shadow-raised-sm) hover:bg-primary-hover active:scale-95 transition-all shrink-0"
+              className="inline-flex min-h-9 items-center justify-center rounded-sm bg-primary px-4 text-xs font-bold text-white shadow-card hover:bg-primary-hover active:scale-95 transition-all shrink-0"
             >
               Open Dashboard →
             </Link>

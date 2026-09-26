@@ -263,7 +263,7 @@ export function CurriculumSidebar({
       <nav
         aria-label="Curriculum Navigation (Collapsed)"
         className={cn(
-          "flex flex-col items-center h-full py-2.5 px-1.5 rounded-2xl border border-border/80 bg-surface shadow-(--shadow-raised) select-none transition-all duration-300",
+          "flex flex-col items-center h-full py-2.5 px-1.5 rounded-lg border border-border/80 bg-surface shadow-card select-none transition-all duration-300",
           className
         )}
       >
@@ -272,7 +272,7 @@ export function CurriculumSidebar({
           <button
             type="button"
             onClick={onToggleCollapse}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-raised border border-border/60 transition-colors cursor-pointer mb-2.5 shadow-xs"
+            className="w-9 h-9 rounded-sm flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-raised border border-border/60 transition-colors cursor-pointer mb-2.5 shadow-xs"
             title="Expand curriculum sidebar"
             aria-label="Expand curriculum sidebar"
           >
@@ -282,7 +282,7 @@ export function CurriculumSidebar({
 
         {/* Mini Completion Pill */}
         <div
-          className="w-10 py-1.5 rounded-xl bg-surface-inset border border-border/50 flex flex-col items-center justify-center text-[10px] font-mono text-muted-foreground mb-2.5"
+          className="w-10 py-1.5 rounded-sm bg-surface-inset border border-border/50 flex flex-col items-center justify-center text-[10px] font-mono text-muted-foreground mb-2.5"
           title={`${completedCount} of ${totalChaptersCount} chapters completed (${completedPercent}%)`}
         >
           <span className="text-emerald-500 font-bold">{completedCount}</span>
@@ -306,7 +306,7 @@ export function CurriculumSidebar({
                   onClick={onNavigate}
                   title={`Part ${mod.partNumber.toString().padStart(2, "0")}: ${mod.title} (${modCompletedCount}/${mod.chapters.length} completed)`}
                   className={cn(
-                    "w-9 h-9 rounded-xl flex flex-col items-center justify-center text-[10px] font-mono font-bold transition-all relative cursor-pointer border",
+                    "w-9 h-9 rounded-sm flex flex-col items-center justify-center text-[10px] font-mono font-bold transition-all relative cursor-pointer border",
                     isCurrentModule
                       ? "bg-primary text-white border-primary/40 shadow-xs"
                       : "bg-surface-raised/60 hover:bg-surface-raised text-muted-foreground hover:text-foreground border-border/40 hover:border-border"
@@ -328,7 +328,7 @@ export function CurriculumSidebar({
         <button
           type="button"
           onClick={scrollToActive}
-          className="w-9 h-9 mt-2 rounded-xl flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-raised border border-border/40 transition-colors cursor-pointer"
+          className="w-9 h-9 mt-2 rounded-sm flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-raised border border-border/40 transition-colors cursor-pointer"
           title="Jump to active chapter"
           aria-label="Jump to active chapter"
         >
@@ -344,7 +344,7 @@ export function CurriculumSidebar({
       itemScope
       itemType="https://schema.org/SiteNavigationElement"
       className={cn(
-        "flex flex-col h-full overflow-hidden rounded-2xl border border-border/80 bg-surface shadow-(--shadow-raised) p-3 select-none transition-colors",
+        "flex flex-col h-full overflow-hidden rounded-lg border border-border/80 bg-surface shadow-card p-3 select-none transition-colors",
         className
       )}
     >

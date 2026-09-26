@@ -99,7 +99,7 @@ export function CircularLinkedListRenderer() {
                       >
                         {node.value}
                       </div>
-                      <div className="flex items-center justify-center w-6 sm:w-8 h-full bg-bg-surface-light border-l-2 border-border">
+                      <div className="flex items-center justify-center w-6 sm:w-8 h-full bg-surface-secondary border-l-2 border-border">
                         <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-text-muted" />
                       </div>
                     </div>
@@ -138,7 +138,7 @@ export function CircularLinkedListRenderer() {
         {/* Circular Return Arc (Tail -> Head) */}
         {orderedNodes.length > 1 && (
           <div className="w-full mt-6 pt-2 border-b-2 border-l-2 border-r-2 border-primary/40 rounded-b-3xl h-8 flex items-center justify-center relative">
-            <span className="text-[11px] font-mono font-bold text-primary px-3 bg-bg-surface rounded-full -bottom-2.5 absolute border border-primary/30">
+            <span className="text-[11px] font-mono font-bold text-primary px-3 bg-surface rounded-full -bottom-2.5 absolute border border-primary/30">
               loopback → HEAD
             </span>
           </div>

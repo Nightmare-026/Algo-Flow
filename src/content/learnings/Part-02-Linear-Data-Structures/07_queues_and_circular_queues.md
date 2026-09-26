@@ -8,6 +8,7 @@
 While stacks govern depth-first backtracking through Last-In, First-Out (LIFO) access, queues enforce fair, sequential scheduling through First-In, First-Out (FIFO) semantics. Elements enter at the rear and exit from the front, mirroring pipeline buffers and operating system task schedulers. However, naive linear array implementations suffer from pointer drift and false capacity exhaustion. This chapter analyzes the FIFO abstraction, diagnoses the false overflow failure mode, formalizes modulo-arithmetic circular ring buffers, details two-stack queue emulation with a rigorous potential method amortized proof, and explores lock-free kernel buffer architectures.
 
 ### Learning Objectives
+
 - Define the FIFO Queue Abstract Data Type and enforce boundary invariants for `front` and `rear` pointers.
 - Diagnose the "false overflow" (pointer drift) problem in linear array queues and quantify the $O(n)$ latency penalty of element shifting.
 - Implement circular queues (ring buffers) using modulo arithmetic to achieve $O(1)$ wrap-around insertions and deletions.
@@ -22,6 +23,7 @@ While stacks govern depth-first backtracking through Last-In, First-Out (LIFO) a
 ### 1. Conceptual Foundations & The FIFO Invariant
 
 A **Queue** is a restricted-access linear sequence governed by the **First-In, First-Out (FIFO)** discipline:
+
 - Elements are inserted strictly at the **Rear (Tail)** via `Enqueue`.
 - Elements are removed strictly from the **Front (Head)** via `Dequeue`.
 - The element that has spent the longest duration in the queue is always the next one to be serviced.
@@ -42,14 +44,14 @@ A **Queue** is a restricted-access linear sequence governed by the **First-In, F
 
 ### 2. The Queue Abstract Data Type (ADT) Interface
 
-| Operation | Description | Target Time | Auxiliary Space | Invariant / Precondition |
-| :--- | :--- | :---: | :---: | :--- |
-| **`Enqueue(x)`** | Append item $x$ to the `Rear` | $\Theta(1)$ | $O(1)$ | Fails with Overflow if bounded capacity is reached |
-| **`Dequeue()`** | Remove and return item at `Front` | $\Theta(1)$ | $O(1)$ | Fails with Underflow if queue is empty |
-| **`Front() / Peek()`**| Inspect value at `Front` without mutating | $\Theta(1)$ | $O(1)$ | Requires non-empty queue |
-| **`Rear()`** | Inspect value at `Rear` without mutating | $\Theta(1)$ | $O(1)$ | Requires non-empty queue |
-| **`IsEmpty()`** | Returns `true` if element count is zero | $\Theta(1)$ | $O(1)$ | Verified via `count == 0` or `front == -1` |
-| **`Size()`** | Returns current active element count | $\Theta(1)$ | $O(1)$ | Returns non-negative integer |
+| Operation              | Description                               | Target Time | Auxiliary Space | Invariant / Precondition                           |
+| :--------------------- | :---------------------------------------- | :---------: | :-------------: | :------------------------------------------------- |
+| **`Enqueue(x)`**       | Append item $x$ to the `Rear`             | $\Theta(1)$ |     $O(1)$      | Fails with Overflow if bounded capacity is reached |
+| **`Dequeue()`**        | Remove and return item at `Front`         | $\Theta(1)$ |     $O(1)$      | Fails with Underflow if queue is empty             |
+| **`Front() / Peek()`** | Inspect value at `Front` without mutating | $\Theta(1)$ |     $O(1)$      | Requires non-empty queue                           |
+| **`Rear()`**           | Inspect value at `Rear` without mutating  | $\Theta(1)$ |     $O(1)$      | Requires non-empty queue                           |
+| **`IsEmpty()`**        | Returns `true` if element count is zero   | $\Theta(1)$ |     $O(1)$      | Verified via `count == 0` or `front == -1`         |
+| **`Size()`**           | Returns current active element count      | $\Theta(1)$ |     $O(1)$      | Returns non-negative integer                       |
 
 ---
 
@@ -59,14 +61,15 @@ Consider a static array of capacity $C = 5$ with two pointer offsets: `front` an
 
 #### State Progression Demonstrating Drift
 
-| Step | Operation | `front` | `rear` | Array Contents $[0, 1, 2, 3, 4]$ | Status & Operational Diagnostics |
-| :---: | :--- | :---: | :---: | :--- | :--- |
-| **0** | Initial State | `-1` | `-1` | `[ _, _, _, _, _ ]` | Queue is empty |
-| **1** | Enqueue 5 items ($10..50$) | `0` | `4` | `[ 10, 20, 30, 40, 50 ]` | Array is legitimately 100% full |
-| **2** | Dequeue 3 items ($10, 20, 30$) | `3` | `4` | `[ _, _, _, 40, 50 ]` | Slots 0, 1, 2 vacated and available |
-| **3** | **Attempt `Enqueue(60)`** | `3` | `4` | `[ _, _, _, 40, 50 ]` | **CRASH: False Overflow!** |
+| Step  | Operation                      | `front` | `rear` | Array Contents $[0, 1, 2, 3, 4]$ | Status & Operational Diagnostics    |
+| :---: | :----------------------------- | :-----: | :----: | :------------------------------- | :---------------------------------- |
+| **0** | Initial State                  |  `-1`   |  `-1`  | `[ _, _, _, _, _ ]`              | Queue is empty                      |
+| **1** | Enqueue 5 items ($10..50$)     |   `0`   |  `4`   | `[ 10, 20, 30, 40, 50 ]`         | Array is legitimately 100% full     |
+| **2** | Dequeue 3 items ($10, 20, 30$) |   `3`   |  `4`   | `[ _, _, _, 40, 50 ]`            | Slots 0, 1, 2 vacated and available |
+| **3** | **Attempt `Enqueue(60)`**      |   `3`   |  `4`   | `[ _, _, _, 40, 50 ]`            | **CRASH: False Overflow!**          |
 
 #### Why Linear Arrays Fail for Queues:
+
 The condition `rear == capacity - 1` evaluates to `true` ($4 == 4$), so the linear queue reports an **Overflow Error** and rejects the item, even though $60\%$ of the physical array is vacant!
 
 To reuse the vacated slots at the front of a linear array, the implementation would have to shift all remaining elements back to index 0 on every dequeue:
@@ -184,13 +187,17 @@ When slot $C-1$ is reached, $((C-1) + 1) \pmod C = 0$. If slot $0$ was previousl
 When `front == rear`, does it signify that the queue is completely empty or completely full? Two distinct architectural patterns resolve this ambiguity:
 
 #### Strategy A: Explicit Count Variable (Recommended)
+
 Maintain an internal integer `count` tracking the active element count ($0 \le \text{count} \le \text{Capacity}$):
+
 - **Empty Condition**: $\text{count} == 0$
 - **Full Condition**: $\text{count} == \text{Capacity}$
 - **Available Slots**: $\text{Capacity} - \text{count}$
 
 #### Strategy B: Reserved Empty Slot (Classic Textbook)
+
 Sacrifice one array slot permanently. An array of size $C$ holds at most $C - 1$ elements:
+
 - **Empty Condition**: $\text{front} == \text{rear}$
 - **Full Condition**: $(\text{rear} + 1) \pmod C == \text{front}$
 
@@ -200,19 +207,19 @@ Sacrifice one array slot permanently. An array of size $C$ holds at most $C - 1$
 
 Let Capacity $C = 5$. We trace a complete lifecycle demonstrating wrap-around:
 
-| Step | Operation | `front` | `rear` | `count` | Physical Array $[0, 1, 2, 3, 4]$ | Event / Notes |
-| :---: | :--- | :---: | :---: | :---: | :---: | :--- |
-| **0** | `Init(5)` | `0` | `-1` | `0` | `[ _, _, _, _, _ ]` | Buffer allocated empty |
-| **1** | `Enqueue(10)` | `0` | `0` | `1` | `[ 10, _, _, _, _ ]` | Standard insert |
-| **2** | `Enqueue(20)` | `0` | `1` | `2` | `[ 10, 20, _, _, _ ]` | Standard insert |
-| **3** | `Enqueue(30)` | `0` | `2` | `3` | `[ 10, 20, 30, _, _ ]` | Standard insert |
-| **4** | `Dequeue()` $\to 10$ | `1` | `2` | `2` | `[ (10), 20, 30, _, _ ]` | Slot 0 vacated (`front = 1`) |
-| **5** | `Dequeue()` $\to 20$ | `2` | `2` | `1` | `[ (10), (20), 30, _, _ ]` | Slot 1 vacated (`front = 2`) |
-| **6** | `Enqueue(40)` | `2` | `3` | `2` | `[ _, _, 30, 40, _ ]` | Standard insert |
-| **7** | `Enqueue(50)` | `2` | `4` | `3` | `[ _, _, 30, 40, 50 ]` | Physical boundary reached |
-| **8** | **`Enqueue(60)`** | `2` | **`0`** | `4` | `[ 60, _, 30, 40, 50 ]` | **WRAP-AROUND: $(4+1)\%5 = 0$! Reclaims Slot 0!** |
-| **9** | **`Enqueue(70)`** | `2` | **`1`** | `5` | `[ 60, 70, 30, 40, 50 ]` | **WRAP-AROUND: $(0+1)\%5 = 1$! Queue 100% Full!** |
-| **10**| `Enqueue(80)` | `2` | `1` | `5` | — | **Overflow cleanly rejected!** |
+|  Step  | Operation            | `front` | `rear`  | `count` | Physical Array $[0, 1, 2, 3, 4]$ | Event / Notes                                     |
+| :----: | :------------------- | :-----: | :-----: | :-----: | :------------------------------: | :------------------------------------------------ |
+| **0**  | `Init(5)`            |   `0`   |  `-1`   |   `0`   |       `[ _, _, _, _, _ ]`        | Buffer allocated empty                            |
+| **1**  | `Enqueue(10)`        |   `0`   |   `0`   |   `1`   |       `[ 10, _, _, _, _ ]`       | Standard insert                                   |
+| **2**  | `Enqueue(20)`        |   `0`   |   `1`   |   `2`   |      `[ 10, 20, _, _, _ ]`       | Standard insert                                   |
+| **3**  | `Enqueue(30)`        |   `0`   |   `2`   |   `3`   |      `[ 10, 20, 30, _, _ ]`      | Standard insert                                   |
+| **4**  | `Dequeue()` $\to 10$ |   `1`   |   `2`   |   `2`   |     `[ (10), 20, 30, _, _ ]`     | Slot 0 vacated (`front = 1`)                      |
+| **5**  | `Dequeue()` $\to 20$ |   `2`   |   `2`   |   `1`   |    `[ (10), (20), 30, _, _ ]`    | Slot 1 vacated (`front = 2`)                      |
+| **6**  | `Enqueue(40)`        |   `2`   |   `3`   |   `2`   |      `[ _, _, 30, 40, _ ]`       | Standard insert                                   |
+| **7**  | `Enqueue(50)`        |   `2`   |   `4`   |   `3`   |      `[ _, _, 30, 40, 50 ]`      | Physical boundary reached                         |
+| **8**  | **`Enqueue(60)`**    |   `2`   | **`0`** |   `4`   |     `[ 60, _, 30, 40, 50 ]`      | **WRAP-AROUND: $(4+1)\%5 = 0$! Reclaims Slot 0!** |
+| **9**  | **`Enqueue(70)`**    |   `2`   | **`1`** |   `5`   |     `[ 60, 70, 30, 40, 50 ]`     | **WRAP-AROUND: $(0+1)\%5 = 1$! Queue 100% Full!** |
+| **10** | `Enqueue(80)`        |   `2`   |   `1`   |   `5`   |                —                 | **Overflow cleanly rejected!**                    |
 
 ---
 
@@ -233,9 +240,11 @@ Dequeue():
 ```
 
 #### Formal Amortized Proof via the Physicist's Potential Method:
+
 Define the potential function $\Phi$ of the two-stack system at state $t$ as:
 $$\Phi(D_t) = 2 \cdot |S_{\text{in}}|$$
 Where $|S_{\text{in}}|$ is the number of elements currently stored in the input stack.
+
 - Notice that $\Phi(D_0) = 0$ (initially empty) and $\Phi(D_t) \ge 0$ for all $t \ge 0$.
 
 1. **Amortized Cost of `Enqueue(x)`**:
@@ -253,7 +262,7 @@ Where $|S_{\text{in}}|$ is the number of elements currently stored in the input 
      - Actual work $c_i = 2k + 1$ ($k$ pops from $S_{\text{in}}$, $k$ pushes to $S_{\text{out}}$, plus $1$ final pop).
      - $\Delta \Phi = 2 \cdot 0 - 2k = -2k$.
      - Amortized cost:
-     $$\hat{c}_i = c_i + \Delta \Phi = (2k + 1) - 2k = 1 = \Theta(1)$$
+       $$\hat{c}_i = c_i + \Delta \Phi = (2k + 1) - 2k = 1 = \Theta(1)$$
 
 Therefore, every operation executes in **amortized $\Theta(1)$ time**. $\blacksquare$
 
@@ -262,6 +271,7 @@ Therefore, every operation executes in **amortized $\Theta(1)$ time**. $\blacksq
 ### 5. Systems Engineering: Kernel Ring Buffers & Bitwise Masking
 
 In high-performance operating system engineering (such as the Linux kernel's `kfifo` subsystem):
+
 - Capacities are constrained to powers of two: $C = 2^k$.
 - Integer modulo division (`id % C`) translates to an expensive multi-cycle CPU instruction (`idiv` on x86, taking 15–40 clock cycles).
 - By constraining $C = 2^k$, modulo is replaced with a single-cycle bitwise AND mask:
@@ -279,6 +289,7 @@ Furthermore, by decoupling `in` and `out` into 64-bit monotonically increasing u
 ### 6. Production Multi-Language Implementations
 
 #### A. C++20 Ring Buffer with Bitwise Masking & Template Safety
+
 ```cpp
 #include <iostream>
 #include <vector>
@@ -350,7 +361,7 @@ public:
 
 ## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: *Elementary Data Structures*. MIT Press.
-2. **Corbet, J., Rubini, A., & Kroah-Hartman, G.** (2005). *Linux Device Drivers* (3rd ed.), Chapter 11: *Data Types in the Kernel (kfifo)*. O'Reilly Media.
-3. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Section 1.3: *Bags, Queues, and Stacks*. Addison-Wesley.
-4. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: *Linear Lists*. Addison-Wesley.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 10: _Elementary Data Structures_. MIT Press.
+2. **Corbet, J., Rubini, A., & Kroah-Hartman, G.** (2005). _Linux Device Drivers_ (3rd ed.), Chapter 11: _Data Types in the Kernel (kfifo)_. O'Reilly Media.
+3. **Sedgewick, R., & Wayne, K.** (2011). _Algorithms_ (4th ed.), Section 1.3: _Bags, Queues, and Stacks_. Addison-Wesley.
+4. **Knuth, D. E.** (1997). _The Art of Computer Programming, Volume 1: Fundamental Algorithms_ (3rd ed.), Section 2.2: _Linear Lists_. Addison-Wesley.

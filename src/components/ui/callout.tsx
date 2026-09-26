@@ -53,7 +53,7 @@ export const Callout = forwardRef<HTMLDivElement, CalloutProps>(
         ref={ref}
         role={role}
         className={cn(
-          "flex items-start gap-3 rounded-[8px] border p-4 text-xs font-semibold leading-relaxed shadow-card",
+          "flex items-start gap-3 rounded-lg border p-4 text-xs font-semibold leading-relaxed shadow-card",
           variantStyles[variant],
           className
         )}

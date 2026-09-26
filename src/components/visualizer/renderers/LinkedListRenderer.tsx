@@ -96,7 +96,7 @@ export function LinkedListRenderer() {
                       {node.value}
                     </div>
                     {/* Pointer Area */}
-                    <div className="flex items-center justify-center w-6 sm:w-8 h-full bg-bg-surface-light border-l-2 border-border">
+                    <div className="flex items-center justify-center w-6 sm:w-8 h-full bg-surface-secondary border-l-2 border-border">
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-text-muted" />
                     </div>
                   </div>
@@ -163,7 +163,7 @@ export function LinkedListRenderer() {
                     >
                       {node.value}
                     </div>
-                    <div className="flex items-center justify-center w-6 sm:w-8 h-full bg-bg-surface-light border-l-2 border-border border-dashed">
+                    <div className="flex items-center justify-center w-6 sm:w-8 h-full bg-surface-secondary border-l-2 border-border border-dashed">
                       <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-text-muted/50" />
                     </div>
                   </motion.div>

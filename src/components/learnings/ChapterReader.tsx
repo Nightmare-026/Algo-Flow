@@ -127,7 +127,7 @@ export function ChapterReader({
       </nav>
 
       {/* Top Header Card */}
-      <header className="rounded-[8px] border border-border bg-surface-secondary p-5 sm:p-7 mb-8 shadow-card">
+      <header className="rounded-lg border border-border bg-surface-secondary p-5 sm:p-7 mb-8 shadow-card">
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs md:text-sm text-muted-foreground pb-4 border-b border-border/40">
           <div className="flex items-center gap-2 font-medium flex-wrap">
             <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-semibold text-xs">
@@ -291,7 +291,7 @@ export function ChapterReader({
 
       {/* Visualizer Deep Links Callout (Accurate /visualizer/[slug] singular links) */}
       {chapter.visualizerLinks && chapter.visualizerLinks.length > 0 && (
-        <div className="rounded-[8px] border-2 border-primary/30 bg-primary/5 p-5 md:p-6 mb-8 shadow-card">
+        <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-5 md:p-6 mb-8 shadow-card">
           <div className="flex items-center gap-2 text-primary font-bold text-sm mb-2">
             <Compass className="w-5 h-5 animate-spin-slow" />
             <span>Interactive Simulator Available</span>
@@ -305,7 +305,7 @@ export function ChapterReader({
               <Link
                 key={link.slug}
                 href={`/visualizer/${link.slug}`}
-                className="flex items-center justify-between p-3.5 rounded-[4px] border border-primary/20 bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-xs"
+                className="flex items-center justify-between p-3.5 rounded-sm border border-primary/20 bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-xs"
               >
                 <div className="pr-2">
                   <div className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">
@@ -349,7 +349,7 @@ export function ChapterReader({
         className="flex flex-col gap-5 mt-16 pt-8 border-t border-border/80"
       >
         {/* Completion Prompt Banner */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-[8px] border border-border bg-surface-secondary shadow-card">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-lg border border-border bg-surface-secondary shadow-card">
           <div className="flex items-center gap-3">
             <div
               className={cn(
@@ -372,7 +372,7 @@ export function ChapterReader({
           <button
             onClick={toggleCompleted}
             className={cn(
-              "px-4 py-2 rounded-[4px] text-xs font-semibold transition-all cursor-pointer shrink-0 shadow-card",
+              "px-4 py-2 rounded-sm text-xs font-semibold transition-all cursor-pointer shrink-0 shadow-card",
               isCompleted
                 ? "bg-surface border border-border text-muted-foreground hover:text-foreground"
                 : "bg-primary text-white hover:bg-primary-hover"
@@ -387,14 +387,14 @@ export function ChapterReader({
           {navigation.previous ? (
             <Link
               href={`/learnings/${navigation.previous.moduleSlug}/${navigation.previous.chapterSlug}`}
-              className="flex items-center gap-3 p-4 rounded-[8px] border border-border bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-card text-left"
+              className="flex items-center gap-3 p-4 rounded-lg border border-border bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-card text-left"
             >
               <ChevronLeft className="w-5 h-5 text-primary shrink-0 transition-transform group-hover:-translate-x-1" />
               <div className="overflow-hidden">
                 <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                   <span>Previous Chapter</span>
                   <span
-                    className="px-1.5 py-0.5 rounded-[4px] bg-surface-secondary text-[9px] border border-border font-mono text-muted-foreground/80 inline-flex items-center select-none"
+                    className="px-1.5 py-0.5 rounded-sm bg-surface-secondary text-[9px] border border-border font-mono text-muted-foreground/80 inline-flex items-center select-none"
                     aria-hidden="true"
                   >
                     Key: [
@@ -412,12 +412,12 @@ export function ChapterReader({
           {navigation.next ? (
             <Link
               href={`/learnings/${navigation.next.moduleSlug}/${navigation.next.chapterSlug}`}
-              className="flex items-center justify-between gap-3 p-4 rounded-[8px] border border-border bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-card text-right sm:col-start-2"
+              className="flex items-center justify-between gap-3 p-4 rounded-lg border border-border bg-surface hover:bg-surface-secondary hover:border-primary/40 transition-all group shadow-card text-right sm:col-start-2"
             >
               <div className="overflow-hidden">
                 <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center justify-end gap-1.5">
                   <span
-                    className="px-1.5 py-0.5 rounded-[4px] bg-surface-secondary text-[9px] border border-border font-mono text-muted-foreground/80 inline-flex items-center select-none"
+                    className="px-1.5 py-0.5 rounded-sm bg-surface-secondary text-[9px] border border-border font-mono text-muted-foreground/80 inline-flex items-center select-none"
                     aria-hidden="true"
                   >
                     Key: ]

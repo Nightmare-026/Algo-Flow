@@ -72,10 +72,10 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
           {/* Brand Logo */}
           <Link
             href="/"
-            className="group flex min-h-11 items-center gap-3 rounded-[4px] pr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="group flex min-h-11 items-center gap-3 rounded-sm pr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="AlgoFlow home"
           >
-            <span className="relative flex h-10 w-10 items-center justify-center rounded-[4px] border border-border-subtle bg-surface shadow-card transition-transform duration-150 group-hover:scale-105">
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-sm border border-border-subtle bg-surface shadow-card transition-transform duration-150 group-hover:scale-105">
               <Image
                 src="/logo.png"
                 alt="AlgoFlow logo - Interactive Data Structures & Algorithms Visualizer"
@@ -101,7 +101,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   href={link.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "relative inline-flex min-h-10 items-center gap-2 rounded-[4px] px-3.5 text-sm font-semibold transition-colors duration-150 z-10 select-none",
+                    "relative inline-flex min-h-10 items-center gap-2 rounded-sm px-3.5 text-sm font-semibold transition-colors duration-150 z-10 select-none",
                     active
                       ? "font-bold text-white shadow-card"
                       : "text-text-secondary hover:text-text-primary hover:bg-surface-hover/80"
@@ -110,7 +110,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   {active && (
                     <motion.div
                       layoutId="activeNavPill"
-                      className="absolute inset-0 rounded-[4px] bg-primary shadow-card -z-10"
+                      className="absolute inset-0 rounded-sm bg-primary shadow-card -z-10"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -137,7 +137,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                   href="/dashboard"
                   title={`Signed in as ${user.email} - View Dashboard`}
                   aria-label={`Go to dashboard for ${user.email}`}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-[4px] border border-border-subtle bg-surface font-display text-sm font-bold text-text-primary shadow-card transition-colors duration-150 hover:border-primary hover:text-primary active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-border-subtle bg-surface font-display text-sm font-bold text-text-primary shadow-card transition-colors duration-150 hover:border-primary hover:text-primary active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                 >
                   {(
                     user.user_metadata?.first_name ||
@@ -164,7 +164,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-[4px] border border-border-subtle bg-surface text-text-secondary shadow-card hover:text-primary active:scale-95 md:hidden cursor-pointer"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-border-subtle bg-surface text-text-secondary shadow-card hover:text-primary active:scale-95 md:hidden cursor-pointer"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation"
@@ -193,7 +193,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                className="relative z-50 overflow-hidden border-t border-border-subtle bg-surface shadow-elevated rounded-b-[8px] md:hidden"
+                className="relative z-50 overflow-hidden border-t border-border-subtle bg-surface shadow-elevated rounded-b-lg md:hidden"
               >
                 <div className="grid gap-2 py-4 px-2">
                   {navLinks.map((link) => {
@@ -206,7 +206,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                         onClick={() => setMobileMenuOpen(false)}
                         aria-current={active ? "page" : undefined}
                         className={cn(
-                          "flex min-h-11 items-center gap-3 rounded-[4px] px-4 text-sm font-semibold transition-colors",
+                          "flex min-h-11 items-center gap-3 rounded-sm px-4 text-sm font-semibold transition-colors",
                           active
                             ? "border border-primary bg-primary font-bold text-white shadow-card"
                             : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
@@ -230,7 +230,7 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
                       <form action={signout}>
                         <button
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex min-h-11 w-full items-center gap-2 rounded-[4px] px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error cursor-pointer"
+                          className="flex min-h-11 w-full items-center gap-2 rounded-sm px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error cursor-pointer"
                           type="submit"
                         >
                           <LogOut className="h-4 w-4" aria-hidden="true" />

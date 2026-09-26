@@ -25,7 +25,7 @@ export default async function VerifyEmailPage() {
       description="Open the verification message from AlgoFlow to finish creating your account."
     >
       <div className="text-center">
-        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-muted text-primary-active shadow-(--shadow-inset)">
+        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-primary-muted text-primary-active shadow-card">
           <MailCheck className="h-8 w-8" />
         </span>
         <p className="mt-6 text-sm leading-6 text-text-secondary">

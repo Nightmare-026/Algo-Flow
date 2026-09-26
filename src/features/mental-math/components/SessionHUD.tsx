@@ -85,7 +85,7 @@ export function SessionHUD({
 
   return (
     <header
-      className="w-full flex flex-col gap-2.5 sm:gap-3 max-w-7xl mx-auto p-3 sm:p-4 rounded-[8px] border border-border bg-surface shadow-card transition-all"
+      className="w-full flex flex-col gap-2.5 sm:gap-3 max-w-7xl mx-auto p-3 sm:p-4 rounded-lg border border-border bg-surface shadow-card transition-all"
       aria-label="Session status"
     >
       {/* Top Telemetry Row */}
@@ -138,7 +138,7 @@ export function SessionHUD({
           {timeRemainingSeconds !== undefined && timeRemainingSeconds !== null && (
             <div
               className={cn(
-                "flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-[4px] border font-mono text-xs font-bold shadow-xs transition-colors",
+                "flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-sm border font-mono text-xs font-bold shadow-xs transition-colors",
                 timeRemainingSeconds <= 10
                   ? "text-error border-error/40 bg-error-muted/20 animate-pulse"
                   : "text-text-primary border-border bg-surface-secondary"
@@ -150,7 +150,7 @@ export function SessionHUD({
             </div>
           )}
 
-          <div className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-[4px] border border-border bg-surface-secondary shadow-xs font-mono text-xs font-bold">
+          <div className="flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-sm border border-border bg-surface-secondary shadow-xs font-mono text-xs font-bold">
             <span className="text-text-muted text-[10px] font-medium">PTS</span>
             <span className="text-primary font-extrabold tabular-nums">
               {score.toLocaleString()}
@@ -162,7 +162,7 @@ export function SessionHUD({
           {/* Audio toggle */}
           <button
             onClick={toggleSound}
-            className="flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-text-secondary hover:text-primary hover:border-primary/40 shadow-xs active:scale-95 transition-all cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-surface text-text-secondary hover:text-primary hover:border-primary/40 shadow-xs active:scale-95 transition-all cursor-pointer"
             aria-label={isMuted ? "Unmute audio" : "Mute audio"}
             title={isMuted ? "Unmute audio" : "Mute audio"}
             type="button"
@@ -178,7 +178,7 @@ export function SessionHUD({
           {mode !== "speed" && (
             <button
               onClick={onPauseToggle}
-              className="flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-text-secondary hover:text-primary hover:border-primary/40 shadow-xs active:scale-95 transition-all cursor-pointer"
+              className="flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-surface text-text-secondary hover:text-primary hover:border-primary/40 shadow-xs active:scale-95 transition-all cursor-pointer"
               aria-label={isPaused ? "Resume session" : "Pause session"}
               title={isPaused ? "Resume session" : "Pause session (Esc)"}
               type="button"
@@ -195,7 +195,7 @@ export function SessionHUD({
           {onOpenConfig && (
             <button
               onClick={onOpenConfig}
-              className="flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-text-secondary hover:text-primary hover:border-primary/40 shadow-xs active:scale-95 transition-all cursor-pointer"
+              className="flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-surface text-text-secondary hover:text-primary hover:border-primary/40 shadow-xs active:scale-95 transition-all cursor-pointer"
               aria-label="Change drill settings"
               title="Change Drill Settings"
               type="button"
@@ -207,7 +207,7 @@ export function SessionHUD({
           {/* Abort button */}
           <button
             onClick={onAbort}
-            className="flex h-8 w-8 items-center justify-center rounded-[4px] border border-border bg-surface text-text-secondary hover:text-error hover:border-error/40 shadow-xs active:scale-95 transition-all cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-surface text-text-secondary hover:text-error hover:border-error/40 shadow-xs active:scale-95 transition-all cursor-pointer"
             aria-label="Exit session"
             title="Exit Session"
             type="button"
@@ -226,7 +226,7 @@ export function SessionHUD({
           </span>
           <span className="font-bold text-primary tabular-nums">{progressPercent}%</span>
         </div>
-        <div className="w-full bg-surface-inset h-1.5 rounded-full overflow-hidden border border-border shadow-(--shadow-inset)">
+        <div className="w-full bg-surface-inset h-1.5 rounded-full overflow-hidden border border-border shadow-inset">
           <div
             className="bg-linear-to-r from-primary to-emerald-400 h-full rounded-full transition-all duration-300 ease-out shadow-sm"
             style={{ width: `${progressPercent}%` }}

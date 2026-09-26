@@ -8,6 +8,7 @@
 Character sequences and multi-dimensional matrices represent two vital linear abstractions mapped directly onto hardware memory buses. While strings translate binary code points into structured text with significant mutability and encoding considerations, matrices flatten multi-dimensional Cartesian coordinates into linear RAM addresses. This chapter explores character memory architectures, UTF-8 variable-width encodings, row-major versus column-major address calculations, cache line stride penalties, in-place matrix rotations, and staircase search paradigms.
 
 ### Learning Objectives
+
 - Compute byte offsets and memory layouts for C-style null-terminated strings and modern length-prefixed string slice headers.
 - Contrast ASCII, UTF-8, and UTF-16 encoding trade-offs and evaluate memory overheads of string immutability in runtime garbage collectors.
 - Derive physical memory address equations for multi-dimensional arrays in row-major and column-major orderings.
@@ -29,43 +30,49 @@ Actual string internals depend on the language and runtime (and may involve smal
 Two primary architectural models govern how strings are demarcated in memory:
 
 #### A. C-Style Null-Terminated Strings
+
 C-style strings (`char*`) are unbroken arrays of 1-byte ASCII values terminated by a special sentinel byte: the null terminator (`'\0'`, numerical value `0x00`).
+
 - **Memory Footprint**: A string of length $n$ requires $n + 1$ physical bytes.
 - **Length Calculation**: Determining string length requires scanning every byte until `'\0'` is encountered, executing in $\Theta(n)$ time.
 
 #### B. Length-Prefixed Strings (One Common Implementation Pattern)
+
 Some implementations (for example, certain Rust/Go/C++ string types) use a small descriptor referencing a backing buffer, often with pointer, length, and (where applicable) capacity fields. Sizes depend on ABI and implementation.
+
 - **Typical Descriptor (example on a 64-bit ABI)**: pointer (`8 bytes`), length $n$ (`8 bytes`), and where present capacity $C$ (`8 bytes`). Java `String` internals are JVM-implementation details, Go `string` is not a generic pointer+length+capacity triple, and C++ `std::string` commonly uses small-string optimization.
 - **Length Calculation**: Reading a stored length field is typically $O(1)$ where such a field exists.
 
 #### Memory Layout Comparison: Storing `"DSA"`
 
-| Architectural Model | Location | Offset / Address | Value | Hex / Encoding | Semantic Role |
-| :--- | :--- | :---: | :---: | :---: | :--- |
-| **C-Style String** | Stack / Static | $\alpha + 0$ | `'D'` | `0x44` | Character byte 0 |
-| | | $\alpha + 1$ | `'S'` | `0x53` | Character byte 1 |
-| | | $\alpha + 2$ | `'A'` | `0x41` | Character byte 2 |
-| | | $\alpha + 3$ | `'\0'` | `0x00` | Sentinel Null Terminator |
-| **Length-Prefixed** | Stack Frame | Offset $+0$ | `ptr` | `0x7ffee0` | Pointer to heap storage |
-| | | Offset $+8$ | `len` | `3` | Explicit length counter ($O(1)$ access) |
-| | | Offset $+16$ | `cap` | `4` | Allocated buffer capacity |
-| | Heap Buffer | `ptr + 0..2` | `"DSA"` | `0x44 0x53 0x41` | Contiguous character code units |
+| Architectural Model | Location       | Offset / Address |  Value  |  Hex / Encoding  | Semantic Role                           |
+| :------------------ | :------------- | :--------------: | :-----: | :--------------: | :-------------------------------------- |
+| **C-Style String**  | Stack / Static |   $\alpha + 0$   |  `'D'`  |      `0x44`      | Character byte 0                        |
+|                     |                |   $\alpha + 1$   |  `'S'`  |      `0x53`      | Character byte 1                        |
+|                     |                |   $\alpha + 2$   |  `'A'`  |      `0x41`      | Character byte 2                        |
+|                     |                |   $\alpha + 3$   | `'\0'`  |      `0x00`      | Sentinel Null Terminator                |
+| **Length-Prefixed** | Stack Frame    |   Offset $+0$    |  `ptr`  |    `0x7ffee0`    | Pointer to heap storage                 |
+|                     |                |   Offset $+8$    |  `len`  |       `3`        | Explicit length counter ($O(1)$ access) |
+|                     |                |   Offset $+16$   |  `cap`  |       `4`        | Allocated buffer capacity               |
+|                     | Heap Buffer    |   `ptr + 0..2`   | `"DSA"` | `0x44 0x53 0x41` | Contiguous character code units         |
 
 ---
 
 ### 2. Character Encodings & Mutability Semantics
 
 #### Encoding Standards
+
 1. **ASCII (7-bit)**: Maps integers $0\text{--}127$ to Latin characters, digits, and punctuation. Exactly 1 byte per character (highest bit unused).
 2. **UTF-8 (Variable-Width, 1 to 4 bytes)**:
    - ASCII characters ($0\text{--}127$) occupy exactly 1 byte (fully backward-compatible).
    - Accented Latin, Greek, Arabic occupy 2 bytes.
    - East Asian scripts (CJK), Indic scripts occupy 3 bytes.
    - Emojis and historical symbols occupy 4 bytes.
-   - *Implication*: In UTF-8, string byte length does not equal character count! Random indexing $S[i]$ is $O(n)$ without an index translation table.
+   - _Implication_: In UTF-8, string byte length does not equal character count! Random indexing $S[i]$ is $O(n)$ without an index translation table.
 3. **UTF-16**: Uses 2 bytes (or 4 bytes via surrogate pairs). Standard in Java and JavaScript runtimes.
 
 #### Mutability vs. Immutability
+
 - **Mutable Strings (C++, C)**: In-place modification ($S[i] \leftarrow \text{'X'}$) is $O(1)$.
 - **Immutable Strings (Python, Java, JavaScript)**: Strings cannot be modified after allocation. Any transformation creates a new string object in heap memory ($O(n)$ time and space).
 
@@ -78,16 +85,17 @@ Some implementations (for example, certain Rust/Go/C++ string types) use a small
 
 ### 3. Core String Operations & Invariants
 
-| Operation | Description | Time Complexity | Auxiliary Space |
-| :--- | :--- | :---: | :---: |
-| **Length($S$)** | Length-prefixed header read | $O(1)$ | $O(1)$ |
-| **Length($S$)** | C-style null-sentinel scan | $O(n)$ | $O(1)$ |
-| **CharAccess($i$)** | Fixed-width code unit lookup | $O(1)$ | $O(1)$ |
+| Operation                   | Description                                     |    Time Complexity     |    Auxiliary Space     |
+| :-------------------------- | :---------------------------------------------- | :--------------------: | :--------------------: |
+| **Length($S$)**             | Length-prefixed header read                     |         $O(1)$         |         $O(1)$         |
+| **Length($S$)**             | C-style null-sentinel scan                      |         $O(n)$         |         $O(1)$         |
+| **CharAccess($i$)**         | Fixed-width code unit lookup                    |         $O(1)$         |         $O(1)$         |
 | **Concatenate($S_1, S_2$)** | Allocate new buffer of size $\|S_1\| + \|S_2\|$ | $O(\|S_1\| + \|S_2\|)$ | $O(\|S_1\| + \|S_2\|)$ |
-| **Substring($i, j$)** | Extract range $[i \dots j]$ | $O(j - i + 1)$ | $O(j - i + 1)$ |
-| **In-Place Reverse($S$)** | Two-pointer symmetric swap | $O(n)$ | $O(1)$ |
+| **Substring($i, j$)**       | Extract range $[i \dots j]$                     |     $O(j - i + 1)$     |     $O(j - i + 1)$     |
+| **In-Place Reverse($S$)**   | Two-pointer symmetric swap                      |         $O(n)$         |         $O(1)$         |
 
 #### Two-Pointer Reversal & Palindrome Verification
+
 ```text
 FUNCTION ReverseString(S: Array of Char, n: Integer) -> Void:
     left <- 0
@@ -110,11 +118,11 @@ FUNCTION IsPalindrome(S: Array of Char, n: Integer) -> Boolean:
 
 #### Step-by-Step Two-Pointer Trace: Reversing `"RADAR"` ($n = 5$)
 
-| Iteration | `left` | `right` | `S[left]` | `S[right]` | Action | Array State |
-| :---: | :---: | :---: | :---: | :---: | :--- | :--- |
-| **0** | 0 | 4 | `'R'` | `'R'` | Swap indices 0 and 4 | `['R', 'A', 'D', 'A', 'R']` |
-| **1** | 1 | 3 | `'A'` | `'A'` | Swap indices 1 and 3 | `['R', 'A', 'D', 'A', 'R']` |
-| **2** | 2 | 2 | `'D'` | `'D'` | `left >= right` $\implies$ Terminate | `['R', 'A', 'D', 'A', 'R']` |
+| Iteration | `left` | `right` | `S[left]` | `S[right]` | Action                               | Array State                 |
+| :-------: | :----: | :-----: | :-------: | :--------: | :----------------------------------- | :-------------------------- |
+|   **0**   |   0    |    4    |   `'R'`   |   `'R'`    | Swap indices 0 and 4                 | `['R', 'A', 'D', 'A', 'R']` |
+|   **1**   |   1    |    3    |   `'A'`   |   `'A'`    | Swap indices 1 and 3                 | `['R', 'A', 'D', 'A', 'R']` |
+|   **2**   |   2    |    2    |   `'D'`   |   `'D'`    | `left >= right` $\implies$ Terminate | `['R', 'A', 'D', 'A', 'R']` |
 
 ---
 
@@ -133,10 +141,10 @@ Logical 2D View:
 
 #### Mapping Equations: Row-Major vs. Column-Major
 
-| Mapping Scheme | Language Ecosystem | Physical Storage Sequence | Addressing Formula for Element $M[i][j]$ |
-| :--- | :--- | :--- | :--- |
-| **Row-Major Order** | e.g. C/C++ rectangular arrays; many C#, Python/NumPy defaults | Row 0 followed by Row 1: `[10, 20, 30, 40, 50, 60]` | $\text{Address}(M[i][j]) = \alpha + (i \times C + j) \times S$ |
-| **Column-Major Order** | e.g. Fortran, MATLAB, Julia, R defaults | Col 0, Col 1, Col 2: `[10, 40, 20, 50, 30, 60]` | $\text{Address}(M[i][j]) = \alpha + (j \times R + i) \times S$ |
+| Mapping Scheme         | Language Ecosystem                                            | Physical Storage Sequence                           | Addressing Formula for Element $M[i][j]$                       |
+| :--------------------- | :------------------------------------------------------------ | :-------------------------------------------------- | :------------------------------------------------------------- |
+| **Row-Major Order**    | e.g. C/C++ rectangular arrays; many C#, Python/NumPy defaults | Row 0 followed by Row 1: `[10, 20, 30, 40, 50, 60]` | $\text{Address}(M[i][j]) = \alpha + (i \times C + j) \times S$ |
+| **Column-Major Order** | e.g. Fortran, MATLAB, Julia, R defaults                       | Col 0, Col 1, Col 2: `[10, 40, 20, 50, 30, 60]`     | $\text{Address}(M[i][j]) = \alpha + (j \times R + i) \times S$ |
 
 Row-major vs column-major describes how a multidimensional dataset is laid out in memory. Languages and libraries can use different representations: Java `int[][]` is an array of arrays (not one flat C-style block), Python nested lists are lists of object references, and numerical libraries may choose either layout.
 
@@ -146,7 +154,7 @@ Row-major vs column-major describes how a multidimensional dataset is laid out i
 
 The physical storage ordering dictates how the memory hierarchy behaves during matrix traversals:
 
-```text
+````text
 Row-Major Storage: [ Row 0 (10, 20, 30) | Row 1 (40, 50, 60) ]
 
 Traversal Pattern A: Row-by-Row (Outer loop i, Inner loop j)
@@ -207,7 +215,7 @@ Hardware Behavior: Strided jumps of C * sizeof(Element). Cache lines evicted bef
   <!-- Physical 1D RAM Linearization on Right -->
   <rect x="330" y="20" width="525" height="230" rx="8" fill="currentColor" fill-opacity="0.03" stroke="currentColor" stroke-opacity="0.15" />
   <text x="345" y="45" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="currentColor">Physical 1D RAM Layout (Row-Major Order)</text>
-  
+
   <!-- Linear array representation -->
   <g font-family="system-ui, sans-serif" font-size="10" font-weight="bold">
     <!-- Row 0 Block -->
@@ -235,8 +243,8 @@ Hardware Behavior: Strided jumps of C * sizeof(Element). Cache lines evicted bef
   <text x="610" y="215" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#ef4444">Frequent L1 Cache Misses &amp; Stalls!</text>
 </svg>
 
-> 💡 **Architectural Principle**:  
-> In Row-Major languages (C, C++, Rust, Python NumPy defaults), always structure nested loops with row indices outer and column indices inner:  
+> 💡 **Architectural Principle**:
+> In Row-Major languages (C, C++, Rust, Python NumPy defaults), always structure nested loops with row indices outer and column indices inner:
 > `for (int i = 0; i < R; i++) for (int j = 0; j < C; j++)`. Inverting the loop nest to `for j: for i:` forces a stride of $C$ bytes between successive reads, evicting cache lines prematurely and causing severe CPU stalls.
 
 ---
@@ -266,10 +274,12 @@ FUNCTION TransposeInPlace(M: 2D Array of Type, N: Integer) -> Void:
     for i from 0 to N - 1:
         for j from i + 1 to N - 1:
             swap(M[i][j], M[j][i])
-```
+````
 
 #### B. Rotate Matrix $90^\circ$ Clockwise In-Place
+
 A $90^\circ$ clockwise rotation can be decomposed into two distinct, symmetric elementary transformations:
+
 1. **Transpose** the matrix ($M[i][j] \leftrightarrow M[j][i]$).
 2. **Reverse each row** horizontally ($M[i][j] \leftrightarrow M[i][N - 1 - j]$).
 
@@ -288,6 +298,7 @@ $$\text{Step 2: Reverse Rows } = \begin{pmatrix} 7 & 4 & 1 \\ 8 & 5 & 2 \\ 9 & 6
 ### 5. Search Paradigms in 2D Grids
 
 #### Paradigm 1: Monotonically Sorted Matrix (Virtual 1D Binary Search)
+
 - **Structure**: Each row is sorted left-to-right; the first integer of each row is strictly greater than the last integer of the previous row.
 - **Algorithm**: Treat the $R \times C$ matrix as a flattened 1D array of size $N = R \cdot C$.
 - **Index Translation**:
@@ -295,6 +306,7 @@ $$\text{Step 2: Reverse Rows } = \begin{pmatrix} 7 & 4 & 1 \\ 8 & 5 & 2 \\ 9 & 6
 - **Complexity**: $O(\log(R \cdot C))$ time, $O(1)$ auxiliary space.
 
 #### Paradigm 2: Row-Wise & Column-Wise Sorted Matrix (Young Tableau / Staircase Search)
+
 - **Structure**: Integers in each row are sorted left-to-right; integers in each column are sorted top-to-bottom.
 - **Algorithm**: Start at the **Top-Right corner** $(r = 0, c = C - 1)$:
   - If $M[r][c] == \text{target} \implies$ Found!
@@ -308,11 +320,11 @@ Precondition: each row sorted left-to-right AND each column sorted top-to-bottom
 Given matrix:
 $$\begin{pmatrix} 10 & 15 & 20 & 30 \\ 12 & 18 & 23 & 35 \\ 14 & 22 & 28 & 40 \end{pmatrix}$$
 
-| Step | Current Position $(r, c)$ | Value $M[r][c]$ | Comparison vs Target ($23$) | Decision & Movement | Remaining Search Window |
-| :---: | :---: | :---: | :---: | :--- | :--- |
-| **0** | $(0, 3)$ | `30` | $30 > 23$ | Value too high $\implies c \leftarrow c - 1$ | Columns $[0 \dots 2]$, Rows $[0 \dots 2]$ |
-| **1** | $(0, 2)$ | `20` | $20 < 23$ | Value too low $\implies r \leftarrow r + 1$ | Columns $[0 \dots 2]$, Rows $[1 \dots 2]$ |
-| **2** | $(1, 2)$ | `23` | $23 = 23$ | Found at $(1, 2)$! | Target located |
+| Step  | Current Position $(r, c)$ | Value $M[r][c]$ | Comparison vs Target ($23$) | Decision & Movement                          | Remaining Search Window                   |
+| :---: | :-----------------------: | :-------------: | :-------------------------: | :------------------------------------------- | :---------------------------------------- |
+| **0** |         $(0, 3)$          |      `30`       |          $30 > 23$          | Value too high $\implies c \leftarrow c - 1$ | Columns $[0 \dots 2]$, Rows $[0 \dots 2]$ |
+| **1** |         $(0, 2)$          |      `20`       |          $20 < 23$          | Value too low $\implies r \leftarrow r + 1$  | Columns $[0 \dots 2]$, Rows $[1 \dots 2]$ |
+| **2** |         $(1, 2)$          |      `23`       |          $23 = 23$          | Found at $(1, 2)$!                           | Target located                            |
 
 ```text
 FUNCTION StaircaseSearch(M: 2D Array, R: Integer, C: Integer, target: Integer) -> Boolean:
@@ -344,7 +356,7 @@ FUNCTION StaircaseSearch(M: 2D Array, R: Integer, C: Integer, target: Integer) -
 
 ## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Chapter 10: Elementary Data Structures, Chapter 32: String Matching. MIT Press.
-2. **Hennessy, J. L., & Patterson, D. A.** (2019). *Computer Architecture: A Quantitative Approach* (6th ed.), Chapter 2: Memory Hierarchy Design. Morgan Kaufmann.
-3. **Sedgewick, R., & Wayne, K.** (2011). *Algorithms* (4th ed.), Chapter 5: Strings. Addison-Wesley.
-4. **Knuth, D. E.** (1997). *The Art of Computer Programming, Volume 1: Fundamental Algorithms* (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Chapter 10: Elementary Data Structures, Chapter 32: String Matching. MIT Press.
+2. **Hennessy, J. L., & Patterson, D. A.** (2019). _Computer Architecture: A Quantitative Approach_ (6th ed.), Chapter 2: Memory Hierarchy Design. Morgan Kaufmann.
+3. **Sedgewick, R., & Wayne, K.** (2011). _Algorithms_ (4th ed.), Chapter 5: Strings. Addison-Wesley.
+4. **Knuth, D. E.** (1997). _The Art of Computer Programming, Volume 1: Fundamental Algorithms_ (3rd ed.), Section 2.2: Linear Lists. Addison-Wesley.

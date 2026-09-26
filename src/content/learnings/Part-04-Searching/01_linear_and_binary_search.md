@@ -8,6 +8,7 @@
 Search algorithms represent computing's most fundamental query primitives, answering whether a target entity exists within a collection and identifying its precise location. The architectural approach to search hinges directly on the ordering invariants of the underlying data. Across unordered collections, exhaustive linear scanning is mathematically optimal without pre-indexing. When a collection is sorted, however, order permits the elimination of exponential fractions of the search space in each step. This chapter analyzes sequential linear search, sentinel loop optimizations, the divide-and-conquer mechanics of binary search, arithmetic integer overflow prevention, formal loop invariant proofs, and modern branchless optimizations.
 
 ### Learning Objectives
+
 - Formulate the fundamental search problem across arbitrary versus monotonically ordered sequences.
 - Implement linear search and apply the sentinel optimization technique to eliminate per-iteration boundary checks.
 - Master binary search's invariant-driven search interval halving and prevent 32-bit signed integer overflow.
@@ -24,6 +25,7 @@ Search algorithms represent computing's most fundamental query primitives, answe
 Given an arbitrary array $A$ containing $n$ elements, determine whether a specified `target` value exists in $A$. If found, return its zero-based index $i$; otherwise, return $-1$.
 
 Linear Search inspects every cell sequentially from index $0$ to $n - 1$:
+
 - **Preconditions**: **Zero**. Works across completely unordered collections, linked lists, files, and input streams.
 - **Decision Contract**: Halts immediately on the first matching element.
 
@@ -32,6 +34,7 @@ Linear Search inspects every cell sequentially from index $0$ to $n - 1$:
 ### 2. Systems Optimization: Sentinel Linear Search
 
 Standard linear search incurs **two branch comparisons on every single iteration**:
+
 1. Loop boundary condition: `i < n`
 2. Value equality check: `A[i] == target`
 
@@ -146,7 +149,8 @@ When an array is strictly sorted in non-decreasing order ($A[0] \le A[1] \le \do
 ### 2. Formal Induction Proof of the Binary Search Invariant
 
 #### Loop Invariant:
-*At the start of every iteration of the `while (low <= high)` loop, if the `target` exists anywhere in array $A[0 \dots n-1]$, it must be located within the active subarray boundary $A[\text{low} \dots \text{high}]$.*
+
+_At the start of every iteration of the `while (low <= high)` loop, if the `target` exists anywhere in array $A[0 \dots n-1]$, it must be located within the active subarray boundary $A[\text{low} \dots \text{high}]$._
 
 1. **Initialization (Base Case)**:
    - Prior to loop execution, $\text{low} = 0$ and $\text{high} = n - 1$.
@@ -213,7 +217,7 @@ int branchless_binary_search(std::span<const int> arr, int target) {
 
 ## Academic Attribution & References
 
-1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). *Introduction to Algorithms* (4th ed.), Section 2.3 & Chapter 12. MIT Press.
-2. **Bentley, J.** (2000). *Programming Pearls* (2nd ed.), Column 4: *Writing Correct Programs*. Addison-Wesley.
-3. **Knuth, D. E.** (1998). *The Art of Computer Programming, Volume 3: Sorting and Searching* (2nd ed.), Section 6.2: *Searching by Comparison of Keys*. Addison-Wesley.
-4. **Bloch, J.** (2006). *Extra, Extra - Read All About It: Nearly All Binary Searches and Mergesorts are Broken*. Google Research Blog.
+1. **Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C.** (2022). _Introduction to Algorithms_ (4th ed.), Section 2.3 & Chapter 12. MIT Press.
+2. **Bentley, J.** (2000). _Programming Pearls_ (2nd ed.), Column 4: _Writing Correct Programs_. Addison-Wesley.
+3. **Knuth, D. E.** (1998). _The Art of Computer Programming, Volume 3: Sorting and Searching_ (2nd ed.), Section 6.2: _Searching by Comparison of Keys_. Addison-Wesley.
+4. **Bloch, J.** (2006). _Extra, Extra - Read All About It: Nearly All Binary Searches and Mergesorts are Broken_. Google Research Blog.

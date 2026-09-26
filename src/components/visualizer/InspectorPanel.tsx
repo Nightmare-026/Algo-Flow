@@ -75,7 +75,7 @@ export function InspectorPanel({
       <div className="flex h-full flex-col overflow-hidden p-3 gap-3">
         {/* Unified 4-Segment Mobile Tab Bar */}
         <div
-          className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-bg-surface-inset border border-border shadow-(--shadow-inset) shrink-0"
+          className="grid grid-cols-4 gap-1 p-1 rounded-sm bg-surface-secondary border border-border shadow-inset shrink-0"
           role="tablist"
           aria-label="Inspector panels"
         >
@@ -87,9 +87,9 @@ export function InspectorPanel({
             aria-controls="mobile-panel-pseudocode"
             onClick={() => setMobileTab("pseudocode")}
             className={cn(
-              "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
+              "min-h-9 rounded-sm text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
               mobileTab === "pseudocode"
-                ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
+                ? "bg-surface text-primary border border-border shadow-card"
                 : "text-text-muted hover:text-text-primary active:scale-95"
             )}
           >
@@ -103,9 +103,9 @@ export function InspectorPanel({
             aria-controls="mobile-panel-code"
             onClick={() => setMobileTab("code")}
             className={cn(
-              "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
+              "min-h-9 rounded-sm text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
               mobileTab === "code"
-                ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
+                ? "bg-surface text-primary border border-border shadow-card"
                 : "text-text-muted hover:text-text-primary active:scale-95"
             )}
           >
@@ -119,9 +119,9 @@ export function InspectorPanel({
             aria-controls="mobile-panel-explanation"
             onClick={() => setMobileTab("explanation")}
             className={cn(
-              "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
+              "min-h-9 rounded-sm text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
               mobileTab === "explanation"
-                ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
+                ? "bg-surface text-primary border border-border shadow-card"
                 : "text-text-muted hover:text-text-primary active:scale-95"
             )}
           >
@@ -135,9 +135,9 @@ export function InspectorPanel({
             aria-controls="mobile-panel-log"
             onClick={() => setMobileTab("log")}
             className={cn(
-              "min-h-9 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
+              "min-h-9 rounded-sm text-xs font-bold transition-all duration-150 cursor-pointer select-none text-center truncate px-1",
               mobileTab === "log"
-                ? "bg-surface text-primary border border-border shadow-(--shadow-raised-sm)"
+                ? "bg-surface text-primary border border-border shadow-card"
                 : "text-text-muted hover:text-text-primary active:scale-95"
             )}
           >
@@ -152,7 +152,7 @@ export function InspectorPanel({
               id="mobile-panel-pseudocode"
               role="tabpanel"
               aria-labelledby="mobile-tab-pseudocode"
-              className="h-full min-h-[300px]"
+              className="h-full min-h-75"
             >
               <PseudocodePanel
                 slug={algorithm.slug}
@@ -167,7 +167,7 @@ export function InspectorPanel({
               id="mobile-panel-code"
               role="tabpanel"
               aria-labelledby="mobile-tab-code"
-              className="h-full min-h-[300px]"
+              className="h-full min-h-75"
             >
               <CodePanel
                 examples={codeExamples}
@@ -222,9 +222,9 @@ export function InspectorPanel({
             aria-controls="panel-pseudocode"
             onClick={() => setActiveRightTab("pseudocode")}
             className={cn(
-              "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
+              "min-h-7 rounded-sm px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
               activeRightTab === "pseudocode"
-                ? "bg-primary text-white shadow-(--shadow-raised-sm)"
+                ? "bg-primary text-white shadow-card"
                 : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
             )}
           >
@@ -238,9 +238,9 @@ export function InspectorPanel({
             aria-controls="panel-code"
             onClick={() => setActiveRightTab("code")}
             className={cn(
-              "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
+              "min-h-7 rounded-sm px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
               activeRightTab === "code"
-                ? "bg-primary text-white shadow-(--shadow-raised-sm)"
+                ? "bg-primary text-white shadow-card"
                 : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
             )}
           >
@@ -300,9 +300,9 @@ export function InspectorPanel({
             aria-controls="panel-explanation"
             onClick={() => setActiveLowerTab("explanation")}
             className={cn(
-              "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
+              "min-h-7 rounded-sm px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
               activeLowerTab === "explanation"
-                ? "bg-primary text-white shadow-(--shadow-raised-sm)"
+                ? "bg-primary text-white shadow-card"
                 : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
             )}
           >
@@ -316,9 +316,9 @@ export function InspectorPanel({
             aria-controls="panel-log"
             onClick={() => setActiveLowerTab("log")}
             className={cn(
-              "min-h-7 rounded-lg px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
+              "min-h-7 rounded-sm px-2.5 text-[11px] font-bold transition-all cursor-pointer select-none",
               activeLowerTab === "log"
-                ? "bg-primary text-white shadow-(--shadow-raised-sm)"
+                ? "bg-primary text-white shadow-card"
                 : "text-text-muted hover:bg-surface-hover hover:text-text-primary"
             )}
           >

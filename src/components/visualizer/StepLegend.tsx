@@ -56,7 +56,7 @@ export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) 
                 active
                   ? cn(
                       toneClasses[item.tone],
-                      "shadow-(--shadow-raised-sm) opacity-100 font-bold ring-1 ring-current/30"
+                      "shadow-card opacity-100 font-bold ring-1 ring-current/30"
                     )
                   : "border-border/70 bg-surface/70 text-text-secondary opacity-75 hover:opacity-100"
               )}

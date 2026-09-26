@@ -30,13 +30,13 @@ export function StudyTrackCard({
     <Link
       href={href}
       className={cn(
-        "p-6 rounded-[8px] border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover hover:border-primary/40 transition-all duration-200 group",
+        "p-6 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover hover:border-primary/40 transition-all duration-200 group",
         className
       )}
     >
       <div>
         <div className="flex justify-between items-start mb-4">
-          <div className="flex h-11 w-11 rounded-[6px] bg-surface-secondary border border-border shadow-xs items-center justify-center text-primary group-hover:scale-105 transition-transform">
+          <div className="flex h-11 w-11 rounded-md bg-surface-secondary border border-border shadow-xs items-center justify-center text-primary group-hover:scale-105 transition-transform">
             {icon}
           </div>
           <span className="bg-primary/10 text-primary border border-primary/20 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase">
