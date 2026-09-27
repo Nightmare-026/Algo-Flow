@@ -47,7 +47,7 @@ export const footerSections = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-auto border-t border-border-subtle bg-surface-secondary/70 transition-colors duration-150 px-4 sm:px-6 lg:px-8">
+    <footer className="relative mt-auto border-t border-border-subtle bg-surface-secondary/70 transition-colors duration-150 px-4 sm:px-6 lg:px-8 pb-20 lg:pb-0">
       <div className="mx-auto max-w-7xl py-12 lg:py-16">
         <div className="grid gap-8 sm:gap-10 grid-cols-2 lg:grid-cols-[1.5fr_repeat(4,1fr)]">
           {/* Brand Column */}

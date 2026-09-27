@@ -213,9 +213,9 @@ export function CategoryExplorer({
   return (
     <div className="mt-10">
       {/* Search & Filter Toolbar */}
-      <div className="grid gap-4 rounded-lg p-4 lg:grid-cols-[1fr_auto_auto] border border-border bg-surface shadow-card">
+      <div className="grid gap-3 sm:gap-4 rounded-lg p-3 sm:p-4 sm:grid-cols-2 lg:grid-cols-[1fr_auto_auto] border border-border bg-surface shadow-card">
         {/* Search */}
-        <div className="relative">
+        <div className="relative sm:col-span-2 lg:col-span-1">
           <label htmlFor="algorithm-search" className="sr-only">
             Search {structure.name} algorithms
           </label>
@@ -234,14 +234,14 @@ export function CategoryExplorer({
                 setSearchQuery("");
               }
             }}
-            className="h-11 w-full rounded-sm border border-border bg-surface-secondary py-2.5 pl-10 pr-10 text-sm text-text-primary shadow-xs placeholder:text-text-muted/80 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="h-11 w-full rounded-sm border border-border bg-surface-secondary py-2.5 pl-10 pr-10 text-base sm:text-sm text-text-primary shadow-xs placeholder:text-text-muted/80 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
               aria-label="Clear search query"
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-sm p-1 text-text-muted hover:bg-surface-hover hover:text-text-primary transition-colors cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-sm text-text-muted hover:bg-surface-hover hover:text-text-primary transition-colors cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
@@ -336,7 +336,7 @@ export function CategoryExplorer({
                     }
                     router.push(`/visualizer/${algorithm.slug}`);
                   }}
-                  className="group relative flex h-full flex-col justify-between rounded-lg border border-border bg-surface p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200 cursor-pointer"
+                  className="group relative flex h-full flex-col justify-between rounded-lg border border-border bg-surface p-4 sm:p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200 cursor-pointer"
                 >
                   <div>
                     {/* Card Header: Badges & Quiz Link */}

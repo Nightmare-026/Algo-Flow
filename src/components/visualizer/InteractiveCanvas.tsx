@@ -196,7 +196,7 @@ export function InteractiveCanvas({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       className={cn(
-        "relative flex items-center justify-center w-full h-full overflow-hidden rounded-lg border border-border/60 bg-surface shadow-xs select-none",
+        "relative flex items-center justify-center w-full h-full overflow-hidden rounded-lg border border-border/60 bg-surface shadow-xs select-none touch-manipulation",
         isDragging ? "cursor-grabbing" : "cursor-grab",
         className
       )}

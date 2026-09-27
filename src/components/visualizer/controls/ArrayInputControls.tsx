@@ -165,12 +165,13 @@ export function ArrayInputControls({
             <FileEdit className="h-3.5 w-3.5 text-text-muted shrink-0" aria-hidden="true" />
             <input
               type="text"
+              inputMode="numeric"
               value={customInput}
               onChange={(event) => setCustomInput(event.target.value)}
               placeholder="5, 2, 9, 1, 8"
               aria-invalid={Boolean(error)}
               aria-describedby={error ? "array-input-error" : undefined}
-              className="h-7 sm:h-6 w-28 sm:w-32 border-none bg-transparent px-1.5 py-0 font-mono text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
+              className="h-7 sm:h-6 w-28 sm:w-32 border-none bg-transparent px-1.5 py-0 font-mono text-[11px] sm:text-[10px] text-text-primary shadow-none focus-visible:outline-none placeholder:text-text-muted"
               aria-label="Custom comma-separated numbers"
             />
             <Button
@@ -185,18 +186,19 @@ export function ArrayInputControls({
 
         {/* Right Section: Context Parameters Pod (if applicable) */}
         {hasContextParams && (
-          <div className="flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2 shadow-card lg:ml-auto">
+          <div className="flex h-9 sm:h-8 items-center gap-1.5 rounded-xl sm:rounded-lg border border-border bg-surface px-2 shadow-card lg:ml-auto">
             {needsTarget(slug) && (
               <label className="flex items-center gap-1.5 font-mono text-[10px] font-semibold text-text-secondary">
                 <Search className="h-3 w-3 text-primary" aria-hidden="true" />
                 <span className="hidden sm:inline">Target:</span>
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={options.target}
                   onChange={(event) =>
                     updateOption("target", parseInputNumber(event.target.value, options.target))
                   }
-                  className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
+                  className="h-7 sm:h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[11px] sm:text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                   aria-label="Target search value"
                 />
               </label>
@@ -208,11 +210,12 @@ export function ArrayInputControls({
                 <span className="hidden sm:inline">Value:</span>
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={options.value}
                   onChange={(event) =>
                     updateOption("value", parseInputNumber(event.target.value, options.value))
                   }
-                  className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
+                  className="h-7 sm:h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[11px] sm:text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                   aria-label="Value"
                 />
               </label>
@@ -225,6 +228,7 @@ export function ArrayInputControls({
                 <span className="sm:hidden">Idx:</span>
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={options.index}
                   placeholder="0"
                   aria-invalid={Boolean(fieldError)}
@@ -232,7 +236,7 @@ export function ArrayInputControls({
                   onChange={(event) =>
                     updateOption("index", parseInputNumber(event.target.value, options.index))
                   }
-                  className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
+                  className="h-7 sm:h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[11px] sm:text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                   aria-label="Index"
                 />
               </label>
@@ -244,13 +248,14 @@ export function ArrayInputControls({
                 <span className="hidden sm:inline">Capacity:</span>
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={options.capacity}
                   aria-invalid={Boolean(fieldError)}
                   aria-describedby={fieldError ? "array-input-error" : undefined}
                   onChange={(event) =>
                     updateOption("capacity", parseInputNumber(event.target.value, options.capacity))
                   }
-                  className="h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
+                  className="h-7 sm:h-6 w-14 rounded-md border border-border bg-surface-secondary px-1.5 text-center font-mono text-[11px] sm:text-[10px] font-bold text-text-primary shadow-inset focus-visible:border-primary focus-visible:outline-none"
                   aria-label="Capacity"
                 />
               </label>

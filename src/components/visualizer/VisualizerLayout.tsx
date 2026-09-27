@@ -13,12 +13,17 @@ import {
   Trophy,
   X,
   LayoutDashboard,
+  ChevronDown,
+  ChevronUp,
+  SlidersHorizontal,
+  MoreHorizontal,
 } from "lucide-react";
 import { Algorithm, CodeExample } from "@/types";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { PlaybackControls } from "./PlaybackControls";
-import { SpeedSlider } from "./SpeedSlider";
+import { SpeedSlider, MobileSpeedSelector } from "./SpeedSlider";
 import { StepTimeline } from "./StepTimeline";
 import { StepLegend, type StepLegendItem } from "./StepLegend";
 import { InspectorPanel } from "./InspectorPanel";
@@ -54,11 +59,14 @@ export function VisualizerLayout({
   controls,
 }: VisualizerLayoutProps) {
   const pathname = usePathname();
-  const { currentStepIndex, totalSteps, reducedMotion } = usePlaybackStore();
+  const { currentStepIndex, totalSteps, reducedMotion, steps } = usePlaybackStore();
+  const currentStep = steps[currentStepIndex];
   const [activeRightTab, setActiveRightTab] = useState<"pseudocode" | "code">("pseudocode");
   const [activeLowerTab, setActiveLowerTab] = useState<"explanation" | "log">("explanation");
   const [activeLanguage, setActiveLanguage] = useState<string>("python");
   const [showInspector, setShowInspector] = useState(false);
+  const [mobileControlsOpen, setMobileControlsOpen] = useState(false);
+  const [mobileActionsOpen, setMobileActionsOpen] = useState(false);
   const canvasRegionRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery("(max-width: 1023px)");
 
@@ -177,12 +185,13 @@ export function VisualizerLayout({
               </div>
             </div>
 
-            {/* Mobile & Tablet top-right shortcuts: Inspector toggle + Theme toggle */}
+            {/* Mobile & Tablet top-right shortcuts: Inspector toggle + Overflow More menu */}
             <div className="flex items-center gap-1.5 lg:hidden shrink-0">
               <button
+                type="button"
                 onClick={() => setShowInspector(!showInspector)}
                 className={cn(
-                  "inline-flex h-8 items-center gap-1 px-2.5 rounded-sm border text-xs font-bold transition-all shadow-card active:scale-95 cursor-pointer",
+                  "inline-flex h-8 items-center gap-1 px-2.5 rounded-sm border text-xs font-bold transition-all shadow-card active:scale-95 cursor-pointer touch-manipulation",
                   showInspector
                     ? "bg-primary text-white border-primary"
                     : "border-primary/40 bg-primary-muted text-primary hover:bg-primary hover:text-white"
@@ -198,14 +207,105 @@ export function VisualizerLayout({
                 )}
                 <span>{showInspector ? "Close" : "Inspect"}</span>
               </button>
-              <div className="sm:hidden">
-                <ThemeToggle />
-              </div>
+
+              {/* Mobile Overflow Menu */}
+              <Popover open={mobileActionsOpen} onOpenChange={setMobileActionsOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary active:scale-95 transition-all shadow-card cursor-pointer touch-manipulation"
+                    aria-label="More visualizer options"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  align="end"
+                  side="bottom"
+                  sideOffset={6}
+                  className="w-56 rounded-xl border border-border bg-surface p-2 shadow-elevated z-60"
+                >
+                  <div className="flex flex-col gap-1 text-xs">
+                    <Link
+                      href={`/quizzes/${algorithm.id}`}
+                      onClick={() => setMobileActionsOpen(false)}
+                      className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 font-semibold text-text-primary hover:bg-primary-muted hover:text-primary transition-colors"
+                    >
+                      <Trophy className="h-4 w-4 text-primary" />
+                      <span>Take Quiz</span>
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsPracticeMode(!isPracticeMode);
+                        setMobileActionsOpen(false);
+                      }}
+                      className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 font-semibold text-text-primary hover:bg-primary-muted hover:text-primary transition-colors text-left cursor-pointer"
+                    >
+                      <span
+                        className={cn(
+                          "h-2 w-2 rounded-full",
+                          isPracticeMode ? "bg-primary" : "bg-border"
+                        )}
+                      />
+                      <span>{isPracticeMode ? "Exit Practice Mode" : "Practice Mode"}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleToggleBookmark();
+                        setMobileActionsOpen(false);
+                      }}
+                      className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 font-semibold text-text-primary hover:bg-primary-muted hover:text-primary transition-colors text-left cursor-pointer"
+                    >
+                      <Bookmark
+                        className={cn(
+                          "h-4 w-4",
+                          isBookmarked ? "text-warning fill-current" : "text-text-muted"
+                        )}
+                      />
+                      <span>{isBookmarked ? "Remove Bookmark" : "Save Bookmark"}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleSaveSession();
+                        setMobileActionsOpen(false);
+                      }}
+                      disabled={isSaving}
+                      className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 font-semibold text-text-primary hover:bg-primary-muted hover:text-primary transition-colors text-left cursor-pointer disabled:opacity-40"
+                    >
+                      <Save className="h-4 w-4 text-text-muted" />
+                      <span>Save Session</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleShare();
+                        setMobileActionsOpen(false);
+                      }}
+                      className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 font-semibold text-text-primary hover:bg-primary-muted hover:text-primary transition-colors text-left cursor-pointer"
+                    >
+                      <Share2 className="h-4 w-4 text-text-muted" />
+                      <span>Share Visualizer</span>
+                    </button>
+
+                    <div className="border-t border-border/80 my-1 pt-1 flex items-center justify-between px-2.5 py-1">
+                      <span className="text-text-muted font-medium">Theme</span>
+                      <ThemeToggle />
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 
-          {/* Action Suite */}
-          <div className="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-1.5 overflow-x-auto no-scrollbar py-0.5 sm:py-0">
+          {/* Desktop Action Suite */}
+          <div className="hidden lg:flex items-center gap-1.5 shrink-0">
             <div className="flex items-center gap-1.5 shrink-0">
               <Link
                 href={`/quizzes/${algorithm.id}`}
@@ -217,6 +317,7 @@ export function VisualizerLayout({
               </Link>
 
               <button
+                type="button"
                 onClick={() => setIsPracticeMode(!isPracticeMode)}
                 className={cn(
                   "min-h-8 sm:min-h-9 rounded-sm px-2.5 sm:px-3 text-xs font-bold transition-all shadow-card border active:scale-95 cursor-pointer",
@@ -232,6 +333,7 @@ export function VisualizerLayout({
 
             <div className="flex items-center gap-1 shrink-0">
               <button
+                type="button"
                 onClick={handleToggleBookmark}
                 className={cn(
                   "inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-sm border border-border bg-surface transition-all shadow-card hover:border-primary/40 active:scale-95 cursor-pointer",
@@ -250,6 +352,7 @@ export function VisualizerLayout({
               </button>
 
               <button
+                type="button"
                 onClick={handleSaveSession}
                 disabled={isSaving}
                 className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-sm border border-border bg-surface text-text-muted shadow-card transition-all hover:border-primary/40 hover:text-primary active:scale-95 disabled:opacity-40 cursor-pointer"
@@ -260,6 +363,7 @@ export function VisualizerLayout({
               </button>
 
               <button
+                type="button"
                 onClick={handleShare}
                 className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-sm border border-border bg-surface text-text-muted shadow-card transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
                 title="Share Visualizer Link"
@@ -268,9 +372,7 @@ export function VisualizerLayout({
                 <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </button>
 
-              <div className="hidden sm:block">
-                <ThemeToggle />
-              </div>
+              <ThemeToggle />
             </div>
           </div>
         </header>
@@ -304,9 +406,41 @@ export function VisualizerLayout({
           {/* Left Column: Canvas, Legend, Input Controls, and Playback Footer */}
           <div className="flex min-w-0 w-full flex-1 flex-col h-full min-h-0 lg:w-0 lg:flex-1">
             <div className="relative flex flex-1 flex-col overflow-hidden bg-background min-h-0">
+              {/* Desktop Controls: Always Visible */}
               {controls && (
-                <div className="w-full shrink-0 border-b border-border bg-surface/50 p-2 sm:p-2.5 shadow-card">
+                <div className="hidden lg:block w-full shrink-0 border-b border-border bg-surface/50 p-2 sm:p-2.5 shadow-card">
                   {controls}
+                </div>
+              )}
+
+              {/* Mobile / Tablet Collapsible Controls Tray */}
+              {controls && (
+                <div className="lg:hidden shrink-0 border-b border-border bg-surface/90 shadow-card">
+                  <div className="flex items-center justify-between px-3 py-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setMobileControlsOpen(!mobileControlsOpen)}
+                      className="flex items-center gap-1.5 text-xs font-bold text-text-primary hover:text-primary transition-colors cursor-pointer touch-manipulation"
+                      aria-expanded={mobileControlsOpen}
+                    >
+                      <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
+                      <span>Data &amp; Operations</span>
+                      <ChevronDown
+                        className={cn(
+                          "h-3.5 w-3.5 text-text-muted transition-transform duration-200",
+                          mobileControlsOpen && "rotate-180"
+                        )}
+                      />
+                    </button>
+                    <span className="text-[10px] font-mono font-medium text-text-muted">
+                      {mobileControlsOpen ? "Tap to collapse" : "Custom inputs & size"}
+                    </span>
+                  </div>
+                  {mobileControlsOpen && (
+                    <div className="border-t border-border/60 p-2 bg-surface-secondary/40 animate-in fade-in duration-150 overflow-x-auto momentum-scroll">
+                      {controls}
+                    </div>
+                  )}
                 </div>
               )}
               {legend && legend.length > 0 ? <StepLegend items={legend} /> : null}
@@ -395,14 +529,15 @@ export function VisualizerLayout({
                   )}
                 </div>
 
-                {/* Fullscreen Button */}
+                {/* Fullscreen Button (Top-left HUD to avoid collision with bottom-right canvas zoom controls) */}
                 <button
+                  type="button"
                   onClick={handleFullscreen}
-                  className="absolute bottom-4 right-4 inline-flex h-9 w-9 items-center justify-center rounded-sm border border-border bg-surface text-text-muted shadow-card transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer"
+                  className="absolute left-3 top-3 z-30 inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-sm border border-border bg-surface/90 text-text-muted shadow-card transition-all hover:border-primary/40 hover:text-primary active:scale-95 cursor-pointer backdrop-blur-md touch-manipulation"
                   title="Toggle Fullscreen Canvas"
                   aria-label="Fullscreen Canvas"
                 >
-                  <Maximize2 className="h-4 w-4" />
+                  <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </button>
               </div>
             </div>
@@ -493,12 +628,37 @@ export function VisualizerLayout({
               )}
             </AnimatePresence>
 
+            {/* Mobile Peek Step Bar (Glanceable current step with one-tap code expand) */}
+            <div className="lg:hidden border-t border-border bg-surface/95 backdrop-blur-md px-3 py-1.5 flex items-center justify-between shrink-0 shadow-xs select-none">
+              <button
+                type="button"
+                onClick={() => setShowInspector(true)}
+                className="flex items-center gap-2 min-w-0 text-left cursor-pointer flex-1 touch-manipulation"
+                aria-label="Open step explanation and code inspector"
+              >
+                <span className="shrink-0 font-mono text-[10px] font-bold text-primary bg-primary-muted px-1.5 py-0.5 rounded border border-primary/20">
+                  Step {currentStepIndex + 1}/{totalSteps}
+                </span>
+                <span className="text-xs font-semibold text-text-primary truncate">
+                  {currentStep?.title || "View step explanation & code"}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowInspector(true)}
+                className="inline-flex items-center gap-1 rounded-sm bg-primary/10 px-2 py-1 text-[11px] font-bold text-primary hover:bg-primary hover:text-white transition-colors cursor-pointer shrink-0 ml-2 touch-manipulation"
+              >
+                <span>Code</span>
+                <ChevronUp className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
             {/* VCR Playback Controls & Timeline Bar */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-border bg-surface px-3 py-2 pb-safe z-20 shadow-card shrink-0 w-full min-w-0">
               <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-2 shrink-0">
                 <PlaybackControls />
                 <div className="sm:hidden">
-                  <SpeedSlider />
+                  <MobileSpeedSelector />
                 </div>
               </div>
               <div className="flex-1 w-full min-w-0 flex items-center gap-2">
@@ -536,30 +696,32 @@ export function VisualizerLayout({
                   animate={{ y: 0 }}
                   exit={{ y: "100%" }}
                   transition={{ type: "spring", damping: 30, stiffness: 350 }}
-                  className="fixed inset-x-0 bottom-0 z-10 flex h-[80vh] max-h-[85vh] w-full flex-col rounded-t-lg border-t border-border bg-surface shadow-elevated pb-safe overflow-hidden"
+                  className="fixed inset-x-0 bottom-0 z-10 flex h-[82vh] max-h-[88vh] w-full flex-col rounded-t-2xl border-t border-border bg-surface shadow-elevated pb-safe overflow-hidden"
                 >
-                  {/* Header with Title and Close Button */}
-                  <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-2.5 bg-surface/95 backdrop-blur-md">
-                    <div className="flex items-center gap-2">
-                      <div className="h-1 w-8 rounded-full bg-border mr-1" aria-hidden="true" />
-                      <span className="text-xs font-bold font-display text-text-primary">
-                        {algorithm.name} Inspector
-                      </span>
-                      <span className="rounded-md border border-border bg-surface-hover px-1.5 py-0.5 text-[10px] font-mono text-text-muted">
-                        Step {currentStepIndex + 1}/{totalSteps}
-                      </span>
+                  {/* Header with Drag Handle, Title and Close Button */}
+                  <div className="flex shrink-0 flex-col border-b border-border bg-surface/95 backdrop-blur-md px-4 pt-2.5 pb-2">
+                    <div className="drag-handle mb-2" aria-hidden="true" />
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-xs font-bold font-display text-text-primary truncate">
+                          {algorithm.name} Inspector
+                        </span>
+                        <span className="rounded-md border border-border bg-surface-hover px-1.5 py-0.5 text-[10px] font-mono text-text-muted shrink-0">
+                          Step {currentStepIndex + 1}/{totalSteps}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => setShowInspector(false)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-all active:scale-95 cursor-pointer touch-manipulation"
+                        aria-label="Close inspector"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => setShowInspector(false)}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-all active:scale-95 cursor-pointer"
-                      aria-label="Close inspector"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
                   </div>
 
                   {/* Content */}
-                  <div className="flex-1 min-h-0 overflow-y-auto">
+                  <div className="flex-1 min-h-0 overflow-y-auto momentum-scroll">
                     <InspectorPanel
                       activeRightTab={activeRightTab}
                       setActiveRightTab={setActiveRightTab}

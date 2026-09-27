@@ -472,13 +472,60 @@
   display: none;
 }
 
-/* Mobile Safe Area Inset Utilities */
+/* Mobile Safe Area Inset & Touch Ergonomics Utilities */
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+.pb-safe-nav {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+}
+
 .pt-safe {
   padding-top: env(safe-area-inset-top, 0px);
+}
+
+.pl-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.pr-safe {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.bottom-safe {
+  bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+.momentum-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.drag-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 9999px;
+  background-color: var(--border);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Eliminate tap highlight gray box on iOS/Android */
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
 }
 
 @theme inline {

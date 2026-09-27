@@ -41,35 +41,41 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "p-6 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-colors",
+        "p-3.5 sm:p-6 rounded-lg border border-border bg-surface flex flex-col justify-between shadow-card hover:shadow-card-hover transition-colors",
         variantStyles,
         className
       )}
     >
-      <div className="flex justify-between items-center">
-        <span className="text-xs font-mono font-bold uppercase tracking-wider text-text-muted">
+      <div className="flex justify-between items-center gap-1.5">
+        <span className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-text-muted truncate">
           {title}
         </span>
         <span
           className={cn(
-            "flex h-8 w-8 items-center justify-center rounded-sm border shadow-xs",
+            "flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-sm border shadow-xs",
             iconStyles
           )}
         >
           {icon}
         </span>
       </div>
-      <div className="mt-4">
-        <div className="text-3xl font-extrabold font-display text-text-primary">{value}</div>
+      <div className="mt-2.5 sm:mt-4">
+        <div className="text-xl sm:text-3xl font-extrabold font-display text-text-primary">
+          {value}
+        </div>
         {typeof progress === "number" && (
-          <div className="w-full bg-surface-secondary h-2 rounded-full overflow-hidden border border-border mt-2">
+          <div className="w-full bg-surface-secondary h-1.5 sm:h-2 rounded-full overflow-hidden border border-border mt-1.5 sm:mt-2">
             <div
               className={cn("h-full rounded-full transition-all duration-500", progressBg)}
               style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
             />
           </div>
         )}
-        {subtitle && <p className="text-xs font-medium text-text-muted mt-1">{subtitle}</p>}
+        {subtitle && (
+          <p className="text-[11px] sm:text-xs font-medium text-text-muted mt-1 line-clamp-1">
+            {subtitle}
+          </p>
+        )}
       </div>
     </div>
   );

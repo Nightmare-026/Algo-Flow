@@ -82,3 +82,36 @@ export function SpeedDisplay() {
     </span>
   );
 }
+
+export function MobileSpeedSelector() {
+  const speed = usePlaybackStore((state) => state.speed);
+  const setSpeed = usePlaybackStore((state) => state.setSpeed);
+
+  const speeds: { id: PlaybackSpeed; label: string }[] = [
+    { id: "0.25x", label: "0.25x" },
+    { id: "0.5x", label: "0.50x" },
+    { id: "0.75x", label: "0.75x" },
+    { id: "1x", label: "1.00x" },
+    { id: "2x", label: "2.00x" },
+  ];
+
+  return (
+    <div className="relative inline-flex">
+      <div className="flex items-center gap-1 rounded-sm border border-border bg-surface px-2 py-1 shadow-card text-[11px] font-mono font-bold text-text-secondary">
+        <span className="text-[10px] text-text-muted font-normal">Speed:</span>
+        <select
+          value={speed}
+          onChange={(e) => setSpeed(e.target.value as PlaybackSpeed)}
+          aria-label="Playback speed"
+          className="bg-transparent font-bold text-primary focus:outline-none cursor-pointer"
+        >
+          {speeds.map((s) => (
+            <option key={s.id} value={s.id} className="bg-surface text-text-primary">
+              {s.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+}

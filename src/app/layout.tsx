@@ -12,6 +12,7 @@ import {
 import { safeJsonLd } from "@/lib/security/safe-json";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
 import "./globals.css";
 
 const sourceSans3 = Source_Sans_3({
@@ -151,7 +152,10 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          <MobileBottomBar />
+        </ThemeProvider>
         <Analytics />
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />

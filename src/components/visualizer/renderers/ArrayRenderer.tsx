@@ -25,11 +25,11 @@ export function ArrayRenderer() {
 
   return (
     <div
-      className="relative flex h-full w-full items-center justify-center p-5 sm:p-8"
+      className="relative flex h-full w-full items-center justify-center p-2 sm:p-8 overflow-hidden"
       role="img"
       aria-label={`${currentStep.title}. Array values: ${dataState.elements.map((element) => element.value).join(", ")}`}
     >
-      <div className="flex max-w-full flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+      <div className="flex max-w-full items-center justify-start sm:justify-center gap-2 sm:gap-3 overflow-x-auto momentum-scroll pb-12 pt-4 px-4 sm:px-6 mx-auto">
         <AnimatePresence mode="popLayout" initial={!reducedMotion}>
           {dataState.elements.map((element, index) => {
             const id = element.id ?? index.toString();
@@ -48,13 +48,15 @@ export function ArrayRenderer() {
                     : { type: "spring", stiffness: 320, damping: 27 },
                   ...visualMotion.transition,
                 }}
-                className="flex flex-col items-center gap-2"
+                className="flex flex-col items-center gap-1.5 sm:gap-2 shrink-0"
               >
-                <div className="font-mono text-xs tabular-nums text-text-muted">{index}</div>
+                <div className="font-mono text-[11px] sm:text-xs tabular-nums text-text-muted">
+                  {index}
+                </div>
                 <div
                   data-visual-state={state}
                   className={cn(
-                    "visual-element relative flex h-14 w-14 items-center justify-center rounded-xl border-2 font-mono text-lg font-bold sm:h-16 sm:w-16 sm:text-xl",
+                    "visual-element relative flex h-12 w-12 items-center justify-center rounded-lg border-2 font-mono text-base font-bold sm:h-16 sm:w-16 sm:text-xl sm:rounded-xl shrink-0",
                     getVisualElementClassName(highlights, id)
                   )}
                 >

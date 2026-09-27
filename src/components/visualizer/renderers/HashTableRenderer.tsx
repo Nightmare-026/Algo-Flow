@@ -48,46 +48,46 @@ export function HashTableRenderer() {
       aria-label={`${currentStep.title}. Hash table state: ${dataState.elementCount} elements, load factor ${dataState.loadFactor.toFixed(2)}`}
     >
       {/* Top Section: Metrics & Active Formula Callout */}
-      <div className="w-full max-w-4xl flex flex-col items-center gap-2 sm:gap-3 mb-3 sm:mb-4 shrink-0">
+      <div className="w-full max-w-4xl flex flex-col items-center gap-2 sm:gap-3 mb-2 sm:mb-4 shrink-0">
         {/* Metrics Banner */}
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 rounded-xl border border-border bg-surface/80 backdrop-blur-md px-4 py-2 shadow-xs">
-          <div className="flex items-center gap-2">
-            <Database className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+        <div className="flex flex-wrap items-center justify-around sm:justify-center gap-2.5 sm:gap-6 rounded-xl border border-border bg-surface/80 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 shadow-xs max-w-full">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Database className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
             <div className="flex flex-col">
-              <span className="text-[9px] uppercase tracking-wider font-semibold text-text-muted">
+              <span className="text-[8px] sm:text-[9px] uppercase tracking-wider font-semibold text-text-muted">
                 Capacity (m)
               </span>
-              <span className="font-mono text-sm sm:text-base font-bold text-text-primary">
+              <span className="font-mono text-xs sm:text-base font-bold text-text-primary">
                 {dataState.tableSize}
               </span>
             </div>
           </div>
 
-          <div className="h-6 w-px bg-border/80 hidden sm:block" />
+          <div className="h-5 sm:h-6 w-px bg-border/80" />
 
-          <div className="flex items-center gap-2">
-            <Layers className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Layers className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
             <div className="flex flex-col">
-              <span className="text-[9px] uppercase tracking-wider font-semibold text-text-muted">
+              <span className="text-[8px] sm:text-[9px] uppercase tracking-wider font-semibold text-text-muted">
                 Elements (n)
               </span>
-              <span className="font-mono text-sm sm:text-base font-bold text-text-primary">
+              <span className="font-mono text-xs sm:text-base font-bold text-text-primary">
                 {dataState.elementCount}
               </span>
             </div>
           </div>
 
-          <div className="h-6 w-px bg-border/80 hidden sm:block" />
+          <div className="h-5 sm:h-6 w-px bg-border/80" />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <div className="flex flex-col">
-              <span className="text-[9px] uppercase tracking-wider font-semibold text-text-muted">
+              <span className="text-[8px] sm:text-[9px] uppercase tracking-wider font-semibold text-text-muted">
                 Load Factor (α)
               </span>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1 sm:gap-1.5">
                 <span
                   className={cn(
-                    "font-mono text-sm sm:text-base font-bold",
+                    "font-mono text-xs sm:text-base font-bold",
                     dataState.loadFactor >= 0.75
                       ? "text-error"
                       : dataState.loadFactor >= 0.5
@@ -108,12 +108,12 @@ export function HashTableRenderer() {
 
           {dataState.probingStrategy && (
             <>
-              <div className="h-6 w-px bg-border/80 hidden sm:block" />
+              <div className="h-5 sm:h-6 w-px bg-border/80" />
               <div className="flex flex-col">
-                <span className="text-[9px] uppercase tracking-wider font-semibold text-text-muted">
+                <span className="text-[8px] sm:text-[9px] uppercase tracking-wider font-semibold text-text-muted">
                   Strategy
                 </span>
-                <span className="rounded-md bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-bold text-primary uppercase">
+                <span className="rounded-md bg-primary/10 px-1.5 sm:px-2 py-0.5 font-mono text-[9px] sm:text-[10px] font-bold text-primary uppercase">
                   {dataState.probingStrategy}
                 </span>
               </div>
@@ -372,7 +372,7 @@ export function HashTableRenderer() {
                   </div>
 
                   {/* Linked List Chain Nodes */}
-                  <div className="flex flex-1 items-center gap-2 overflow-x-auto py-1 px-1 min-h-12">
+                  <div className="flex flex-1 items-center gap-2 overflow-x-auto momentum-scroll py-1 px-1 min-h-12">
                     {chain.length === 0 ? (
                       <div className="flex items-center gap-1.5 rounded-lg border border-dashed border-border/60 px-3 py-1.5 text-xs font-mono text-text-muted/50">
                         <span>∅</span>

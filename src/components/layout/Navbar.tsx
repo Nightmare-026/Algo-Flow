@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LogOut, Menu, X, LayoutDashboard, Compass, BrainCircuit, BookOpen } from "lucide-react";
+import { Menu, X, LayoutDashboard, Compass, BrainCircuit, BookOpen } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
-import { signout } from "@/app/(auth)/login/actions";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
-import { AnimatePresence, motion } from "framer-motion";
+import { MobileMoreSheet } from "./MobileMoreSheet";
+import { motion } from "framer-motion";
 
 const navLinks = [
   { label: "Visualizers", href: "/visualizers", icon: Compass },
@@ -174,93 +174,12 @@ export function Navbar({ initialUser }: { initialUser?: User | null }) {
           </div>
         </div>
 
-        {/* Mobile Backdrop & Navigation Drawer */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                onClick={() => setMobileMenuOpen(false)}
-                className="fixed inset-0 top-18 bg-black/40 backdrop-blur-xs z-40 md:hidden"
-                aria-hidden="true"
-              />
-              <motion.div
-                id="mobile-navigation"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                className="relative z-50 overflow-hidden border-t border-border-subtle bg-surface shadow-elevated rounded-b-lg md:hidden"
-              >
-                <div className="grid gap-2 py-4 px-2">
-                  {navLinks.map((link) => {
-                    const active = isActive(link.href);
-                    const Icon = link.icon;
-                    return (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        aria-current={active ? "page" : undefined}
-                        className={cn(
-                          "flex min-h-11 items-center gap-3 rounded-sm px-4 text-sm font-semibold transition-colors",
-                          active
-                            ? "border border-primary bg-primary font-bold text-white shadow-card"
-                            : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
-                        )}
-                      >
-                        <Icon
-                          className={cn("h-4 w-4", active ? "text-white" : "text-text-muted")}
-                          aria-hidden="true"
-                        />
-                        {link.label}
-                      </Link>
-                    );
-                  })}
-
-                  {user ? (
-                    <div className="mt-2 border-t border-border-subtle pt-3">
-                      <div className="mb-3 px-4 text-xs text-text-muted">
-                        Signed in as{" "}
-                        <span className="font-semibold text-text-primary">{user.email}</span>
-                      </div>
-                      <form action={signout}>
-                        <button
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="flex min-h-11 w-full items-center gap-2 rounded-sm px-4 text-left text-sm font-semibold text-text-secondary hover:bg-surface-hover hover:text-error cursor-pointer"
-                          type="submit"
-                        >
-                          <LogOut className="h-4 w-4" aria-hidden="true" />
-                          Sign out
-                        </button>
-                      </form>
-                    </div>
-                  ) : (
-                    <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border-subtle pt-3">
-                      <Link
-                        href="/login"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={buttonVariants({ variant: "outline" })}
-                      >
-                        Log in
-                      </Link>
-                      <Link
-                        href="/signup"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={buttonVariants()}
-                      >
-                        Sign up
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+        {/* Mobile Navigation Drawer Modal */}
+        <MobileMoreSheet
+          isOpen={mobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          user={user}
+        />
       </nav>
     </header>
   );

@@ -198,13 +198,13 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
             onKeyDown={(event) => {
               if (event.key === "Escape") handleSearchChange("");
             }}
-            className="h-11 w-full rounded-sm border border-border bg-surface-secondary py-2.5 pl-11 pr-10 text-sm text-text-primary shadow-xs placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="h-11 w-full rounded-sm border border-border bg-surface-secondary py-2.5 pl-11 pr-10 text-base sm:text-sm text-text-primary shadow-xs placeholder:text-text-secondary/70 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
           />
           {searchQuery ? (
             <button
               type="button"
               onClick={() => handleSearchChange("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-sm text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-sm text-text-muted hover:text-text-primary hover:bg-surface transition-colors cursor-pointer"
               aria-label="Clear search"
             >
               <X className="h-4 w-4" />
@@ -221,7 +221,7 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
 
         {/* Category Pills (Single-line horizontal scroll on mobile, flex row on desktop) */}
         <div
-          className="flex w-full lg:w-auto items-center gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-none"
+          className="flex w-full lg:w-auto items-center gap-2 overflow-x-auto momentum-scroll touch-manipulation pb-1.5 lg:pb-0 scrollbar-none"
           role="tablist"
           aria-label="Filter by structure category"
         >
@@ -235,7 +235,7 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
                 aria-selected={selected}
                 onClick={() => handleCategoryChange(category.id)}
                 className={cn(
-                  "h-9 shrink-0 rounded-full px-4 text-xs font-bold transition-all duration-200 cursor-pointer select-none",
+                  "h-9 shrink-0 rounded-full px-4 text-xs font-bold transition-all duration-200 cursor-pointer select-none touch-manipulation",
                   selected
                     ? "border border-primary bg-primary text-white shadow-xs"
                     : "border border-border bg-surface text-text-secondary shadow-xs hover:text-text-primary hover:border-border-hover hover:bg-surface-hover"
@@ -297,7 +297,7 @@ export function CatalogExplorer({ dataStructures, publishedAlgorithms }: Catalog
               >
                 <Link
                   href={`/visualizers/${structure.slug}`}
-                  className="group flex h-full flex-col justify-between rounded-lg border border-border bg-surface p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200"
+                  className="group flex h-full flex-col justify-between rounded-lg border border-border bg-surface p-4 sm:p-6 shadow-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-200"
                 >
                   <div>
                     {/* Top: Icon and Category Badge */}

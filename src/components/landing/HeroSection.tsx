@@ -116,7 +116,7 @@ function WorkbenchPreview() {
       initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden rounded-lg p-5 sm:p-6 border border-border-subtle bg-surface shadow-card"
+      className="relative overflow-hidden rounded-lg p-4 sm:p-6 border border-border-subtle bg-surface shadow-card"
     >
       {/* Top Accent Strip with progress indication */}
       <div className="absolute inset-x-0 top-0 h-1 bg-border-subtle overflow-hidden">
@@ -307,7 +307,7 @@ export function HeroSection({
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden px-4 pb-12 pt-28 sm:px-6 lg:px-8 lg:pb-16 lg:pt-32">
+    <section className="relative overflow-hidden px-4 pb-12 pt-24 sm:px-6 sm:pt-28 lg:px-8 lg:pb-16 lg:pt-32">
       {/* Background Academic Grid Pattern & Soft Atmospheric Illumination */}
       <div
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
@@ -347,7 +347,7 @@ export function HeroSection({
           </div>
 
           {/* Main Headline */}
-          <h1 className="max-w-3xl text-4xl font-bold font-display leading-[1.12] tracking-tight sm:text-5xl lg:text-6xl text-text-primary">
+          <h1 className="max-w-3xl text-3xl font-bold font-display leading-[1.12] tracking-tight sm:text-5xl lg:text-6xl text-text-primary">
             Master Data Structures &amp; Algorithms{" "}
             <span className="text-primary">Step by Step.</span>
           </h1>

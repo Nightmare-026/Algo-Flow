@@ -258,14 +258,14 @@ export function AnswerPad({
       </form>
 
       {/* On-Screen Keypad for Mobile & Touchscreens */}
-      <div className="grid grid-cols-3 gap-1.5 sm:gap-2 w-full my-auto">
+      <div className="grid grid-cols-3 gap-1.5 sm:gap-2 w-full my-auto touch-manipulation">
         {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((digit) => (
           <button
             key={digit}
             onClick={() => handleKeypadDigit(digit)}
             disabled={isAnswered}
             type="button"
-            className="h-10 sm:h-11 lg:h-12 rounded-sm flex items-center justify-center font-mono text-lg sm:text-xl font-bold text-text-primary bg-surface hover:bg-surface-secondary hover:border-primary/40 active:scale-95 transition-all shadow-xs select-none cursor-pointer border border-border"
+            className="h-11 sm:h-11 lg:h-12 rounded-sm flex items-center justify-center font-mono text-lg sm:text-xl font-bold text-text-primary bg-surface hover:bg-surface-secondary hover:border-primary/40 active:scale-95 transition-all shadow-xs select-none cursor-pointer border border-border touch-manipulation"
           >
             {digit}
           </button>
@@ -274,7 +274,7 @@ export function AnswerPad({
           onClick={handleKeypadClear}
           disabled={isAnswered || currentInput === ""}
           type="button"
-          className="h-10 sm:h-11 lg:h-12 rounded-sm flex items-center justify-center text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted hover:text-error hover:border-error/40 hover:bg-surface-secondary active:scale-95 transition-all shadow-xs select-none cursor-pointer border border-border disabled:opacity-40"
+          className="h-11 sm:h-11 lg:h-12 rounded-sm flex items-center justify-center text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-text-muted hover:text-error hover:border-error/40 hover:bg-surface-secondary active:scale-95 transition-all shadow-xs select-none cursor-pointer border border-border disabled:opacity-40 touch-manipulation"
           aria-label="Clear input"
         >
           Clear
@@ -283,7 +283,7 @@ export function AnswerPad({
           onClick={() => handleKeypadDigit("0")}
           disabled={isAnswered}
           type="button"
-          className="h-10 sm:h-11 lg:h-12 rounded-sm flex items-center justify-center font-mono text-lg sm:text-xl font-bold text-text-primary bg-surface hover:bg-surface-secondary hover:border-primary/40 active:scale-95 transition-all shadow-xs select-none cursor-pointer border border-border"
+          className="h-11 sm:h-11 lg:h-12 rounded-sm flex items-center justify-center font-mono text-lg sm:text-xl font-bold text-text-primary bg-surface hover:bg-surface-secondary hover:border-primary/40 active:scale-95 transition-all shadow-xs select-none cursor-pointer border border-border touch-manipulation"
         >
           0
         </button>
@@ -291,7 +291,7 @@ export function AnswerPad({
           onClick={handleKeypadBackspace}
           disabled={isAnswered || currentInput === ""}
           type="button"
-          className="h-10 sm:h-11 lg:h-12 rounded-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/40 hover:bg-surface-secondary active:scale-95 transition-all shadow-xs select-none cursor-pointer border border-border disabled:opacity-40"
+          className="h-11 sm:h-11 lg:h-12 rounded-sm flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/40 hover:bg-surface-secondary active:scale-95 transition-all shadow-xs select-none cursor-pointer border border-border disabled:opacity-40 touch-manipulation"
           aria-label="Backspace"
         >
           <Delete className="w-4 h-4" />
