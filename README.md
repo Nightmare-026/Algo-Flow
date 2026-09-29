@@ -14,7 +14,7 @@ Interactive Algorithm & Data Structure Visualizer Workstation with Synchronized 
 ## Status & Build Badges
 
 ![Access](https://img.shields.io/badge/Access-Proprietary%20%2F%20Private-red.svg?style=flat-square)
-![Next.js](https://img.shields.io/badge/Next.js-16.2.10-black.svg?style=flat-square&logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black.svg?style=flat-square&logo=next.js)
 ![React](https://img.shields.io/badge/React-19.2.4-blue.svg?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg?style=flat-square&logo=typescript)
 ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-4.x-38B2AC.svg?style=flat-square&logo=tailwind-css)
@@ -80,7 +80,7 @@ Algo Flow is architected as a modern, type-safe Next.js application adhering to 
 
 | Architectural Layer | Technologies & Dependencies | Role & Implementation |
 |---|---|---|
-| **Core Framework** | Next.js 16.2.10 (App Router, Turbopack) | Server Components, dynamic slug routing, SSR, API routes |
+| **Core Framework** | Next.js 16.3.4 (App Router, Turbopack) | Server Components, dynamic slug routing, SSR, API routes |
 | **User Interface** | React 19.2.4, TypeScript 5.x | Strictly typed component tree, zero-runtime overhead |
 | **Styling & Design Tokens** | Tailwind CSS 4.x, PostCSS | Custom CSS variable design tokens, neumorphic surfaces |
 | **Playback State Machine** | Zustand 5.0.14 | Deterministic step indexing, frame coordination, timeline state |

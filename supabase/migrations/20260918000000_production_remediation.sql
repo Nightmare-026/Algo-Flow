@@ -135,6 +135,54 @@ $$;
 grant execute on function public.mark_algorithm_completed(text) to authenticated;
 revoke execute on function public.mark_algorithm_completed(text) from public, anon;
 
+create or replace function public.record_quiz_attempt(
+  p_algorithm_id text,
+  p_score integer,
+  p_total_questions integer
+)
+returns setof public.quiz_attempts
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  caller_id uuid := (select auth.uid());
+  normalized_algorithm_id text := nullif(btrim(p_algorithm_id), '');
+begin
+  if caller_id is null then
+    raise exception 'authentication required' using errcode = '42501';
+  end if;
+  if normalized_algorithm_id is null or char_length(normalized_algorithm_id) > 200 then
+    raise exception 'algorithm id is required' using errcode = '22023';
+  end if;
+  if p_total_questions <= 0 or p_total_questions > 100
+    or p_score < 0 or p_score > p_total_questions then
+    raise exception 'invalid quiz score' using errcode = '22023';
+  end if;
+
+  return query
+    insert into public.quiz_attempts (user_id, algorithm_id, score, total_questions)
+    values (caller_id, normalized_algorithm_id, p_score, p_total_questions)
+    returning public.quiz_attempts.*;
+
+  insert into public.activity_timeline (user_id, action_type, algorithm_id, metadata)
+  values (
+    caller_id,
+    'quiz_completed',
+    normalized_algorithm_id,
+    jsonb_build_object('score', p_score, 'total_questions', p_total_questions)
+  );
+
+  if p_score::numeric / p_total_questions >= 0.6 then
+    perform public.touch_user_streak();
+  end if;
+end;
+$$;
+
+revoke insert on table public.quiz_attempts from anon, authenticated;
+grant execute on function public.record_quiz_attempt(text, integer, integer) to authenticated;
+revoke execute on function public.record_quiz_attempt(text, integer, integer) from public, anon;
+
 -- ============================================================================
 -- 4. PERFORMANCE RPC: Consolidated Dashboard Summary (PERF-001)
 -- ============================================================================
@@ -257,7 +305,8 @@ set search_path = ''
 as $$
   select coalesce(sum(score), 0)::integer
   from public.quiz_attempts
-  where user_id = p_user_id;
+  where user_id = p_user_id
+    and p_user_id = (select auth.uid());
 $$;
 
 grant execute on function public.get_user_quiz_score_sum(uuid) to authenticated;
@@ -282,10 +331,10 @@ create table if not exists public.application_error_logs (
 alter table public.application_error_logs enable row level security;
 
 drop policy if exists allow_insert_error_logs on public.application_error_logs;
-create policy allow_insert_error_logs
+create policy allow_authenticated_insert_error_logs
   on public.application_error_logs for insert
-  to authenticated, anon
-  with check (true);
+  to authenticated
+  with check (user_id = (select auth.uid()));
 
 drop policy if exists allow_service_read_error_logs on public.application_error_logs;
 create policy allow_service_read_error_logs
@@ -293,7 +342,8 @@ create policy allow_service_read_error_logs
   to service_role
   using (true);
 
-grant insert on table public.application_error_logs to authenticated, anon;
+revoke insert on table public.application_error_logs from anon;
+grant insert on table public.application_error_logs to authenticated;
 create index if not exists idx_application_error_logs_created_at on public.application_error_logs(created_at desc);
 
 -- ============================================================================
@@ -311,4 +361,3 @@ create index if not exists idx_quiz_attempts_user_id on public.quiz_attempts(use
 create index if not exists idx_saved_visualizer_sessions_user_id on public.saved_visualizer_sessions(user_id);
 
 commit;
-

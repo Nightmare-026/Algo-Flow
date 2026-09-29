@@ -4,11 +4,15 @@ import { createClient } from "@/lib/supabase/server";
 import type { UserActionResult } from "@/features/bookmarks/api";
 import { normalizeAlgorithmId } from "@/lib/validation/algorithm-id";
 import { checkRateLimit } from "@/lib/security/rate-limit";
+import { publishedAlgorithms } from "@/lib/catalog";
 
 export async function markCompleted(algorithmId: string): Promise<UserActionResult> {
   const normalizedAlgorithmId = normalizeAlgorithmId(algorithmId);
   if (!normalizedAlgorithmId) {
     return { ok: false, message: "A valid algorithm is required." };
+  }
+  if (!publishedAlgorithms.some((algorithm) => algorithm.id === normalizedAlgorithmId)) {
+    return { ok: false, message: "That algorithm is not available." };
   }
 
   const supabase = await createClient();

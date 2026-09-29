@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   X,
@@ -28,17 +28,41 @@ interface MobileMoreSheetProps {
 }
 
 export function MobileMoreSheet({ isOpen, onClose, user }: MobileMoreSheetProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     if (!isOpen) return;
+    triggerRef.current = document.activeElement as HTMLElement | null;
     const original = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
+      if (e.key !== "Tab") return;
+      const dialog = document.getElementById("mobile-navigation");
+      if (!dialog) return;
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", handleKey);
+    requestAnimationFrame(() => closeButtonRef.current?.focus());
     return () => {
       document.body.style.overflow = original;
       document.removeEventListener("keydown", handleKey);
+      triggerRef.current?.focus();
     };
   }, [isOpen, onClose]);
 
@@ -46,6 +70,7 @@ export function MobileMoreSheet({ isOpen, onClose, user }: MobileMoreSheetProps)
     <AnimatePresence>
       {isOpen && (
         <div
+          id="mobile-navigation"
           className="fixed inset-0 z-100 lg:hidden flex flex-col justify-end"
           role="dialog"
           aria-modal="true"
@@ -80,6 +105,7 @@ export function MobileMoreSheet({ isOpen, onClose, user }: MobileMoreSheetProps)
                 <button
                   type="button"
                   onClick={onClose}
+                  ref={closeButtonRef}
                   className="flex h-9 w-9 items-center justify-center rounded-sm border border-border bg-surface text-text-muted hover:border-primary/40 hover:text-primary transition-all active:scale-95 cursor-pointer touch-manipulation"
                   aria-label="Close menu"
                 >
@@ -89,7 +115,7 @@ export function MobileMoreSheet({ isOpen, onClose, user }: MobileMoreSheetProps)
             </div>
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4 momentum-scroll">
+            <div             className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 space-y-4 momentum-scroll">
               {/* User Account Card */}
               {user ? (
                 <div className="rounded-xl border border-border bg-surface-secondary/70 p-3.5 shadow-xs">

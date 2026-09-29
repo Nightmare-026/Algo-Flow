@@ -8,7 +8,7 @@ Algo Flow is an interactive Data Structures & Algorithms visualizer. Users selec
 
 | Technology | Version | Role |
 |---|---|---|
-| Next.js (App Router) | 16.2.10 | Framework, SSR, routing, proxy middleware |
+| Next.js (App Router) | 16.3.4 | Framework, SSR, routing, proxy middleware |
 | React | 19.2.4 | UI |
 | TypeScript | ^5 (strict) | Type safety |
 | Tailwind CSS | v4 | Styling via CSS custom properties |
