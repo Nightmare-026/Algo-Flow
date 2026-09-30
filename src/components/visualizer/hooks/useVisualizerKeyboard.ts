@@ -38,43 +38,35 @@ export function useVisualizerKeyboard({
       if (event.key === "?" || (event.key === "/" && event.shiftKey)) {
         event.preventDefault();
         setShowShortcuts((prev) => !prev);
+      } else if (event.key === "p" || event.key === "P") {
+        event.preventDefault();
+        togglePracticeMode();
+      } else if (event.key === "f" || event.key === "F") {
+        event.preventDefault();
+        handleFullscreen();
+      } else if (event.key === "b" || event.key === "B") {
+        event.preventDefault();
+        handleToggleBookmark();
+      } else if (event.key === "s" || event.key === "S") {
+        event.preventDefault();
+        handleSaveSession();
+      } else if (event.key === "1") {
+        event.preventDefault();
+        setActiveRightTab("pseudocode");
+      } else if (event.key === "2") {
+        event.preventDefault();
+        setActiveRightTab("code");
+      } else if (event.key === "e" || event.key === "E") {
+        event.preventDefault();
+        setActiveLowerTab("explanation");
+      } else if (event.key === "l" || event.key === "L") {
+        event.preventDefault();
+        setActiveLowerTab("log");
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  // Custom event handlers for keyboard shortcuts dispatched by PlaybackControls
-  useEffect(() => {
-    const handlePracticeToggle = () => togglePracticeMode();
-    const handleFullscreenToggle = () => handleFullscreen();
-    const handleBookmarkToggle = () => handleToggleBookmark();
-    const handleSaveSessionTrigger = () => handleSaveSession();
-    const handleTabPseudocode = () => setActiveRightTab("pseudocode");
-    const handleTabCode = () => setActiveRightTab("code");
-    const handleTabExplanation = () => setActiveLowerTab("explanation");
-    const handleTabLog = () => setActiveLowerTab("log");
-
-    window.addEventListener("toggle-practice-mode", handlePracticeToggle);
-    window.addEventListener("toggle-fullscreen", handleFullscreenToggle);
-    window.addEventListener("toggle-bookmark", handleBookmarkToggle);
-    window.addEventListener("save-session", handleSaveSessionTrigger);
-    window.addEventListener("tab-pseudocode", handleTabPseudocode);
-    window.addEventListener("tab-code", handleTabCode);
-    window.addEventListener("tab-explanation", handleTabExplanation);
-    window.addEventListener("tab-log", handleTabLog);
-
-    return () => {
-      window.removeEventListener("toggle-practice-mode", handlePracticeToggle);
-      window.removeEventListener("toggle-fullscreen", handleFullscreenToggle);
-      window.removeEventListener("toggle-bookmark", handleBookmarkToggle);
-      window.removeEventListener("save-session", handleSaveSessionTrigger);
-      window.removeEventListener("tab-pseudocode", handleTabPseudocode);
-      window.removeEventListener("tab-code", handleTabCode);
-      window.removeEventListener("tab-explanation", handleTabExplanation);
-      window.removeEventListener("tab-log", handleTabLog);
-    };
   }, [
     togglePracticeMode,
     handleFullscreen,

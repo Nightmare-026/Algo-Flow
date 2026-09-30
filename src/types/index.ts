@@ -197,40 +197,39 @@ export interface UserProfile {
   updatedAt: string;
 }
 
+export type ActionResult<T = void> = {
+  ok: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+  requiresAuth?: boolean;
+};
+
 export interface UserPreferences {
-  userId: string;
-  preferredLanguage: string;
-  preferredCodeLanguage: CodeLanguage;
-  theme: ThemePreference;
-  animationSpeed: PlaybackSpeed;
-  reducedMotion: boolean;
-  difficultyLevel: DifficultyLevel;
-  defaultVisualizerMode: string;
+  id: string;
+  theme: string;
+  code_language: string;
+  speed: number;
+  difficulty: string;
 }
 
 // ----------------------------------------------------------------
 // Progress & Streak
 // ----------------------------------------------------------------
-export type ProgressStatus = "not_started" | "in_progress" | "completed" | "needs_revision";
+export type ProgressStatus = "in_progress" | "completed";
 
 export interface UserProgress {
   id: string;
   userId: string;
   algorithmId: string;
   status: ProgressStatus;
-  completionPercentage: number;
-  timeSpentSeconds: number;
-  practiceAccuracy: number | null;
-  lastPracticedAt: string | null;
   completedAt: string | null;
 }
 
 export interface UserStreak {
-  userId: string;
   currentStreak: number;
-  longestStreak: number;
-  lastActiveDate: string | null;
-  dailyGoalCompleted: boolean;
+  maxStreak: number;
+  lastActivityDate: string | null;
 }
 
 // ----------------------------------------------------------------

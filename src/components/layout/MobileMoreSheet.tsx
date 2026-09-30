@@ -115,7 +115,7 @@ export function MobileMoreSheet({ isOpen, onClose, user }: MobileMoreSheetProps)
             </div>
 
             {/* Scrollable Content */}
-            <div             className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 space-y-4 momentum-scroll">
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 space-y-4 momentum-scroll">
               {/* User Account Card */}
               {user ? (
                 <div className="rounded-xl border border-border bg-surface-secondary/70 p-3.5 shadow-xs">

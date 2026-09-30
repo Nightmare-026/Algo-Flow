@@ -44,7 +44,7 @@ export function HashTableRenderer() {
   return (
     <div
       className="flex h-full w-full flex-col items-center justify-start p-2 sm:p-4 overflow-hidden select-none"
-      role="img"
+      role="region"
       aria-label={`${currentStep.title}. Hash table state: ${dataState.elementCount} elements, load factor ${dataState.loadFactor.toFixed(2)}`}
     >
       {/* Top Section: Metrics & Active Formula Callout */}

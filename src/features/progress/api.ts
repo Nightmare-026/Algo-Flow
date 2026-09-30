@@ -11,7 +11,11 @@ export async function markCompleted(algorithmId: string): Promise<UserActionResu
   if (!normalizedAlgorithmId) {
     return { ok: false, message: "A valid algorithm is required." };
   }
-  if (!publishedAlgorithms.some((algorithm) => algorithm.id === normalizedAlgorithmId)) {
+  const isAvailable = publishedAlgorithms.some(
+    (algorithm) =>
+      algorithm.id === normalizedAlgorithmId || algorithm.slug === normalizedAlgorithmId
+  );
+  if (!isAvailable) {
     return { ok: false, message: "That algorithm is not available." };
   }
 

@@ -96,12 +96,8 @@ export function swapElements<T>(arr: T[], i: number, j: number): T[] {
  * Format time complexity for display.
  */
 export function formatComplexity(complexity: string): string {
-  return complexity
-    .replace(/O\((.*)\)/, "O($1)")
-    .replace(/n\^2/, "n²")
-    .replace(/n\^3/, "n³")
-    .replace(/log n/, "log n")
-    .replace(/n log n/, "n log n");
+  if (!complexity) return "";
+  return complexity.replace(/\^2/g, "²").replace(/\^3/g, "³").replace(/\^k/g, "ᵏ").trim();
 }
 
 /**

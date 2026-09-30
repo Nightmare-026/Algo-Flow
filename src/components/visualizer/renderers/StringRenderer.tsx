@@ -22,7 +22,7 @@ export function StringRenderer() {
   return (
     <div
       className="flex flex-col items-center justify-center w-full h-full p-8 relative gap-12 overflow-auto"
-      role="img"
+      role="region"
       aria-label={`${currentStep.title}. String visualizer state with text length ${dataState.elements?.length ?? 0}`}
     >
       {dataState.lps && (

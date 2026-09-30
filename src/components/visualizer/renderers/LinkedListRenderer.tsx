@@ -51,7 +51,7 @@ export function LinkedListRenderer() {
   return (
     <div
       className="flex items-center justify-center w-full h-full p-8 relative overflow-hidden"
-      role="img"
+      role="region"
       aria-label={`${currentStep.title}. Linked list values: ${orderedNodes.map((n) => n.value).join(" -> ")}`}
     >
       <div className="flex flex-wrap items-center justify-center gap-y-16 gap-x-2 max-w-full">

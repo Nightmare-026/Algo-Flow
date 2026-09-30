@@ -97,28 +97,28 @@ export type Database = {
       };
       chapter_progress: {
         Row: {
-          id: string;
-          user_id: string;
-          module_slug: string;
           chapter_slug: string;
           completed: boolean;
           completed_at: string;
+          id: string;
+          module_slug: string;
+          user_id: string;
         };
         Insert: {
-          id?: string;
-          user_id: string;
-          module_slug: string;
           chapter_slug: string;
           completed?: boolean;
           completed_at?: string;
+          id?: string;
+          module_slug: string;
+          user_id: string;
         };
         Update: {
-          id?: string;
-          user_id?: string;
-          module_slug?: string;
           chapter_slug?: string;
           completed?: boolean;
           completed_at?: string;
+          id?: string;
+          module_slug?: string;
+          user_id?: string;
         };
         Relationships: [];
       };
@@ -367,6 +367,7 @@ export type Database = {
           code_language: string | null;
           difficulty: string | null;
           id: string;
+          reduced_motion: boolean;
           speed: number | null;
           theme: string | null;
           updated_at: string | null;
@@ -375,6 +376,7 @@ export type Database = {
           code_language?: string | null;
           difficulty?: string | null;
           id: string;
+          reduced_motion?: boolean;
           speed?: number | null;
           theme?: string | null;
           updated_at?: string | null;
@@ -383,6 +385,7 @@ export type Database = {
           code_language?: string | null;
           difficulty?: string | null;
           id?: string;
+          reduced_motion?: boolean;
           speed?: number | null;
           theme?: string | null;
           updated_at?: string | null;
@@ -487,50 +490,6 @@ export type Database = {
           },
         ];
       };
-      user_preferences: {
-        Row: {
-          animation_speed: string | null;
-          default_visualizer_mode: string | null;
-          difficulty_level: string | null;
-          preferred_code_language: string | null;
-          preferred_language: string | null;
-          reduced_motion: boolean | null;
-          theme: string | null;
-          updated_at: string | null;
-          user_id: string;
-        };
-        Insert: {
-          animation_speed?: string | null;
-          default_visualizer_mode?: string | null;
-          difficulty_level?: string | null;
-          preferred_code_language?: string | null;
-          preferred_language?: string | null;
-          reduced_motion?: boolean | null;
-          theme?: string | null;
-          updated_at?: string | null;
-          user_id: string;
-        };
-        Update: {
-          animation_speed?: string | null;
-          default_visualizer_mode?: string | null;
-          difficulty_level?: string | null;
-          preferred_code_language?: string | null;
-          preferred_language?: string | null;
-          reduced_motion?: boolean | null;
-          theme?: string | null;
-          updated_at?: string | null;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "user_preferences_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: true;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       user_progress: {
         Row: {
           algorithm_id: string;
@@ -612,39 +571,22 @@ export type Database = {
           isSetofReturn: true;
         };
       };
-      touch_user_streak:
-        | {
-            Args: { p_domain?: string };
-            Returns: {
-              current_streak: number | null;
-              last_activity_date: string | null;
-              last_domain: string | null;
-              max_streak: number | null;
-              user_id: string;
-            };
-            SetofOptions: {
-              from: "*";
-              to: "user_streaks";
-              isOneToOne: true;
-              isSetofReturn: false;
-            };
-          }
-        | {
-            Args: { p_domain?: string; p_timezone?: string };
-            Returns: {
-              current_streak: number | null;
-              last_activity_date: string | null;
-              last_domain: string | null;
-              max_streak: number | null;
-              user_id: string;
-            };
-            SetofOptions: {
-              from: "*";
-              to: "user_streaks";
-              isOneToOne: true;
-              isSetofReturn: false;
-            };
-          };
+      touch_user_streak: {
+        Args: { p_domain?: string; p_timezone?: string };
+        Returns: {
+          current_streak: number | null;
+          last_activity_date: string | null;
+          last_domain: string | null;
+          max_streak: number | null;
+          user_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "user_streaks";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
     };
     Enums: {
       feedback_status: "new" | "reviewed" | "resolved" | "dismissed";

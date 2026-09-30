@@ -44,6 +44,10 @@ export function useVisualizerCompletion(algorithmId: string, onStatus: (msg: str
   const hasCompletedRef = useRef(false);
 
   useEffect(() => {
+    hasCompletedRef.current = false;
+  }, [algorithmId]);
+
+  useEffect(() => {
     if (totalSteps > 0 && currentStepIndex === totalSteps - 1 && !hasCompletedRef.current) {
       hasCompletedRef.current = true;
       markCompleted(algorithmId)

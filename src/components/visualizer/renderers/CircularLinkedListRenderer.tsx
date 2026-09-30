@@ -36,7 +36,7 @@ export function CircularLinkedListRenderer() {
   return (
     <div
       className="flex flex-col items-center justify-center w-full h-full p-8 relative overflow-hidden"
-      role="img"
+      role="region"
       aria-label={`${currentStep.title}. Circular linked list values: ${orderedNodes.map((n) => n.value).join(" -> ")} (tail links to head)`}
     >
       {/* Visual Indicator of Circular Nature */}

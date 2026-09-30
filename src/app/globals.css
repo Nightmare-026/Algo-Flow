@@ -1184,3 +1184,24 @@ textarea {
   background-color: var(--accent-muted);
   color: var(--accent);
 }
+
+/* Mobile Landscape Optimization (Viewport Height <= 500px) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .visualizer-compact-header {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    gap: 0.25rem !important;
+  }
+  .visualizer-compact-dock {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    gap: 0.25rem !important;
+  }
+  .visualizer-compact-strip {
+    padding-top: 0.125rem !important;
+    padding-bottom: 0.125rem !important;
+  }
+  .visualizer-canvas-container {
+    min-height: 280px !important;
+  }
+}

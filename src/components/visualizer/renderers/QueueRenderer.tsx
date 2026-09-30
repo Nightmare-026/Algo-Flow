@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDown, ArrowUp } from "lucide-react";
@@ -28,7 +28,7 @@ export function QueueRenderer() {
   return (
     <div
       className="relative flex h-full w-full items-center justify-center overflow-hidden p-5 sm:p-8"
-      role="img"
+      role="region"
       aria-label={`${currentStep.title}. Queue contains ${dataState.elements.map((element) => element.value).join(", ") || "no values"}.`}
     >
       <div className="flex h-40 w-full max-w-3xl flex-row items-center justify-start gap-4 overflow-visible border-y-4 border-border bg-surface-secondary/35 px-4 py-4">

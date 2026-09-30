@@ -144,7 +144,10 @@ export async function recordMentalMathSession(summary: SessionSummary): Promise<
 
     // 5. Touch unified platform streak
     try {
-      await supabase.rpc("touch_user_streak", { p_domain: "mental_math" });
+      await supabase.rpc("touch_user_streak", {
+        p_timezone: "UTC",
+        p_domain: "mental_math",
+      });
     } catch {
       // non-blocking
     }
@@ -214,7 +217,10 @@ export async function submitDailyChallenge(summary: SessionSummary): Promise<Sub
           challenge_date: challengeDate,
         },
       });
-      await supabase.rpc("touch_user_streak", { p_domain: "mental_math" });
+      await supabase.rpc("touch_user_streak", {
+        p_timezone: "UTC",
+        p_domain: "mental_math",
+      });
     } catch {
       // Non-blocking
     }

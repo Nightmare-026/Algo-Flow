@@ -38,7 +38,7 @@ export function HashSetRenderer() {
   return (
     <div
       className="absolute inset-0 flex flex-col items-center justify-start p-4 sm:p-8 overflow-hidden"
-      role="img"
+      role="region"
       aria-label={`${currentStep.title}. Hash set state: ${dataState.elementCount} elements, load factor ${dataState.loadFactor.toFixed(2)}`}
     >
       {/* Metrics Banner */}

@@ -213,7 +213,7 @@ export function TreeRenderer() {
   return (
     <div
       className="flex items-center justify-center w-full h-full relative overflow-hidden rounded-lg border border-border/60 bg-surface shadow-card"
-      role="img"
+      role="region"
       aria-label={accessibleLabel}
     >
       <ReactFlow

@@ -98,31 +98,6 @@ export function PlaybackControls() {
       } else if (event.key === "r" || event.key === "R") {
         event.preventDefault();
         restart();
-      } else if (event.key === "p" || event.key === "P") {
-        event.preventDefault();
-        // Practice Mode toggle is handled in VisualizerLayout
-        window.dispatchEvent(new CustomEvent("toggle-practice-mode"));
-      } else if (event.key === "f" || event.key === "F") {
-        event.preventDefault();
-        window.dispatchEvent(new CustomEvent("toggle-fullscreen"));
-      } else if (event.key === "b" || event.key === "B") {
-        event.preventDefault();
-        window.dispatchEvent(new CustomEvent("toggle-bookmark"));
-      } else if (event.key === "s" || event.key === "S") {
-        event.preventDefault();
-        window.dispatchEvent(new CustomEvent("save-session"));
-      } else if (event.key === "1") {
-        event.preventDefault();
-        window.dispatchEvent(new CustomEvent("tab-pseudocode"));
-      } else if (event.key === "2") {
-        event.preventDefault();
-        window.dispatchEvent(new CustomEvent("tab-code"));
-      } else if (event.key === "e" || event.key === "E") {
-        event.preventDefault();
-        window.dispatchEvent(new CustomEvent("tab-explanation"));
-      } else if (event.key === "l" || event.key === "L") {
-        event.preventDefault();
-        window.dispatchEvent(new CustomEvent("tab-log"));
       }
     };
 

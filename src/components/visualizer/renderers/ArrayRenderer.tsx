@@ -26,7 +26,7 @@ export function ArrayRenderer() {
   return (
     <div
       className="relative flex h-full w-full items-center justify-center p-2 sm:p-8 overflow-hidden"
-      role="img"
+      role="region"
       aria-label={`${currentStep.title}. Array values: ${dataState.elements.map((element) => element.value).join(", ")}`}
     >
       <div className="flex max-w-full items-center justify-start sm:justify-center gap-2 sm:gap-3 overflow-x-auto momentum-scroll pb-12 pt-4 px-4 sm:px-6 mx-auto">

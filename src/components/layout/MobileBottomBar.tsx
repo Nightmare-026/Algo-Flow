@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Compass, BookOpen, BrainCircuit, LayoutDashboard, Menu } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import { MobileMoreSheet } from "./MobileMoreSheet";
 
@@ -27,6 +28,27 @@ const navItems = [
 export function MobileBottomBar({ user = null }: MobileBottomBarProps) {
   const pathname = usePathname();
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [clientUser, setClientUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    if (user !== null && user !== undefined) return;
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) setClientUser(data.user);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setClientUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [user]);
+
+  const currentUser = user ?? clientUser;
 
   // Dedicated visualizer route (/visualizer/[slug]) has its own specialized bottom playback dock
   // and Mental Math (/mental-math) has its dedicated sub-studio bottom nav
@@ -115,7 +137,11 @@ export function MobileBottomBar({ user = null }: MobileBottomBarProps) {
       </nav>
 
       {/* Slide-up "More" Sheet Modal */}
-      <MobileMoreSheet isOpen={isMoreOpen} onClose={() => setIsMoreOpen(false)} user={user} />
+      <MobileMoreSheet
+        isOpen={isMoreOpen}
+        onClose={() => setIsMoreOpen(false)}
+        user={currentUser}
+      />
     </>
   );
 }

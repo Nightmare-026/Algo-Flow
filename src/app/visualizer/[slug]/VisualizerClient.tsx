@@ -72,15 +72,6 @@ export function VisualizerClient({
     [dataLength, options, slug]
   );
 
-  // Keep the stored options in sync with the clamped range whenever the data
-  // size changes, so the input controls never display a value that differs
-  // from the one the generator actually uses.
-  const [prevDataLength, setPrevDataLength] = useState(dataLength);
-  if (prevDataLength !== dataLength) {
-    setPrevDataLength(dataLength);
-    setOptions((current) => clampOperationOptions(current, dataLength, slug));
-  }
-
   const steps = useMemo(
     () => definition?.generateSteps(visualizerData as never, clampedOptions) ?? [],
     [visualizerData, clampedOptions, definition]
@@ -145,7 +136,7 @@ export function VisualizerClient({
     Controls && isImplemented ? (
       <Controls
         slug={slug}
-        options={options}
+        options={clampedOptions}
         onOptionsChange={setOptions}
         onGenerate={setVisualizerData}
         dataLength={dataLength}

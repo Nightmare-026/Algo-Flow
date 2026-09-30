@@ -34,6 +34,11 @@ export function StepLegend({ items }: { items: ReadonlyArray<StepLegendItem> }) 
       aria-label="Step highlight legend"
       className="border-b border-border bg-surface/60 px-2.5 py-1 backdrop-blur-sm"
     >
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {currentStep
+          ? `Step ${currentStepIndex + 1} of ${steps.length}: ${currentStep.title}. ${currentStep.description ?? ""}`
+          : ""}
+      </div>
       <div
         className="hide-scrollbar flex items-center gap-1 overflow-x-auto"
         role="list"

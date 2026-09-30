@@ -49,7 +49,7 @@ src/app/
 
 ### Auth & Middleware
 
-`src/proxy.ts` is the sole auth-gating point (Next.js 16 `proxy`, aliased as `middleware`):
+`src/middleware.ts` is the sole auth-gating point (Next.js middleware with backward-compatible proxy export):
 - **Protected routes:** `/dashboard`, `/visualizer/*/saved` → redirects to `/login` if not authenticated
 - **Auth routes:** `/login`, `/signup`, `/forgot-password`, `/reset-password` → redirects to `/dashboard` if already authenticated
 - All routes update the Supabase session via `updateSession()`
@@ -219,7 +219,7 @@ Each `api.ts` creates a Supabase server client, authenticates, and performs data
 - Dependency additions or major version upgrades
 - Changes to auth flow, RLS policies, or secret handling
 - Bulk operations or irreversible actions
-- Changes to `proxy.ts` (auth middleware)
+- Changes to `middleware.ts` (auth middleware)
 
 ### Never do:
 - Commit, log, or expose secrets

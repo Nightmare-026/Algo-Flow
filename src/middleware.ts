@@ -7,20 +7,20 @@ const PROTECTED_ROUTES = ["/dashboard"];
 // Routes that should only be accessible if the user is NOT authenticated.
 const AUTH_ROUTES = ["/login", "/signup", "/forgot-password", "/reset-password"];
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const isDev = process.env.NODE_ENV === "development";
 
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://va.vercel-scripts.com;
+    script-src 'self' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ""} https://va.vercel-scripts.com https://www.googletagmanager.com;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data: https:;
+    img-src 'self' blob: data: https: https://www.google-analytics.com https://*.googletagmanager.com;
     font-src 'self' data: https:;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    connect-src 'self' ${isDev ? "ws: wss: http://localhost:* http://127.0.0.1:*" : ""} https://*.supabase.co https://accounts.google.com https://github.com https://va.vercel-scripts.com https://*.upstash.io;
+    connect-src 'self' ${isDev ? "ws: wss: http://localhost:* http://127.0.0.1:*" : ""} https://*.supabase.co https://accounts.google.com https://github.com https://va.vercel-scripts.com https://*.upstash.io https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
     ${isDev ? "" : "upgrade-insecure-requests;"}
   `
     .replace(/\s{2,}/g, " ")
@@ -79,8 +79,8 @@ export async function proxy(request: NextRequest) {
   return supabaseResponse;
 }
 
-// Alias middleware for compatibility
-export const middleware = proxy;
+// Keep proxy export for backwards compatibility
+export const proxy = middleware;
 
 export const config = {
   matcher: [
@@ -89,7 +89,6 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
      */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],

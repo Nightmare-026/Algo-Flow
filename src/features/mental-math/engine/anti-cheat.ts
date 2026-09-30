@@ -1,11 +1,55 @@
-import { SessionSummary } from "../core/types";
+import { SessionSummary, MathOperation } from "../core/types";
 import { generateSessionQuestions } from "../core/generator";
+import { evaluateBinaryExpression } from "../core/evaluator";
 import { calculateQuestionScore, calculateFinalSessionScore } from "./scoring";
 
 export interface SessionIntegrityResult {
   isValid: boolean;
   recalculatedScore: number;
   reason?: string;
+}
+
+function parseSignature(
+  signature?: string
+): { operation: MathOperation; operands: number[] } | null {
+  if (!signature) return null;
+  if (signature.includes(":")) {
+    const parts = signature.split(":");
+    const op = parts[0] as MathOperation;
+    const operands = parts.slice(1).map(Number);
+    if (operands.length > 0 && operands.every(Number.isFinite)) {
+      return { operation: op, operands };
+    }
+  }
+  if (signature.includes("_")) {
+    const parts = signature.split("_");
+    const prefix = parts[0];
+    const opMap: Record<string, MathOperation> = {
+      mul: "multiplication",
+      add: "addition",
+      sub: "subtraction",
+      div: "division",
+      sq: "squares",
+      cube: "cubes",
+      sqrt: "roots",
+      pct: "percentages",
+    };
+    const op = opMap[prefix] || (parts[0] as MathOperation);
+    const operands = parts.slice(1).map(Number);
+    if (operands.length > 0 && operands.every(Number.isFinite)) {
+      return { operation: op, operands };
+    }
+  }
+  return null;
+}
+
+function computeServerExpectedAnswer(signature?: string): number | undefined {
+  const parsed = parseSignature(signature);
+  if (!parsed) return undefined;
+  const a = parsed.operands[0];
+  const b = parsed.operands.length > 1 ? parsed.operands[1] : 0;
+  const res = evaluateBinaryExpression(a, b, parsed.operation);
+  return res.isValid ? res.value : undefined;
 }
 
 /**
@@ -75,7 +119,21 @@ export function verifySessionIntegrity(summary: SessionSummary): SessionIntegrit
 
   for (let i = 0; i < summary.answers.length; i++) {
     const ans = summary.answers[i];
-    const expected = expectedAnswersByIndex.get(i) ?? ans.correctAnswer;
+    const signatureExpected = computeServerExpectedAnswer(ans.questionSignature);
+    const expected = expectedAnswersByIndex.get(i) ?? signatureExpected ?? ans.correctAnswer;
+
+    // Detect if client forged correctAnswer in payload when server can verify signature
+    if (
+      signatureExpected !== undefined &&
+      ans.correctAnswer !== undefined &&
+      Number(ans.correctAnswer) !== Number(signatureExpected)
+    ) {
+      return {
+        isValid: false,
+        recalculatedScore: 0,
+        reason: `Forged answer key detected on question ${i + 1}.`,
+      };
+    }
 
     let isCorrect: boolean;
     if (expected !== undefined) {

@@ -40,6 +40,7 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { usePracticeMode } from "./hooks/usePracticeMode";
 import { useVisualizerKeyboard } from "./hooks/useVisualizerKeyboard";
 import { useVisualizerTour } from "./hooks/useVisualizerTour";
+import { useVisualizerUrlSync } from "./hooks/useVisualizerUrlSync";
 
 interface VisualizerLayoutProps {
   algorithm: Algorithm;
@@ -88,6 +89,7 @@ export function VisualizerLayout({
   const { statusMessage, showStatus } = useStatusToast();
   const { isBookmarked, handleToggleBookmark } = useVisualizerBookmark(algorithm.id, showStatus);
   useVisualizerCompletion(algorithm.id, showStatus);
+  useVisualizerUrlSync();
   const { isSaving, handleSaveSession } = useVisualizerSaveSession(
     algorithm.id,
     algorithm.name,
@@ -149,7 +151,7 @@ export function VisualizerLayout({
     >
       <div aria-hidden={showTour} className="flex flex-col flex-1 min-h-0 overflow-hidden">
         {/* Top Workstation Header */}
-        <header className="flex shrink-0 flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border bg-surface/80 backdrop-blur-md px-3 sm:px-4 py-2 shadow-card z-30">
+        <header className="flex shrink-0 flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border bg-surface/80 backdrop-blur-md px-3 sm:px-4 py-2 visualizer-compact-header shadow-card z-30">
           <div className="flex items-center justify-between gap-2 w-full sm:w-auto sm:flex-1 min-w-0">
             <div className="flex items-center gap-2 min-w-0">
               <Link
@@ -447,7 +449,7 @@ export function VisualizerLayout({
 
               <div
                 ref={canvasRegionRef}
-                className="relative flex-1 overflow-hidden min-h-0 flex flex-col justify-center"
+                className="relative flex-1 overflow-hidden min-h-0 flex flex-col justify-center visualizer-canvas-container"
               >
                 {children}
 
@@ -629,7 +631,7 @@ export function VisualizerLayout({
             </AnimatePresence>
 
             {/* Mobile Peek Step Bar (Glanceable current step with one-tap code expand) */}
-            <div className="lg:hidden border-t border-border bg-surface/95 backdrop-blur-md px-3 py-1.5 flex items-center justify-between shrink-0 shadow-xs select-none">
+            <div className="lg:hidden border-t border-border bg-surface/95 backdrop-blur-md px-3 py-1.5 visualizer-compact-strip flex items-center justify-between shrink-0 shadow-xs select-none">
               <button
                 type="button"
                 onClick={() => setShowInspector(true)}
@@ -654,7 +656,7 @@ export function VisualizerLayout({
             </div>
 
             {/* VCR Playback Controls & Timeline Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-border bg-surface px-3 py-2 pb-safe z-20 shadow-card shrink-0 w-full min-w-0">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t border-border bg-surface px-3 py-2 pb-safe visualizer-compact-dock z-20 shadow-card shrink-0 w-full min-w-0">
               <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-2 shrink-0">
                 <PlaybackControls />
                 <div className="sm:hidden">

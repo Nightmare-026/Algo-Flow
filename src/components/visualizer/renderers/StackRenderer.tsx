@@ -164,7 +164,7 @@ export function StackRenderer() {
   return (
     <div
       className="relative flex h-full w-full flex-col items-center justify-between p-2 sm:p-4 overflow-hidden select-none pointer-events-auto"
-      role="img"
+      role="region"
       aria-label={`${currentStep.title}. Stack contains ${dataState.elements.map((element) => element.value).join(", ") || "no values"}.`}
     >
       {/* 1. TOP TAPE: Input Token Scanner (for Parentheses / Expressions) */}
