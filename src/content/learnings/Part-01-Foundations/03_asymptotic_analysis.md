@@ -489,7 +489,7 @@ Since $L = 0$, $n \log n \in o(n^{1.1})$. Any fractional polynomial exponent eve
 
 ### The 1-Second Competitive & Production Budget Table
 
-Modern enterprise and cloud CPUs execute approximately **$10^8$ elementary operations per second** on a single thread. This table establishes the hard boundary conditions for algorithmic selection based on input constraints:
+On standard benchmark environments and modern enterprise/cloud CPU cores (~2–3 GHz single-thread), competitive programming heuristics generally budget approximately **$10^8$ elementary operations per second**. While actual wall-clock execution varies with CPU cache locality, instruction-level parallelism, and branch predictability, this table provides a dependable rule of thumb for algorithmic selection based on input constraints:
 
 | Time Complexity | Max Input Size $n$ for $1\text{s}$ CPU Budget | Production Domain & Typical Problem Archetypes |
 | :--- | :---: | :--- |

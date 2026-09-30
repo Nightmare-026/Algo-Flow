@@ -98,6 +98,27 @@ erDiagram
         timestamp created_at "First Started Timestamp"
     }
 
+    "public.preferences" {
+        uuid id PK,FK "References auth.users(id) ON DELETE CASCADE"
+        string theme "light | dark | dark-neon | light-edu | system"
+        boolean sound_enabled "Audio effects enabled"
+        numeric sound_volume "Volume level (0.0 to 1.0)"
+        numeric playback_speed "Default playback speed multiplier"
+        string preferred_language "python | cpp | java | javascript"
+        boolean reduced_motion "Accessibility reduced motion preference"
+        timestamp created_at "Creation Timestamp"
+        timestamp updated_at "Last Modified Timestamp"
+    }
+
+    "public.chapter_progress" {
+        uuid id PK "Row UUID"
+        uuid user_id FK "References auth.users(id) ON DELETE CASCADE"
+        string module_slug "Curriculum Module Slug"
+        string chapter_slug "Curriculum Chapter Slug"
+        boolean completed "Completion status"
+        timestamp completed_at "Completion Timestamp"
+    }
+
     "public.bookmarks" {
         uuid id PK "Row UUID"
         uuid user_id FK "References auth.users(id) ON DELETE CASCADE"
@@ -105,10 +126,10 @@ erDiagram
         timestamp created_at "Bookmark Timestamp"
     }
 
-    "public.saved_sessions" {
+    "public.saved_visualizer_sessions" {
         uuid id PK "Session UUID"
         uuid user_id FK "References auth.users(id) ON DELETE CASCADE"
-        string algorithm_id "Algorithm Identifier"
+        string algorithm_id "Algorithm Identifier (text)"
         string name "User-defined Session Title"
         jsonb state "Serialized Step & Data Structure State"
         timestamp created_at "Save Timestamp"
@@ -298,6 +319,49 @@ sequenceDiagram
     Dash-->>User: Renders Unified Command Center with live QPM, Accuracy, and Streaks
 ```
 
+### 3.4 Server-Authoritative Quiz Evaluation Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Student
+    participant QuizClient as QuizClient (UI)
+    participant ServerAction as submitEvaluatedQuizAttemptAction
+    participant Registry as Canonical Quiz Registry
+    participant DB as Supabase PostgreSQL
+
+    User->>QuizClient: Submits Quiz Answers [questionId -> selectedOption]
+    QuizClient->>ServerAction: submitEvaluatedQuizAttemptAction(algorithmId, answers)
+    ServerAction->>Registry: Load canonical questions & correct answers for algorithmId
+    ServerAction->>ServerAction: Grade answers server-side, calculate exact score & passed flag
+    ServerAction->>DB: INSERT quiz_attempts (user_id, algorithm_id, score, max_score, passed)
+    ServerAction->>DB: INSERT activity_timeline (action_type: quiz_completed)
+    ServerAction-->>QuizClient: Returns { score, maxScore, passed, results }
+    QuizClient-->>User: Renders verified results & feedback
+```
+
+### 3.5 GDPR Self-Service Account Deletion Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Authenticated Student
+    participant Modal as DeleteAccountModal (UI)
+    participant Handler as /api/account/delete (Route Handler)
+    participant DB as Supabase PostgreSQL
+    participant Auth as Supabase Auth (auth.users)
+
+    User->>Modal: Types "delete my account" & clicks Confirm
+    Modal->>Handler: DELETE /api/account/delete (Session JWT)
+    Handler->>Handler: Validate caller auth.uid()
+    Handler->>DB: Cascaded DELETE across 9 user tables:
+    Note over Handler,DB: user_progress, user_streaks, bookmarks, preferences,<br/>profiles, quiz_attempts, activity_timeline,<br/>chapter_progress, saved_visualizer_sessions
+    Handler->>Auth: supabase.auth.admin.deleteUser(user_id)
+    Auth-->>Handler: User identity revoked
+    Handler-->>Modal: Deletion confirmed & clear session cookies
+    Modal-->>User: Redirect to / with notification
+```
+
 ---
 
 ## 4. Security Audit & Identified Vulnerabilities
@@ -310,6 +374,9 @@ sequenceDiagram
 | **VULN-04** | **High** | Anti-Cheat & Scoring | Client could submit artificially inflated scores directly in JSON payloads. | Enforced server-side score re-verification in `verifySessionIntegrity()`. The server computes the true points based on question difficulties and timing rather than trusting client inputs. |
 | **VULN-05** | **Critical** | Secrets Handling | `SUPABASE_SERVICE_ROLE_KEY` must never leak into client-side JS bundles. | Verified all occurrences of `SUPABASE_SERVICE_ROLE_KEY` reside solely in server-side files (`src/lib/supabase/admin.ts`, server actions) with zero `NEXT_PUBLIC_` prefixes. |
 | **VULN-06** | **Low** | Rate Limiting | Repeated automated requests to mental math score submission. | Rate limit checks in `recordMentalMathSession` using sliding window token buckets per user ID (max 60 submissions/min). |
+| **VULN-07** | **High** | Quiz Integrity | Client-side score calculation allowed students to submit arbitrary score numbers in HTTP payload. | Implemented server-authoritative scoring via `submitEvaluatedQuizAttemptAction()` comparing against canonical server registry. |
+| **VULN-08** | **High** | Database Privilege | Permissive `FOR ALL` RLS on `user_progress` and `user_streaks` allowed direct tampering with streak counters and completions. | Restricted RLS to `FOR SELECT` and `FOR DELETE`; mutations must execute through `SECURITY DEFINER` RPCs (`touch_user_streak`, `mark_algorithm_completed`). |
+| **VULN-09** | **High** | GDPR Compliance | Incomplete user self-service data deletion flow. | Implemented in-app `DeleteAccountModal` with double-confirmation and `/api/account/delete` route cascading full purge across all tables and `auth.users`. |
 
 ---
 

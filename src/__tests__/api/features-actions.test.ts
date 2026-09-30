@@ -115,11 +115,18 @@ describe("Consolidated Feature Server Actions", () => {
     });
 
     it("loads current streak safely via getStreakAction", async () => {
+      const todayStr = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date());
+
       const mockMaybeSingle = vi.fn().mockResolvedValueOnce({
         data: {
           current_streak: 3,
           max_streak: 7,
-          last_activity_date: "2026-09-29",
+          last_activity_date: todayStr,
         },
         error: null,
       });

@@ -1,7 +1,7 @@
 # Algo Flow — Cookie Policy & Local Storage Transparency
 
-**Effective Date**: September 23, 2026  
-**Version**: 2026-09-23  
+**Effective Date**: October 1, 2026  
+**Version**: 2026-10-01  
 **Maintainer**: Nightmare / Algo Flow Team  
 **Contact**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  
 **Web Version**: [https://algo-flow.vercel.app/cookies](https://algo-flow.vercel.app/cookies)  

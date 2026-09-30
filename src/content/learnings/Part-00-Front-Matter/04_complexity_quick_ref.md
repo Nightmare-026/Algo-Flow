@@ -173,7 +173,7 @@ O(log n)    O(1) average          O(log n) push  O(log n) bisect     O(1) pop   
 
 ## 7. Key Takeaways & Architectural Heuristics
 
-1. **The $10^8$ Operations Rule**: Always verify that $f(n) \le 10^8$ for the maximum given constraint $n$ to guarantee a sub-second response time.
+1. **The $10^8$ Operations Heuristic**: On standard benchmark judges, targeting $f(n) \le 10^8$ for the maximum given constraint $n$ serves as a dependable rule of thumb for sub-second execution (subject to cache locality and instruction complexity).
 2. **Memory Alignment Matters**: Contiguous primitive arrays have zero pointer overhead and maximize L1/L2 cache prefetching; linked nodes incur 16–24 bytes of pointer overhead per element and cause cache stalls.
 3. **Comparison Sort Limit**: No comparison-based sort can beat $\Omega(n \log n)$ in the worst case; beating this bound requires non-comparison distribution methods (Counting Sort, Radix Sort).
 4. **Idempotency in Range Queries**: If the query function is **idempotent** ($f(x, x) = x$ such as $\min, \max, \gcd$), a Sparse Table answers queries in strict **$O(1)$ time**.

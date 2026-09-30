@@ -44,14 +44,27 @@ Algo Flow enforces defense-in-depth principles across its full stack:
 
 ### 1. Database & Row-Level Security (RLS)
 - Persistent storage is powered by **Supabase PostgreSQL**.
-- Every table storing user data (`profiles`, `bookmarks`, `mental_math_sessions`, `user_progress`) has strict **PostgreSQL Row Level Security (RLS)** policies enabled.
-- Data queries are cryptographically restricted to the authenticated user ID (`auth.uid() = user_id`). Unauthenticated users cannot read or write private user records.
+- Every table storing user data (`profiles`, `bookmarks`, `preferences`, `mental_math_sessions`, `user_progress`, `user_streaks`, `chapter_progress`, `quiz_attempts`, `activity_timeline`) has strict **PostgreSQL Row Level Security (RLS)** policies enabled using `(SELECT auth.uid()) = user_id`.
+- Unauthenticated users cannot read or write private user records.
+- Critical progress tables (`user_progress` and `user_streaks`) are hardened with `FOR SELECT` and `FOR DELETE` policies; direct `INSERT` and `UPDATE` tampering is restricted, and state transitions are channeled strictly through server-side `SECURITY DEFINER` RPCs (`touch_user_streak` and `mark_algorithm_completed`).
 
-### 2. Transport & Session Security
+### 2. GDPR Self-Service Account & Data Deletion
+- Authenticated users have immediate self-service account deletion access via the Student Dashboard (`/dashboard`) requiring a double-confirmation phrase, or programmatically via `DELETE /api/account/delete`.
+- The deletion handler executes a cascade purge across all 9 user partitions and revokes the `auth.users` identity immediately, leaving zero orphaned PII or progress records.
+
+### 3. Server-Authoritative Quiz & Scoring Verification
+- Quiz evaluation is completely server-authoritative (`submitEvaluatedQuizAttemptAction`).
+- Client-submitted selected answers are evaluated server-side against canonical question banks, preventing client score manipulation or answer-key extraction from HTTP payloads.
+
+### 4. Edge Rate Limiting & Anti-Abuse
+- Critical endpoints (authentication, account deletion, password resets, and high-frequency calculation submissions) are protected by **Upstash Distributed Redis** token-bucket rate limiting.
+- Anti-cheat validation ensures calculation times on competitive leaderboards cannot be spoofed by headless scripts or automated bots.
+
+### 5. Transport & Session Security
 - All edge and origin communications require **HTTPS (TLS 1.3)**.
 - Authentication tokens are handled via **Supabase Auth** with strict `HttpOnly`, `SameSite=Lax`, and `Secure` cookie attributes, mitigating cross-site scripting (XSS) token theft and CSRF attacks.
 
-### 3. HTTP Security Headers
+### 6. HTTP Security Headers
 Configured harmoniously across `src/middleware.ts` and `next.config.ts`:
 - `Content-Security-Policy` (Defense-in-depth CSP enforcing strict frame, origin, and object controls with edge-compatible static script execution; `'unsafe-eval'` disallowed in production)
 - `Strict-Transport-Security` (HSTS: max-age 2 years, includeSubDomains, preload)
@@ -62,10 +75,14 @@ Configured harmoniously across `src/middleware.ts` and `next.config.ts`:
 - `Cross-Origin-Opener-Policy: same-origin-allow-popups`
 - `X-Permitted-Cross-Domain-Policies: none`
 
-### 4. Secret & Key Hygiene
+### 7. CI/CD Hardening & Supply Chain Security
+- GitHub Actions workflows enforce least privilege with top-level `permissions: contents: read`.
+- All third-party actions are pinned to immutable full commit SHAs.
+- Automated secret scanning is enforced on every commit and pull request via TruffleHog.
+
+### 8. Secret & Key Hygiene
 - Production secrets, service role keys, and API tokens are never committed to version control.
 - Secrets are injected exclusively via encrypted runtime environment variables (`.env.local` ignored in `.gitignore`).
-- If any credential is accidentally exposed, it must be revoked and rotated immediately before Git history cleaning.
 
 ---
 
@@ -76,7 +93,8 @@ Configured harmoniously across `src/middleware.ts` and `next.config.ts`:
 - Cross-site scripting (XSS) impacting authenticated users.
 - Server-side request forgery (SSRF) or remote code execution.
 - SQL injection or unauthorized database read/write.
-- Rate limit evasion on anti-cheat daily challenge endpoints.
+- Rate limit evasion or score forgery on quiz and anti-cheat endpoints.
+- Incomplete account deletion or PII retention violations.
 
 ### Out-of-Scope:
 - Denial of Service (DoS/DDoS) attacks against public cloud infrastructure.

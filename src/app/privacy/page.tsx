@@ -50,7 +50,7 @@ export default async function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {PRIVACY_VERSION} • Effective Date: September 23, 2026
+            Version {PRIVACY_VERSION} • Effective Date: October 1, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             At AlgoFlow (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;), we believe that
@@ -436,6 +436,14 @@ export default async function PrivacyPage() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="p-3 font-bold text-text-primary">Upstash Inc.</td>
+                      <td className="p-3">
+                        Serverless Redis Cache (Distributed Rate Limiting &amp; Anti-Abuse Token
+                        Store)
+                      </td>
+                      <td className="p-3">SOC 2 Type II, ISO 27001, GDPR DPA compliant</td>
+                    </tr>
+                    <tr>
                       <td className="p-3 font-bold text-text-primary">GitHub Inc. / Microsoft</td>
                       <td className="p-3">GitHub OAuth 2.0 Identity Provider (Optional SSO)</td>
                       <td className="p-3">SOC 2, ISO 27001, Microsoft Enterprise DPA</td>
@@ -476,8 +484,19 @@ export default async function PrivacyPage() {
                 </li>
                 <li>
                   <strong>Right to Erasure (&quot;Right to be Forgotten&quot;):</strong> You have
-                  the absolute right to delete your account and all associated practice history
-                  permanently. Deletion removes your records from our live database immediately.
+                  the absolute right to permanently delete your account and all associated practice
+                  data at any time. You can execute an immediate self-service account deletion
+                  directly from your{" "}
+                  <Link href="/dashboard" className="text-primary hover:underline font-bold">
+                    Student Dashboard
+                  </Link>{" "}
+                  using the &quot;Delete Account&quot; action (which requires typing a
+                  double-confirmation phrase) or programmatically via{" "}
+                  <code>DELETE /api/account/delete</code> with your authenticated session. Upon
+                  confirmation, all personal data across our database partitions (including your
+                  profile, saved visualizer sessions, bookmarks, streaks, XP, quiz attempts,
+                  activity timeline, chapter progress, and authentication credentials) is
+                  permanently and irreversibly purged from our live database immediately.
                 </li>
                 <li>
                   <strong>Right to Restrict or Object:</strong> You can opt out of any non-essential

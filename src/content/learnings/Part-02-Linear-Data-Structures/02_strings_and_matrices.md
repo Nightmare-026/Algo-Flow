@@ -5,7 +5,7 @@
 
 ---
 
-Character sequences and multi-dimensional matrices represent two vital linear abstractions mapped directly onto hardware memory buses. While strings translate binary code points into structured text with significant mutability and encoding considerations, matrices flatten multi-dimensional Cartesian coordinates into linear RAM addresses. This chapter explores character memory architectures, UTF-8 variable-width encodings, row-major versus column-major address calculations, cache line stride penalties, in-place matrix rotations, and staircase search paradigms.
+Character sequences and multi-dimensional matrices represent two vital linear abstractions mapped directly onto hardware memory buses. While strings translate binary code points into structured text with significant mutability and encoding considerations, matrices flatten multi-dimensional Cartesian coordinates into linear RAM addresses. This chapter explores character memory architectures, UTF-8 variable-length byte encodings, row-major versus column-major address calculations, cache line stride penalties, in-place matrix rotations, and staircase search paradigms.
 
 ### Learning Objectives
 

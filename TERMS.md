@@ -1,7 +1,7 @@
 # Algo Flow — Terms of Service
 
-**Effective Date**: September 23, 2026  
-**Version**: 2026-09-23  
+**Effective Date**: October 1, 2026  
+**Version**: 2026-10-01  
 **Maintainer**: Nightmare / Algo Flow Team  
 **Contact**: [ganeshsharma7114@gmail.com](mailto:ganeshsharma7114@gmail.com)  
 **Web Version**: [https://algo-flow.vercel.app/terms](https://algo-flow.vercel.app/terms)
@@ -47,8 +47,9 @@ We reserve the right to modify, refine, or update any visualization or education
 To protect the educational integrity of the community, you agree NOT to:
 1. **Automate & Scrape**: Deploy automated bots, scrapers, or excessive traffic generators that degrade platform availability.
 2. **Cheat or Game Competitions**: Submit scripted, automated, or falsified calculation times to the Mental Math Daily Challenge or public leaderboards.
-3. **Inject Malicious Code**: Input malicious JavaScript, XSS payloads, or malformed data intended to crash visualizer rendering canvases.
-4. **Vulnerability Exploitation**: Scan, probe, or test vulnerabilities in authentication or database RLS policies without prior written authorization.
+3. **Attempt Score Forgery**: Attempt to bypass, tamper with, or forge server-authoritative quiz scoring, streak calculations, or learning progress states.
+4. **Inject Malicious Code**: Input malicious JavaScript, XSS payloads, or malformed data intended to crash visualizer rendering canvases.
+5. **Vulnerability Exploitation**: Scan, probe, or test vulnerabilities in authentication or database RLS policies without prior written authorization.
 
 ---
 
@@ -78,11 +79,11 @@ TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL ALGO FLOW, ITS CREATOR
 
 ---
 
-## 10. Termination & Modifications
+## 10. Termination & Self-Service Account Deletion
 
-- You may delete your account and associated history at any time from your Student Dashboard settings.
-- We reserve the right to suspend or terminate accounts that violate our Acceptable Use Policy.
-- We may update these Terms from time to time. Continued use of the Platform signifies acceptance of updated terms.
+- **Self-Service Deletion**: You may terminate your account and erase all associated personal records at any time directly from the Student Dashboard via the double-confirmation "Delete Account" action, or via `DELETE /api/account/delete`. Deletion immediately and permanently purges all progress, streaks, bookmarks, quiz records, and authentication credentials from our live database.
+- **Account Suspension**: We reserve the right to suspend or terminate accounts that violate our Acceptable Use Policy without prior notice.
+- **Modifications**: We may update these Terms from time to time. Continued use of the Platform signifies acceptance of updated terms.
 
 ---
 

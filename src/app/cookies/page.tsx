@@ -47,7 +47,7 @@ export default async function CookiesPage() {
             Cookie Policy
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {COOKIE_VERSION} • Effective Date: September 23, 2026
+            Version {COOKIE_VERSION} • Effective Date: October 1, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             At AlgoFlow, we believe in radical transparency. We operate a strict{" "}

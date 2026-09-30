@@ -51,7 +51,7 @@ export default async function TermsPage() {
             Terms of Service
           </h1>
           <p className="mt-2 text-xs sm:text-sm font-mono text-text-muted">
-            Version {TERMS_VERSION} • Effective Date: September 23, 2026
+            Version {TERMS_VERSION} • Effective Date: October 1, 2026
           </p>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-text-secondary max-w-3xl">
             Welcome to AlgoFlow (&quot;AlgoFlow&quot;, &quot;we&quot;, &quot;us&quot;, or
@@ -413,9 +413,16 @@ export default async function TermsPage() {
             </div>
             <div className="space-y-3 text-sm leading-relaxed text-text-secondary pl-0 sm:pl-12">
               <p>
-                You may discontinue your use of AlgoFlow at any time and may request deletion of
-                your account and personal history from your Student Dashboard settings or by
-                contacting support.
+                You may discontinue your use of AlgoFlow at any time. You hold the permanent right
+                to execute an immediate, self-service account termination and data purge directly
+                from your{" "}
+                <Link href="/dashboard" className="text-primary hover:underline font-bold">
+                  Student Dashboard
+                </Link>{" "}
+                via the &quot;Delete Account&quot; action (which requires typing a
+                double-confirmation phrase) or via our authenticated API (
+                <code>DELETE /api/account/delete</code>). This permanently purges all user progress,
+                streaks, bookmarks, quiz records, and credentials from our live systems immediately.
               </p>
               <p>
                 We reserve the right, without prior notice, to suspend, limit, or terminate access

@@ -37,8 +37,10 @@ src/app/
 ├── visualizers/                # Algorithm catalog listing
 │   └── [category]/             # Category-filtered catalog
 ├── mental-math/                # Mental math trainer (daily, practice, speed, test, leaderboard, progress)
-├── quizzes/[algorithmId]/      # Per-algorithm quizzes
-├── privacy/, terms/            # Legal pages
+├── learnings/                  # 62-chapter university-grade DSA curriculum across 12 modules
+├── quizzes/[algorithmId]/      # Per-algorithm quizzes with server-authoritative scoring
+├── api/account/delete/         # GDPR self-service account deletion route handler
+├── privacy/, terms/, cookies/, license/ # Legal and transparency documentation
 ├── sitemap.ts, robots.ts       # SEO
 ├── manifest.ts                 # PWA manifest
 ├── opengraph-image.tsx         # Dynamic OG image generation
@@ -203,7 +205,7 @@ Each `api.ts` creates a Supabase server client, authenticates, and performs data
 
 - Supabase PostgreSQL with Row Level Security (RLS)
 - Schema changes require versioned up/down migration pairs in `supabase/migrations/` and `supabase/rollbacks/`
-- Tables: `profiles`, `bookmarks`, `completed_algorithms`, `sessions`, `streaks`, `activity`, `challenges`, `quiz_results`, `preferences`
+- Tables: `profiles`, `bookmarks`, `user_progress`, `user_streaks`, `saved_visualizer_sessions`, `activity_timeline`, `daily_challenges`, `quiz_attempts`, `preferences`, `chapter_progress`, `mental_math_sessions`, `mental_math_daily_attempts`, `mental_math_user_stats`
 
 ## Boundaries & Rules
 
@@ -232,26 +234,26 @@ Each `api.ts` creates a Supabase server client, authenticates, and performs data
 | Path | Owns | Notes |
 |---|---|---|
 | `src/app/` | Routes, pages, layouts | Server components by default |
-| `src/components/ui/` | Shadcn-style primitives | Follow shadcn/ui conventions |
-| `src/components/visualizer/` | Visualizer UI shell | `VisualizerLayout.tsx` is the main orchestrator |
+| `src/components/ui/` | Accessible UI primitives | Follow design token conventions |
+| `src/components/visualizer/` | Visualizer UI shell | `VisualizerLayout.tsx` orchestrator |
+| `src/components/visualizer/layout/` | Visualizer subcomponents | Modular header, canvas shell, control dock, drawer, modals |
 | `src/components/visualizer/renderers/` | Visual renderers per DS | One file per data structure |
 | `src/components/visualizer/controls/` | Input controls per DS | One file per data structure |
 | `src/visualizers/registry/` | Visualizer engine | Types, registries, publication pipeline |
 | `src/visualizers/{ds}/` | Algorithm logic per DS | `generateSteps()`, code examples, pseudocode |
 | `src/data/seed/` | Catalog data | Source of truth for algorithm metadata |
-| `src/features/` | Feature modules | Server actions for bookmarks, progress, sessions, streaks |
-| `src/lib/` | Shared utilities | Supabase clients, validation, security, animation configs |
+| `src/features/` | Feature modules | Server actions for account, bookmarks, progress, sessions, streaks |
+| `src/lib/` | Shared utilities | Supabase clients, validation, security |
 | `src/stores/` | State stores | Zustand playback store |
 | `src/types/` | Type definitions | Core types: VisualStep, Algorithm, CodeExample, etc. |
-| `scripts/` | Build validators | Registry, coordination, code example validators |
+| `scripts/` | Build validators | Registry, coordination, curriculum, code example validators |
 | `supabase/` | Database | Migrations and rollbacks |
 
 ## Known Constraints
 
-- `VisualizerLayout.tsx` (782 lines) is a large component with many state variables — refactoring into smaller pieces is a known improvement area
-- `public/agent-inspector.js` is a debugging script that only loads in development (`process.env.NODE_ENV === "development"`)
+- `VisualizerLayout.tsx` is cleanly decomposed into modular subcomponents under `src/components/visualizer/layout/` (<250 lines orchestrator)
 - The mental math feature has its own sub-routing and component tree under `src/app/mental-math/` and `src/features/mental-math/`
-- Automated CI is configured via GitHub Actions (`.github/workflows/ci.yml`) running format check, linter, typecheck, unit tests, and build validation.
+- Automated CI is configured via GitHub Actions (`.github/workflows/ci.yml`) running format check, linter, typecheck, unit tests, code example verification, and build validation.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

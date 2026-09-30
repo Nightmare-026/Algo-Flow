@@ -14,7 +14,11 @@ import {
 } from "lucide-react";
 import { Algorithm } from "@/types";
 import { QuestionData } from "@/data/seed/questions";
-import { submitQuizAttempt } from "@/lib/api/quizzes";
+import {
+  submitEvaluatedQuizAttemptAction,
+  submitQuizAttempt,
+  type SubmittedQuizAnswer,
+} from "@/features/quizzes/api";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +32,7 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
+  const [submittedAnswers, setSubmittedAnswers] = useState<SubmittedQuizAnswer[]>([]);
   const [isFinished, setIsFinished] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,9 +61,16 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
     if (isAnswered) return;
     setSelectedOption(index);
     setIsAnswered(true);
-    if (index === correctOptionIndex) {
+
+    const isCorrect = index === correctOptionIndex;
+    if (isCorrect) {
       setScore((s) => s + 1);
     }
+
+    setSubmittedAnswers((prev) => [
+      ...prev.filter((a) => a.questionText !== currentQ.q),
+      { questionText: currentQ.q, selectedOptionIndex: index },
+    ]);
   };
 
   const handleNext = async () => {
@@ -69,7 +81,20 @@ export function QuizClient({ algorithm, questions }: QuizClientProps) {
     } else {
       setIsSubmitting(true);
       try {
-        await submitQuizAttempt(algorithm.id, score, questions.length);
+        const answersPayload = [
+          ...submittedAnswers.filter((a) => a.questionText !== currentQ.q),
+          ...(selectedOption !== null
+            ? [{ questionText: currentQ.q, selectedOptionIndex: selectedOption }]
+            : []),
+        ];
+
+        const res = await submitEvaluatedQuizAttemptAction(algorithm.id, answersPayload);
+        if (res.ok && res.data) {
+          setScore(res.data.score);
+        } else {
+          // Fallback to legacy record if needed
+          await submitQuizAttempt(algorithm.id, score, questions.length);
+        }
       } catch {
         // Continue to finished screen even if remote recording fails
       } finally {

@@ -9,7 +9,7 @@ import { safeJsonLd } from "@/lib/security/safe-json";
 export const metadata: Metadata = {
   title: "Visualizer Library",
   description:
-    "Explore interactive data structure and algorithm visualizers with step-by-step traces for trees, graphs, sorting, searching, and dynamic programming.",
+    "Explore interactive data structure and algorithm visualizers with step-by-step traces for trees, graphs, sorting, searching, and linked data structures.",
   alternates: { canonical: "/visualizers" },
   openGraph: {
     title: "Visualizer Library",
